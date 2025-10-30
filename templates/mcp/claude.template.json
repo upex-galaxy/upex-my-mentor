@@ -1,0 +1,105 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest",
+        "--caps",
+        "vision,pdf",
+        "--timeout-action",
+        "10000",
+        "--timeout-navigation",
+        "30000",
+        "--ignore-https-errors",
+        "--isolated"
+      ]
+    },
+    "devtools": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "chrome-devtools-mcp"
+      ]
+    },
+    "supabase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@latest"
+      ],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}"
+      }
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ]
+    },
+    "tavity": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mcp.tavily.com/mcp/?tavilyApiKey=${TAVILY_API_KEY}"
+      ]
+    },
+    "postman": {
+      "type": "http",
+      "url": "https://mcp.postman.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${POSTMAN_API_KEY}"
+      }
+    },
+    "sentry": {
+      "type": "http",
+      "url": "https://mcp.sentry.dev/mcp/${SENTRY_PROJECT_NAME}/${SENTRY_PROJECT_LANGUAGE}"
+    },
+    "vercel": {
+      "type": "http",
+      "url": "https://mcp.vercel.com/"
+    },
+    "notion": {
+      "type": "http",
+      "url": "https://mcp.notion.com/mcp"
+    },
+    "atlassian": {
+      "type": "sse",
+      "url": "https://mcp.atlassian.com/v1/sse"
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${GITHUB_TOKEN}"
+      }
+    },
+    "slack": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "slack-mcp-server@latest",
+        "--transport",
+        "stdio"
+      ],
+      "env": {
+        "SLACK_MCP_XOXP_TOKEN": "${SLACK_MCP_XOXP_TOKEN}",
+        "SLACK_MCP_ADD_MESSAGE_TOOL": "true",
+        "SLACK_MCP_USERS_CACHE": "/context/mcp/outputs/slack/",
+        "SLACK_MCP_CHANNELS_CACHE": "/context/mcp/outputs/slack/"
+      }
+    },
+    "memory": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "env": {
+        "MEMORY_FILE_PATH": "/context/mcp/memory.jsonl"
+      }
+    }
+  }
+}

@@ -1,0 +1,49 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+
+# production
+/build
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# media
+
+# env files
+.env
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# system
+.DS_Store
+
+# AI CLI tools and configs
+.serena
+.gemini
+.claude
+.context/mcp/outputs
+.playwright-mcp
+
+# MCP catalog files (contain secrets - DO NOT COMMIT)
+*.catalog.json
+
+# MCP auto-generated config files (read by AI tools)
+.mcpservers.json
+.mcp.json
+# add more mcp assets
+
+# Sentry Config File
+.env.sentry-build-plugin

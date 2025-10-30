@@ -1,0 +1,12 @@
+{
+  "name": "aicode-starter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "ai": "node scripts/mcp-builder.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,100 @@
+# ============================================
+# CONFIGURACIÓN GLOBAL DE MCPs PARA CODEX CLI
+# ============================================
+# Ubicación: ~/.codex/config.toml
+
+# IMPORTANTE: Para OAuth en servidores HTTP, habilitar:
+experimental_use_rmcp_client = true
+
+# ============================================
+# SERVIDORES STDIO (LOCALES)
+# ============================================
+
+[mcp_servers.playwright]
+command = "npx"
+args = [
+    "@playwright/mcp@latest",
+    "--caps",
+    "vision,pdf",
+    "--timeout-action",
+    "10000",
+    "--timeout-navigation",
+    "30000",
+    "--ignore-https-errors",
+    "--isolated"
+]
+
+[mcp_servers.devtools]
+command = "npx"
+args = ["-y", "chrome-devtools-mcp"]
+
+[mcp_servers.supabase]
+command = "npx"
+args = ["-y", "@supabase/mcp-server-supabase@latest"]
+
+[mcp_servers.supabase.env]
+SUPABASE_ACCESS_TOKEN = "${SUPABASE_ACCESS_TOKEN}"
+
+[mcp_servers.context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp"]
+
+[mcp_servers.tavity]
+command = "npx"
+args = [
+    "-y",
+    "mcp-remote",
+    "https://mcp.tavily.com/mcp/?tavilyApiKey=${TAVILY_API_KEY}"
+]
+
+[mcp_servers.slack]
+command = "npx"
+args = [
+    "-y",
+    "slack-mcp-server@latest",
+    "--transport",
+    "stdio"
+]
+
+[mcp_servers.slack.env]
+SLACK_MCP_XOXP_TOKEN = "${SLACK_MCP_XOXP_TOKEN}"
+SLACK_MCP_ADD_MESSAGE_TOOL = "true"
+SLACK_MCP_USERS_CACHE = "$HOME/.codex/mcp-cache/slack/"
+SLACK_MCP_CHANNELS_CACHE = "$HOME/.codex/mcp-cache/slack/"
+
+[mcp_servers.memory]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-memory"]
+
+[mcp_servers.memory.env]
+MEMORY_FILE_PATH = "$HOME/.codex/mcp-data/memory.jsonl"
+
+# ============================================
+# ATLASSIAN - USANDO MCP-REMOTE (RECOMENDADO)
+# ============================================
+# mcp-remote maneja OAuth automáticamente y funciona con cualquier cliente
+
+[mcp_servers.atlassian]
+command = "npx"
+args = ["-y", "mcp-remote", "https://mcp.atlassian.com/v1/sse"]
+
+# ============================================
+# SERVIDORES HTTP STREAMABLE (REMOTOS)
+# ============================================
+
+[mcp_servers.postman]
+url = "https://mcp.postman.com/mcp"
+bearer_token_env_var = "POSTMAN_API_KEY"
+
+[mcp_servers.sentry]
+url = "https://mcp.sentry.dev/mcp/${SENTRY_PROJECT_NAME}/${SENTRY_PROJECT_LANGUAGE}"
+
+[mcp_servers.vercel]
+url = "https://mcp.vercel.com/"
+
+[mcp_servers.notion]
+url = "https://mcp.notion.com/mcp"
+
+[mcp_servers.github]
+url = "https://api.githubcopilot.com/mcp"
+bearer_token_env_var = "GITHUB_TOKEN"
