@@ -1,8 +1,8 @@
 Actúa como Software Architect y Tech Lead.
 
 **Input:**
-- PRD completo: [pegar .context/PRD/*.md]
-- Functional Specs: [pegar .context/SRS/functional-specs.md]
+- PRD completo: [usar .context/PRD/*.md]
+- Functional Specs: [usar .context/SRS/functional-specs.md]
 - Tech Stack: [especificar stack del proyecto]
 
 **Genera archivo: architecture-specs.md**

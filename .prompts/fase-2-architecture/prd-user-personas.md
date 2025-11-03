@@ -1,8 +1,8 @@
 Actúa como Product Manager y UX Researcher.
 
 **Input:**
-- Executive Summary: [pegar .context/PRD/executive-summary.md]
-- Business Model: [pegar .context/idea/business-model.md]
+- Executive Summary: [usar .context/PRD/executive-summary.md]
+- Business Model: [usar .context/idea/business-model.md]
 
 **Genera archivo: user-personas.md**
 

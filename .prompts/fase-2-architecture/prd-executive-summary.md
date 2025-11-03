@@ -1,8 +1,9 @@
 Actúa como Senior Product Manager.
 
 **Input:**
-- Business Model: [pegar .context/idea/business-model.md]
-- Market Context: [pegar .context/idea/market-context.md]
+
+- Business Model: [usar .context/idea/business-model.md]
+- Market Context: [usar .context/idea/market-context.md]
 - Tech Stack: Next.js 15, Supabase (PostgreSQL), Vercel, GitHub Actions
 
 **Genera archivo: executive-summary.md**
@@ -30,6 +31,7 @@ Incluye:
 **Formato:** Markdown estructurado, listo para copiar a .context/PRD/executive-summary.md
 
 **Restricciones:**
+
 - Máximo 2 páginas
 - Bullets concisos y accionables
 - KPIs medibles y realistas para MVP

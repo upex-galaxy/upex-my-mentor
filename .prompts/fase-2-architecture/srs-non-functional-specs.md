@@ -1,7 +1,7 @@
 Actúa como Software Architect y Performance Engineer.
 
 **Input:**
-- PRD: [pegar .context/PRD/executive-summary.md]
+- PRD: [usar .context/PRD/executive-summary.md]
 - Tech Stack: [especificar stack tecnológico del proyecto]
 
 **Genera archivo: non-functional-specs.md**

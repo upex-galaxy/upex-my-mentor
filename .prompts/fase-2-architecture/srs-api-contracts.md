@@ -1,7 +1,7 @@
 Actúa como API Designer y Backend Engineer.
 
 **Input:**
-- Functional Specs: [pegar .context/SRS/functional-specs.md]
+- Functional Specs: [usar .context/SRS/functional-specs.md]
 - PRD User Stories: [listar user stories relevantes]
 
 **Genera archivo: api-contracts.yaml**

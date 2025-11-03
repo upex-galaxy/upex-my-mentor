@@ -1,8 +1,8 @@
 Actúa como UX Designer y Product Manager.
 
 **Input:**
-- User Personas: [pegar .context/PRD/user-personas.md]
-- MVP Scope: [pegar .context/PRD/mvp-scope.md]
+- User Personas: [usar .context/PRD/user-personas.md]
+- MVP Scope: [usar .context/PRD/mvp-scope.md]
 
 **Genera archivo: user-journeys.md**
 

@@ -1,7 +1,7 @@
 Actúa como Software Architect y Business Analyst.
 
 **Input:**
-- PRD completo: [pegar .context/PRD/mvp-scope.md]
+- PRD completo: [usar .context/PRD/mvp-scope.md]
 - User Stories: [listar todas las User Stories del PRD]
 
 **Genera archivo: functional-specs.md**
