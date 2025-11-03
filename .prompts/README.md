@@ -68,7 +68,7 @@ Este directorio contiene prompts optimizados para generar documentación de proy
 2. **Copiar TODO el contenido** del archivo (Ctrl+A → Ctrl+C)
 3. **Pegar en tu chat con la IA** (Claude, ChatGPT, etc.)
 4. **Reemplazar los placeholders** con tu información específica:
-   - `[pegar archivo.md]` → Pega el contenido del archivo referenciado
+   - `[usar archivo.md]` → Pega el contenido del archivo referenciado
    - `[industria/vertical]` → Especifica tu industria
    - `[proyecto]` → Nombre de tu proyecto
 5. **Ejecutar el prompt**
@@ -183,7 +183,7 @@ Los prompts están diseñados para funcionar en cascada:
 ### **Placeholders a Reemplazar**
 
 Cuando veas:
-- `[pegar archivo.md]` → Copia y pega el contenido completo del archivo
+- `[usar archivo.md]` → Copia y pega el contenido completo del archivo
 - `[especificar X]` → Reemplaza con tu valor específico
 - `[listar Y]` → Lista los elementos solicitados
 
