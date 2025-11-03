@@ -1,11 +1,11 @@
 Actúa como Senior QA Engineer / Test Automation Architect.
 
 **Input:**
-- Test Strategy: [pegar .context/guidelines/tae/test-strategy.md]
-- KATA Architecture: [pegar docs/kata-test-architecture.md sections 3-6]
-- PBI complete: [pegar .context/PBI/epic-tree.md + at least 2-3 epic folders with their stories]
-- SRS Architecture: [pegar .context/SRS/architecture-specs.md]
-- SRS API Contracts: [pegar .context/SRS/api-contracts.yaml]
+- Test Strategy: [usar .context/guidelines/tae/test-strategy.md]
+- KATA Architecture: [usar docs/kata-test-architecture.md sections 3-6]
+- PBI complete: [usar .context/PBI/epic-tree.md + at least 2-3 epic folders with their stories]
+- SRS Architecture: [usar .context/SRS/architecture-specs.md]
+- SRS API Contracts: [usar .context/SRS/api-contracts.yaml]
 
 **Genera archivo: kata-implementation-plan.md**
 

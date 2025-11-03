@@ -1,10 +1,10 @@
 Actúa como Senior Full-Stack Developer.
 
 **Input:**
-- Story: [pegar .context/PBI/epics/EPIC-XXX/stories/STORY-XXX/story.md]
-- Test Cases: [pegar .context/PBI/epics/EPIC-XXX/stories/STORY-XXX/test-cases.md]
-- Feature Implementation Plan: [pegar .context/PBI/epics/EPIC-XXX/feature-implementation-plan.md]
-- SRS relevante: [pegar secciones relacionadas de .context/SRS/]
+- Story: [usar .context/PBI/epics/EPIC-XXX/stories/STORY-XXX/story.md]
+- Test Cases: [usar .context/PBI/epics/EPIC-XXX/stories/STORY-XXX/test-cases.md]
+- Feature Implementation Plan: [usar .context/PBI/epics/EPIC-XXX/feature-implementation-plan.md]
+- SRS relevante: [usar secciones relacionadas de .context/SRS/]
 
 **Genera archivo: implementation-plan.md** (dentro de .context/PBI/epics/EPIC-XXX/stories/STORY-XXX/)
 
@@ -132,13 +132,13 @@ Implementar funcionalidad de [descripción breve].
 
 ## Estimated Effort
 
-| Step | Time |
-|------|------|
-| 1. [Step name] | [time] |
-| 2. [Step name] | [time] |
-| 3. [Step name] | [time] |
-| ... | ... |
-| **Total** | **[total time]** |
+| Step           | Time             |
+| -------------- | ---------------- |
+| 1. [Step name] | [time]           |
+| 2. [Step name] | [time]           |
+| 3. [Step name] | [time]           |
+| ...            | ...              |
+| **Total**      | **[total time]** |
 
 **Story points:** [número] (debe match estimación en story.md)
 

@@ -1,10 +1,10 @@
 Actúa como Senior QA Engineer / Test Architect.
 
 **Input:**
-- PRD completo: [pegar todos los archivos de .context/PRD/]
-- SRS completo: [pegar todos los archivos de .context/SRS/]
-- PBI epic-tree: [pegar .context/PBI/epic-tree.md]
-- KATA Architecture: [pegar docs/kata-test-architecture.md sections 1-7]
+- PRD completo: [usar todos los archivos de .context/PRD/]
+- SRS completo: [usar todos los archivos de .context/SRS/]
+- PBI epic-tree: [usar .context/PBI/epic-tree.md]
+- KATA Architecture: [usar docs/kata-test-architecture.md sections 1-7]
 - Tech Stack: TypeScript + Playwright + Node.js (Next.js 15), Supabase (PostgreSQL), Vercel, GitHub Actions
 
 **Genera archivo: test-strategy.md**

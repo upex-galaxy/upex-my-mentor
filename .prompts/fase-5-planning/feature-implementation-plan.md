@@ -1,9 +1,9 @@
 Actúa como Senior Software Architect y Tech Lead.
 
 **Input:**
-- Epic: [pegar .context/PBI/epics/EPIC-XXX/epic.md]
-- SRS completo: [pegar .context/SRS/*.md]
-- Feature Test Plan: [pegar .context/PBI/epics/EPIC-XXX/feature-test-plan.md]
+- Epic: [usar .context/PBI/epics/EPIC-XXX/epic.md]
+- SRS completo: [usar .context/SRS/*.md]
+- Feature Test Plan: [usar .context/PBI/epics/EPIC-XXX/feature-test-plan.md]
 
 **Genera archivo: feature-implementation-plan.md** (dentro de .context/PBI/epics/EPIC-XXX/)
 

@@ -1,9 +1,9 @@
 Actúa como QA Engineer experto en Shift-Left Testing y Test Case Design.
 
 **Input:**
-- Story: [pegar .context/PBI/epics/EPIC-XXX/stories/STORY-XXX/story.md]
-- Feature Test Plan: [pegar .context/PBI/epics/EPIC-XXX/feature-test-plan.md]
-- SRS relacionado: [pegar secciones relevantes de .context/SRS/]
+- Story: [usar .context/PBI/epics/EPIC-XXX/stories/STORY-XXX/story.md]
+- Feature Test Plan: [usar .context/PBI/epics/EPIC-XXX/feature-test-plan.md]
+- SRS relacionado: [usar secciones relevantes de .context/SRS/]
 
 **Genera archivo: test-cases.md** (dentro de .context/PBI/epics/EPIC-XXX/stories/STORY-XXX/)
 
@@ -106,11 +106,11 @@ Listado de casos límite detectados durante el refinement:
 
 ## Test Data Summary
 
-| Type | Count | Examples |
-|------|-------|----------|
-| Valid data | X | [ejemplos] |
-| Invalid data | Y | [ejemplos] |
-| Boundary values | Z | [ejemplos] |
+| Type            | Count | Examples   |
+| --------------- | ----- | ---------- |
+| Valid data      | X     | [ejemplos] |
+| Invalid data    | Y     | [ejemplos] |
+| Boundary values | Z     | [ejemplos] |
 
 ---
 

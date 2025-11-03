@@ -1,9 +1,9 @@
 Actúa como Senior QA Engineer / Test Automation Standards Lead.
 
 **Input:**
-- KATA Architecture: [pegar docs/kata-test-architecture.md section 6: "Convenciones de Implementación"]
-- KATA Best Practices: [pegar docs/kata-test-architecture.md section 7: "Mejores Prácticas"]
-- Test Strategy: [pegar .context/guidelines/tae/test-strategy.md]
+- KATA Architecture: [usar docs/kata-test-architecture.md section 6: "Convenciones de Implementación"]
+- KATA Best Practices: [usar docs/kata-test-architecture.md section 7: "Mejores Prácticas"]
+- Test Strategy: [usar .context/guidelines/tae/test-strategy.md]
 - Project Tech Stack: TypeScript + Playwright + Node.js (Next.js 15)
 
 **Genera archivo: automation-standards.md**

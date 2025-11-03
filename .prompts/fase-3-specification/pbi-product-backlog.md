@@ -1,8 +1,8 @@
 Actúa como Scrum Master y Product Owner.
 
 **Input:**
-- PRD: [pegar .context/PRD/mvp-scope.md]
-- SRS: [pegar .context/SRS/functional-specs.md]
+- PRD: [usar .context/PRD/mvp-scope.md]
+- SRS: [usar .context/SRS/functional-specs.md]
 
 **Genera estructura completa de Product Backlog Items:**
 

@@ -1,8 +1,8 @@
 Actúa como QA Lead experto en Shift-Left Testing y Test Strategy.
 
 **Input:**
-- Epic: [pegar .context/PBI/epics/EPIC-XXX/epic.md]
-- SRS NFRs: [pegar .context/SRS/non-functional-specs.md]
+- Epic: [usar .context/PBI/epics/EPIC-XXX/epic.md]
+- SRS NFRs: [usar .context/SRS/non-functional-specs.md]
 - Todas las stories de la épica: [listar titles y IDs]
 
 **Genera archivo: feature-test-plan.md** (dentro de .context/PBI/epics/EPIC-XXX/)
