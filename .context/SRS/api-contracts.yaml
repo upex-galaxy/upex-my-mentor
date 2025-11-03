@@ -1,0 +1,1087 @@
+openapi: 3.0.0
+info:
+  title: Upex My Mentor API
+  version: 1.0.0
+  description: API para conectar mentores tech con estudiantes, facilitando la búsqueda, reserva, gestión de sesiones y pagos.
+servers:
+  - url: http://localhost:3000
+    description: Development server
+  - url: https://staging.upexmymentor.com
+    description: Staging server
+  - url: https://api.upexmymentor.com
+    description: Production server
+
+paths:
+  /api/auth/register:
+    post:
+      summary: Registra un nuevo usuario (estudiante o mentor)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegisterRequest'
+      responses:
+        '201':
+          description: Usuario registrado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAuthResponse'
+        '400':
+          description: Error de validación o email ya registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/auth/login:
+    post:
+      summary: Inicia sesión de un usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest'
+      responses:
+        '200':
+          description: Inicio de sesión exitoso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAuthResponse'
+        '401':
+          description: Credenciales inválidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/users/{userId}:
+    put:
+      summary: Edita el perfil de un usuario
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: ID del usuario a editar
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfileUpdateRequest'
+      responses:
+        '200':
+          description: Perfil de usuario actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileResponse'
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Prohibido (no tiene permisos para editar este perfil)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/mentors/{mentorId}/profile:
+    put:
+      summary: Actualiza las especialidades y tarifa de un mentor
+      parameters:
+        - in: path
+          name: mentorId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: ID del mentor a actualizar
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MentorProfileUpdateRequest'
+      responses:
+        '200':
+          description: Perfil de mentor actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MentorProfileResponse'
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Prohibido (no es un mentor o no tiene permisos)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/mentors/{mentorId}/socials:
+    put:
+      summary: Conecta cuentas de LinkedIn/GitHub para validación del mentor
+      parameters:
+        - in: path
+          name: mentorId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: ID del mentor
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MentorSocialsUpdateRequest'
+      responses:
+        '200':
+          description: Cuentas sociales del mentor actualizadas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MentorProfileResponse'
+        '400':
+          description: URLs inválidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Prohibido (no es un mentor o no tiene permisos)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/mentors:
+    get:
+      summary: Busca y filtra mentores
+      parameters:
+        - in: query
+          name: keyword
+          schema:
+            type: string
+          description: Palabra clave para buscar en especialidades
+        - in: query
+          name: min_price
+          schema:
+            type: number
+            format: float
+          description: Precio por hora mínimo
+        - in: query
+          name: max_price
+          schema:
+            type: number
+            format: float
+          description: Precio por hora máximo
+        - in: query
+          name: available_date
+          schema:
+            type: string
+            format: date
+          description: Fecha para filtrar disponibilidad (YYYY-MM-DD)
+        - in: query
+          name: min_rating
+          schema:
+            type: number
+            format: float
+            minimum: 0
+            maximum: 5
+          description: Valoración mínima (0-5)
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+          description: Número de página
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+          description: Elementos por página
+      responses:
+        '200':
+          description: Lista de mentores
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MentorProfileResponse'
+                  pagination:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      page:
+                        type: integer
+                      limit:
+                        type: integer
+        '400':
+          description: Parámetros de búsqueda inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/mentors/{mentorId}:
+    get:
+      summary: Obtiene el perfil detallado de un mentor
+      parameters:
+        - in: path
+          name: mentorId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: ID del mentor
+      responses:
+        '200':
+          description: Perfil detallado del mentor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MentorProfileDetailResponse'
+        '404':
+          description: Mentor no encontrado o no activo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/bookings:
+    post:
+      summary: Crea una reserva provisional de sesión
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingCreateRequest'
+      responses:
+        '200':
+          description: Reserva provisional creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingProvisionalResponse'
+        '400':
+          description: Slot no disponible o datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/mentors/{mentorId}/calendar:
+    put:
+      summary: Gestiona la disponibilidad del calendario del mentor
+      parameters:
+        - in: path
+          name: mentorId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: ID del mentor
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MentorCalendarUpdateRequest'
+      responses:
+        '200':
+          description: Calendario del mentor actualizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Calendario actualizado exitosamente
+        '400':
+          description: Datos de disponibilidad inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Prohibido (no es el mentor o no tiene permisos)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/bookings/{bookingId}/status:
+    put:
+      summary: Acepta o rechaza una solicitud de reserva (mentor)
+      parameters:
+        - in: path
+          name: bookingId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: ID de la reserva
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum: [ 'accept', 'reject' ]
+                  description: Acción a realizar sobre la reserva
+              required:
+                - action
+      responses:
+        '200':
+          description: Estado de la reserva actualizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Reserva aceptada/rechazada exitosamente
+        '400':
+          description: Acción inválida o reserva no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Prohibido (no es el mentor de la reserva)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/bookings/{bookingId}/videocall-link:
+    get:
+      summary: Obtiene el enlace de videollamada para una sesión
+      parameters:
+        - in: path
+          name: bookingId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: ID de la reserva
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Enlace de videollamada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  videocall_url:
+                    type: string
+                    format: url
+                    example: https://meet.google.com/abc-defg-hij
+        '401':
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Prohibido (no es participante de la sesión)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Sesión no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/reviews/mentor:
+    post:
+      summary: Permite a un estudiante valorar y comentar a un mentor
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MentorReviewRequest'
+      responses:
+        '201':
+          description: Valoración creada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Valoración registrada
+        '400':
+          description: Datos inválidos o sesión no completada/ya valorada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Prohibido (no es el estudiante de la sesión)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/reviews/student:
+    post:
+      summary: Permite a un mentor valorar y comentar a un estudiante
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentReviewRequest'
+      responses:
+        '201':
+          description: Valoración creada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Valoración registrada
+        '400':
+          description: Datos inválidos o sesión no completada/ya valorada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Prohibido (no es el mentor de la sesión)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/profiles/{profileId}/reviews:
+    get:
+      summary: Obtiene las valoraciones y comentarios de un perfil (mentor o estudiante)
+      parameters:
+        - in: path
+          name: profileId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: ID del perfil (mentor o estudiante)
+      responses:
+        '200':
+          description: Lista de valoraciones y promedio
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  average_rating:
+                    type: number
+                    format: float
+                    example: 4.8
+                  reviews:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ReviewResponse'
+        '404':
+          description: Perfil no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/payments/process:
+    post:
+      summary: Procesa el pago de una sesión por parte del estudiante
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentProcessRequest'
+      responses:
+        '200':
+          description: Pago procesado y reserva confirmada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Pago exitoso y sesión confirmada
+                  bookingId:
+                    type: string
+                    format: uuid
+        '400':
+          description: Error en el pago o datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/payments/history:
+    get:
+      summary: Obtiene el historial de transacciones y pagos de un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+          description: Número de página
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+          description: Elementos por página
+      responses:
+        '200':
+          description: Historial de transacciones
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TransactionResponse'
+                  pagination:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      page:
+                        type: integer
+                      limit:
+                        type: integer
+        '401':
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: VALIDATION_ERROR
+            message:
+              type: string
+              example: El email ya está registrado.
+    UserRegisterRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: usuario@example.com
+        password:
+          type: string
+          minLength: 8
+          example: SecureP@ss1
+        role:
+          type: string
+          enum: [ 'student', 'mentor' ]
+          example: student
+      required:
+        - email
+        - password
+        - role
+    UserLoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: usuario@example.com
+        password:
+          type: string
+          example: SecureP@ss1
+      required:
+        - email
+        - password
+    UserAuthResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        userId:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        role:
+          type: string
+          enum: [ 'student', 'mentor' ]
+          example: student
+    UserProfileUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          example: Laura García
+        photo_url:
+          type: string
+          format: url
+          example: https://example.com/laura.jpg
+        description:
+          type: string
+          maxLength: 500
+          example: Desarrolladora frontend con pasión por React y UX.
+        skills:
+          type: array
+          items:
+            type: string
+          maxItems: 50
+          example: ["React", "JavaScript", "CSS", "HTML"]
+    UserProfileResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        email:
+          type: string
+          format: email
+          example: laura@example.com
+        name:
+          type: string
+          example: Laura García
+        photo_url:
+          type: string
+          format: url
+          example: https://example.com/laura.jpg
+        description:
+          type: string
+          example: Desarrolladora frontend con pasión por React y UX.
+        skills:
+          type: array
+          items:
+            type: string
+          example: ["React", "JavaScript", "CSS", "HTML"]
+        role:
+          type: string
+          enum: [ 'student', 'mentor' ]
+          example: student
+        created_at:
+          type: string
+          format: date-time
+          example: '2023-10-27T10:00:00Z'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2023-10-27T11:00:00Z'
+    MentorProfileUpdateRequest:
+      type: object
+      properties:
+        specialties:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          example: ["React", "AWS", "Python"]
+        hourly_rate:
+          type: number
+          format: float
+          minimum: 0.01
+          example: 50.00
+      required:
+        - specialties
+        - hourly_rate
+    MentorSocialsUpdateRequest:
+      type: object
+      properties:
+        linkedin_url:
+          type: string
+          format: url
+          example: https://www.linkedin.com/in/carlosmendoza
+        github_url:
+          type: string
+          format: url
+          example: https://github.com/carlosmendoza
+    MentorProfileResponse:
+      allOf:
+        - $ref: '#/components/schemas/UserProfileResponse'
+        - type: object
+          properties:
+            specialties:
+              type: array
+              items:
+                type: string
+              example: ["React", "AWS", "Python"]
+            hourly_rate:
+              type: number
+              format: float
+              example: 50.00
+            linkedin_url:
+              type: string
+              format: url
+              example: https://www.linkedin.com/in/carlosmendoza
+            github_url:
+              type: string
+              format: url
+              example: https://github.com/carlosmendoza
+            is_verified:
+              type: boolean
+              example: false
+            average_rating:
+              type: number
+              format: float
+              example: 4.8
+    MentorProfileDetailResponse:
+      allOf:
+        - $ref: '#/components/schemas/MentorProfileResponse'
+        - type: object
+          properties:
+            reviews:
+              type: array
+              items:
+                $ref: '#/components/schemas/ReviewResponse'
+    BookingCreateRequest:
+      type: object
+      properties:
+        mentorId:
+          type: string
+          format: uuid
+          example: 456e7890-e12b-34d5-a678-901234567890
+        session_date:
+          type: string
+          format: date-time
+          example: '2023-11-01T15:00:00Z'
+        duration_minutes:
+          type: integer
+          enum: [ 30, 60 ]
+          example: 60
+      required:
+        - mentorId
+        - session_date
+        - duration_minutes
+    BookingProvisionalResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        bookingId:
+          type: string
+          format: uuid
+          example: 789e0123-e45b-67d8-a901-234567890123
+        mentorId:
+          type: string
+          format: uuid
+          example: 456e7890-e12b-34d5-a678-901234567890
+        studentId:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        session_date:
+          type: string
+          format: date-time
+          example: '2023-11-01T15:00:00Z'
+        duration_minutes:
+          type: integer
+          example: 60
+        total_cost:
+          type: number
+          format: float
+          example: 50.00
+        status:
+          type: string
+          example: provisional
+    MentorCalendarUpdateRequest:
+      type: object
+      properties:
+        action:
+          type: string
+          enum: [ 'add_availability', 'remove_availability' ]
+          description: Acción a realizar sobre la disponibilidad
+        slot_details:
+          type: object
+          properties:
+            start_time:
+              type: string
+              format: date-time
+              example: '2023-11-02T09:00:00Z'
+            end_time:
+              type: string
+              format: date-time
+              example: '2023-11-02T10:00:00Z'
+          required:
+            - start_time
+            - end_time
+      required:
+        - action
+        - slot_details
+    MentorReviewRequest:
+      type: object
+      properties:
+        mentorId:
+          type: string
+          format: uuid
+          example: 456e7890-e12b-34d5-a678-901234567890
+        bookingId:
+          type: string
+          format: uuid
+          example: 789e0123-e45b-67d8-a901-234567890123
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          example: 5
+        comment:
+          type: string
+          maxLength: 500
+          example: Excelente sesión, muy claro y resolvió todas mis dudas.
+      required:
+        - mentorId
+        - bookingId
+        - rating
+    StudentReviewRequest:
+      type: object
+      properties:
+        studentId:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        bookingId:
+          type: string
+          format: uuid
+          example: 789e0123-e45b-67d8-a901-234567890123
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          example: 5
+        comment:
+          type: string
+          maxLength: 500
+          example: Estudiante muy preparado y con preguntas pertinentes.
+      required:
+        - studentId
+        - bookingId
+        - rating
+    ReviewResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: abcdef12-3456-7890-abcd-ef1234567890
+        reviewer_id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        reviewer_name:
+          type: string
+          example: Laura G.
+        rating:
+          type: integer
+          example: 5
+        comment:
+          type: string
+          example: Excelente sesión, muy claro y resolvió todas mis dudas.
+        created_at:
+          type: string
+          format: date-time
+          example: '2023-11-01T16:00:00Z'
+    PaymentProcessRequest:
+      type: object
+      properties:
+        bookingId:
+          type: string
+          format: uuid
+          example: 789e0123-e45b-67d8-a901-234567890123
+        payment_method_token:
+          type: string
+          description: Token de la tarjeta de crédito/débito generado por la pasarela de pago (ej. Stripe Token)
+          example: tok_visa
+      required:
+        - bookingId
+        - payment_method_token
+    TransactionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: fedcba98-7654-3210-fedc-ba9876543210
+        userId:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        bookingId:
+          type: string
+          format: uuid
+          example: 789e0123-e45b-67d8-a901-234567890123
+        type:
+          type: string
+          enum: [ 'payment', 'payout' ]
+          example: payment
+        amount:
+          type: number
+          format: float
+          example: 50.00
+        commission_applied:
+          type: number
+          format: float
+          example: 10.00
+        net_amount:
+          type: number
+          format: float
+          example: 40.00
+        currency:
+          type: string
+          example: USD
+        status:
+          type: string
+          example: completed
+        transaction_date:
+          type: string
+          format: date-time
+          example: '2023-11-01T15:30:00Z'
