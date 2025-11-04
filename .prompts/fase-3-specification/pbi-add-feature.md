@@ -1,0 +1,949 @@
+Actúa como Product Owner, Scrum Master y Solution Architect experto.
+
+**Input:**
+
+- Descripción de la nueva feature/idea: [especificar en detalle]
+- Epic tree existente: [usar .context/PBI/epic-tree.md]
+- PRD (opcional): [usar .context/PRD/mvp-scope.md si necesitas contexto adicional]
+- SRS (opcional): [usar .context/SRS/functional-specs.md si necesitas contexto técnico]
+- Código del proyecto en Jira: [especificar, ej: MYM]
+
+---
+
+## 🎯 OBJETIVO
+
+Analizar una nueva idea/feature y determinar cómo agregarla eficientemente al backlog existente, siguiendo el flujo **Jira-First → Local**.
+
+---
+
+## 📊 FASE 1: ANÁLISIS DE COMPLEJIDAD
+
+**Acción:** Analiza la idea proporcionada y clasifícala en uno de estos 3 niveles.
+
+### Criterios de Clasificación
+
+#### **NIVEL 1: Story Individual**
+
+✅ Ejecutar directamente
+
+**Características:**
+
+- Es una mejora/extensión de funcionalidad existente
+- Encaja claramente en una épica ya existente
+- Puede completarse en 1-8 story points
+- No requiere cambios arquitectónicos significativos
+- 1 user story es suficiente
+
+**Ejemplos:**
+
+- "Agregar filtro por precio en la búsqueda de mentores" (→ Epic: Mentor Discovery)
+- "Permitir cancelar sesión con más de 48h de anticipación" (→ Epic: Session Management)
+- "Agregar notificación email cuando mentor acepta sesión" (→ Epic: Scheduling)
+
+**Acción:** → Ir a **FASE 2A**
+
+---
+
+#### **NIVEL 2: Épica Completa**
+
+✅ Ejecutar directamente
+
+**Características:**
+
+- Es una feature nueva que NO encaja en épicas existentes
+- Requiere múltiples user stories (3-8 stories)
+- Tiene scope bien definido y acotado
+- No depende críticamente de otras épicas nuevas
+- Puede implementarse de forma independiente
+
+**Ejemplos:**
+
+- "Sistema de mensajería entre mentor y mentee"
+- "Dashboard de analytics para mentores"
+- "Sistema de certificados al completar sesiones"
+
+**Acción:** → Ir a **FASE 2B**
+
+---
+
+#### **NIVEL 3: Múltiples Épicas**
+
+⚠️ **ADVERTENCIA - REQUIERE PLAN PREVIO**
+
+**Características:**
+
+- La idea requiere 2+ épicas para implementarse
+- Tiene dependencias complejas entre componentes
+- Requiere cambios arquitectónicos significativos
+- Scope muy amplio (20+ stories estimadas)
+- Alta complejidad técnica o de negocio
+
+**Ejemplos:**
+
+- "Sistema completo de suscripciones mensuales con planes"
+- "Marketplace de cursos pregrabados con creador de contenido"
+- "Sistema de gamificación con badges, rankings y rewards"
+
+**Acción:** → Ir a **FASE 2C (STOP + Plan Requerido)**
+
+---
+
+## 🚨 VALIDACIÓN CRÍTICA
+
+Antes de clasificar, pregúntate:
+
+1. ¿Cuántas user stories necesito? (1 = Nivel 1, 3-8 = Nivel 2, 8+ = revisar si Nivel 3)
+2. ¿Encaja en una épica existente? (Sí = probablemente Nivel 1, No = Nivel 2+)
+3. ¿Requiere cambios en múltiples módulos del sistema? (Sí = probablemente Nivel 2-3)
+4. ¿Puedo dividirlo en 2+ épicas independientes? (Sí = Nivel 3)
+5. ¿Es técnicamente simple o complejo? (Simple = Nivel 1-2, Complejo = Nivel 2-3)
+
+**OUTPUT FASE 1:**
+
+```markdown
+## Análisis de Complejidad
+
+**Feature:** [nombre de la feature]
+**Clasificación:** NIVEL [1/2/3]
+
+**Justificación:**
+[Explicar por qué pertenece a este nivel]
+
+**Estimación preliminar:**
+- User Stories: [número estimado]
+- Story Points totales: [estimación]
+- Épicas necesarias: [número] - [nombres si aplica]
+
+**Épica existente (si aplica):** [EPIC-XXX-nombre] o "N/A - requiere nueva épica"
+
+**Dependencias identificadas:**
+[Listar dependencias con otras épicas o sistemas]
+```
+
+---
+
+## 📝 FASE 2A: CREAR STORY INDIVIDUAL (Nivel 1)
+
+**Prerequisito:** Feature clasificada como Nivel 1.
+
+### Paso 1: Identificar Épica Padre
+
+**Acción:** Determina a qué épica existente pertenece esta story.
+
+**Referencia:** Revisa `.context/PBI/epic-tree.md` para listar épicas existentes.
+
+**Output:**
+
+```markdown
+**Épica seleccionada:** EPIC-{PROYECTO}-{NUM}-{nombre}
+**Razón:** [Por qué esta story pertenece a esta épica]
+```
+
+---
+
+### Paso 2: Crear Story en Jira (MCP)
+
+**Acción:** Crea la user story en Jira usando las herramientas MCP disponibles.
+
+**Datos necesarios:**
+
+- **Proyecto:** Código del proyecto en Jira
+- **Tipo de issue:** Story
+- **Título (Summary):** As a [user], I want to [action] so that [benefit]
+- **Descripción:** Descripción detallada + acceptance criteria en Gherkin
+- **Epic Link:** Jira Key de la épica padre (ej: MYM-13)
+- **Prioridad:** High | Medium | Low
+- **Story Points:** 1, 2, 3, 5, 8, o 13
+- **Labels:** feature-extension, post-mvp (ajustar según corresponda)
+
+**Instrucciones:**
+
+1. Usa las herramientas MCP para crear un issue de tipo "Story"
+2. Vincula a la épica padre usando epic link
+3. **IMPORTANTE:** Captura el ID/Key asignado (ej: MYM-45)
+
+---
+
+### Paso 3: Crear Carpeta Local de Story
+
+**Acción:** Crea carpeta local usando el ID real obtenido.
+
+**Nomenclatura:** `STORY-{PROYECTO}-{NUMERO}-{nombre-descriptivo}/`
+
+**Ubicación:** `.context/PBI/epics/EPIC-{...}/stories/`
+
+**Ejemplo:**
+
+```
+.context/PBI/epics/EPIC-MYM-13-mentor-discovery-search/stories/STORY-MYM-45-filter-by-price/
+```
+
+---
+
+### Paso 4: Crear Archivo story.md
+
+**Estructura del archivo:**
+
+```markdown
+# [Story Title]
+
+**Jira Key:** [KEY real de Jira, ej: MYM-45]
+**Epic:** [EPIC-PROYECTO-NUM] ([Epic Title])
+**Priority:** [High | Medium | Low]
+**Story Points:** [1, 2, 3, 5, 8, 13]
+**Status:** To Do
+**Assignee:** null
+**Type:** Feature Extension (Post-MVP)
+
+---
+
+## User Story
+
+**As a** [tipo de usuario]
+**I want to** [acción/funcionalidad]
+**So that** [beneficio/valor]
+
+---
+
+## Description
+
+[Descripción detallada de la user story - 2-3 párrafos]
+[Contexto: por qué se agrega esta feature ahora]
+[Problema que resuelve, valor que aporta]
+
+---
+
+## Acceptance Criteria (Gherkin format)
+
+### Scenario 1: [Happy path scenario name]
+- **Given:** [Contexto inicial / precondiciones]
+- **When:** [Acción del usuario]
+- **Then:** [Resultado esperado]
+
+### Scenario 2: [Error/edge case scenario name]
+- **Given:** [Contexto inicial]
+- **When:** [Acción del usuario]
+- **Then:** [Resultado esperado / manejo del error]
+
+### Scenario 3: [Additional scenario if needed]
+- **Given:** [Contexto inicial]
+- **When:** [Acción del usuario]
+- **Then:** [Resultado esperado]
+
+**Mínimo:** 3 scenarios (1 happy path + 2 edge/error cases)
+
+---
+
+## Technical Notes
+
+### Frontend
+[Componentes a crear/modificar]
+
+### Backend
+[APIs a crear/modificar, lógica de negocio]
+
+### Database
+[Tablas/campos a agregar]
+**IMPORTANTE:** NO hardcodear SQL. Usar Supabase MCP.
+
+### Impact Analysis
+[Qué partes del sistema se ven afectadas]
+
+---
+
+## Dependencies
+
+### Blocked By
+[Otras stories que deben completarse primero]
+
+### Blocks
+[Qué stories dependen de esta]
+
+### Related Stories
+[Stories relacionadas]
+
+---
+
+## UI/UX Considerations
+
+[Cambios en UI, nuevos componentes, flujos de navegación]
+
+---
+
+## Definition of Done
+
+- [ ] Código implementado y funcionando
+- [ ] Tests unitarios (coverage > 80%)
+- [ ] Tests de integración (API + DB)
+- [ ] Tests E2E (Playwright)
+- [ ] Code review aprobado (2 reviewers)
+- [ ] Documentación actualizada
+- [ ] Deployed to staging
+- [ ] QA testing passed
+- [ ] Acceptance criteria validated
+- [ ] No critical/high bugs open
+
+---
+
+## Related Documentation
+
+- **Epic:** `.context/PBI/epics/EPIC-[PROYECTO]-[NUM]/epic.md`
+- **PRD:** `.context/PRD/[relevant-section].md`
+- **SRS:** `.context/SRS/functional-specs.md`
+```
+
+**Output esperado:** `.context/PBI/epics/EPIC-[...]/stories/STORY-[...]/story.md`
+
+---
+
+### Paso 5: Actualizar epic.md
+
+**Acción:** Agrega la nueva story a la lista de user stories en `epic.md` de la épica padre.
+
+**Buscar sección "User Stories" y agregar:**
+
+```markdown
+## User Stories
+
+[... stories existentes ...]
+X. **MYM-45** - As a Mentee, I want to filter mentors by price range
+```
+
+---
+
+### Paso 6: Actualizar epic-tree.md
+
+**Acción:** Agrega la nueva story al árbol visual del backlog.
+
+**Ejemplo:**
+
+```markdown
+EPIC-MYM-13: Mentor Discovery & Search
+├── STORY-MYM-14: View all mentors
+├── STORY-MYM-15: Search by keyword
+├── STORY-MYM-16: Filter by skills
+├── STORY-MYM-17: View mentor profile
+└── STORY-MYM-45: Filter by price range ⭐ NEW
+```
+
+---
+
+## ✅ FASE 2A COMPLETADA
+
+**Resultado:**
+
+- ✅ Story creada en Jira con ID real
+- ✅ Carpeta local creada con nomenclatura correcta
+- ✅ Archivo story.md completo
+- ✅ Epic.md actualizado
+- ✅ Epic-tree.md actualizado
+
+---
+
+## 📝 FASE 2B: CREAR ÉPICA COMPLETA (Nivel 2)
+
+**Prerequisito:** Feature clasificada como Nivel 2.
+
+### Paso 1: Definir Épica y Stories
+
+**Acción:** Define la nueva épica y descompón en user stories.
+
+**Output:**
+
+```markdown
+## Nueva Épica
+
+**Título:** [Nombre de la épica]
+**Descripción:** [2-3 párrafos explicando la épica]
+**Prioridad:** High | Medium | Low
+**Valor de Negocio:** [Por qué es importante]
+
+## User Stories Identificadas
+
+1. As a [user], I want to [action], so that [benefit] - [X pts]
+2. As a [user], I want to [action], so that [benefit] - [X pts]
+3. As a [user], I want to [action], so that [benefit] - [X pts]
+...
+
+**Total estimado:** [suma de story points]
+**Número de stories:** [número]
+```
+
+---
+
+### Paso 2: Crear Épica en Jira (MCP)
+
+**Acción:** Crea la épica en Jira usando las herramientas MCP.
+
+**Datos necesarios:**
+
+- **Proyecto:** Código del proyecto en Jira
+- **Tipo de issue:** Epic
+- **Título (Summary):** [Nombre de la épica]
+- **Descripción:** [Descripción detallada 2-3 párrafos]
+- **Prioridad:** High | Medium | Low
+- **Labels:** post-mvp, new-feature
+
+**Instrucciones:**
+
+1. Usa las herramientas MCP para crear un issue de tipo "Epic"
+2. **IMPORTANTE:** Captura el ID/Key asignado (ej: MYM-50)
+
+---
+
+### Paso 3: Crear Carpeta Local de Épica
+
+**Nomenclatura:** `EPIC-{PROYECTO}-{NUMERO}-{nombre-descriptivo}/`
+
+**Ejemplo:**
+
+```
+.context/PBI/epics/EPIC-MYM-50-messaging-system/
+```
+
+---
+
+### Paso 4: Crear Archivo epic.md
+
+**Estructura completa (igual que prompt `pbi-product-backlog.md` paso 2.3)**
+
+Incluye todas las secciones:
+
+- Epic Description
+- User Stories (con IDs TBD por ahora)
+- Scope (In/Out of Scope)
+- Acceptance Criteria (Epic Level)
+- Related Functional Requirements
+- Technical Considerations
+- Dependencies
+- Success Metrics
+- Risks & Mitigations
+- Testing Strategy (referencia a archivos futuros)
+- Implementation Plan (referencia a archivos futuros)
+- Notes
+- Related Documentation
+
+**IMPORTANTE:** Marca claramente que es una feature post-MVP.
+
+---
+
+### Paso 5: Crear Stories en Jira (MCP)
+
+**Acción:** Por cada user story definida en Paso 1, créala en Jira.
+
+**Datos necesarios por story:**
+
+- **Proyecto:** Código del proyecto
+- **Tipo de issue:** Story
+- **Título (Summary):** As a [user], I want to [action] so that [benefit]
+- **Descripción:** Descripción detallada + acceptance criteria Gherkin
+- **Epic Link:** Jira Key de la nueva épica (ej: MYM-50)
+- **Prioridad:** High | Medium | Low
+- **Story Points:** 1, 2, 3, 5, 8, o 13
+- **Labels:** post-mvp, new-feature
+
+**Instrucciones:**
+
+1. Crea cada story vinculada a la épica
+2. **IMPORTANTE:** Captura todos los IDs asignados (ej: MYM-51, MYM-52, MYM-53...)
+
+---
+
+### Paso 6: Crear Carpetas Locales de Stories
+
+**Acción:** Por cada story creada, crea su carpeta local.
+
+**Nomenclatura:** `STORY-{PROYECTO}-{NUMERO}-{nombre-descriptivo}/`
+
+**Ubicación:** `.context/PBI/epics/EPIC-MYM-50-messaging-system/stories/`
+
+**Ejemplo:**
+
+```
+.context/PBI/epics/EPIC-MYM-50-messaging-system/stories/
+├── STORY-MYM-51-send-message/
+├── STORY-MYM-52-receive-notification/
+└── STORY-MYM-53-view-message-history/
+```
+
+---
+
+### Paso 7: Crear Archivos story.md
+
+**Acción:** Crea `story.md` para cada story (estructura igual que Fase 2A, Paso 4).
+
+**IMPORTANTE:** Marca que son stories de feature post-MVP.
+
+---
+
+### Paso 8: Actualizar epic.md con IDs Reales
+
+**Acción:** Actualiza la sección "User Stories" de `epic.md` con los IDs reales obtenidos.
+
+**Ejemplo:**
+
+```markdown
+## User Stories
+
+1. **MYM-51** - As a user, I want to send a message to my mentor/mentee
+2. **MYM-52** - As a user, I want to receive notifications of new messages
+3. **MYM-53** - As a user, I want to view my message history
+```
+
+---
+
+### Paso 9: Actualizar epic-tree.md
+
+**Acción:** Agrega la nueva épica al árbol visual del backlog.
+
+**Ejemplo:**
+
+```markdown
+[... épicas MVP existentes ...]
+
+---
+
+## Post-MVP Features
+
+### ⭐ EPIC-MYM-50: Messaging System
+**Jira Key:** MYM-50
+**Status:** BACKLOG
+**Priority:** MEDIUM (Post-MVP)
+**Description:** Real-time messaging between mentors and mentees.
+
+**User Stories (3):**
+1. **MYM-51** - Send message to mentor/mentee
+2. **MYM-52** - Receive notifications of new messages
+3. **MYM-53** - View message history
+
+**Related Functional Requirements:** N/A (new feature)
+```
+
+---
+
+## ✅ FASE 2B COMPLETADA
+
+**Resultado:**
+
+- ✅ Épica completa creada en Jira con ID real
+- ✅ Carpeta de épica local creada
+- ✅ Archivo epic.md completo
+- ✅ Todas las stories creadas en Jira con IDs reales
+- ✅ Carpetas locales de stories creadas
+- ✅ Archivos story.md completos
+- ✅ Epic.md actualizado con IDs reales
+- ✅ Epic-tree.md actualizado
+
+---
+
+## 🚨 FASE 2C: MÚLTIPLES ÉPICAS - ADVERTENCIA Y PLAN (Nivel 3)
+
+**Prerequisito:** Feature clasificada como Nivel 3.
+
+### ⚠️ ADVERTENCIA CRÍTICA
+
+**La idea proporcionada es DEMASIADO COMPLEJA para ser creada directamente.**
+
+Esta feature requiere **múltiples épicas** con dependencias y scope extenso. Crear todas las épicas de una vez resultaría en:
+
+❌ Sobrecarga de tokens
+❌ Contexto desorganizado
+❌ Dependencias mal gestionadas
+❌ Riesgo de inconsistencias
+❌ Difícil de planificar correctamente
+
+---
+
+### 📋 PLAN RECOMENDADO
+
+**Acción:** NO crees nada todavía. Primero genera un plan de división.
+
+**Output esperado:**
+
+```markdown
+# Plan de Implementación: [Nombre de la Feature]
+
+## 🚨 ADVERTENCIA
+Esta feature requiere **[número] épicas** para implementarse correctamente.
+
+**IMPORTANTE:** NO proceder con la creación hasta que este plan sea revisado y aprobado.
+
+---
+
+## Análisis de Complejidad
+
+**Scope total estimado:**
+- Épicas necesarias: [número]
+- User stories estimadas: [número total]
+- Story points totales: [estimación]
+- Duración estimada: [sprints]
+
+**¿Por qué múltiples épicas?**
+[Explicar razones: complejidad técnica, dominios separados, dependencias, etc.]
+
+---
+
+## División Recomendada en Épicas
+
+### ÉPICA 1: [Nombre]
+**Prioridad:** CRITICAL | HIGH | MEDIUM
+**Fase:** Foundation | Core | Enhancement
+**Descripción:** [1-2 párrafos]
+
+**User Stories estimadas:** [número]
+**Story Points:** [total]
+
+**Scope:**
+- Feature 1
+- Feature 2
+- ...
+
+**Dependencias:**
+- **Requiere:** [Épicas que deben completarse antes]
+- **Bloqueada por:** [Épicas externas]
+
+**Orden sugerido:** #1 (implementar primero)
+
+---
+
+### ÉPICA 2: [Nombre]
+**Prioridad:** CRITICAL | HIGH | MEDIUM
+**Fase:** Foundation | Core | Enhancement
+**Descripción:** [1-2 párrafos]
+
+**User Stories estimadas:** [número]
+**Story Points:** [total]
+
+**Scope:**
+- Feature 1
+- Feature 2
+- ...
+
+**Dependencias:**
+- **Requiere:** ÉPICA 1 completada
+- **Bloqueada por:** [Si aplica]
+
+**Orden sugerido:** #2 (implementar después de ÉPICA 1)
+
+---
+
+[... repetir para todas las épicas necesarias ...]
+
+---
+
+## Orden de Implementación Recomendado
+
+### Fase 1: Foundation (Sprint 1-X)
+1. **ÉPICA [NUM]** - [Nombre] (base fundamental)
+   - **¿Por qué primero?** [Razón]
+
+### Fase 2: Core Features (Sprint X-Y)
+2. **ÉPICA [NUM]** - [Nombre] (funcionalidad principal)
+   - **Depende de:** ÉPICA [NUM]
+   - **¿Por qué ahora?** [Razón]
+
+3. **ÉPICA [NUM]** - [Nombre]
+   - **Depende de:** ÉPICA [NUM]
+   - **¿Por qué ahora?** [Razón]
+
+### Fase 3: Enhancements (Sprint Y-Z)
+4. **ÉPICA [NUM]** - [Nombre] (mejoras y optimizaciones)
+   - **Depende de:** ÉPICA [NUM], ÉPICA [NUM]
+   - **¿Por qué al final?** [Razón]
+
+---
+
+## Riesgos Identificados
+
+| Riesgo     | Impacto         | Probabilidad    | Mitigación           |
+| ---------- | --------------- | --------------- | -------------------- |
+| [Riesgo 1] | High/Medium/Low | High/Medium/Low | [Plan de mitigación] |
+| [Riesgo 2] | High/Medium/Low | High/Medium/Low | [Plan de mitigación] |
+
+---
+
+## Cambios Arquitectónicos Necesarios
+
+[Listar cambios significativos en la arquitectura del sistema que esta feature requiere]
+
+**Ejemplos:**
+- Nueva tabla de base de datos: [nombre y propósito]
+- Nuevo servicio backend: [nombre y propósito]
+- Integración con API externa: [cuál y por qué]
+- Cambios en frontend: [componentes principales]
+
+---
+
+## Decisiones Técnicas Pendientes
+
+Antes de comenzar la implementación, se deben tomar estas decisiones:
+
+1. **[Decisión 1]**
+   - **Opciones:** [Opción A, Opción B]
+   - **Recomendación:** [Opción X porque ...]
+
+2. **[Decisión 2]**
+   - **Opciones:** [Opción A, Opción B]
+   - **Recomendación:** [Opción X porque ...]
+
+---
+
+## Próximos Pasos
+
+**NO proceder con la creación de épicas/stories todavía.**
+
+### Paso 1: Revisar este Plan
+- [ ] Revisar división de épicas propuesta
+- [ ] Validar orden de implementación
+- [ ] Confirmar estimaciones de esfuerzo
+- [ ] Aprobar cambios arquitectónicos
+
+### Paso 2: Dividir la Idea
+Una vez aprobado el plan, dividir la idea original en épicas individuales.
+
+### Paso 3: Ejecutar Incremental
+Usar el prompt `pbi-add-feature.md` de nuevo, pero ahora con **UNA épica a la vez**:
+
+**Ejemplo:**
+```
+
+Input para primera ejecución:
+"Implementar ÉPICA 1 del plan: [Nombre de la épica]
+[Pegar descripción y scope de ÉPICA 1 del plan]"
+
+→ Esto será clasificado como NIVEL 2 → Crear épica completa
+
+```
+
+Repetir para cada épica según el orden recomendado.
+
+---
+
+## Estimación de Esfuerzo Total
+
+**Total del proyecto:**
+- Sprints: [número]
+- Developers: [número recomendado]
+- QA: [número recomendado]
+- Duración: [semanas/meses]
+
+**Costo estimado:** [Si aplica]
+
+---
+
+## Notas Adicionales
+
+[Cualquier información relevante adicional sobre la feature, consideraciones de negocio, impacto en usuarios, etc.]
+```
+
+---
+
+## ✅ FASE 2C COMPLETADA
+
+**Resultado:**
+
+- ✅ Plan detallado de división generado
+- ✅ Advertencia clara al usuario
+- ⚠️ NINGUNA épica/story creada (esperando aprobación)
+- ✅ Roadmap claro de próximos pasos
+- ✅ Usuario sabe que debe dividir la idea y ejecutar incrementalmente
+
+---
+
+## 📋 NOMENCLATURA Y ESTÁNDARES
+
+### Nomenclatura de Carpetas
+
+**Épicas:**
+
+```
+EPIC-{PROYECTO}-{NUMERO}-{nombre-descriptivo}/
+```
+
+**Stories:**
+
+```
+STORY-{PROYECTO}-{NUMERO}-{nombre-descriptivo}/
+```
+
+**Reglas:**
+
+- Usar kebab-case en nombres
+- IDs sin ceros a la izquierda (MYM-2, no MYM-002)
+- Nombres descriptivos pero concisos (2-4 palabras)
+- NO usar snake_case, CamelCase, o espacios
+- SIEMPRE usar IDs reales de Jira (flujo Jira-First)
+
+---
+
+## 🎯 RESUMEN DE FLUJOS
+
+### Story Individual (Nivel 1)
+
+```
+1. Analizar → Clasificar como Nivel 1
+2. Identificar épica padre existente
+3. Crear story en Jira → Obtener ID
+4. Crear carpeta local STORY-XXX/
+5. Crear story.md
+6. Actualizar epic.md de épica padre
+7. Actualizar epic-tree.md
+✅ Completado
+```
+
+### Épica Completa (Nivel 2)
+
+```
+1. Analizar → Clasificar como Nivel 2
+2. Definir épica y descomponer en stories
+3. Crear épica en Jira → Obtener ID
+4. Crear carpeta local EPIC-XXX/
+5. Crear epic.md
+6. Crear todas las stories en Jira → Obtener IDs
+7. Crear carpetas locales STORY-XXX/
+8. Crear archivos story.md
+9. Actualizar epic.md con IDs reales
+10. Actualizar epic-tree.md
+✅ Completado
+```
+
+### Múltiples Épicas (Nivel 3)
+
+```
+1. Analizar → Clasificar como Nivel 3
+2. ⚠️ ADVERTENCIA: Demasiado complejo
+3. Generar plan de división detallado
+4. STOP - No crear nada
+5. Usuario revisa plan
+6. Usuario divide la idea
+7. Usuario ejecuta este prompt de nuevo por cada épica (→ Nivel 2)
+✅ Plan generado - Esperando división
+```
+
+---
+
+## 🚨 VALIDACIONES IMPORTANTES
+
+### Antes de Crear en Jira
+
+- ✅ ¿El nombre de la story/épica es descriptivo y claro?
+- ✅ ¿Los acceptance criteria están en formato Gherkin?
+- ✅ ¿Los story points están en escala Fibonacci?
+- ✅ ¿La épica padre (si aplica) existe realmente?
+
+### Después de Crear en Jira
+
+- ✅ ¿Capturaste el ID/Key real asignado?
+- ✅ ¿Verificaste que el epic link se creó correctamente?
+- ✅ ¿El issue tiene todos los campos obligatorios completos?
+
+### Al Crear Archivos Locales
+
+- ✅ ¿La nomenclatura de carpeta usa el ID real de Jira?
+- ✅ ¿El formato es EPIC-{PROYECTO}-{NUM}-{nombre}?
+- ✅ ¿Usaste kebab-case en el nombre descriptivo?
+- ✅ ¿Los archivos .md tienen toda la información requerida?
+
+---
+
+## 📚 ARCHIVOS GENERADOS
+
+Dependiendo del nivel, se generan:
+
+### Nivel 1 (Story Individual)
+
+```
+.context/PBI/epics/EPIC-{PROYECTO}-{NUM}-{nombre}/stories/
+└── STORY-{PROYECTO}-{NUM}-{nombre}/
+    └── story.md
+```
+
+**Archivos actualizados:**
+
+- `epic.md` de la épica padre
+- `epic-tree.md`
+
+---
+
+### Nivel 2 (Épica Completa)
+
+```
+.context/PBI/epics/
+└── EPIC-{PROYECTO}-{NUM}-{nombre}/
+    ├── epic.md
+    └── stories/
+        ├── STORY-{PROYECTO}-{NUM}-{nombre}/
+        │   └── story.md
+        ├── STORY-{PROYECTO}-{NUM}-{nombre}/
+        │   └── story.md
+        └── ...
+```
+
+**Archivos actualizados:**
+
+- `epic-tree.md`
+
+---
+
+### Nivel 3 (Plan de División)
+
+```
+[NO se crean archivos - solo se genera el plan en la respuesta]
+```
+
+**Próximos archivos (después de división):**
+
+- Se crearán múltiples épicas usando Nivel 2
+
+---
+
+## ⚙️ PREREQUISITOS
+
+**Obligatorios:**
+
+- Proyecto en Jira existente y configurado
+- MCP de Atlassian funcional y conectado
+- `.context/PBI/epic-tree.md` actualizado (para revisar épicas existentes)
+
+**Opcionales pero recomendados:**
+
+- `.context/PRD/mvp-scope.md` - Para contexto de producto
+- `.context/SRS/functional-specs.md` - Para contexto técnico
+- `.context/SRS/architecture-specs.md` - Para validar cambios arquitectónicos
+
+---
+
+## 💡 TIPS DE USO
+
+### Para Story Individual (Nivel 1)
+
+- Sé específico en la descripción de la mejora
+- Menciona explícitamente la épica existente si ya la identificaste
+- Proporciona contexto de por qué se necesita ahora
+
+### Para Épica Completa (Nivel 2)
+
+- Describe el valor de negocio claramente
+- Explica qué problema resuelve la feature
+- Proporciona ejemplos de casos de uso si es posible
+
+### Para Ideas Complejas (potencial Nivel 3)
+
+- Si sospechas que es compleja, menciona tus dudas
+- Proporciona toda la información disponible
+- Confía en el análisis del prompt para clasificar correctamente
+
+### En General
+
+- NO intentes forzar una clasificación específica
+- Deja que el análisis determine el nivel objetivamente
+- Si el prompt dice "Nivel 3", NO insistas en crear todo de una vez
+- Trabaja incrementalmente siempre que sea posible
+
+---
+
+**Formato:** Archivos Markdown + Issues en Jira listos para implementación
+
+**Versión:** 1.0 - Feature Analyzer & Builder (Jira-First)
+**Última actualización:** 2025-11-04
+**Complementa a:** `pbi-product-backlog.md` (para setup inicial MVP)

@@ -29,25 +29,25 @@ aicode-starter/
 │   │   ├── architecture-specs.md          Para: C4 diagrams, ERD, tech stack
 │   │   └── api-contracts.yaml             Para: OpenAPI 3.0 spec de todos los endpoints
 │   │
-│   ├── 📁 PBI/                            Para: FASES 2-4 - Product Backlog (tareas concretas)
+│   ├── 📁 PBI/                            Para: FASES 3-5 - Product Backlog (tareas concretas)
 │   │   ├── README.md                      Para: Explicar estructura de PBI
 │   │   ├── epic-tree.md                   Para: Vista high-level de todas las épicas
 │   │   │
 │   │   └── 📁 epics/                      Para: Contener todas las épicas del proyecto
 │   │       │
-│   │       └── 📁 EPIC-XXX-nombre/        Para: Una épica específica (ej: user-auth)
+│   │       └── 📁 EPIC-{PROYECTO}-{NUM}-{nombre}/  Para: Una épica (ej: EPIC-MYM-13-mentor-discovery)
 │   │           │
-│   │           ├── epic.md                Para: FASE 2 - Descripción, scope, criteria
-│   │           ├── feature-test-plan.md   Para: FASE 3 - Plan de pruebas a nivel feature
-│   │           ├── feature-implementation-plan.md  Para: FASE 4 - Decisiones técnicas de la épica
+│   │           ├── epic.md                Para: FASE 3 - Descripción, scope, criteria
+│   │           ├── feature-test-plan.md   Para: FASE 4 - Plan de pruebas a nivel feature
+│   │           ├── feature-implementation-plan.md  Para: FASE 5 - Decisiones técnicas de la épica
 │   │           │
 │   │           └── 📁 stories/            Para: Contener todas las stories de esta épica
 │   │               │
-│   │               └── 📁 STORY-XXX-nombre/  Para: Una user story específica
+│   │               └── 📁 STORY-{PROYECTO}-{NUM}-{nombre}/  Para: Una story (ej: STORY-MYM-14-view-mentors)
 │   │                   │
-│   │                   ├── story.md       Para: FASE 2 - User story + acceptance criteria
-│   │                   ├── test-cases.md  Para: FASE 3 - 6+ test cases detallados
-│   │                   ├── implementation-plan.md  Para: FASE 4 - Plan técnico step-by-step
+│   │                   ├── story.md       Para: FASE 3 - User story + acceptance criteria
+│   │                   ├── test-cases.md  Para: FASE 4 - 6+ test cases detallados
+│   │                   ├── implementation-plan.md  Para: FASE 5 - Plan técnico step-by-step
 │   │                   │
 │   │                   └── [opcionales]   Para: Archivos auxiliares si la story es compleja
 │   │                       ├── components.md       Para: Detalles de componentes React
@@ -101,7 +101,8 @@ aicode-starter/
 │   │   └── srs-api-contracts.md           Para: Prompt de OpenAPI spec
 │   │
 │   ├── 📁 fase-3-specification/           Para: Generar product backlog (PBI)
-│   │   └── pbi-product-backlog.md         Para: Prompt de epic-tree + stories
+│   │   ├── pbi-product-backlog.md         Para: Setup MVP - epic-tree + épicas/stories (Jira-First)
+│   │   └── pbi-add-feature.md             Para: Post-MVP - Analiza + crea features (3 niveles)
 │   │
 │   ├── 📁 fase-4-shift-left-testing/      Para: Generar docs de testing
 │   │   ├── feature-test-plan.md           Para: Prompt de plan de pruebas (épica)
@@ -139,6 +140,7 @@ aicode-starter/
 ### **FASES SINCRÓNICAS** (Setup inicial - una sola vez)
 
 #### 1️⃣ FASE 1: Constitution (Founder/Cliente)
+
 ```
 Input: Idea de negocio
 Usar: .prompts/fase-1-constitution/
@@ -147,6 +149,7 @@ Quién: Founder, Cliente, Product Owner
 ```
 
 #### 2️⃣ FASE 2: Architecture (Architect/PM/BA)
+
 ```
 Input: .context/idea/
 Usar: .prompts/fase-2-architecture/
@@ -160,18 +163,31 @@ Quién: Solution Architect, Product Manager, Business Analyst
 
 ### **FASES ASINCRÓNICAS** (Iterativas - por sprint/épica)
 
-#### 3️⃣ FASE 3: Specification (PO/PM)
+#### 3️⃣ FASE 3: Specification (PO/PM) ⚡ **FLUJO JIRA-FIRST**
+
 ```
-Input: .context/PRD/ + .context/SRS/
-Usar: .prompts/fase-3-specification/
+Input (MVP): .context/PRD/ + .context/SRS/
+Input (Post-MVP): Descripción de feature/idea
+Usar:
+  - .prompts/fase-3-specification/pbi-product-backlog.md (setup MVP)
+  - .prompts/fase-3-specification/pbi-add-feature.md (agregar features)
+
+Flujo Jira-First:
+  1. Crea épica/story en Jira (MCP) → Obtiene ID real
+  2. Crea carpeta local con ID real (ej: EPIC-MYM-13-nombre/)
+  3. Crea archivos .md locales
+
 Output:
   - .context/PBI/epic-tree.md
-  - .context/PBI/epics/EPIC-XXX/epic.md
-  - .context/PBI/epics/EPIC-XXX/stories/STORY-XXX/story.md
+  - .context/PBI/epics/EPIC-{PROYECTO}-{NUM}-{nombre}/epic.md
+  - .context/PBI/epics/.../stories/STORY-{PROYECTO}-{NUM}-{nombre}/story.md
+
+Beneficio: Nomenclatura correcta desde el inicio (IDs reales de Jira)
 Quién: Product Owner, Product Manager
 ```
 
 #### 4️⃣ FASE 4: Shift-Left Testing (QA)
+
 ```
 Input: .context/PBI/ (épicas y stories específicas)
 Usar: .prompts/fase-4-shift-left-testing/
@@ -182,6 +198,7 @@ Quién: QA Engineer, Test Lead
 ```
 
 #### 5️⃣ FASE 5: Planning (Dev)
+
 ```
 Input: .context/PBI/ + .context/SRS/
 Usar: .prompts/fase-5-planning/
@@ -192,6 +209,7 @@ Quién: Tech Lead, Senior Developer
 ```
 
 #### 6️⃣ FASE 6: Implementation (Dev + IA)
+
 ```
 Input: .context/PBI/epics/EPIC-XXX/stories/STORY-XXX/implementation-plan.md
 Leer: .context/guidelines/ (TODOS los archivos)
@@ -201,6 +219,7 @@ Nota: NO hay prompts para esta fase (usa guidelines como referencia)
 ```
 
 #### 7️⃣ FASE 7: Code Review (Dev)
+
 ```
 Input: Pull Request con código implementado
 Leer: .context/guidelines/code-standards.md
@@ -210,6 +229,7 @@ Nota: NO hay prompts para esta fase (usa guidelines como referencia)
 ```
 
 #### 8️⃣ FASE 8: Test Automation (QA)
+
 ```
 Input: .context/PRD/ + .context/SRS/ + .context/PBI/
 Usar: .prompts/fase-8-test-automation/
@@ -225,39 +245,45 @@ Quién: QA Automation Engineer, SDET
 
 ### 📝 Documentación vs Prompts
 
-| Tipo | Ubicación | Propósito |
-|------|-----------|-----------|
-| **Documentación** | `.context/` | Información que la IA lee para trabajar |
-| **Prompts** | `.prompts/` | Plantillas para GENERAR documentación en `.context/` |
-| **Blueprints** | `docs/` | Documentación maestra del sistema completo |
+| Tipo              | Ubicación   | Propósito                                            |
+| ----------------- | ----------- | ---------------------------------------------------- |
+| **Documentación** | `.context/` | Información que la IA lee para trabajar              |
+| **Prompts**       | `.prompts/` | Plantillas para GENERAR documentación en `.context/` |
+| **Blueprints**    | `docs/`     | Documentación maestra del sistema completo           |
 
 ### 🎭 Roles por Fase
 
-| Fase | Nombre | Rol | Input | Output |
-|------|--------|-----|-------|--------|
-| **SINCRÓNICAS** | | | | |
-| 1 | Constitution | Founder/Cliente/PO | Idea de negocio | `.context/idea/` |
-| 2 | Architecture | Architect/PM/BA | `.context/idea/` | `.context/PRD/` + `.context/SRS/` |
-| **ASINCRÓNICAS** | | | | |
-| 3 | Specification | PO/PM | PRD + SRS | `.context/PBI/` (épicas + stories) |
-| 4 | Shift-Left Testing | QA Engineer | PBI | Test plans + test cases en PBI |
-| 5 | Planning | Tech Lead/Dev | SRS + PBI | Implementation plans en PBI |
-| 6 | Implementation | Dev + IA | Implementation plans + guidelines | Código (src/) |
-| 7 | Code Review | Tech Lead/Senior Dev | Pull Request | PR aprobado |
-| 8 | Test Automation | QA Automation/SDET | PRD + SRS + PBI | `.context/guidelines/tae/` + `/tests/` |
+| Fase             | Nombre             | Rol                  | Input                             | Output                                 |
+| ---------------- | ------------------ | -------------------- | --------------------------------- | -------------------------------------- |
+| **SINCRÓNICAS**  |                    |                      |                                   |                                        |
+| 1                | Constitution       | Founder/Cliente/PO   | Idea de negocio                   | `.context/idea/`                       |
+| 2                | Architecture       | Architect/PM/BA      | `.context/idea/`                  | `.context/PRD/` + `.context/SRS/`      |
+| **ASINCRÓNICAS** |                    |                      |                                   |                                        |
+| 3                | Specification      | PO/PM                | PRD + SRS                         | `.context/PBI/` (épicas + stories)     |
+| 4                | Shift-Left Testing | QA Engineer          | PBI                               | Test plans + test cases en PBI         |
+| 5                | Planning           | Tech Lead/Dev        | SRS + PBI                         | Implementation plans en PBI            |
+| 6                | Implementation     | Dev + IA             | Implementation plans + guidelines | Código (src/)                          |
+| 7                | Code Review        | Tech Lead/Senior Dev | Pull Request                      | PR aprobado                            |
+| 8                | Test Automation    | QA Automation/SDET   | PRD + SRS + PBI                   | `.context/guidelines/tae/` + `/tests/` |
 
 ### 🏗️ Arquitectura Unificada (PBI)
 
 **Beneficio clave**: Para trabajar en una story, la IA lee **UNA sola carpeta**.
 
 ```
-.context/PBI/epics/EPIC-001-user-auth/stories/STORY-005-login/
-├── story.md                    (Fase 2: Qué hacer)
-├── test-cases.md               (Fase 3: Cómo probar)
-└── implementation-plan.md      (Fase 4: Cómo implementar)
+.context/PBI/epics/EPIC-MYM-13-mentor-discovery/stories/STORY-MYM-14-view-mentors/
+├── story.md                    (Fase 3: Qué hacer)
+├── test-cases.md               (Fase 4: Cómo probar)
+└── implementation-plan.md      (Fase 5: Cómo implementar)
 ```
 
 ✅ **TODO en un lugar** → Sin duplicación → Context Engineering optimizado
+
+**Nomenclatura:** `EPIC-{PROYECTO}-{NUM}-{nombre}/` y `STORY-{PROYECTO}-{NUM}-{nombre}/`
+
+- IDs reales de Jira (obtenidos con flujo Jira-First)
+- Kebab-case en nombres descriptivos
+- Trazabilidad perfecta: carpeta local ↔ Jira issue (1:1)
 
 ---
 
@@ -265,26 +291,26 @@ Quién: QA Automation Engineer, SDET
 
 ### Archivos Totales Creados
 
-| Directorio | Archivos | Propósito |
-|------------|----------|-----------|
-| `.context/idea/` | 3-4 | Fase 1: Constitution |
-| `.context/PRD/` | 4 | Fase 2: Architecture (business) |
-| `.context/SRS/` | 4 | Fase 2: Architecture (technical) |
-| `.context/PBI/` | Variable | Fases 3-5 (depende de # épicas/stories) |
-| `.context/guidelines/` | 6 | Fases 6-7: Reference material |
-| `.context/guidelines/tae/` | 10 | Fase 8: Test Automation |
-| `.prompts/` | 18 | Generadores de documentación |
-| `docs/` | 9 | Blueprints + MCP configs |
-| **TOTAL BASE** | **~54-57 archivos** | Sistema completo |
+| Directorio                 | Archivos            | Propósito                               |
+| -------------------------- | ------------------- | --------------------------------------- |
+| `.context/idea/`           | 3-4                 | Fase 1: Constitution                    |
+| `.context/PRD/`            | 4                   | Fase 2: Architecture (business)         |
+| `.context/SRS/`            | 4                   | Fase 2: Architecture (technical)        |
+| `.context/PBI/`            | Variable            | Fases 3-5 (depende de # épicas/stories) |
+| `.context/guidelines/`     | 6                   | Fases 6-7: Reference material           |
+| `.context/guidelines/tae/` | 10                  | Fase 8: Test Automation                 |
+| `.prompts/`                | 19                  | Generadores de documentación            |
+| `docs/`                    | 9                   | Blueprints + MCP configs                |
+| **TOTAL BASE**             | **~55-58 archivos** | Sistema completo                        |
 
 ### Tamaños de Documentación
 
-| Archivo | Líneas | Descripción |
-|---------|--------|-------------|
-| `ai-driven-software-project-blueprint.md` | ~500 | Metodología de 8 fases |
-| `kata-test-architecture.md` | 1,874 | Documentación completa KATA |
-| `.context/guidelines/tae/*` | ~2,500 | Docs de testing automation |
-| `.prompts/*` | ~3,000 | Prompts optimizados |
+| Archivo                                   | Líneas | Descripción                                      |
+| ----------------------------------------- | ------ | ------------------------------------------------ |
+| `ai-driven-software-project-blueprint.md` | ~500   | Metodología de 8 fases                           |
+| `kata-test-architecture.md`               | 1,874  | Documentación completa KATA                      |
+| `.context/guidelines/tae/*`               | ~2,500 | Docs de testing automation                       |
+| `.prompts/*`                              | ~3,600 | Prompts optimizados (incluye pbi-add-feature.md) |
 
 ---
 
@@ -294,10 +320,12 @@ Quién: QA Automation Engineer, SDET
 
 1. **Seguir el orden secuencial** de fases (1 → 2 para setup, luego 3 → 8 iterativo)
 2. **Usar prompts de `.prompts/`** para generar docs en `.context/`
-3. **Leer guidelines** antes de implementar (Fases 6-7-8)
-4. **Usar MCP tools** (Supabase, Atlassian) para datos reales
-5. **Mantener arquitectura unificada** (todo en carpeta de story)
-6. **Fases 1-2 son sincrónicas** (una sola vez), **Fases 3-8 son asincrónicas** (por sprint)
+3. **Usar flujo Jira-First** en Fase 3 (crear en Jira → obtener ID → crear local)
+4. **Leer guidelines** antes de implementar (Fases 6-7-8)
+5. **Usar MCP tools** (Supabase, Atlassian) para datos reales y crear issues
+6. **Mantener arquitectura unificada** (todo en carpeta de story)
+7. **Seguir nomenclatura estándar** (EPIC-{PROYECTO}-{NUM}-{nombre})
+8. **Fases 1-2 son sincrónicas** (una sola vez), **Fases 3-8 son asincrónicas** (por sprint)
 
 ### ❌ DON'Ts (No hacer)
 
@@ -306,6 +334,9 @@ Quién: QA Automation Engineer, SDET
 3. **NO duplicar** información (DRY always)
 4. **NO mezclar** prompts con documentación
 5. **NO crear** archivos innecesarios (solo si son críticos)
+6. **NO crear épicas/stories localmente primero** (usar flujo Jira-First con MCP)
+7. **NO usar nomenclatura inconsistente** (siempre EPIC-{PROYECTO}-{NUM}-{nombre})
+8. **NO inventar IDs** (siempre usar IDs reales de Jira obtenidos con MCP)
 
 ---
 
@@ -314,14 +345,32 @@ Quién: QA Automation Engineer, SDET
 1. **Para nuevos proyectos**: Empezar con `.prompts/fase-1-constitution/`
 2. **Para proyectos existentes**: Empezar con análisis legacy → `.context/idea/legacy-analysis.md`
 3. **Setup inicial**: Completar Fases 1-2 (Constitution + Architecture) antes de entrar a sprints
-4. **Para implementación**: Leer `.context/guidelines/` + implementation plans (Fase 6)
-5. **Para testing**: Usar `.prompts/fase-8-test-automation/` después de tener PRD/SRS/PBI
+4. **Setup MVP (Fase 3)**: Usar `pbi-product-backlog.md` con flujo Jira-First para crear backlog inicial
+5. **Agregar features post-MVP**: Usar `pbi-add-feature.md` que analiza complejidad y crea incremental
+6. **Para implementación**: Leer `.context/guidelines/` + implementation plans (Fase 6)
+7. **Para testing**: Usar `.prompts/fase-8-test-automation/` después de tener PRD/SRS/PBI
+
+### 💡 Tips para Fase 3 (Specification)
+
+**Setup MVP inicial:**
+
+- Usa `pbi-product-backlog.md`
+- Trabaja épica por épica (incremental)
+- Crea primero en Jira → luego local (flujo Jira-First)
+
+**Agregar features nuevas:**
+
+- Usa `pbi-add-feature.md`
+- Deja que analice la complejidad (3 niveles)
+- Si es Nivel 3 (múltiples épicas), primero revisa el plan generado
+- Trabaja incremental siempre
 
 ---
 
 ## 📚 DOCUMENTACIÓN COMPLETA
 
 ### Arquitectura del Sistema
+
 - **[AI-Driven Software Project Blueprint](./docs/ai-driven-software-project-blueprint.md)** - Metodología completa de 8 fases
 - **[KATA Test Architecture](./docs/kata-test-architecture.md)** - Framework de testing automatizado
 
@@ -330,6 +379,7 @@ Quién: QA Automation Engineer, SDET
 > 💡 **¿Qué es MCP?** Un protocolo que permite a las IAs conectarse con herramientas externas (bases de datos, APIs, testing, etc.)
 
 **Configuración Esencial**:
+
 1. **[MCP Builder Strategy](./docs/mcp-builder-strategy.md)** ⭐ **EMPIEZA AQUÍ**
    - Solución al "Token Hell" (reducción 80-90% tokens)
    - Carga de MCPs por sesión/tarea
@@ -341,12 +391,14 @@ Quién: QA Automation Engineer, SDET
    - Seguridad y autenticación
 
 **Configuración por Herramienta** (elige la tuya):
+
 - **[Claude Code](./docs/mcp-config-claudecode.md)** - CLI de Anthropic
 - **[Gemini CLI](./docs/mcp-config-geminicli.md)** - CLI de Google
 - **[GitHub Copilot CLI](./docs/mcp-config-copilotcli.md)** - CLI de GitHub
 - **[VS Code + Copilot](./docs/mcp-config-vscode.md)** - Integración en editor
 
 **Quick Start MCP**:
+
 ```bash
 # 1. Configura variables de ambiente
 cp .env.example .env
