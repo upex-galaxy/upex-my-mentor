@@ -30,6 +30,9 @@ next-env.d.ts
 # system
 .DS_Store
 
+# bun
+bun.lockb
+
 # AI CLI tools and configs
 .serena
 .gemini

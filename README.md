@@ -1,3 +1,97 @@
+# 🚀 Upex My Mentor - Marketplace de Mentoría Tech
+
+> **Marketplace especializado que conecta ingenieros senior verificados con estudiantes y profesionales tech que buscan mentoría personalizada 1-a-1**
+
+## 🎯 Boceto Inicial (MVP Skeleton)
+
+Este es un **boceto inicial funcional** del proyecto, creado para tener algo tangible que ver en el navegador. Incluye las funcionalidades básicas de la plataforma sin implementar las features más complejas que requieren refinamiento.
+
+### ✅ Features Implementadas
+
+- ✅ **Landing Page atractiva** - Hero section con gradiente morado moderno, secciones informativas
+- ✅ **Sistema de Autenticación Mock** - Sign up / Login simulado (datos en localStorage)
+- ✅ **Galería de Mentores** - 8 mentores hardcodeados con búsqueda y filtros por skills
+- ✅ **Perfil de Mentor Detallado** - Vista completa con información, reviews (mock)
+- ✅ **Dashboard de Usuario** - Área personal básica con estadísticas placeholder
+- ✅ **Diseño Responsive** - Mobile-first con Tailwind CSS + shadcn/ui
+
+### 🔜 Features Pendientes (Requieren Shift-Left Testing)
+
+- ⏳ Sistema de Pagos (Stripe)
+- ⏳ Calendario de Scheduling interactivo
+- ⏳ Sistema de Reviews & Ratings real
+- ⏳ Admin panel (Vetting de mentores)
+- ⏳ Session Management completo
+- ⏳ Password reset flow
+- ⏳ Email notifications
+- ⏳ Supabase Auth & Database real
+
+## 🛠️ Tech Stack
+
+- **Framework:** Next.js 15 (App Router) + TypeScript
+- **Runtime:** Bun
+- **Styling:** Tailwind CSS + shadcn/ui
+- **Icons:** Lucide React
+- **Auth:** Mock system (localStorage)
+- **Data:** Hardcoded mentors
+
+## 🚀 Cómo Ejecutar el Proyecto
+
+```bash
+# 1. Instalar dependencias
+bun install
+
+# 2. Iniciar el servidor de desarrollo
+bun run dev
+
+# 3. Abrir en el navegador
+# http://localhost:3000
+```
+
+## 📱 Páginas Disponibles
+
+- `/` - Landing page
+- `/mentors` - Galería de mentores con búsqueda y filtros
+- `/mentors/[id]` - Perfil detallado de mentor
+- `/login` - Página de inicio de sesión
+- `/signup` - Página de registro
+- `/dashboard` - Dashboard de usuario (protegido)
+
+## 🎨 Paleta de Colores (Morado Moderno)
+
+- **Primary:** Purple-600 (#9333EA)
+- **Secondary:** Violet-500 (#8B5CF6)
+- **Accent:** Fuchsia-500 (#D946EF)
+- **Background:** Slate-50/900 (light/dark)
+
+## 📝 Cómo Probar la Autenticación
+
+1. Ve a `/signup`
+2. Registra un usuario (se guardará en localStorage)
+3. Inicia sesión con las mismas credenciales en `/login`
+4. Accede al `/dashboard` como usuario autenticado
+
+## 📚 Estructura del Proyecto
+
+```
+src/
+├── app/              # Next.js App Router
+│   ├── (auth)/       # Rutas de autenticación
+│   ├── mentors/      # Páginas de mentores
+│   ├── dashboard/    # Dashboard protegido
+│   └── page.tsx      # Landing page
+├── components/
+│   ├── ui/           # shadcn/ui components
+│   ├── landing/      # Componentes de landing
+│   ├── layout/       # Navbar, Footer
+│   └── mentors/      # Componentes de mentores
+├── contexts/         # React contexts (Auth)
+├── lib/              # Utilidades, datos mock
+└── types/            # TypeScript types
+```
+
+---
+
 # 🗺️ BIG PICTURE - Arquitectura Completa del Repositorio
 
 ## 📂 Estructura Visual Completa

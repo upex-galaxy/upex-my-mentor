@@ -1,0 +1,90 @@
+// User Types
+export type UserRole = "student" | "mentor";
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: UserRole;
+  photoUrl?: string;
+  description?: string;
+  createdAt: Date;
+}
+
+// Mentor Types
+export interface MentorProfile {
+  userId: string;
+  specialties: string[];
+  hourlyRate: number;
+  linkedinUrl?: string;
+  githubUrl?: string;
+  isVerified: boolean;
+  averageRating: number;
+  totalReviews: number;
+  yearsOfExperience?: number;
+}
+
+export interface Mentor extends User {
+  role: "mentor";
+  profile: MentorProfile;
+}
+
+// Student Types
+export interface StudentProfile {
+  userId: string;
+  skills?: string[];
+  learningGoals?: string[];
+}
+
+export interface Student extends User {
+  role: "student";
+  profile?: StudentProfile;
+}
+
+// Booking Types
+export type BookingStatus =
+  | "provisional"
+  | "pending_payment"
+  | "confirmed"
+  | "completed"
+  | "cancelled";
+
+export interface Booking {
+  id: string;
+  studentId: string;
+  mentorId: string;
+  sessionDate: Date;
+  durationMinutes: number;
+  totalCost: number;
+  status: BookingStatus;
+  videocallUrl?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Review Types
+export interface Review {
+  id: string;
+  bookingId: string;
+  reviewerId: string;
+  revieweeId: string;
+  rating: number; // 1-5
+  comment: string;
+  createdAt: Date;
+}
+
+// Mock Auth Types
+export interface AuthState {
+  isAuthenticated: boolean;
+  user: User | null;
+}
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface SignupData extends LoginCredentials {
+  name: string;
+  role: UserRole;
+}
