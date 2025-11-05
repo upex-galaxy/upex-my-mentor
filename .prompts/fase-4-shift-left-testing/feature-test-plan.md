@@ -1,33 +1,72 @@
 Actúa como QA Lead experto en Shift-Left Testing, Test Strategy y Quality Analysis.
 
-**Input (Contexto Completo Obligatorio):**
+**⚠️ WORKFLOW:** Este prompt sigue el principio **JIRA-FIRST → LOCAL MIRROR**
 
-**Contexto de Negocio:**
+---
 
-- Business Model: [usar .context/idea/business-model.md]
-- Executive Summary: [usar .context/PRD/executive-summary.md]
-- User Personas: [usar .context/PRD/user-personas.md]
-- User Journeys: [usar .context/PRD/user-journeys.md]
+## 📥 Input Requerido
 
-**Contexto Técnico:**
+### 1. Epic Jira Key (OBLIGATORIO)
 
-- Functional Specs: [usar .context/SRS/functional-specs.md - COMPLETO]
-- Non-Functional Specs: [usar .context/SRS/non-functional-specs.md]
-- Architecture Specs: [usar .context/SRS/architecture-specs.md]
-- API Contracts: [usar .context/SRS/api-contracts.yaml]
+**Formato:** `EPIC-{PROYECTO}-{NUM}`
+**Ejemplo:** `EPIC-UPEX-001`
 
-**Contexto de la Feature:**
+**Uso:** Este key se usa para:
 
-- Epic: [usar .context/PBI/epics/EPIC-{PROYECTO}-{NUM}-{nombre}/epic.md]
+- Leer el epic actual de Jira (FASE 5a)
+- Actualizar el epic con findings (FASE 5a)
+- Agregar comentario con test plan completo (FASE 5b)
+- Generar path del archivo local (FASE 5c)
+
+---
+
+### 2. Contexto de Negocio (OBLIGATORIO)
+
+- Business Model: [leer .context/idea/business-model.md]
+- Executive Summary: [leer .context/PRD/executive-summary.md]
+- User Personas: [leer .context/PRD/user-personas.md]
+- User Journeys: [leer .context/PRD/user-journeys.md]
+
+---
+
+### 3. Contexto Técnico (OBLIGATORIO)
+
+- Functional Specs: [leer .context/SRS/functional-specs.md - COMPLETO]
+- Non-Functional Specs: [leer .context/SRS/non-functional-specs.md]
+- Architecture Specs: [leer .context/SRS/architecture-specs.md]
+- API Contracts: [leer .context/SRS/api-contracts.yaml]
+
+---
+
+### 4. Contexto de la Feature (OBLIGATORIO)
+
+- Epic (local): [leer .context/PBI/epics/EPIC-{PROYECTO}-{NUM}-{nombre}/epic.md]
+- Epic (Jira): [usar MCP de Atlassian para obtener el epic]
 - Todas las stories de la épica: [leer todos los story.md de la épica]
 
-**Genera archivo: feature-test-plan.md** (dentro de .context/PBI/epics/EPIC-{PROYECTO}-{NUM}-{nombre}/)
+---
+
+## 📤 Output Generado
+
+### En Jira (vía MCP de Atlassian):
+
+1. **Epic actualizado** con test strategy summary y label `test-plan-ready`
+2. **Comentario agregado** con test plan completo y tags al equipo
+
+### En Local:
+
+1. **Archivo:** `.context/PBI/epics/EPIC-{...}/feature-test-plan.md`
+2. **Contenido:** Mirror exacto del comentario en Jira
+
+### Para Usuario:
+
+1. **Reporte:** Resumen ejecutivo con critical questions y next steps (FASE 5d)
 
 ---
 
 ## 🎯 FLUJO DE TRABAJO
 
-Este prompt trabaja en 5 fases para entregar un plan de pruebas completo con análisis crítico:
+Este prompt trabaja en 5 fases para entregar un plan de pruebas completo con análisis crítico, siguiendo **JIRA-FIRST → LOCAL MIRROR**:
 
 ### FASE 1: Análisis de Contexto
 
@@ -47,17 +86,21 @@ Este prompt trabaja en 5 fases para entregar un plan de pruebas completo con an�
 - Definir tipos de testing por story
 - Definir scope de testing
 
-### FASE 4: Análisis Crítico
+### FASE 4: Análisis Crítico & Plan de Testing
 
 - Identificar ambigüedades en épica/stories
 - Generar preguntas para PO/Dev
 - Sugerir mejoras antes de implementación
-
-### FASE 5: Plan de Testing
-
 - Entry/Exit criteria
 - Test data requirements
 - Estimación de test cases por story
+
+### FASE 5: Jira Integration & Local Mirroring
+
+- **FASE 5a:** Update Epic in Jira (agregar test strategy summary y label)
+- **FASE 5b:** Add Test Plan as Comment in Jira Epic
+- **FASE 5c:** Generate Local feature-test-plan.md (mirroring)
+- **FASE 5d:** Final QA Feedback Report (resumen para usuario)
 
 ---
 
@@ -617,6 +660,315 @@ Epic is considered "Done" from QA perspective when:
 
 ---
 
+## 📝 FASE 5: Jira Integration & Local Mirroring
+
+**⚠️ IMPORTANTE:** Esta fase implementa el flujo **JIRA-FIRST → LOCAL MIRROR** para mantener consistencia con el proceso de gestión de epics.
+
+---
+
+### FASE 5a: Update Epic in Jira
+
+**Objetivo:** Actualizar el epic en Jira CON los findings críticos del análisis de testing, ANTES de generar archivo local.
+
+**Herramienta:** MCP de Atlassian
+
+**Pasos a ejecutar:**
+
+1. **Leer epic actual de Jira:**
+   - Usar MCP de Atlassian para obtener el epic
+   - Input: Epic Jira Key (ej: EPIC-UPEX-001)
+   - Obtener: description actual
+
+2. **Preparar contenido del summary:**
+
+   Basado en análisis de FASE 1-4, preparar:
+
+   - **Top Critical Risks** (de FASE 2)
+   - **Test Coverage Summary** (de FASE 4)
+   - **Critical Questions** (de FASE 4)
+
+3. **Actualizar epic en Jira:**
+   - Usar MCP de Atlassian para editar el epic
+   - Agregar nueva sección al description con el siguiente contenido:
+
+   ---
+   ## 🧪 QA Test Strategy - Shift-Left Analysis
+
+   **Analysis Date:** [YYYY-MM-DD]
+   **Status:** Test Plan Ready
+
+   ### Critical Risks Identified
+   [Resumen de top 3 riesgos técnicos/negocio con mayor impacto]
+
+   ### Test Coverage Summary
+   - **Total Estimated Test Cases:** [X]
+   - **Integration Points:** [Y]
+   - **Critical User Journeys:** [Z]
+   - **Test Complexity:** Low | Medium | High
+
+   ### Critical Questions for Team
+   [Indicar que hay preguntas críticas en comentario - ver detalles abajo]
+
+   ### Test Strategy
+   - Levels: Unit, Integration, E2E, API
+   - Tools: Playwright, Vitest, Postman
+   - Timeline: [X sprints/weeks estimated]
+
+   ---
+
+   - Agregar label: `test-plan-ready`
+
+**Output esperado:**
+
+- ✅ Epic actualizado en Jira con test strategy summary
+- ✅ Label `test-plan-ready` agregado
+- ✅ Description enriquecido con análisis de QA
+
+---
+
+### FASE 5b: Add Feature Test Plan as Comment in Jira
+
+**Objetivo:** Agregar TODO el feature test plan como comentario en el epic de Jira para máxima visibilidad del equipo.
+
+**Herramienta:** MCP de Atlassian
+
+**Estructura del comentario:**
+
+```
+## 📋 Feature Test Plan - Generated [Date]
+
+**QA Lead:** [Nombre o "AI-Generated"]
+**Status:** Draft - Pending Team Review
+
+---
+
+[PEGAR AQUÍ TODO EL CONTENIDO GENERADO DESDE "Feature Test Plan: EPIC-..." HASTA "Metrics & Reporting"]
+
+---
+
+## 📢 Action Required
+
+**@[Product Owner]:**
+
+- [ ] Review ambiguities and missing information (see Critical Analysis section)
+- [ ] Answer critical questions for PO
+- [ ] Validate risk analysis and business impact
+- [ ] Confirm test scope is complete and correct
+
+**@[Dev Lead]:**
+
+- [ ] Review technical risks and mitigation strategies
+- [ ] Validate integration points identified
+- [ ] Confirm architecture analysis is accurate
+- [ ] Answer technical questions
+
+**@[QA Team]:**
+
+- [ ] Review test strategy and estimates
+- [ ] Validate test levels and types per story
+- [ ] Confirm test data requirements
+- [ ] Prepare test environments and tools
+
+---
+
+**Next Steps:**
+
+1. Team discusses critical questions and ambiguities in refinement
+2. PO/Dev provide answers and clarifications
+3. QA begins test case design per story (use story-test-cases.md prompt)
+4. Team validates entry/exit criteria before sprint starts
+5. Dev starts implementation ONLY after critical questions resolved
+
+---
+
+**Documentation:** Full test plan also available at:
+`.context/PBI/epics/EPIC-{...}/feature-test-plan.md`
+```
+
+**Pasos a ejecutar:**
+
+1. Usar MCP de Atlassian para agregar comentario al epic
+2. Input: Epic Jira Key + contenido completo del comentario
+3. Mencionar en el comentario a los miembros del equipo (@PO, @Dev, @QA) según configuración del proyecto
+
+**Output esperado:**
+
+- ✅ Comentario creado en Jira con test plan completo
+- ✅ Equipo notificado vía mentions
+- ✅ Checklist de acciones agregado para follow-up
+
+---
+
+### FASE 5c: Generate Local feature-test-plan.md (Mirroring)
+
+**Objetivo:** Crear archivo local `.md` como MIRROR del comentario en Jira para version control y documentación offline.
+
+**Path:** `.context/PBI/epics/EPIC-{...}/feature-test-plan.md`
+
+**Contenido:** IDÉNTICO al contenido generado en FASE 5b (todo el test plan)
+
+**Output esperado:**
+
+- ✅ Archivo `feature-test-plan.md` creado localmente
+- ✅ Contenido es MIRROR exacto del comentario en Jira
+- ✅ Disponible para git versioning
+
+---
+
+### FASE 5d: Final QA Feedback Report
+
+**Objetivo:** Reportar al USUARIO el resumen ejecutivo y acciones pendientes.
+
+**Formato del reporte:**
+
+---
+
+## ✅ Feature Test Plan - Execution Summary
+
+**Epic:** [EPIC-KEY] - [Title]
+**Analysis Date:** [YYYY-MM-DD]
+
+---
+
+### 📊 Summary
+
+**Epic Complexity:** Low | Medium | High
+**Total Estimated Test Cases:** [X]
+**Critical Risks Identified:** [Y]
+**Integration Points:** [Z]
+**Estimated Testing Duration:** [X sprints/weeks]
+
+---
+
+### 🚨 Top 3 Critical Risks
+
+**Risk 1:** [Descripción]
+- **Impact:** High
+- **Area:** [Technical | Business | Integration]
+- **Mitigation:** [Estrategia]
+
+**Risk 2:** [Descripción]
+- **Impact:** High/Medium
+- **Area:** [Technical | Business | Integration]
+- **Mitigation:** [Estrategia]
+
+**Risk 3:** [Descripción]
+- **Impact:** Medium
+- **Area:** [Technical | Business | Integration]
+- **Mitigation:** [Estrategia]
+
+---
+
+### ❓ Critical Questions Requiring PO/Dev Input
+
+**Question 1 (For PO):** [Pregunta sobre negocio]
+- **Context:** [Por qué es importante]
+- **Impact if not answered:** [Qué riesgo representa]
+
+**Question 2 (For Dev):** [Pregunta técnica]
+- **Context:** [Por qué es importante]
+- **Impact if not answered:** [Qué riesgo representa]
+
+**Question 3 (For PO/Dev):** [Pregunta adicional si aplica]
+- **Context:** ...
+- **Impact if not answered:** ...
+
+---
+
+### 💡 Suggested Epic/Story Improvements
+
+**Improvement 1:** [Sugerencia]
+- **Story/Epic Affected:** [KEY]
+- **Current State:** [Problema identificado]
+- **Suggested Change:** [Cómo mejorarlo]
+- **Benefit:** [Por qué es importante]
+
+**Improvement 2:** [Si aplica]
+- **Story/Epic Affected:** ...
+- **Current State:** ...
+- **Suggested Change:** ...
+- **Benefit:** ...
+
+---
+
+### 🎯 Test Strategy Highlights
+
+**Test Levels:**
+- Unit Testing: Dev responsibility (>80% coverage goal)
+- Integration Testing: QA + Dev collaboration
+- E2E Testing: [X] critical user journeys
+- API Testing: [Y] endpoints to validate
+
+**Test Types per Story:**
+- Positive: [X] test cases
+- Negative: [Y] test cases
+- Boundary: [Z] test cases
+- Integration: [W] test cases
+
+**Key Integration Points:**
+- [Integration Point 1]
+- [Integration Point 2]
+- [Integration Point 3]
+
+---
+
+### ✅ What Was Done
+
+**Jira Updates:**
+
+- ✅ Epic updated with test strategy summary
+- ✅ Label `test-plan-ready` added
+- ✅ Test plan added as comment in Jira epic
+- ✅ Team members tagged for review (@PO, @Dev, @QA)
+
+**Local Files:**
+
+- ✅ `feature-test-plan.md` created at: `.context/PBI/epics/EPIC-{...}/`
+
+**Analysis Completed:**
+
+- ✅ Business context analyzed (value, users, journeys)
+- ✅ Technical architecture analyzed (components, integration points)
+- ✅ Risk analysis completed (technical, business, integration)
+- ✅ Test strategy defined (levels, types, scope)
+- ✅ Test estimates per story calculated
+- ✅ Entry/Exit criteria defined
+
+---
+
+### 🎯 Next Steps (Team Action Required)
+
+**Immediate Actions:**
+
+1. **PO:** Review critical questions in Jira comment and provide answers
+2. **Dev Lead:** Review technical risks and validate integration points
+3. **Team:** Schedule refinement session to discuss ambiguities and improvements
+4. **QA:** Wait for clarifications before starting test case design per story
+
+**Before Sprint Starts:**
+
+5. **All:** Ensure all critical questions are answered
+6. **PO:** Approve or provide feedback on suggested improvements
+7. **QA:** Begin test case design for each story using `story-test-cases.md` prompt
+8. **Team:** Validate entry criteria can be met for each story
+
+**During Epic Implementation:**
+
+9. **QA:** Execute test cases as stories are completed
+10. **Team:** Address bugs and issues as they arise
+11. **QA:** Track metrics and report progress daily
+
+---
+
+**⚠️ BLOCKER:** Epic should NOT start implementation until critical questions are resolved by PO/Dev.
+
+**Jira Link:** [Link to epic in Jira]
+**Local Test Plan:** `.context/PBI/epics/EPIC-{...}/feature-test-plan.md`
+
+---
+
+---
+
 ## 🎓 Notes & Assumptions
 
 **Assumptions:**
@@ -651,19 +1003,128 @@ Epic is considered "Done" from QA perspective when:
 
 ---
 
-**Formato:** Markdown estructurado, listo para copiar a `.context/PBI/epics/EPIC-{PROYECTO}-{NUM}-{nombre}/feature-test-plan.md`
+**Formato:** Markdown estructurado siguiendo flujo **JIRA-FIRST → LOCAL MIRROR**
 
-**Prerequisitos:**
+---
 
-- TODOS los archivos de contexto (idea, PRD, SRS) deben estar completos
-- Epic.md y todos los story.md de la épica deben existir
-- Tiempo para analizar críticamente y no solo generar checklist
+## 🔧 Prerequisitos para Ejecutar Este Prompt
 
-**Post-generación:**
+- ✅ TODOS los archivos de contexto (idea, PRD, SRS) deben estar completos
+- ✅ Epic.md y todos los story.md de la épica deben existir
+- ✅ **Epic Jira Key disponible** (ej: EPIC-UPEX-001)
+- ✅ **Acceso a MCP de Atlassian configurado y funcionando**
+- ✅ Tiempo para analizar críticamente, no solo generar checklist
 
-- Compartir "Critical Analysis & Questions" con PO/Dev ANTES de que empiecen implementación
-- Revisar feedback y ajustar stories si es necesario
-- Crear test cases en Jira Xray y linkear con stories
+---
 
-**Versión:** 2.0 - Shift-Left with Complete Context & Critical Analysis
-**Última actualización:** 2025-11-04
+## 📋 Flujo de Ejecución (Para la IA)
+
+### Input requerido del usuario:
+
+```
+Epic Jira Key: EPIC-UPEX-XXX
+```
+
+### Orden de ejecución:
+
+1. **FASE 1-4:** Analizar contexto, riesgos, estrategia, test cases (contenido Markdown)
+2. **FASE 5a:** Actualizar epic en Jira con test strategy summary (MCP Atlassian)
+3. **FASE 5b:** Crear comentario en Jira con test plan completo (MCP Atlassian)
+4. **FASE 5c:** Generar archivo local `feature-test-plan.md` (Write tool)
+5. **FASE 5d:** Reportar resumen al usuario (Output)
+
+### Herramientas a usar:
+
+**MCP de Atlassian:**
+- Para leer epic de Jira
+- Para actualizar epic description y labels
+- Para agregar comentario al epic
+
+**File Operations:**
+- Para crear archivo local feature-test-plan.md
+- Para leer archivos de contexto (PRD, SRS, epic, stories)
+
+---
+
+## ⚠️ IMPORTANTE: Principios de Ejecución
+
+### Shift-Left Testing Philosophy:
+
+- ✅ **Análisis crítico primero, test planning después**
+- ✅ **Feedback temprano es MÁS valioso que test plan perfecto**
+- ✅ **Identificar riesgos ANTES de implementación** (shift-left!)
+- ✅ **Test plan en comentarios** para visibilidad del equipo
+
+### Test Planning Guidelines:
+
+- ❌ **NO forzar número mínimo de test cases** - depende de complejidad de cada story
+- ✅ **Analizar riesgos exhaustivamente** - técnicos, negocio, integración
+- ✅ **Identificar ambigüedades** en epic y stories
+- ✅ **Hacer preguntas críticas** - mejor clarificar que asumir
+
+### Jira-First Workflow:
+
+- ✅ **SIEMPRE actualizar Jira primero, luego local** (consistencia)
+- ✅ **Test plan va en comentario** para máxima visibilidad
+- ✅ **Taggear al equipo** (@PO, @Dev, @QA)
+- ✅ **Agregar label `test-plan-ready`** para tracking
+
+---
+
+## 🎯 Post-Generación: Acciones del Equipo
+
+### Inmediatamente después de ejecutar este prompt:
+
+1. **PO debe:**
+   - Revisar comentario en Jira con test plan
+   - Responder "Critical Questions for PO"
+   - Validar risk analysis y business impact
+   - Confirmar test scope es completo y correcto
+
+2. **Dev Lead debe:**
+   - Revisar comentario en Jira con test plan
+   - Responder "Technical Questions for Dev"
+   - Validar integration points identificados
+   - Confirmar architecture analysis es preciso
+   - **NO empezar epic** hasta resolver preguntas críticas
+
+3. **QA debe:**
+   - Revisar test strategy y estimates
+   - Esperar respuestas de PO/Dev antes de empezar test case design
+   - Preparar test environments y tools
+   - Comenzar test case design por story usando `story-test-cases.md` prompt
+
+4. **Usuario (quien ejecutó el prompt) debe:**
+   - Compartir link de Jira epic con equipo
+   - Facilitar discusión de preguntas críticas en refinement
+   - Asegurar que preguntas sean respondidas antes de sprint
+
+---
+
+## 🚀 Workflow Completo: Epic → Stories
+
+### Orden recomendado:
+
+1. ✅ **Ejecutar `feature-test-plan.md` prompt** para el epic completo
+2. ⏸️ **Esperar feedback** de PO/Dev sobre critical questions
+3. ✅ **Ejecutar `story-test-cases.md` prompt** para cada story individual
+4. ⏸️ **Esperar feedback** de PO/Dev sobre cada story
+5. ✅ **Comenzar sprint** solo cuando todas las preguntas estén resueltas
+
+**Beneficio de este workflow:**
+- Test plan a nivel epic identifica riesgos globales
+- Test cases a nivel story identifican gaps específicos
+- Ambos retroalimentan al PO/Dev ANTES de implementación
+- Reduce bugs, retrabajos y malentendidos
+
+---
+
+**Versión:** 3.0 - Jira-First + MCP Atlassian + Shift-Left Philosophy
+**Última actualización:** 2025-01-05
+**Cambios principales:**
+
+- ✅ Agregado flujo Jira-First (FASE 5a, 5b, 5c, 5d)
+- ✅ Integración con MCP de Atlassian
+- ✅ Test plan en comentarios (no artefactos separados)
+- ✅ Refinamiento automático de epic en Jira
+- ✅ Consistencia con `story-test-cases.md` prompt
