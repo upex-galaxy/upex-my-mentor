@@ -238,7 +238,7 @@ export function searchMentors(query: string): Mentor[] {
   return mentors.filter(
     (mentor) =>
       mentor.name.toLowerCase().includes(lowerQuery) ||
-      mentor.description.toLowerCase().includes(lowerQuery) ||
+      (mentor.description && mentor.description.toLowerCase().includes(lowerQuery)) ||
       mentor.profile.specialties.some((skill) =>
         skill.toLowerCase().includes(lowerQuery)
       )
