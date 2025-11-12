@@ -60,3 +60,9 @@ When using Atlassian MCP tools to interact with Jira, always use the following d
 
 -   **Cloud ID (`cloudId`):** `e7975fd7-55bc-430a-8e25-560375493dd7`
 -   **Project Key (`projectKey`):** `MYM`
+
+## Supabase Configuration
+
+When using Supabase tools, always use the following default values:
+
+-   **Project ID (`projectId`):** `ionevzckjyxtpmyenbxc`
