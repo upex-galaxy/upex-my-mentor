@@ -69,8 +69,11 @@ async function main() {
       recursive: true,
     });
   }
-  if (fs.existsSync("README.md")) {
-    fs.cpSync("README.md", path.join(backupDir, "README.md"));
+  if (fs.existsSync("context-engineering.md")) {
+    fs.cpSync(
+      "context-engineering.md",
+      path.join(backupDir, "context-engineering.md")
+    );
   }
 
   log(`✅ Backup guardado en: ${backupDir}`, "green");
@@ -96,24 +99,58 @@ async function main() {
   fs.rmSync(".prompts", { recursive: true, force: true });
   fs.cpSync(path.join(TEMP_DIR, ".prompts"), ".prompts", { recursive: true });
 
-  // Actualizar README.md
-  log("📄 Actualizando README.md...", "yellow");
-  fs.cpSync(path.join(TEMP_DIR, "README.md"), "README.md");
-
-  // Actualizar docs/
-  const docsPath = path.join(TEMP_DIR, "docs");
-  if (fs.existsSync(docsPath)) {
-    log("📚 Actualizando docs/...", "yellow");
-    fs.rmSync("docs", { recursive: true, force: true });
-    fs.cpSync(docsPath, "docs", { recursive: true });
+  // Actualizar context-engineering.md
+  const contextEngineeringPath = path.join(TEMP_DIR, "context-engineering.md");
+  if (fs.existsSync(contextEngineeringPath)) {
+    log("📄 Actualizando context-engineering.md...", "yellow");
+    fs.cpSync(contextEngineeringPath, "context-engineering.md");
   }
 
-  // Actualizar scripts/
+  // Actualizar solo archivos específicos en docs/
+  const docsPath = path.join(TEMP_DIR, "docs");
+  if (fs.existsSync(docsPath)) {
+    log("📚 Actualizando docs/ (solo archivos del template)...", "yellow");
+    fs.mkdirSync("docs", { recursive: true });
+
+    // Archivos específicos a actualizar
+    const docsFiles = [
+      "ai-driven-software-project-blueprint.md",
+      "kata-test-architecture.md",
+    ];
+
+    docsFiles.forEach((file) => {
+      const srcFile = path.join(docsPath, file);
+      if (fs.existsSync(srcFile)) {
+        fs.cpSync(srcFile, path.join("docs", file));
+      }
+    });
+
+    // Actualizar todos los archivos mcp-config-*
+    const allDocsFiles = fs.readdirSync(docsPath);
+    allDocsFiles.forEach((file) => {
+      if (file.startsWith("mcp-config-")) {
+        const srcFile = path.join(docsPath, file);
+        fs.cpSync(srcFile, path.join("docs", file));
+      }
+    });
+  }
+
+  // Actualizar solo scripts específicos en scripts/
   const scriptsPath = path.join(TEMP_DIR, "scripts");
   if (fs.existsSync(scriptsPath)) {
-    log("⚙️  Actualizando scripts/...", "yellow");
+    log(
+      "⚙️  Actualizando scripts/ (solo scripts de actualización)...",
+      "yellow"
+    );
     fs.mkdirSync("scripts", { recursive: true });
-    fs.cpSync(scriptsPath, "scripts", { recursive: true });
+
+    const scriptFiles = ["update-prompts.js", "update-prompts.md"];
+    scriptFiles.forEach((file) => {
+      const srcFile = path.join(scriptsPath, file);
+      if (fs.existsSync(srcFile)) {
+        fs.cpSync(srcFile, path.join("scripts", file));
+      }
+    });
   }
 
   // Limpiar
@@ -122,14 +159,17 @@ async function main() {
   // Resultado
   console.log("");
   log("✅ Actualización completada!", "green");
-  log("💡 Tu trabajo en .context/ se mantiene intacto", "yellow");
+  log(
+    "💡 Tu README.md y archivos personalizados se mantienen intactos",
+    "yellow"
+  );
   log(`💡 Si algo salió mal, restaura desde: ${backupDir}`, "yellow");
   console.log("");
   log("📋 Archivos actualizados:", "green");
   console.log("  • .prompts/ (todos los prompts)");
-  console.log("  • README.md");
-  console.log("  • docs/ (blueprints)");
-  console.log("  • scripts/ (utilidades)");
+  console.log("  • context-engineering.md");
+  console.log("  • docs/ (solo archivos del template)");
+  console.log("  • scripts/update-prompts.js y .md");
 }
 
 main().catch((error) => {
