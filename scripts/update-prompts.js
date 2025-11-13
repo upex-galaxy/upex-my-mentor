@@ -65,7 +65,9 @@ async function main() {
   fs.mkdirSync(backupDir, { recursive: true });
 
   if (fs.existsSync(".prompts")) {
-    fs.cpSync(".prompts", path.join(backupDir, ".prompts"), { recursive: true });
+    fs.cpSync(".prompts", path.join(backupDir, ".prompts"), {
+      recursive: true,
+    });
   }
   if (fs.existsSync("README.md")) {
     fs.cpSync("README.md", path.join(backupDir, "README.md"));
