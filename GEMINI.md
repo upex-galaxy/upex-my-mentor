@@ -25,18 +25,24 @@ The project uses **Bun** for package management and script execution.
     bun run dev
     ```
 
-3.  **Create a Production Build:**
+3.  **Validate TypeScript:**
+    **Always run this before building to ensure type safety.**
+    ```bash
+    bun run typecheck
+    ```
+
+4.  **Create a Production Build:**
     ```bash
     bun run build
     ```
 
-4.  **Run Production Server:**
+5.  **Run Production Server:**
     Starts the application from the production build.
     ```bash
     bun run start
     ```
 
-5.  **Lint the Code:**
+6.  **Lint the Code:**
     Runs ESLint to check for code quality and style issues.
     ```bash
     bun run lint
