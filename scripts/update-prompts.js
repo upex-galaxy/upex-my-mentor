@@ -99,11 +99,14 @@ async function main() {
   fs.rmSync(".prompts", { recursive: true, force: true });
   fs.cpSync(path.join(TEMP_DIR, ".prompts"), ".prompts", { recursive: true });
 
-  // Actualizar context-engineering.md
-  const contextEngineeringPath = path.join(TEMP_DIR, "context-engineering.md");
-  if (fs.existsSync(contextEngineeringPath)) {
-    log("📄 Actualizando context-engineering.md...", "yellow");
-    fs.cpSync(contextEngineeringPath, "context-engineering.md");
+  // Copiar README.md del template como context-engineering.md
+  const templateReadmePath = path.join(TEMP_DIR, "README.md");
+  if (fs.existsSync(templateReadmePath)) {
+    log(
+      "📄 Actualizando context-engineering.md (desde README.md del template)...",
+      "yellow"
+    );
+    fs.cpSync(templateReadmePath, "context-engineering.md");
   }
 
   // Actualizar solo archivos específicos en docs/
