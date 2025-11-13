@@ -1,7 +1,7 @@
 // src/lib/config.ts
 
 // This file centralizes the access to environment variables.
-// Next.js automatically loads environment variables from .env, .env.local, etc.
+// Next.js automatically loads environment variables from .env, etc.
 // and makes them available in the process.env object.
 
 // Variables prefixed with NEXT_PUBLIC_ are exposed to the browser.
@@ -14,5 +14,7 @@ if (!supabaseUrl) {
 }
 
 if (!supabaseAnonKey) {
-  throw new Error("Missing environment variable: NEXT_PUBLIC_SUPABASE_ANON_KEY");
+  throw new Error(
+    "Missing environment variable: NEXT_PUBLIC_SUPABASE_ANON_KEY"
+  );
 }

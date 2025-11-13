@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      bookings: {
+        Row: {
+          created_at: string | null
+          duration_minutes: number
+          id: string
+          mentor_id: string
+          notes: string | null
+          session_date: string
+          status: string
+          student_id: string
+          total_cost: number
+          updated_at: string | null
+          videocall_url: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          duration_minutes?: number
+          id?: string
+          mentor_id: string
+          notes?: string | null
+          session_date: string
+          status?: string
+          student_id: string
+          total_cost: number
+          updated_at?: string | null
+          videocall_url?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          duration_minutes?: number
+          id?: string
+          mentor_id?: string
+          notes?: string | null
+          session_date?: string
+          status?: string
+          student_id?: string
+          total_cost?: number
+          updated_at?: string | null
+          videocall_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           average_rating: number | null
@@ -122,6 +179,8 @@ export type Database = {
     }
     Functions: {
       get_all_unique_skills: { Args: never; Returns: string[] }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
       user_role: "student" | "mentor"

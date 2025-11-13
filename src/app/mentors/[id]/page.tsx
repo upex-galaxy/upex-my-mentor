@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { getMentorById } from "@/lib/data";
+import { createServer } from "@/lib/supabase/server";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,58 @@ import {
   Clock,
 } from "lucide-react";
 import Link from "next/link";
+import type { Mentor } from "@/types";
+import type { Database } from "@/types/supabase";
+
+type ProfileRow = Database['public']['Tables']['profiles']['Row'];
+type ReviewRow = Database['public']['Tables']['reviews']['Row'] & {
+  reviewer: { name: string | null } | null;
+};
+
+// Helper to transform DB profile to Mentor domain type
+function transformToMentor(profile: ProfileRow): Mentor {
+  return {
+    id: profile.id,
+    email: profile.email!,
+    name: profile.name!,
+    role: "mentor",
+    photoUrl: profile.photo_url || undefined,
+    description: profile.description || undefined,
+    createdAt: new Date(profile.created_at!),
+    profile: {
+      userId: profile.id,
+      specialties: profile.specialties || [],
+      hourlyRate: profile.hourly_rate || 0,
+      linkedinUrl: profile.linkedin_url || undefined,
+      githubUrl: profile.github_url || undefined,
+      isVerified: profile.is_verified || false,
+      averageRating: profile.average_rating || 0,
+      totalReviews: profile.total_reviews || 0,
+      yearsOfExperience: profile.years_of_experience || 0,
+    },
+  };
+}
+
+// Helper to format review date
+function formatReviewDate(dateString: string): string {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffInMs = now.getTime() - date.getTime();
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+  if (diffInDays < 7) {
+    return `Hace ${diffInDays} día${diffInDays !== 1 ? 's' : ''}`;
+  } else if (diffInDays < 30) {
+    const weeks = Math.floor(diffInDays / 7);
+    return `Hace ${weeks} semana${weeks !== 1 ? 's' : ''}`;
+  } else if (diffInDays < 365) {
+    const months = Math.floor(diffInDays / 30);
+    return `Hace ${months} mes${months !== 1 ? 'es' : ''}`;
+  } else {
+    const years = Math.floor(diffInDays / 365);
+    return `Hace ${years} año${years !== 1 ? 's' : ''}`;
+  }
+}
 
 export default async function MentorProfilePage({
   params,
@@ -23,41 +75,33 @@ export default async function MentorProfilePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const mentor = getMentorById(id);
+  const supabase = await createServer();
 
-  if (!mentor) {
+  // Fetch mentor with reviews
+  const { data: mentorData, error: mentorError } = await supabase
+    .from('profiles')
+    .select(`
+      *,
+      reviews:reviews!fk_subject (
+        id,
+        rating,
+        comment,
+        created_at,
+        reviewer:reviewer_id (name)
+      )
+    `)
+    .eq('id', id)
+    .eq('role', 'mentor')
+    .single();
+
+  if (mentorError || !mentorData) {
     notFound();
   }
 
-  const { profile } = mentor;
+  const mentor = transformToMentor(mentorData);
+  const reviews = (mentorData.reviews as unknown as ReviewRow[]) || [];
 
-  // Mock reviews data
-  const mockReviews = [
-    {
-      id: "1",
-      reviewerName: "Laura García",
-      rating: 5,
-      comment:
-        "Excelente mentor. Me ayudó a resolver un problema complejo de arquitectura y aprendí muchísimo en una sola sesión.",
-      date: "Hace 2 semanas",
-    },
-    {
-      id: "2",
-      reviewerName: "David Martínez",
-      rating: 5,
-      comment:
-        "Muy profesional y paciente. Explica conceptos complejos de forma clara. 100% recomendado.",
-      date: "Hace 1 mes",
-    },
-    {
-      id: "3",
-      reviewerName: "Ana Torres",
-      rating: 4,
-      comment:
-        "Gran experiencia. La sesión fue muy productiva y obtuve feedback valioso para mi proyecto.",
-      date: "Hace 2 meses",
-    },
-  ];
+  const { profile } = mentor;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -193,35 +237,45 @@ export default async function MentorProfilePage({
             Reviews ({profile.totalReviews})
           </h2>
 
-          <div className="space-y-6">
-            {mockReviews.map((review) => (
-              <Card key={review.id}>
-                <CardContent className="pt-6">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <div className="font-semibold">{review.reviewerName}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {review.date}
+          {reviews.length > 0 ? (
+            <div className="space-y-6">
+              {reviews.map((review) => (
+                <Card key={review.id}>
+                  <CardContent className="pt-6">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <div className="font-semibold">
+                          {review.reviewer?.name || 'Usuario anónimo'}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {formatReviewDate(review.created_at!)}
+                        </div>
+                      </div>
+                      <div className="flex items-center">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`h-4 w-4 ${
+                              i < review.rating
+                                ? "fill-yellow-400 text-yellow-400"
+                                : "text-gray-300"
+                            }`}
+                          />
+                        ))}
                       </div>
                     </div>
-                    <div className="flex items-center">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-4 w-4 ${
-                            i < review.rating
-                              ? "fill-yellow-400 text-yellow-400"
-                              : "text-gray-300"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                  <p className="text-muted-foreground">{review.comment}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    <p className="text-muted-foreground">{review.comment}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">
+                Este mentor aún no tiene reviews.
+              </p>
+            </div>
+          )}
         </div>
       </main>
       <Footer />
