@@ -1,34 +1,242 @@
 Actúa como Senior Frontend Architect, UI/UX Designer, y Full-Stack Developer experto.
 
-**🔄 FASE 2.5: DESIGN SYSTEM (Sincrónica - UNA sola vez)**
-
-**Input:**
-
-- PRD completo: [usar .context/PRD/]
-- SRS completo: [usar .context/SRS/]
-- PBI inicial: [usar .context/PBI/epic-tree.md - solo para entender contexto]
-
 ---
 
-## 🎯 OBJETIVO DE FASE 2.5
+## 🎯 TAREA
+
+**🔄 FASE 3: FRONTEND SETUP (Sincrónica - UNA sola vez)**
 
 Crear el **Design System base** y **scaffolding del proyecto frontend** que será REUTILIZADO en todas las stories del MVP.
 
-**Esta fase se ejecuta UNA SOLA VEZ** antes de comenzar los sprints (Fases 3-8).
+**Esta fase se ejecuta UNA SOLA VEZ** después de haber completado Backend Setup (Fase 3 - backend-setup.md).
+
+---
+
+## 📥 INPUT REQUERIDO
+
+### 1. Contexto del Proyecto
+
+**Leer TODOS estos archivos:**
+
+- `.context/PRD/executive-summary.md` - **CRÍTICO** - Nombre del proyecto, descripción, industry
+- `.context/PRD/mvp-scope.md` - Épicas principales del MVP, features
+- `.context/PRD/success-metrics.md` - KPIs, métricas de negocio (inspiran dashboard)
+- `.context/SRS/architecture-specs.md` - Tech stack frontend, frameworks, librerías
+- `.context/SRS/design-specs.md` - Wireframes, paleta de colores, estilos visuales
+- `.context/SRS/functional-specs.md` - Features principales (inspiran páginas demo)
+- `.context/PBI/epic-tree.md` - (Opcional) Épicas y estructura general para contexto
+
+### 2. Backend Integration
+
+**CRÍTICO - Backend debe estar completado primero:**
+
+- `src/types/supabase.ts` (o `lib/database.types.ts`) - **Tipos generados desde database schema**
+- `src/lib/supabase/client.ts` - Supabase browser client
+- `src/lib/supabase/server.ts` - Supabase server client
+- `src/lib/config.ts` - Configuración centralizada
+
+**Qué identificar:**
+
+1. **Database tables:** Qué entidades existen (para crear helpers de tipos)
+2. **Auth flow:** Cómo funciona el login/signup (para crear páginas auth)
+3. **API structure:** Qué queries están disponibles
+
+### 3. Proyecto Existente (Si Aplica)
+
+**Si el frontend ya existe parcialmente:**
+- `package.json` - Dependencias actuales, package manager lock file
+- `src/**` - Estructura de carpetas actual
+- `tailwind.config.js` - Configuración de TailwindCSS existente
+
+**Qué identificar:**
+1. ¿Ya existe un proyecto Next.js/React/etc.?
+2. ¿Qué dependencias ya están instaladas?
+3. ¿Qué package manager se está usando?
+
+---
+
+## ⚙️ VERIFICACIÓN DE HERRAMIENTAS (MCP)
+
+### MCP Recomendados:
+
+1. **MCP Context7** - ALTAMENTE RECOMENDADO
+   - Consultar docs oficiales antes de escribir código
+   - Queries recomendadas:
+     - "Next.js 15 App Router latest setup"
+     - "TailwindCSS v4 configuration latest"
+     - "Shadcn/ui installation Next.js App Router"
+     - "Lucide React icons usage"
+
+2. **NO se requieren otros MCP** para esta fase
+
+### Herramientas Locales:
+- Node.js instalado
+- Package manager (npm/pnpm/yarn/bun) - se preguntará al usuario
+- Git (para verificar estado)
+
+---
+
+## 🎯 OBJETIVO DE FASE 3 - FRONTEND
+
+Crear el **Design System base** y **scaffolding del proyecto frontend** que será REUTILIZADO en todas las stories del MVP.
 
 **Incluye:**
 - ✅ Setup del proyecto frontend (estructura de carpetas, configuración)
-- ✅ **Design System completo** (paleta, componentes UI reutilizables)
-- ✅ Layout system (Navbar, Sidebar si aplica)
-- ✅ **2-3 páginas demo** (SOLO para validar que el design system funciona)
-- ✅ Documentación (`.context/design-system.md`, `SETUP.md`)
+- ✅ **Importar tipos TypeScript del backend** (supabase.ts o database.types.ts)
+- ✅ **Design System completo** (paleta, tipografía, componentes UI reutilizables)
+- ✅ Layout system (Navbar, Sidebar, Footer según diseño)
+- ✅ **2-3 páginas demo estratégicas** (validar que el design system funciona)
+- ✅ Documentación completa (`.context/design-system.md`)
 
 **NO incluye:**
-- ❌ Implementar TODAS las páginas del MVP
-- ❌ Implementar funcionalidad real de negocio
-- ❌ Diseños específicos de cada story (eso es Fase 5)
+- ❌ Implementar TODAS las páginas del MVP (solo demos)
+- ❌ Implementar funcionalidad real de negocio (solo UI visual)
+- ❌ Diseños específicos de cada story (eso es Fase 7: Implementation)
+- ❌ Tests E2E completos (solo validación visual)
 
-**Resultado:** Base visual reutilizable + demo funcional para mostrar al equipo.
+**Resultado:** Base visual reutilizable + tipos del backend integrados + demo funcional para mostrar al equipo.
+
+---
+
+## 📤 OUTPUT GENERADO
+
+### Configuración del Proyecto:
+- ✅ `package.json` - Dependencias frontend actualizadas
+- ✅ `tsconfig.json` - TypeScript configuration
+- ✅ `tailwind.config.js` - TailwindCSS con paleta personalizada
+- ✅ `next.config.js` (o equivalente) - Framework configuration
+- ✅ `postcss.config.js` - PostCSS setup
+
+### Tipos y Helpers:
+- ✅ `src/lib/types.ts` - Helpers de tipos extraídos desde database
+- ✅ Importa de `src/types/supabase.ts` (creado en backend-setup)
+
+### Design System:
+- ✅ `src/components/ui/Button.tsx` - Componente botón reutilizable
+- ✅ `src/components/ui/Card.tsx` - Componente card
+- ✅ `src/components/ui/Input.tsx` - Componente input/form
+- ✅ `src/components/ui/Badge.tsx` - Badges y tags
+- ✅ `src/components/ui/Avatar.tsx` - Avatar component
+- ✅ (Más componentes según necesidad del proyecto)
+
+### Layout Components:
+- ✅ `src/components/layout/Navbar.tsx` - Navigation bar
+- ✅ `src/components/layout/Sidebar.tsx` - (Si aplica) Sidebar navigation
+- ✅ `src/components/layout/Footer.tsx` - Footer component
+- ✅ `src/app/layout.tsx` - Root layout con providers
+
+### Páginas Demo (2-3 estratégicas):
+- ✅ `src/app/page.tsx` - Landing/Home page demo
+- ✅ `src/app/dashboard/page.tsx` - (Si aplica) Dashboard demo
+- ✅ `src/app/[otra-pagina]/page.tsx` - Página demo según dominio
+
+### Estilos:
+- ✅ `src/app/globals.css` - Global styles + TailwindCSS imports
+- ✅ Custom CSS variables para paleta de colores
+- ✅ Typography system (font families, sizes)
+
+### Documentación:
+- ✅ `.context/design-system.md` - **CRÍTICO** - Documenta paleta, componentes, uso
+- ✅ `SETUP.md` o `README.md` - Setup instructions para developers
+
+### Validation:
+- ✅ TypeScript build successful (sin errores de tipos)
+- ✅ Dev server starts sin warnings críticos
+- ✅ Design system visualmente coherente y atractivo
+
+---
+
+## 🔗 FASE 0.5: INTEGRACIÓN CON BACKEND (NUEVO)
+
+**Objetivo:** Importar tipos TypeScript generados por el backend para zero type errors.
+
+### Paso 0.5.1: Verificar tipos del backend
+
+```markdown
+## 🔍 Verificando tipos generados por Backend
+
+**Archivo esperado:** `lib/database.types.ts` (generado en Fase 3.2)
+
+**¿Existe el archivo?**
+[Ejecutar: ls -la lib/database.types.ts]
+
+**Si existe:**
+✅ Tipos del backend disponibles
+✅ Podemos importarlos en el frontend
+
+**Si NO existe:**
+⚠️ IMPORTANTE: Debes ejecutar Fase 3.2 (Backend Setup) primero
+⚠️ Los tipos se generan con: `npx supabase gen types typescript --project-id xxx > lib/database.types.ts`
+```
+
+### Paso 0.5.2: Crear types helper
+
+```markdown
+### 📄 Creando Helper de Tipos
+
+**Archivo:** `lib/types.ts`
+
+**Propósito:** Extraer tipos específicos de la base de datos para usar en componentes.
+
+**Creando archivo...**
+```
+
+**Contenido:**
+
+```typescript
+// Import database types generated from Supabase schema
+import type { Database } from './database.types'
+
+// Extract table row types
+export type User = Database['public']['Tables']['users']['Row']
+export type UserInsert = Database['public']['Tables']['users']['Insert']
+export type UserUpdate = Database['public']['Tables']['users']['Update']
+
+// Add more types as needed based on your schema
+// Example:
+// export type Profile = Database['public']['Tables']['profiles']['Row']
+// export type Post = Database['public']['Tables']['posts']['Row']
+
+// Helper type for API responses
+export type ApiResponse<T> = {
+  data: T | null
+  error: string | null
+}
+```
+
+**Explicación al usuario:**
+
+```markdown
+**✅ Tipos del backend integrados**
+
+**Beneficios:**
+
+1. **Zero type mismatches:** Frontend y backend comparten los mismos tipos
+2. **Autocomplete:** TypeScript sabe exactamente qué campos tiene cada entidad
+3. **Refactoring seguro:** Cambios en el schema se reflejan automáticamente
+
+**Ejemplo de uso en componentes:**
+
+```typescript
+import type { User } from '@/lib/types'
+
+// El componente sabe exactamente qué campos tiene User
+const UserCard = ({ user }: { user: User }) => {
+  return (
+    <div>
+      <h3>{user.name}</h3>  {/* ✅ TypeScript valida que 'name' existe */}
+      <p>{user.email}</p>    {/* ✅ TypeScript valida que 'email' existe */}
+    </div>
+  )
+}
+```
+
+**Si el schema cambia:**
+- Re-generas tipos: `npx supabase gen types typescript...`
+- TypeScript te avisa dónde hay errores
+- Actualizas el código
+- Zero bugs en producción por campos inexistentes
+```
 
 ---
 
@@ -40,7 +248,7 @@ Crear el **Design System base** y **scaffolding del proyecto frontend** que ser�
 - **NO instalar dependencias innecesarias** - Solo fundamentales
 - **NO implementar todas las páginas del MVP** - Solo 2-3 páginas demo estratégicas
 - **NO implementar funcionalidad real** - Solo UI bonita con mock data para validar design system
-- **NO implementar criterios de aceptación completos** - Eso es para Fase 6 (Implementation)
+- **NO implementar criterios de aceptación completos** - Eso es para Fase 7 (Implementation)
 - **NO hardcodear nombres genéricos** (ej: "Dashboard", "Settings") - Usa nombres del dominio del negocio
 - **NO ejecutar comandos interactivos** (ej: `npm run dev`) - Solo comandos que terminen
 - **NO hacer commits automáticos** - Solo recomendar al usuario
@@ -49,6 +257,7 @@ Crear el **Design System base** y **scaffolding del proyecto frontend** que ser�
 ### ✅ SÍ HACER:
 - **Hacer preguntas al usuario** - Preferencias de diseño, package manager, etc.
 - **Usar Context7 MCP** - Consultar docs oficiales (Next.js, Supabase, TailwindCSS, etc.)
+- **Importar tipos del backend** - Usar database.types.ts y crear helpers
 - **Crear design system completo** - Botones, cards, inputs, etc. con estilo coherente
 - **Aplicar paleta de colores** - Elegida o generada según negocio
 - **Páginas visualmente atractivas** - Modernas, con personalidad
@@ -58,9 +267,25 @@ Crear el **Design System base** y **scaffolding del proyecto frontend** que ser�
 
 ---
 
+## 🔄 WORKFLOW
+
+El proceso se divide en múltiples fases ejecutadas secuencialmente:
+
+1. **Fase 0:** Setup y selección de package manager
+2. **Fase 0.5:** Integración con tipos del backend
+3. **Fase 1:** Análisis de contexto y decisiones de diseño
+4. **Fase 2:** Instalación de dependencias
+5. **Fase 3:** Design System (componentes UI)
+6. **Fase 4:** Layout Components (Navbar, Sidebar, Footer)
+7. **Fase 5:** Páginas Demo (2-3 estratégicas)
+8. **Fase 6:** Documentación
+9. **Fase 7:** Validación y Build
+
+---
+
 ## 📦 FASE 0: SETUP & PACKAGE MANAGER
 
-**Objetivo:** Educir al usuario sobre package managers y que elija cuál usar.
+**Objetivo:** Educar al usuario sobre package managers y que elija cuál usar.
 
 ### Paso 0.1: Educar sobre Package Managers
 
@@ -167,6 +392,10 @@ Hoy en día, hay alternativas **mucho más rápidas y eficientes** que npm:
 - `.context/PBI/epics/*/epic.md` → Revisar TODAS las épicas
 - `.context/PBI/epics/*/stories/*/story.md` → Escanear stories principales
 
+**Backend Types (NUEVO):**
+- `lib/database.types.ts` → Tipos generados del schema de Supabase
+- Identificar entidades principales disponibles
+
 **Qué identificar:**
 
 1. **Dominio del negocio:**
@@ -199,6 +428,7 @@ Hoy en día, hay alternativas **mucho más rápidas y eficientes** que npm:
 - Lista de épicas prioritarias
 - Vocabulario del dominio
 - Pistas de diseño (si existen)
+- **Entidades disponibles en database.types.ts**
 
 ---
 
@@ -244,6 +474,9 @@ Hoy en día, hay alternativas **mucho más rápidas y eficientes** que npm:
 1. [EPIC-XXX]: [Nombre] - [Razón de prioridad]
 2. [EPIC-YYY]: [Nombre] - [Razón de prioridad]
 3. [EPIC-ZZZ]: [Nombre] - [Razón de prioridad]
+
+### Tipos Backend Disponibles:
+[Listar entidades identificadas en database.types.ts]
 
 ### Documentación Consultada:
 - **[Framework]**: [Conceptos clave]
@@ -467,7 +700,7 @@ Basándome en tus preferencias y el análisis del proyecto, aquí está el plan 
    - **Propósito:** Validar [componentes que muestra]
    - **Componentes UI que usa:** [List, etc.]
 
-**Nota:** Las demás páginas del MVP se implementarán en Fase 6 (Implementation) según los planes de cada story.
+**Nota:** Las demás páginas del MVP se implementarán en Fase 7 (Implementation) según los planes de cada story.
 ```
 
 ---
@@ -477,8 +710,6 @@ Basándome en tus preferencias y el análisis del proyecto, aquí está el plan 
 **Objetivo:** Configurar el proyecto con el package manager seleccionado.
 
 ### Paso 3.1: Verificar Entorno Actual
-
-[MANTENER - agregar mención del package manager]
 
 ```markdown
 **Package manager seleccionado:** [pnpm/bun]
@@ -513,13 +744,9 @@ Basándome en tus preferencias y el análisis del proyecto, aquí está el plan 
 [pnpm/bun] add -D typescript @types/react @types/node eslint prettier
 ```
 
-[Resto del paso 3.2 igual]
-
 ---
 
 ### Paso 3.3: Crear Estructura de Carpetas
-
-[MANTENER - agregar mención de components/ui para design system]
 
 **Estructura debe incluir:**
 ```
@@ -528,6 +755,10 @@ Basándome en tus preferencias y el análisis del proyecto, aquí está el plan 
 │   ├── ui/           ← Design system components (Button, Card, etc.)
 │   ├── layout/       ← Layout components (Navbar, Sidebar, etc.)
 │   └── [domain]/     ← Domain-specific components
+├── lib/
+│   ├── database.types.ts  ← Backend types (ya existe desde Fase 3.2)
+│   ├── types.ts           ← Type helpers (crear en Fase 0.5)
+│   └── utils.ts           ← Utilities (cn function, etc.)
 ```
 
 ---
@@ -1039,7 +1270,7 @@ export function cn(...inputs: ClassValue[]) {
 - ✅ UI completa y bonita
 - ✅ Validación visual (error states en inputs)
 - ✅ Loading state en botón
-- ⏭️ Integración real con auth provider (Fase 6)
+- ⏭️ Integración real con auth provider (Fase 7)
 
 **Paleta aplicada:**
 - Card: bg-card con sombra
@@ -1098,12 +1329,20 @@ Ejemplos:
 **Mock data:**
 [Crear 4-6 items de mock data apropiados al dominio]
 
+**TypeScript types (NUEVO):**
+```typescript
+import type { [Entity] } from '@/lib/types'
+
+// Usar tipos reales del backend para mock data
+const mockData: [Entity][] = [...]
+```
+
 **Creando página...**
 ```
 
 **Directiva para la IA:**
 
-"Crea página home/principal del dominio. Analiza las épicas del PBI para identificar qué entidades mostrar (proyectos, productos, mentores, etc.). Crea 4-6 items de mock data realistas. Usa Card component con hover effect. Include loading skeleton states. Si grid está vacío, muestra empty state bonito con ilustración/ícono + CTA. Usa paleta de colores del theme. Title con text-3xl font-bold, description con text-muted-foreground."
+"Crea página home/principal del dominio. Analiza las épicas del PBI para identificar qué entidades mostrar (proyectos, productos, mentores, etc.). **USA los tipos del backend importados de @/lib/types** para crear mock data type-safe. Crea 4-6 items de mock data realistas que cumplan con la estructura del tipo. Usa Card component con hover effect. Include loading skeleton states. Si grid está vacío, muestra empty state bonito con ilustración/ícono + CTA. Usa paleta de colores del theme. Title con text-3xl font-bold, description con text-muted-foreground."
 
 ---
 
@@ -1133,8 +1372,14 @@ Ejemplos:
 1. [Sección 1]: [Descripción]
 2. [Sección 2]: [Descripción]
 
-**Mock data:**
-[Crear data apropiada al dominio]
+**Mock data (usando tipos del backend):**
+```typescript
+import type { [Entity] } from '@/lib/types'
+
+const mockData: [Entity][] = [
+  // Mock data que cumple con la estructura del backend
+]
+```
 
 **Estados a implementar:**
 - Loading (skeleton)
@@ -1145,7 +1390,7 @@ Ejemplos:
 **Paleta aplicada:**
 [Describir cómo se usa la paleta en esta página]
 
-**⏭️ Diferido para Fase 6:**
+**⏭️ Diferido para Fase 7:**
 - ❌ Fetch real de datos
 - ❌ Filtros/búsqueda funcionales
 - ❌ Paginación real
@@ -1156,7 +1401,7 @@ Ejemplos:
 
 **Directiva para la IA:**
 
-"Crea página visualmente atractiva usando componentes del design system. Analiza la épica [EPIC-XXX] para entender qué mostrar. Usa mock data realista (6-8 items). Include estados de loading (skeleton), empty state, y error state si aplica. Si es lista, usa grid responsive con Cards. Si tiene acciones, usa Buttons del design system con iconos (lucide-react). Aplica paleta de colores de forma coherente. NO implementes lógica real, solo UI bonita con mock data."
+"Crea página visualmente atractiva usando componentes del design system. Analiza la épica [EPIC-XXX] para entender qué mostrar. **USA tipos del backend de @/lib/types** para crear mock data type-safe. Crea 6-8 items de mock data realista que cumplan con la estructura del tipo. Include estados de loading (skeleton), empty state, y error state si aplica. Si es lista, usa grid responsive con Cards. Si tiene acciones, usa Buttons del design system con iconos (lucide-react). Aplica paleta de colores de forma coherente. NO implementes lógica real, solo UI bonita con mock data."
 
 ---
 
@@ -1171,6 +1416,7 @@ Ejemplos:
 - ✅ Mismo espaciado (padding, margin consistentes)
 - ✅ Misma tipografía (tamaños de text-)
 - ✅ Mismas sombras y bordes (según estilo elegido)
+- ✅ **Tipos del backend para mock data** (type-safe)
 
 **Resultado:** Aplicación con identidad visual coherente y profesional.
 ```
@@ -1196,6 +1442,7 @@ Ejemplos:
 **¿Por qué build?**
 - Es un comando que termina (no interactivo)
 - Detecta errores de TypeScript, imports, etc.
+- **Valida que los tipos del backend están correctos**
 
 **Ejecutando build...**
 ```
@@ -1203,8 +1450,6 @@ Ejemplos:
 ```bash
 [pnpm/bun] run build
 ```
-
-[Resto de validación igual que antes]
 
 ---
 
@@ -1222,7 +1467,7 @@ Ejemplos:
 
 ### Paso 7.2: Crear Documentación de Arquitectura
 
-[MANTENER frontend-architecture.md - igual que antes, agregar sección de diseño]
+[MANTENER frontend-architecture.md - igual que antes, agregar sección de tipos backend]
 
 ---
 
@@ -1240,6 +1485,7 @@ Ejemplos:
 **Contenido incluido:**
 - Paleta de colores completa
 - Componentes UI creados
+- **Integración con tipos del backend**
 - Guidelines de uso
 - Ejemplos de código
 
@@ -1251,9 +1497,45 @@ Ejemplos:
 ```markdown
 # Design System - [Nombre del Proyecto]
 
-**Generado:** Fase 3.5 - Frontend Scaffolding
+**Generado:** Fase 3.3 - Frontend Setup
 **Fecha:** [Fecha]
 **Estilo Visual:** [Elegido en Fase 1.5]
+
+---
+
+## 🔗 Integración Backend-Frontend (NUEVO)
+
+### Tipos TypeScript Compartidos
+
+**Beneficio clave:** Zero type mismatches entre backend y frontend.
+
+**Archivo de tipos:** `lib/database.types.ts` (generado por Supabase CLI)
+**Helper de tipos:** `lib/types.ts` (extrae tipos específicos)
+
+**Ejemplo de uso:**
+
+```typescript
+import type { User, Profile } from '@/lib/types'
+
+// TypeScript sabe exactamente qué campos tiene User
+const UserCard = ({ user }: { user: User }) => {
+  return (
+    <div>
+      <h3>{user.name}</h3>      {/* ✅ TypeScript valida que 'name' existe */}
+      <p>{user.email}</p>       {/* ✅ TypeScript valida que 'email' existe */}
+      <p>{user.invalid}</p>     {/* ❌ Error: 'invalid' no existe en User */}
+    </div>
+  )
+}
+```
+
+**Flujo de sincronización:**
+
+1. Backend define schemas (Supabase)
+2. Se generan tipos: `npx supabase gen types typescript...`
+3. Frontend importa tipos de `lib/types.ts`
+4. Cualquier cambio en schema requiere re-generar tipos
+5. TypeScript detecta errores automáticamente
 
 ---
 
@@ -1261,30 +1543,30 @@ Ejemplos:
 
 ### Colores Principales
 
-| Color | Hex | Uso |
-|-------|-----|-----|
-| **Primary** | [#HEX] | Botones primarios, links, focus states, elementos principales |
-| **Secondary** | [#HEX] | Botones secundarios, elementos secundarios |
-| **Accent** | [#HEX] | Highlights, badges, call-to-actions secundarios |
+| Color         | Hex    | Uso                                                           |
+| ------------- | ------ | ------------------------------------------------------------- |
+| **Primary**   | [#HEX] | Botones primarios, links, focus states, elementos principales |
+| **Secondary** | [#HEX] | Botones secundarios, elementos secundarios                    |
+| **Accent**    | [#HEX] | Highlights, badges, call-to-actions secundarios               |
 
 ### Colores de Sistema
 
-| Color | Hex | Uso |
-|-------|-----|-----|
-| **Background** | [#HEX] | Fondo de la aplicación |
-| **Card** | [#HEX] | Fondo de cards, modals |
-| **Border** | [#HEX] | Bordes de inputs, cards |
-| **Text** | [#HEX] | Texto principal |
-| **Muted** | [#HEX] | Texto secundario, placeholders |
+| Color          | Hex    | Uso                            |
+| -------------- | ------ | ------------------------------ |
+| **Background** | [#HEX] | Fondo de la aplicación         |
+| **Card**       | [#HEX] | Fondo de cards, modals         |
+| **Border**     | [#HEX] | Bordes de inputs, cards        |
+| **Text**       | [#HEX] | Texto principal                |
+| **Muted**      | [#HEX] | Texto secundario, placeholders |
 
 ### Colores Semánticos
 
-| Color | Hex | Uso |
-|-------|-----|-----|
+| Color       | Hex    | Uso                                       |
+| ----------- | ------ | ----------------------------------------- |
 | **Success** | [#HEX] | Mensajes de éxito, validaciones positivas |
-| **Warning** | [#HEX] | Advertencias |
-| **Error** | [#HEX] | Errores, validaciones fallidas |
-| **Info** | [#HEX] | Mensajes informativos |
+| **Warning** | [#HEX] | Advertencias                              |
+| **Error**   | [#HEX] | Errores, validaciones fallidas            |
+| **Info**    | [#HEX] | Mensajes informativos                     |
 
 **Acceso en código:**
 
@@ -1307,13 +1589,13 @@ color: var(--color-primary);
 
 **Variantes disponibles:**
 
-| Variante | Uso | Ejemplo Visual |
-|----------|-----|----------------|
-| `default` (primary) | Acciones principales | Fondo primary, texto blanco |
-| `secondary` | Acciones secundarias | Fondo secondary, texto blanco |
-| `outline` | Acciones terciarias | Borde primary, fondo transparente |
-| `ghost` | Acciones sutiles | Sin fondo, texto primary |
-| `danger` | Acciones destructivas | Fondo rojo, texto blanco |
+| Variante            | Uso                   | Ejemplo Visual                    |
+| ------------------- | --------------------- | --------------------------------- |
+| `default` (primary) | Acciones principales  | Fondo primary, texto blanco       |
+| `secondary`         | Acciones secundarias  | Fondo secondary, texto blanco     |
+| `outline`           | Acciones terciarias   | Borde primary, fondo transparente |
+| `ghost`             | Acciones sutiles      | Sin fondo, texto primary          |
+| `danger`            | Acciones destructivas | Fondo rojo, texto blanco          |
 
 **Tamaños:**
 - `sm` - Pequeño (height: 32px)
@@ -1355,22 +1637,25 @@ import { Button } from '@/components/ui/button'
 - `hover` - Con efecto hover (sube)
 - `clickable` - Cursor pointer + hover
 
-**Ejemplo de uso:**
+**Ejemplo de uso con tipos del backend:**
 
 ```tsx
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card'
+import type { User } from '@/lib/types'
 
-<Card className="hover:shadow-lg transition-shadow">
-  <CardHeader>
-    <h3 className="text-xl font-semibold">[Título]</h3>
-  </CardHeader>
-  <CardContent>
-    <p className="text-muted-foreground">[Contenido]</p>
-  </CardContent>
-  <CardFooter>
-    <Button>Ver detalle</Button>
-  </CardFooter>
-</Card>
+const UserCard = ({ user }: { user: User }) => (
+  <Card className="hover:shadow-lg transition-shadow">
+    <CardHeader>
+      <h3 className="text-xl font-semibold">{user.name}</h3>
+    </CardHeader>
+    <CardContent>
+      <p className="text-muted-foreground">{user.email}</p>
+    </CardContent>
+    <CardFooter>
+      <Button>Ver perfil</Button>
+    </CardFooter>
+  </Card>
+)
 ```
 
 ---
@@ -1425,12 +1710,17 @@ import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card'
    - ✅ `<Card>` para agrupar información
    - ✅ Clases de Tailwind con la paleta (`bg-primary`, `text-primary`)
 
-2. **Mantén consistencia:**
+2. **Usa tipos del backend:**
+   - ✅ `import type { User } from '@/lib/types'`
+   - ✅ Type-safe props: `{ user }: { user: User }`
+   - ✅ Mock data con tipos: `const mockData: User[] = [...]`
+
+3. **Mantén consistencia:**
    - ✅ Mismo spacing (`gap-6`, `p-6`)
    - ✅ Mismos border radius
    - ✅ Mismas sombras
 
-3. **Usa variantes semánticas:**
+4. **Usa variantes semánticas:**
    - ✅ `variant="default"` para acciones principales
    - ✅ `variant="danger"` para acciones destructivas
    - ✅ `text-muted-foreground` para texto secundario
@@ -1441,25 +1731,30 @@ import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card'
    - ❌ `bg-blue-500` → ✅ `bg-primary`
    - ❌ `#3B82F6` → ✅ `var(--color-primary)`
 
-2. **No crees botones custom:**
+2. **No uses tipos `any`:**
+   - ❌ `const user: any = ...` → ✅ `const user: User = ...`
+   - ❌ `props: any` → ✅ `props: { user: User }`
+
+3. **No crees botones custom:**
    - ❌ `<button className="bg-blue-500...">` → ✅ `<Button>`
 
-3. **No rompas la consistencia:**
+4. **No rompas la consistencia:**
    - ❌ Border radius diferente en cada componente
    - ❌ Spacing inconsistente
 
 ---
 
-## 🚀 Extender el Design System (Fase 6)
+## 🚀 Extender el Design System (Fase 7)
 
-Cuando implementes nuevas features en Fase 6:
+Cuando implementes nuevas features en Fase 7:
 
 ### Agregar nuevo componente UI:
 
 1. Créalo en `components/ui/[nombre].tsx`
 2. Usa la paleta de colores del theme
 3. Aplica el estilo visual consistente (bordes, sombras)
-4. Documenta en este archivo
+4. **Usa tipos del backend si el componente recibe datos**
+5. Documenta en este archivo
 
 ### Modificar componente existente:
 
@@ -1472,7 +1767,8 @@ Cuando implementes nuevas features en Fase 6:
 1. Usa layout components existentes
 2. Usa componentes del design system
 3. Aplica paleta de colores
-4. Mantén spacing consistente
+4. **Importa tipos del backend para props y mock data**
+5. Mantén spacing consistente
 
 ---
 
@@ -1482,6 +1778,8 @@ Cuando implementes nuevas features en Fase 6:
 - **Estilos Globales:** `app/globals.css` - Variables CSS
 - **Componentes UI:** `components/ui/` - Todos los componentes
 - **Layout Components:** `components/layout/` - Navbar, Sidebar
+- **Tipos Backend:** `lib/database.types.ts` - Tipos generados de Supabase
+- **Type Helpers:** `lib/types.ts` - Helpers de tipos
 
 ---
 
@@ -1495,7 +1793,7 @@ Cuando implementes nuevas features en Fase 6:
 **Output final (mostrar al usuario):**
 
 ```markdown
-# 🎉 FASE 2.5: Design System Completado
+# 🎉 FASE 3.3: Frontend Setup Completado
 
 ---
 
@@ -1505,7 +1803,30 @@ Cuando implementes nuevas features en Fase 6:
 **Páginas demo:** [2-3] (para validar design system)
 **Componentes UI creados:** [número]
 **Package manager:** [pnpm/bun]
-**Fase:** 2.5 - Design (Sincrónica - ejecutada UNA sola vez)
+**Fase:** 3.3 - Frontend Setup (Sincrónica - ejecutada UNA sola vez después de Backend)
+
+---
+
+## 🔗 Integración Backend-Frontend (NUEVO)
+
+### ✅ Tipos TypeScript Sincronizados
+
+**Archivo backend:** `lib/database.types.ts` (generado en Fase 3.2)
+**Helper frontend:** `lib/types.ts` (creado en esta fase)
+
+**Beneficio:**
+- Zero type mismatches
+- Autocomplete en todos los componentes
+- Cambios en schema se reflejan automáticamente
+
+**Ejemplo de uso:**
+```typescript
+import type { User } from '@/lib/types'
+
+const UserCard = ({ user }: { user: User }) => {
+  return <div>{user.name}</div>  // ✅ TypeScript valida todo
+}
+```
 
 ---
 
@@ -1526,13 +1847,19 @@ Cuando implementes nuevas features en Fase 6:
 
 ## ✅ Lo que se Implementó
 
-### 1. Arquitectura del Framework:
+### 1. Integración Backend (NUEVO):
+- ✅ Tipos del backend importados (`lib/database.types.ts`)
+- ✅ Helper de tipos creado (`lib/types.ts`)
+- ✅ Mock data type-safe en páginas demo
+- ✅ Zero type errors entre backend y frontend
+
+### 2. Arquitectura del Framework:
 - ✅ [Framework] configurado correctamente
 - ✅ [Package manager] como gestor de paquetes
 - ✅ TypeScript + ESLint configurados
 - ✅ Estructura de carpetas según mejores prácticas
 
-### 2. Design System Completo:
+### 3. Design System Completo:
 - ✅ Paleta de colores aplicada en Tailwind
 - ✅ [X] componentes UI reutilizables creados
 - ✅ Layout components (Navbar, [Sidebar si aplica])
@@ -1544,26 +1871,26 @@ Cuando implementes nuevas features en Fase 6:
 - ✅ Card (con Header, Content, Footer)
 [Listar otros componentes creados]
 
-### 3. Páginas Demo (para validar design system):
+### 4. Páginas Demo (para validar design system):
 [Listar 2-3 páginas con breve descripción visual]
 
 1. ✅ [Página 1] (`/[ruta]`)
    - Diseño: [Breve descripción visual]
-   - Mock data: [X] items
+   - Mock data: [X] items (usando tipos del backend ✅)
    - **Propósito:** Validar [componentes]
 
 2. ✅ [Página 2] (`/[ruta]`)
    - Diseño: [Breve descripción visual]
-   - Mock data: [X] items
+   - Mock data: [X] items (usando tipos del backend ✅)
    - **Propósito:** Validar [componentes]
 
-**Nota:** Las demás páginas del MVP se implementarán en Fase 6 según los implementation plans de cada story (Fase 5).
+**Nota:** Las demás páginas del MVP se implementarán en Fase 7 según los implementation plans de cada story (Fase 6).
 
-### 4. Documentación Generada:
+### 5. Documentación Generada:
 - ✅ `SETUP.md` - Guía de instalación
 - ✅ `.context/frontend-architecture.md` - Arquitectura técnica
-- ✅ `.context/design-system.md` - **NUEVO:** Design system completo
-- ✅ `.env.local.example` - Template de variables
+- ✅ `.context/design-system.md` - Design system completo + integración backend
+- ✅ `.env.example` - Template de variables
 
 ---
 
@@ -1572,8 +1899,8 @@ Cuando implementes nuevas features en Fase 6:
 ### 1️⃣ Configurar Variables de Entorno (AHORA)
 
 ```bash
-cp .env.local.example .env.local
-# Edita .env.local con tus credenciales reales
+cp .env.example .env
+# Edita .env con tus credenciales reales
 ```
 
 ---
@@ -1592,6 +1919,7 @@ cp .env.local.example .env.local
 3. Navega entre páginas
 4. Observa la consistencia visual (colores, componentes)
 5. Prueba estados hover en botones y cards
+6. **Verifica que mock data usa tipos del backend** (abre DevTools)
 
 **Lo que deberías ver:**
 - ✅ Aplicación **visualmente impresionante**
@@ -1599,6 +1927,7 @@ cp .env.local.example .env.local
 - ✅ Componentes estilizados y modernos
 - ✅ Layout profesional
 - ✅ Diseño alineado con la personalidad del negocio
+- ✅ **Mock data type-safe** (zero TypeScript errors)
 
 ---
 
@@ -1607,26 +1936,45 @@ cp .env.local.example .env.local
 Abre `.context/design-system.md` para ver:
 - Paleta de colores completa
 - Componentes disponibles y cómo usarlos
+- **Guía de integración backend-frontend**
 - Guidelines de diseño
 - Ejemplos de código
 
-**Esto será tu guía de estilo** durante toda la Fase 6 (Implementation).
+**Esto será tu guía de estilo** durante toda la Fase 7 (Implementation).
 
 ---
 
 ### 4️⃣ Considerar Crear Checkpoint Git (RECOMENDADO)
 
-[Igual que antes - recomendación de commit]
+```bash
+git add .
+git commit -m "feat: Setup frontend with design system and backend types integration
+
+- Configured [Framework] with [package manager]
+- Created design system ([X] components)
+- Integrated backend types (database.types.ts)
+- Implemented [X] demo pages with type-safe mock data
+- Applied [Color Palette] + [Visual Style]
+- Layout: [Chosen Layout]
+"
+```
 
 ---
 
-### 5️⃣ Continuar con Fase 3: Specification (SIGUIENTE)
+### 5️⃣ Continuar con Fase 4: Specification (SIGUIENTE)
 
-**Ahora que tienes el Design System base:**
+**Ahora que tienes el Frontend Setup completo:**
+- Backend schemas creados (Fase 3.2) ✅
+- Frontend integrado con tipos del backend (Fase 3.3) ✅
+- Design System base listo ✅
+
+**Próximo paso:**
 - Procede a crear el Product Backlog (PBI) con flujo Jira-First
-- Usa `.prompts/fase-3-specification/pbi-product-backlog.md`
-- Cada story que implemente después usará los componentes del design system
-- Los diseños específicos de cada story se harán en Fase 5 (Planning)
+- Usa `.prompts/fase-4-specification/pbi-product-backlog.md`
+- Cada story implementará funcionalidad usando:
+  - Componentes del design system
+  - Tipos del backend
+  - Patrones establecidos
 
 ---
 
@@ -1635,16 +1983,17 @@ Abre `.context/design-system.md` para ver:
 **¿Qué logramos?**
 
 ✅ **Arquitectura sólida** - Framework configurado profesionalmente
+✅ **Backend-Frontend integrados** - Tipos compartidos, zero mismatches
 ✅ **Design System completo** - Componentes reutilizables y bonitos
 ✅ **Paleta coherente** - Colores aplicados consistentemente
-✅ **Páginas impresionantes** - Visualmente atractivas con mock data
+✅ **Páginas impresionantes** - Visualmente atractivas con mock data type-safe
 ✅ **Layout profesional** - Navegación intuitiva y moderna
-✅ **Documentación completa** - Arquitectura + Diseño documentados
+✅ **Documentación completa** - Arquitectura + Diseño + Integración documentados
 ✅ **Lista para demo** - Puedes mostrarlo al equipo AHORA
 
 **Diferencia vs versión anterior:**
-❌ Antes: Páginas grises, sin personalidad, aburridas
-✅ Ahora: **Aplicación hermosa, moderna, con identidad visual**
+❌ Antes: Páginas grises, sin personalidad, tipos manuales
+✅ Ahora: **Aplicación hermosa, moderna, con identidad visual + tipos sincronizados**
 
 ---
 
@@ -1654,22 +2003,22 @@ Abre `.context/design-system.md` para ver:
 1. Levanta el servidor (`[pm] run dev`)
 2. Muestra las páginas funcionando
 3. **Destaca el diseño visual** (paleta, componentes, layout)
-4. Explica que es scaffolding + design system (no funcionalidad completa)
+4. **Explica la integración backend-frontend** (zero type errors)
 5. Muestra `.context/design-system.md`
-6. Presenta roadmap de Fases 4-6
+6. Presenta roadmap de Fases 4-7
 
-**Valor:** El equipo ve una aplicación **preciosa y profesional**, no solo estructura.
+**Valor:** El equipo ve una aplicación **preciosa, profesional y type-safe**, no solo estructura.
 
 ---
 
-**🎉 ¡Scaffolding + Design System completado exitosamente!**
+**🎉 ¡Frontend Setup + Design System + Backend Integration completado exitosamente!**
 
 **Documentación:**
 - `SETUP.md` - Cómo levantar el proyecto
 - `.context/frontend-architecture.md` - Arquitectura técnica
-- `.context/design-system.md` - **Guía de diseño completa** ⭐
+- `.context/design-system.md` - **Guía de diseño completa + integración backend** ⭐
 
-**Disfruta de tu aplicación bonita!** ✨
+**Disfruta de tu aplicación bonita y type-safe!** ✨
 ```
 
 ---
@@ -1678,12 +2027,18 @@ Abre `.context/design-system.md` para ver:
 
 Checklist interno (NO mostrar al usuario):
 
+### Integración Backend:
+- ✅ `lib/database.types.ts` existe (verificado)
+- ✅ `lib/types.ts` creado con helpers
+- ✅ Mock data en páginas usa tipos del backend
+- ✅ Build pasa sin TypeScript errors
+
 ### Diseño:
 - ✅ Paleta de colores aplicada en tailwind.config
 - ✅ Design system con componentes bonitos creado
 - ✅ Páginas usan componentes del design system
 - ✅ Consistencia visual en toda la aplicación
-- ✅ `.context/design-system.md` creado
+- ✅ `.context/design-system.md` creado con sección de integración backend
 
 ### Arquitectura:
 - ✅ Framework configurado
@@ -1694,7 +2049,7 @@ Checklist interno (NO mostrar al usuario):
 ### Documentación:
 - ✅ SETUP.md con instrucciones
 - ✅ frontend-architecture.md con decisiones técnicas
-- ✅ design-system.md con guía de diseño ⭐
+- ✅ design-system.md con guía de diseño + integración backend ⭐
 
 ### Usuario:
 - ✅ Se hicieron preguntas interactivas (package manager, diseño)
@@ -1705,38 +2060,39 @@ Checklist interno (NO mostrar al usuario):
 
 ---
 
-**Output:** Proyecto frontend con arquitectura sólida + **Design System completo** + 2-3 páginas demo visualmente impresionantes, todo documentado y listo para mostrar al equipo.
+**Output:** Proyecto frontend con arquitectura sólida + **Backend types integrados** + **Design System completo** + 2-3 páginas demo visualmente impresionantes con mock data type-safe, todo documentado y listo para mostrar al equipo.
 
-**Fase completada:** 2.5 - Design System ✅ (Sincrónica)
+**Fase completada:** 3.3 - Frontend Setup ✅ (Sincrónica)
 
-**Próxima fase:** 3 - Specification (Asincrónica)
+**Próxima fase:** 4 - Specification (Asincrónica)
 
 ---
 
-## 🔄 DIVISIÓN DE DISEÑO: FASE 2.5 vs FASE 5
+## 🔄 DIVISIÓN DE DISEÑO: FASE 3.3 vs FASE 6
 
 **Entender esta diferencia es CRÍTICO:**
 
-### FASE 2.5 (Design System Base - UNA sola vez):
+### FASE 3.3 (Frontend Setup - UNA sola vez):
 - ✅ Paleta de colores
 - ✅ Componentes UI reutilizables (Button, Card, Form, Modal, etc.)
 - ✅ Layout system (Navbar, Sidebar)
+- ✅ **Integración con tipos del backend**
 - ✅ 2-3 páginas demo (para validar que funciona)
 - ✅ 80% del diseño visual
 
-**Propósito:** Crear la base reutilizable para TODO el proyecto.
+**Propósito:** Crear la base reutilizable para TODO el proyecto con tipos sincronizados.
 
-### FASE 5 (Planning + UI Design - Por cada story):
+### FASE 6 (Planning + UI Design - Por cada story):
 - ✅ Wireframes/mockups específicos de la story
 - ✅ Componentes custom del dominio (ej: MentorCard, ProjectTable)
 - ✅ Flujos de UX específicos
 - ✅ Validaciones y estados visuales
 - ✅ 20% del diseño específico
 
-**Propósito:** Diseñar la implementación específica de cada story usando el design system base.
+**Propósito:** Diseñar la implementación específica de cada story usando el design system base y los tipos del backend.
 
 ---
 
 **Analogía:**
-- **Fase 2.5** = Construir la caja de herramientas (martillo, destornillador, etc.)
-- **Fase 5** = Decidir cómo usar esas herramientas para construir cada mueble específico
+- **Fase 3.3** = Construir la caja de herramientas (martillo, destornillador, etc.) + planos precisos (tipos)
+- **Fase 6** = Decidir cómo usar esas herramientas y planos para construir cada mueble específico

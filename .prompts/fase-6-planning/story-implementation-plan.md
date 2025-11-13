@@ -1,10 +1,11 @@
-Actúa como Senior Full-Stack Developer.
+Actúa como Senior Full-Stack Developer + UI/UX Designer.
 
 **Input:**
 - Story: [usar .context/PBI/epics/EPIC-XXX/stories/STORY-XXX/story.md]
 - Test Cases: [usar .context/PBI/epics/EPIC-XXX/stories/STORY-XXX/test-cases.md]
 - Feature Implementation Plan: [usar .context/PBI/epics/EPIC-XXX/feature-implementation-plan.md]
 - SRS relevante: [usar secciones relacionadas de .context/SRS/]
+- **Design System:** [usar .context/design-system.md - para decisiones de UI/UX]
 
 **Genera archivo: implementation-plan.md** (dentro de .context/PBI/epics/EPIC-XXX/stories/STORY-XXX/)
 
@@ -35,6 +36,81 @@ Implementar funcionalidad de [descripción breve].
 - ✅ [Ventaja 1]
 - ✅ [Ventaja 2]
 - ❌ Trade-off: [Desventaja o compromiso]
+
+---
+
+## UI/UX Design (Si la story tiene interfaz)
+
+**⚠️ IMPORTANTE:** Esta story debe usar el Design System base de Fase 2.5.
+
+**Design System disponible:** `.context/design-system.md`
+
+### Componentes del Design System a usar:
+
+**Componentes base (ya existen):**
+- ✅ Button → `variant`: [primary | secondary | outline | ghost | danger]
+- ✅ Card → Para [describir uso específico]
+- ✅ Input/Form → Para [formularios específicos]
+- ✅ Modal → Para [diálogos/confirmaciones]
+- [Listar otros componentes relevantes del design system]
+
+### Componentes custom a crear:
+
+**Componentes específicos del dominio (nuevos):**
+- 🆕 [ComponentName] (ej: MentorCard, ProjectTable)
+  - **Propósito:** [Descripción]
+  - **Props:** [Listar props principales]
+  - **Diseño:** [Breve descripción visual - usa design system base]
+  - **Ubicación:** `components/[domain]/[component-name].tsx`
+
+### Wireframes/Layout:
+
+**Estructura de la página/sección:**
+```
+[Descripción textual del layout - ej:]
+┌──────────────────────────────────────┐
+│ Header: [Título] + [CTA Button]     │
+├──────────────────────────────────────┤
+│ Filters: [Input] [Select] [Button]  │
+├──────────────────────────────────────┤
+│ Grid: [Card] [Card] [Card]          │
+│       [Card] [Card] [Card]          │
+└──────────────────────────────────────┘
+```
+
+### Estados de UI:
+
+**Estados visuales a implementar:**
+- **Loading:** [Skeleton loader / Spinner - describir dónde]
+- **Empty:** [EmptyState component con mensaje + CTA]
+- **Error:** [Error message + retry button]
+- **Success:** [Vista normal con datos]
+- [Otros estados específicos si aplica]
+
+### Validaciones visuales (Formularios):
+
+**Si la story incluye formularios:**
+- **Campo [X]:** [Validación] → Mensaje: "[mensaje]"
+- **Campo [Y]:** [Validación] → Mensaje: "[mensaje]"
+- **Submit:** [Validación del form completo]
+
+**Estados visuales:**
+- Error: `border-red-500` + mensaje en `text-red-500`
+- Success: `border-green-500`
+- Focus: `ring-primary`
+
+### Responsividad:
+
+**Breakpoints a considerar:**
+- **Mobile (< 768px):** [Ajustes específicos - ej: grid → list, sidebar → drawer]
+- **Tablet (768px - 1024px):** [Ajustes]
+- **Desktop (> 1024px):** [Layout completo]
+
+**Paleta de colores aplicada:**
+- Primary actions: `bg-primary` (del design system)
+- Secondary elements: `bg-secondary`
+- Borders/Dividers: `border-border`
+- Text: `text-foreground` / `text-muted-foreground`
 
 ---
 

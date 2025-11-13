@@ -1,0 +1,494 @@
+Actúa como Senior Tech Lead y Code Reviewer experto.
+
+---
+
+## 🎯 TAREA
+
+Realizar code review estático completo del código implementado para **STORY-[PROYECTO]-[NUM]-[nombre]**.
+
+---
+
+## ⚙️ VERIFICACIÓN DE HERRAMIENTAS (MCP)
+
+### Context7 MCP (Recomendado)
+**¿Está disponible?** [Verificar si puedes acceder a `mcp__context7__get-library-docs`]
+
+**Si NO está disponible:**
+```
+⚠️ MCP Context7 no detectado
+
+Para revisar código según best practices actuales, recomiendo conectar Context7 MCP.
+
+**¿Continuar sin Context7?**
+Puedo continuar, pero la revisión se basará en conocimiento interno (puede estar desactualizado).
+
+**Opciones:**
+1. ⏸️ Pausa y conecta Context7 (recomendado)
+2. ▶️ Continúa sin Context7
+```
+
+---
+
+## 📚 CONTEXTO REQUERIDO
+
+**DEBES leer:**
+
+### 1. Story y Plan:
+```
+.context/PBI/epics/EPIC-[PROYECTO]-[NUM]-[nombre]/stories/STORY-[PROYECTO]-[NUM]-[nombre]/story.md
+.context/PBI/epics/EPIC-[PROYECTO]-[NUM]-[nombre]/stories/STORY-[PROYECTO]-[NUM]-[nombre]/implementation-plan.md
+```
+
+**Propósito:**
+- Entender Acceptance Criteria (qué debe cumplir)
+- Entender approach técnico planificado
+
+### 2. Code Standards:
+```
+.context/guidelines/code-standards.md
+.context/guidelines/error-handling.md
+```
+
+**Propósito:**
+- Checklist de estándares de código
+- Reglas de manejo de errores
+
+### 3. Design System (si hay UI):
+```
+.context/design-system.md
+```
+
+**Propósito:**
+- Validar que usa componentes correctos
+- Validar paleta de colores aplicada
+
+### 4. Código implementado:
+- Diff completo de la implementación
+- Archivos creados/modificados
+
+---
+
+## 🔍 CHECKLIST DE REVIEW (Orden de revisión)
+
+### 1. ✅ **Acceptance Criteria**
+
+**Revisar:**
+- [ ] Todos los AC de `story.md` se cumplen
+- [ ] Funcionalidad implementada correctamente
+- [ ] Edge cases considerados (según `test-cases.md`)
+
+**Si algún AC no se cumple:**
+- 🚨 **CRITICAL** - Blocker para approval
+
+---
+
+### 2. 🔧 **Linting y Build**
+
+**Ejecutar (si es posible):**
+```bash
+npm run lint    # o: bun run lint
+npm run build   # o: bun run build
+```
+
+**Revisar:**
+- [ ] **Linting:** Sin errores de ESLint
+- [ ] **TypeScript:** Sin errores de compilación
+- [ ] **Build:** Exitoso
+
+**Si hay errores:**
+- 🚨 **CRITICAL** - Debe corregirse antes de merge
+
+**Si NO puedes ejecutar:**
+- Instruir al usuario a ejecutar y reportar resultado
+
+---
+
+### 3. 📐 **Code Standards** (CRÍTICO)
+
+**Revisar archivo por archivo:**
+
+#### A) **DRY (Don't Repeat Yourself)**
+- [ ] No hay código duplicado
+- [ ] Lógica repetida extraída a funciones reutilizables
+- [ ] Componentes UI reutilizan design system
+
+**Ejemplo de violación:**
+```typescript
+// ❌ MAL - Código duplicado
+function getUserName() {
+  const user = await fetch('/api/user')
+  return user.name
+}
+
+function getUserEmail() {
+  const user = await fetch('/api/user')  // Duplicado
+  return user.email
+}
+
+// ✅ BIEN - DRY
+async function getUser() {
+  return await fetch('/api/user')
+}
+```
+
+#### B) **Naming Conventions**
+- [ ] Variables: `camelCase` descriptivas
+- [ ] Funciones: `camelCase` con verbos (`getUserData`, `handleClick`)
+- [ ] Componentes React: `PascalCase`
+- [ ] Constantes: `UPPER_SNAKE_CASE`
+- [ ] No nombres genéricos (`data`, `temp`, `x`)
+
+**Ejemplo de violación:**
+```typescript
+// ❌ MAL
+const data = getUserData()
+const x = 5
+
+// ✅ BIEN
+const userData = getUserData()
+const maxRetryAttempts = 5
+```
+
+#### C) **TypeScript Strict**
+- [ ] No usa `any` (salvo excepciones justificadas)
+- [ ] Tipos explícitos en parámetros y retornos
+- [ ] Interfaces/types definidos para objetos complejos
+- [ ] No usa `@ts-ignore` sin comentario explicativo
+
+**Ejemplo de violación:**
+```typescript
+// ❌ MAL
+function processData(data: any) {
+  return data.map((item: any) => item.value)
+}
+
+// ✅ BIEN
+interface DataItem {
+  value: string
+  id: number
+}
+
+function processData(data: DataItem[]): string[] {
+  return data.map(item => item.value)
+}
+```
+
+#### D) **Error Handling**
+- [ ] Try-catch en operaciones async
+- [ ] NO usa `console.error()` (usar logger apropiado)
+- [ ] Errores específicos, no genéricos
+- [ ] Mensajes de error útiles para debugging
+
+**Ejemplo de violación:**
+```typescript
+// ❌ MAL
+async function fetchData() {
+  const data = await fetch('/api/data')  // Sin error handling
+  console.error('Error')  // No específico
+}
+
+// ✅ BIEN
+async function fetchData(): Promise<Data[]> {
+  try {
+    const response = await fetch('/api/data')
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`)
+    }
+    return await response.json()
+  } catch (error) {
+    logger.error('Failed to fetch data', { error })
+    throw error
+  }
+}
+```
+
+#### E) **Magic Numbers y Hardcoding**
+- [ ] No valores hardcodeados (usar constants/env vars)
+- [ ] No API keys/secrets en código
+- [ ] Configuración en archivos apropiados
+
+**Ejemplo de violación:**
+```typescript
+// ❌ MAL
+const apiKey = 'sk-1234567890'  // Hardcoded secret
+if (users.length > 50) {  // Magic number
+
+// ✅ BIEN
+const apiKey = process.env.API_KEY
+const MAX_USERS_PER_PAGE = 50
+if (users.length > MAX_USERS_PER_PAGE) {
+```
+
+---
+
+### 4. 🏗️ **Architecture & Structure**
+
+**Revisar:**
+- [ ] Estructura de carpetas correcta (según proyecto)
+- [ ] Separación de concerns:
+  - UI (componentes) ≠ Logic (hooks, utils) ≠ Data (API calls)
+- [ ] Componentes reutilizables (no duplicados)
+- [ ] Imports organizados (React → libraries → local)
+
+**Ejemplo de buena estructura:**
+```
+app/
+├── mentors/
+│   ├── page.tsx          # UI (componente)
+│   └── components/
+│       └── MentorCard.tsx
+lib/
+├── api/
+│   └── mentors.ts        # Data (API calls)
+└── hooks/
+    └── useMentors.ts     # Logic (custom hook)
+```
+
+---
+
+### 5. 🔒 **Security** (CRÍTICO)
+
+**Revisar:**
+- [ ] **NO secrets hardcodeados** (API keys, tokens, passwords)
+- [ ] **Validación de inputs de usuario** (sanitización)
+- [ ] **SQL injection prevention** (si usa queries SQL directas)
+- [ ] **XSS prevention** (no `dangerouslySetInnerHTML` sin sanitizar)
+- [ ] **Auth checks** (rutas protegidas tienen auth)
+
+**Ejemplo de violación:**
+```typescript
+// ❌ MAL - Secret hardcodeado
+const dbUrl = 'postgresql://user:password@localhost/db'
+
+// ✅ BIEN - Env var
+const dbUrl = process.env.DATABASE_URL
+
+// ❌ MAL - No validación de input
+function createUser(email: string) {
+  db.query(`INSERT INTO users (email) VALUES ('${email}')`)  // SQL injection
+
+// ✅ BIEN - Input validado y query parametrizada
+function createUser(email: string) {
+  if (!isValidEmail(email)) throw new Error('Invalid email')
+  db.query('INSERT INTO users (email) VALUES ($1)', [email])
+}
+```
+
+**Si encuentras secret hardcodeado:**
+- 🚨 **CRITICAL** - Blocker absoluto para approval
+
+---
+
+### 6. ⚡ **Performance Básico**
+
+**Revisar:**
+- [ ] No loops innecesarios o anidados complejos (O(n²))
+- [ ] React: Usa `useMemo`/`useCallback` si hay cálculos costosos
+- [ ] No refetch innecesario de datos
+- [ ] Queries optimizadas (no N+1 queries)
+- [ ] Lazy loading de componentes pesados (si aplica)
+
+**Ejemplo de problema:**
+```typescript
+// ❌ MAL - N+1 queries
+users.forEach(user => {
+  const posts = await fetchPostsByUser(user.id)  // N queries
+})
+
+// ✅ BIEN - Una query
+const allPosts = await fetchAllPosts()
+const postsByUser = groupBy(allPosts, 'userId')
+```
+
+---
+
+### 7. 🎨 **UI/UX** (Si la story tiene interfaz)
+
+**Revisar:**
+- [ ] **Usa componentes del design system** (Button, Card, Input, etc.)
+- [ ] **Paleta de colores correcta** (`bg-primary`, no `bg-blue-500`)
+- [ ] **Responsive design** (mobile, tablet, desktop)
+- [ ] **Loading states** (skeleton, spinner)
+- [ ] **Error states** (mensaje + retry)
+- [ ] **Empty states** (mensaje + CTA)
+- [ ] **Accesibilidad básica:**
+  - Labels en inputs
+  - Alt text en imágenes
+  - Keyboard navigation funciona
+
+**Ejemplo de violación:**
+```tsx
+// ❌ MAL - No usa design system, color hardcodeado
+<button className="bg-blue-500 px-4 py-2">
+  Click me
+</button>
+
+// ✅ BIEN - Usa design system
+import { Button } from '@/components/ui/button'
+<Button variant="primary">Click me</Button>
+```
+
+---
+
+### 8. 📝 **Code Quality General**
+
+**Revisar:**
+- [ ] Funciones pequeñas (< 50 líneas idealmente)
+- [ ] Comentarios solo donde necesario (código auto-explicativo)
+- [ ] No código comentado (borrar, no comentar)
+- [ ] No console.logs olvidados
+- [ ] Imports no usados eliminados
+
+---
+
+## ⚠️ LO QUE NO REVISA ESTA FASE
+
+**Tests automatizados:**
+- ❌ NO revisar tests unitarios (eso es Fase 8)
+- ❌ NO revisar tests de integración (eso es Fase 8)
+- ❌ NO revisar test coverage (eso es Fase 8)
+
+**Razón:** Separación de concerns (QA Engineer maneja tests en Fase 8).
+
+---
+
+## 💬 OUTPUT ESPERADO (Reporte Completo)
+
+```markdown
+# Code Review: STORY-[PROYECTO]-[NUM]-[nombre]
+
+**Reviewer:** [Tu rol: Tech Lead]
+**Date:** [Fecha]
+
+---
+
+## 🎯 Decisión
+
+- [ ] ✅ **APPROVED** - Listo para Fase 8 (Test Automation)
+- [ ] ⚠️ **APPROVED with comments** - Merge + crear issues para mejoras menores
+- [ ] ❌ **CHANGES REQUESTED** - Corregir critical/medium issues antes de continuar
+
+---
+
+## ✅ Cumplimiento de Acceptance Criteria
+
+**Story:** [Título de la story]
+
+| AC | Status | Notas |
+|----|--------|-------|
+| AC1: [Descripción] | ✅ Cumplido | [Comentario opcional] |
+| AC2: [Descripción] | ✅ Cumplido | [Comentario opcional] |
+| AC3: [Descripción] | ❌ NO cumplido | **Razón:** [Explicar por qué] |
+
+---
+
+## 🔍 Issues Encontrados
+
+### 🚨 CRITICAL (debe corregirse - blocker):
+
+1. **`app/api/users/route.ts:15`** - API key hardcodeada
+   - **Problema:** `const apiKey = 'sk-123456'`
+   - **Razón:** Security risk
+   - **Sugerencia:** Mover a `process.env.API_KEY`
+
+2. **`lib/db.ts:23`** - SQL injection vulnerability
+   - **Problema:** Query no parametrizada
+   - **Razón:** Security risk
+   - **Sugerencia:** Usar queries parametrizadas
+
+### ⚠️ MEDIUM (debería corregirse):
+
+3. **`components/MentorList.tsx:45`** - Código duplicado
+   - **Problema:** Lógica de filtrado repetida en 3 lugares
+   - **Razón:** Viola DRY
+   - **Sugerencia:** Extraer a hook `useMentorFilters()`
+
+4. **`app/mentors/page.tsx:12`** - Hardcoded color
+   - **Problema:** `className="bg-blue-500"`
+   - **Razón:** No usa design system
+   - **Sugerencia:** Usar `bg-primary` del design system
+
+### 💡 NITPICKS (opcional - mejoras):
+
+5. **`lib/utils.ts:8`** - Nombre de variable poco descriptivo
+   - **Problema:** `const data = fetchData()`
+   - **Sugerencia:** `const mentorData = fetchMentorData()`
+
+6. **`components/MentorCard.tsx:15`** - Console.log olvidado
+   - **Problema:** `console.log('mentor:', mentor)`
+   - **Sugerencia:** Eliminar
+
+---
+
+## ✅ Aspectos Positivos
+
+- ✅ Buena separación de concerns (UI / Logic / Data)
+- ✅ Componentes del design system usados correctamente
+- ✅ Error handling implementado en API calls
+- ✅ TypeScript strict mode respetado
+- ✅ Responsive design implementado
+
+---
+
+## 🔧 Linting & Build
+
+- **ESLint:** ✅ Sin errores / ❌ 3 errores (detallar)
+- **TypeScript:** ✅ Sin errores / ❌ 2 errores (detallar)
+- **Build:** ✅ Exitoso / ❌ Falla (detallar)
+
+---
+
+## 📊 Métricas
+
+- **Archivos creados:** X
+- **Archivos modificados:** Y
+- **Líneas agregadas:** +Z
+- **Líneas eliminadas:** -W
+
+---
+
+## 💬 Comentarios Adicionales
+
+[Feedback general para el developer]
+
+---
+
+## 🎯 Próximos Pasos
+
+**Si APPROVED:**
+- Proceder a Fase 8: Test Automation
+- Usar `.prompts/fase-8-test-automation/`
+
+**Si CHANGES REQUESTED:**
+- Developer corrige critical/medium issues
+- Usa `.prompts/fase-6-implementation/fix-issues.md`
+- Re-review después de correcciones
+```
+
+---
+
+## 🎯 EJEMPLO DE USO
+
+```markdown
+Revisa el código implementado para STORY-MYM-14-view-mentors.
+
+**Contexto:**
+- Story: .context/PBI/epics/EPIC-MYM-13-mentor-discovery/stories/STORY-MYM-14-view-mentors/story.md
+- Implementation plan: .../ implementation-plan.md
+- Code standards: .context/guidelines/code-standards.md
+
+**Proceso:**
+1. Valida que AC se cumplen
+2. Ejecuta linting + build (o instruye al usuario)
+3. Revisa código según checklist completo
+4. Genera reporte con decisión: APPROVE / CHANGES REQUESTED
+
+**Importante:**
+- Usa Context7 MCP si dudas de best practices
+- NO revises tests (eso es Fase 8)
+- Sé específico en feedback (archivo:línea)
+```
+
+---
+
+**Nota:** Esta fase revisa código estáticamente. Los tests automatizados se revisan/agregan en Fase 8 (Test Automation).

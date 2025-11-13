@@ -1,15 +1,73 @@
 Actúa como Senior Backend Architect, Database Engineer, y DevOps experto.
 
-**🔄 FASE 2.5: BACKEND & DATABASE SETUP (Sincrónica - UNA sola vez)**
+---
 
-**Input:**
-- PRD completo: [usar .context/PRD/]
-- SRS completo: [usar .context/SRS/]
-- Frontend existente: [analizar src/app/ para identificar páginas]
+## 🎯 TAREA
+
+**🔄 FASE 3: BACKEND & DATABASE SETUP (Sincrónica - UNA sola vez)**
+
+Crear la **infraestructura de backend base** (Database + Auth + API Layer) que será REUTILIZADA en todas las stories del MVP.
 
 ---
 
-## 🎯 OBJETIVO DE FASE 2.5 - BACKEND
+## 📥 INPUT REQUERIDO
+
+### 1. Contexto del Proyecto
+
+**Leer TODOS estos archivos:**
+
+- `.context/SRS/architecture-specs.md` - **CRÍTICO** - ERD completo, tech stack, database schema
+- `.context/SRS/functional-specs.md` - Requerimientos funcionales, features
+- `.context/SRS/non-functional-specs.md` - Security, performance requirements
+- `.context/PRD/executive-summary.md` - Nombre del proyecto, descripción
+- `.context/PRD/mvp-scope.md` - Épicas del MVP, funcionalidades principales
+- `src/types/index.ts` - Tipos del dominio actuales
+- `src/app/**/page.tsx` - Páginas implementadas (analizar estructura)
+- `package.json` - Versiones de Next.js, React, dependencias existentes
+
+### 2. Frontend Mock Data
+
+**Buscar y analizar:**
+- Archivos de mock data: `lib/data.ts`, `mock/*.ts`, `constants/*.ts`
+- Componentes que consumen mock data
+- Estructura de datos en estado global (contexts, stores)
+
+**Qué identificar:**
+1. **ERD del SRS:** Todas las tablas, relaciones, constraints del schema completo
+2. **Mock data en frontend:** Qué datos están hardcodeados y cómo se estructuran
+3. **Tablas fundacionales:** Las que el frontend YA consume (no todas del ERD)
+4. **Roles de usuario:** Admin, user, vendor, etc. (para RLS policies)
+5. **Páginas protegidas:** Rutas que requieren autenticación
+6. **Seed data estructura:** Replicar mock UX con datos reales
+
+---
+
+## ⚙️ VERIFICACIÓN DE HERRAMIENTAS (MCP)
+
+### MCP CRÍTICO REQUERIDO:
+
+1. **MCP Supabase** - OBLIGATORIO
+   - Para crear tablas, RLS policies, gestionar database
+   - Si NO está disponible → DETENER TODO
+
+2. **MCP Context7** - OBLIGATORIO
+   - Para verificar paquetes y APIs actualizadas
+   - Consultar ANTES de instalar cualquier dependencia
+
+### CLIs Requeridos:
+- Supabase CLI (se instalará si falta)
+- Package manager (npm/yarn/pnpm/bun)
+- Git (verificación de estado)
+
+### Credenciales Necesarias:
+- Supabase Project ID (se solicitará al usuario)
+- Supabase Project URL
+- Supabase Anon Key
+- Supabase Service Role Key
+
+---
+
+## 🎯 OBJETIVO DE FASE 3 - BACKEND
 
 Crear la **infraestructura de backend base** (Database + Auth + API Layer) que será REUTILIZADA en todas las stories del MVP.
 
@@ -34,6 +92,42 @@ Crear la **infraestructura de backend base** (Database + Auth + API Layer) que s
 
 ---
 
+## 📤 OUTPUT GENERADO
+
+### Archivos de Configuración:
+- ✅ `.env` - Variables de entorno con credenciales reales (gitignored)
+- ✅ `.env.example` - Template descriptivo sin credenciales (commiteado)
+- ✅ `src/lib/config.ts` - Configuración centralizada con validaciones
+
+### Supabase Clients:
+- ✅ `src/lib/supabase/client.ts` - Browser client con @supabase/ssr
+- ✅ `src/lib/supabase/server.ts` - Server client para Server Components
+- ✅ `src/lib/supabase/admin.ts` - (Opcional) Admin client con service_role
+
+### Middleware y Auth:
+- ✅ `middleware.ts` - Protección de rutas + refresh de sesión
+- ✅ `src/contexts/auth-context.tsx` - Refactorizado con Supabase Auth real
+
+### TypeScript Types:
+- ✅ `src/types/supabase.ts` - Tipos auto-generados desde database schema
+
+### Documentación:
+- ✅ `.context/backend-setup.md` - Setup completo documentado
+- ✅ `.context/api-documentation.md` - Endpoints y ejemplos de uso
+
+### Database (en Supabase):
+- ✅ Tablas fundacionales creadas con schemas
+- ✅ Row Level Security policies configuradas
+- ✅ Índices optimizados para performance
+- ✅ Seed data realista insertado
+
+### Frontend Actualizado:
+- ✅ 1-2 páginas principales conectadas a DB real (reemplazan mock)
+- ✅ AuthContext usando Supabase Auth
+- ✅ Dependencias actualizadas (@supabase/ssr)
+
+---
+
 ## 🚨 RESTRICCIONES CRÍTICAS
 
 ### ❌ NO HACER:
@@ -52,7 +146,7 @@ Crear la **infraestructura de backend base** (Database + Auth + API Layer) que s
 - **Verificar herramientas necesarias** - MCP, CLI, credenciales, git
 - **Leer contexto completo** - PRD, SRS, frontend existente
 - **Usar Context7 MCP SIEMPRE** - Antes de instalar/usar cualquier dependencia
-- **Verificar archivo de env existente** - .env, .env.local, .env.example
+- **Verificar archivo de env existente** - .env, .env.example
 - **Centralizar configuración** - Crear archivo config para env vars
 - **Analizar mock data del frontend** - Entender qué datos mostrar en DB
 - **Crear solo tablas fundacionales** - Analizar qué usa el frontend
@@ -63,6 +157,12 @@ Crear la **infraestructura de backend base** (Database + Auth + API Layer) que s
 - **Documentar todo** - Backend setup + API endpoints
 - **Validar integración** - Frontend conectado a DB real
 - **Verificar versiones de Next.js y React** - Puede afectar el setup de Supabase
+
+---
+
+## 🔄 WORKFLOW
+
+El proceso se divide en 8 fases ejecutadas secuencialmente. Cada fase incluye validaciones y checkpoints.
 
 ---
 
@@ -178,7 +278,7 @@ supabase --version
 
    **Opciones:**
    - a) Usar `.env` existente
-   - b) Usar `.env.local` (Next.js standard)
+   - b) Usar `.env` (Next.js standard)
    - c) Archivo centralizado de configuración
 
 4. Implementar estrategia elegida
@@ -597,8 +697,8 @@ SI estrategia = "usar .env existente":
   - NEXT_PUBLIC_SUPABASE_ANON_KEY=...
   - SUPABASE_SERVICE_ROLE_KEY=...
 
-SI estrategia = "usar .env.local":
-  Crear/actualizar .env.local con variables
+SI estrategia = "usar .env":
+  Crear/actualizar .env con variables
 
 SIEMPRE:
   Actualizar .env.example con:
@@ -611,7 +711,7 @@ SIEMPRE:
 **Mostrar al usuario:**
 ```
 ✅ Variables de entorno configuradas
-   - Archivo: [.env / .env.local]
+   - Archivo: .env
    - Template: .env.example actualizado
 
 ⚠️ ACCIÓN REQUERIDA:
@@ -979,7 +1079,7 @@ type Mentor = Database['public']['Tables']['mentors']['Row']
 # https://supabase.com/dashboard/project/[PROJECT_ID]/settings/api
 #
 # IMPORTANTE:
-# - Copia este archivo como .env (o .env.local)
+# - Copia este archivo como .env
 # - Reemplaza valores placeholder
 # - NUNCA commitees archivos .env con credenciales reales
 # =============================================================================
@@ -1052,7 +1152,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ### 1️⃣ Configurar Variables (AHORA)
 
 ```bash
-cp .env.example .env  # (o .env.local)
+cp .env.example .env  # (o .env)
 ```
 
 Edita y agrega credenciales de:

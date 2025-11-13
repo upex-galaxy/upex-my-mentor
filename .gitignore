@@ -39,6 +39,7 @@ bun.lockb
 .claude
 .context/mcp/outputs
 .playwright-mcp
+.backups
 
 # MCP catalog files (contain secrets - DO NOT COMMIT)
 *.catalog.json

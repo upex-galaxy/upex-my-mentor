@@ -6,17 +6,30 @@ Actúa como QA Lead experto en Shift-Left Testing, Test Strategy y Quality Analy
 
 ## 📥 Input Requerido
 
-### 1. Epic Jira Key (OBLIGATORIO)
+### 1. Epic Path Local (OBLIGATORIO)
 
-**Formato:** `EPIC-{PROYECTO}-{NUM}`
-**Ejemplo:** `EPIC-UPEX-001`
+**Formato:** `.context/PBI/epics/EPIC-{PROYECTO}-{NUM}-{nombre}/`
+**Ejemplo:** `.context/PBI/epics/EPIC-UPEX-001-user-authentication/`
 
-**Uso:** Este key se usa para:
+**⚠️ IMPORTANTE - Diferencia entre Nomenclaturas:**
 
-- Leer el epic actual de Jira (FASE 5a)
-- Actualizar el epic con findings (FASE 5a)
+- **Path Local (carpeta):** `EPIC-UPEX-001-user-authentication` ← Nomenclatura de carpetas
+- **Jira Key (real):** `UPEX-123` ← Key real del issue en Jira
+
+**Proceso:**
+
+1. **Usuario proporciona:** Path de la carpeta epic local
+2. **Prompt lee:** Archivo `epic.md` de esa carpeta
+3. **Prompt extrae:** Campo `**Jira Key:**` del epic.md (formato real: UPEX-123)
+4. **Prompt usa:** Ese Jira Key real para operaciones MCP de Atlassian
+
+**Uso del path:**
+
+- Leer epic.md local para obtener Jira Key real
+- Leer el epic actual de Jira con MCP (FASE 5a)
+- Actualizar el epic en Jira con findings (FASE 5a)
 - Agregar comentario con test plan completo (FASE 5b)
-- Generar path del archivo local (FASE 5c)
+- Generar archivo feature-test-plan.md en esa carpeta (FASE 5c)
 
 ---
 
@@ -40,9 +53,19 @@ Actúa como QA Lead experto en Shift-Left Testing, Test Strategy y Quality Analy
 
 ### 4. Contexto de la Feature (OBLIGATORIO)
 
-- Epic (local): [leer .context/PBI/epics/EPIC-{PROYECTO}-{NUM}-{nombre}/epic.md]
-- Epic (Jira): [usar MCP de Atlassian para obtener el epic]
-- Todas las stories de la épica: [leer todos los story.md de la épica]
+**Paso 1: Leer Epic Local y Extraer Jira Key**
+
+- Epic (local): [leer {EPIC_PATH}/epic.md proporcionado por el usuario]
+- **Extraer del epic.md:** Campo `**Jira Key:**` (ej: UPEX-123)
+- **Guardar:** Jira Key real para usar en operaciones MCP
+
+**Paso 2: Obtener Epic de Jira**
+
+- Epic (Jira): [usar MCP de Atlassian con el Jira Key real extraído del paso 1]
+
+**Paso 3: Leer Stories**
+
+- Todas las stories de la épica: [leer todos los story.md en {EPIC_PATH}/stories/]
 
 ---
 
@@ -676,7 +699,8 @@ Epic is considered "Done" from QA perspective when:
 
 1. **Leer epic actual de Jira:**
    - Usar MCP de Atlassian para obtener el epic
-   - Input: Epic Jira Key (ej: EPIC-UPEX-001)
+   - Input: Jira Key real extraído de epic.md (ej: UPEX-123)
+   - ⚠️ **NO usar** nomenclatura de carpeta (EPIC-UPEX-001)
    - Obtener: description actual
 
 2. **Preparar contenido del summary:**
@@ -1011,9 +1035,18 @@ Epic is considered "Done" from QA perspective when:
 
 - ✅ TODOS los archivos de contexto (idea, PRD, SRS) deben estar completos
 - ✅ Epic.md y todos los story.md de la épica deben existir
-- ✅ **Epic Jira Key disponible** (ej: EPIC-UPEX-001)
+- ✅ **Epic Path local disponible** (ej: `.context/PBI/epics/EPIC-UPEX-001-feature/`)
+- ✅ **Epic.md debe contener campo `Jira Key:`** con el key real (ej: UPEX-123)
 - ✅ **Acceso a MCP de Atlassian configurado y funcionando**
 - ✅ Tiempo para analizar críticamente, no solo generar checklist
+
+**⚠️ Validación de epic.md:**
+
+El archivo epic.md debe contener en su metadata:
+```markdown
+**Jira Key:** UPEX-123
+```
+Este es el Jira Key REAL del issue en Jira (NO la nomenclatura de carpeta).
 
 ---
 
@@ -1022,16 +1055,29 @@ Epic is considered "Done" from QA perspective when:
 ### Input requerido del usuario:
 
 ```
-Epic Jira Key: EPIC-UPEX-XXX
+Epic Path: .context/PBI/epics/EPIC-UPEX-XXX-nombre-feature/
 ```
+
+**⚠️ Proceso Automático:**
+1. Prompt lee: `.context/PBI/epics/EPIC-UPEX-XXX-nombre-feature/epic.md`
+2. Prompt extrae: Campo `**Jira Key:**` (ej: UPEX-123)
+3. Prompt usa: Jira Key real UPEX-123 para operaciones MCP
 
 ### Orden de ejecución:
 
-1. **FASE 1-4:** Analizar contexto, riesgos, estrategia, test cases (contenido Markdown)
-2. **FASE 5a:** Actualizar epic en Jira con test strategy summary (MCP Atlassian)
-3. **FASE 5b:** Crear comentario en Jira con test plan completo (MCP Atlassian)
-4. **FASE 5c:** Generar archivo local `feature-test-plan.md` (Write tool)
-5. **FASE 5d:** Reportar resumen al usuario (Output)
+**Pre-requisito: Extraer Jira Key**
+1. Leer `{EPIC_PATH}/epic.md` proporcionado por usuario
+2. Extraer campo `**Jira Key:**` (ej: UPEX-123)
+3. Guardar Jira Key real para usar en FASE 5a y 5b
+
+**Análisis y Diseño:**
+4. **FASE 1-4:** Analizar contexto, riesgos, estrategia, test cases (contenido Markdown)
+
+**Jira Integration:**
+5. **FASE 5a:** Actualizar epic en Jira con test strategy summary (MCP Atlassian + Jira Key real)
+6. **FASE 5b:** Crear comentario en Jira con test plan completo (MCP Atlassian + Jira Key real)
+7. **FASE 5c:** Generar archivo local `feature-test-plan.md` en {EPIC_PATH}/ (Write tool)
+8. **FASE 5d:** Reportar resumen al usuario (Output)
 
 ### Herramientas a usar:
 

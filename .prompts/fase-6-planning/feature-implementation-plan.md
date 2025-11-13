@@ -1,9 +1,10 @@
-Actúa como Senior Software Architect y Tech Lead.
+Actúa como Senior Software Architect, Tech Lead, y UI/UX Designer.
 
 **Input:**
 - Epic: [usar .context/PBI/epics/EPIC-XXX/epic.md]
 - SRS completo: [usar .context/SRS/*.md]
 - Feature Test Plan: [usar .context/PBI/epics/EPIC-XXX/feature-test-plan.md]
+- **Design System:** [usar .context/design-system.md - para decisiones de UI/UX]
 
 **Genera archivo: feature-implementation-plan.md** (dentro de .context/PBI/epics/EPIC-XXX/)
 
@@ -67,6 +68,56 @@ Esta feature implementa [descripción high-level de la feature].
 ---
 
 (Incluir 3-5 decisiones técnicas críticas a nivel feature)
+
+---
+
+## UI/UX Design Strategy (Si la feature tiene interfaz)
+
+**⚠️ IMPORTANTE:** Esta feature debe usar el Design System base de Fase 2.5.
+
+**Design System disponible:** `.context/design-system.md`
+
+### Componentes compartidos por stories:
+
+**Componentes del Design System a usar:**
+- ✅ [Componente 1]: [Cómo se usa en esta feature]
+- ✅ [Componente 2]: [Cómo se usa en esta feature]
+- ✅ [Layout]: [Navbar/Sidebar - si se necesitan ajustes]
+
+**Componentes custom a nivel feature:**
+- 🆕 [FeatureComponentName] (ej: MentorCard, ProjectFilters)
+  - **Usado por stories:** [Story A, Story B]
+  - **Propósito:** [Descripción]
+  - **Diseño base:** [Descripción visual usando design system]
+  - **Ubicación:** `components/[feature-domain]/`
+
+### Consistencia visual:
+
+**Paleta aplicada (del design system):**
+- Primary: `bg-primary` - [Uso específico en esta feature]
+- Secondary: `bg-secondary` - [Uso específico]
+- Accent: `bg-accent` - [Uso específico]
+
+**Patrones de diseño comunes:**
+- [Patrón 1]: [Descripción de cómo se aplica] (ej: Todas las listas usan Card grid)
+- [Patrón 2]: [Descripción]
+
+### Flujos de UX:
+
+**User journeys específicos de esta feature:**
+1. [Flujo 1]: [Descripción paso a paso]
+   - Estado inicial → [Story A]
+   - Acción → [Story B]
+   - Resultado → [Story C]
+
+2. [Flujo 2]: [Descripción]
+
+**Estados globales de la feature:**
+- Loading: [Cómo se muestra]
+- Empty: [Qué mensaje/CTA]
+- Error: [Cómo se recupera]
+
+**Nota:** Los diseños específicos de cada story se detallan en sus `implementation-plan.md` respectivos.
 
 ---
 
