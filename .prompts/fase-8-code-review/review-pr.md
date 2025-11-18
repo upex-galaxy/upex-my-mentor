@@ -4,7 +4,7 @@ Actúa como Senior Tech Lead y Code Reviewer experto.
 
 ## 🎯 TAREA
 
-Realizar code review estático completo del código implementado para **STORY-[PROYECTO]-[NUM]-[nombre]**.
+Realizar code review estático completo del código implementado para **STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}**.
 
 ---
 
@@ -35,8 +35,8 @@ Puedo continuar, pero la revisión se basará en conocimiento interno (puede est
 
 ### 1. Story y Plan:
 ```
-.context/PBI/epics/EPIC-[PROYECTO]-[NUM]-[nombre]/stories/STORY-[PROYECTO]-[NUM]-[nombre]/story.md
-.context/PBI/epics/EPIC-[PROYECTO]-[NUM]-[nombre]/stories/STORY-[PROYECTO]-[NUM]-[nombre]/implementation-plan.md
+.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/story.md
+.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/implementation-plan.md
 ```
 
 **Propósito:**
@@ -233,16 +233,18 @@ if (users.length > MAX_USERS_PER_PAGE) {
 **Ejemplo de buena estructura:**
 ```
 app/
-├── mentors/
+├── [feature]/
 │   ├── page.tsx          # UI (componente)
 │   └── components/
-│       └── MentorCard.tsx
+│       └── [DomainCard].tsx
 lib/
 ├── api/
-│   └── mentors.ts        # Data (API calls)
+│   └── [domain-entity].ts        # Data (API calls)
 └── hooks/
-    └── useMentors.ts     # Logic (custom hook)
+    └── use[DomainEntity].ts     # Logic (custom hook)
 ```
+
+(Donde [feature], [DomainCard], [domain-entity] se determinan según el dominio del proyecto. Ejemplos: mentors/MentorCard/useMentors en MYM, products/ProductCard/useProducts en SHOP)
 
 ---
 
@@ -344,18 +346,18 @@ import { Button } from '@/components/ui/button'
 ## ⚠️ LO QUE NO REVISA ESTA FASE
 
 **Tests automatizados:**
-- ❌ NO revisar tests unitarios (eso es Fase 8)
-- ❌ NO revisar tests de integración (eso es Fase 8)
-- ❌ NO revisar test coverage (eso es Fase 8)
+- ❌ NO revisar tests unitarios (ya creados en Fase 7)
+- ❌ NO revisar tests de integración (eso es Fase 11: Test Automation)
+- ❌ NO revisar test coverage (eso es Fase 7 y Fase 11)
 
-**Razón:** Separación de concerns (QA Engineer maneja tests en Fase 8).
+**Razón:** Separación de concerns (QA Engineer maneja integration/E2E tests en Fase 11).
 
 ---
 
 ## 💬 OUTPUT ESPERADO (Reporte Completo)
 
 ```markdown
-# Code Review: STORY-[PROYECTO]-[NUM]-[nombre]
+# Code Review: STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}
 
 **Reviewer:** [Tu rol: Tech Lead]
 **Date:** [Fecha]
@@ -364,7 +366,7 @@ import { Button } from '@/components/ui/button'
 
 ## 🎯 Decisión
 
-- [ ] ✅ **APPROVED** - Listo para Fase 8 (Test Automation)
+- [ ] ✅ **APPROVED** - Listo para Fase 9 (Deployment Staging)
 - [ ] ⚠️ **APPROVED with comments** - Merge + crear issues para mejoras menores
 - [ ] ❌ **CHANGES REQUESTED** - Corregir critical/medium issues antes de continuar
 
@@ -398,25 +400,29 @@ import { Button } from '@/components/ui/button'
 
 ### ⚠️ MEDIUM (debería corregirse):
 
-3. **`components/MentorList.tsx:45`** - Código duplicado
+3. **`components/[EntityList].tsx:45`** - Código duplicado
    - **Problema:** Lógica de filtrado repetida en 3 lugares
    - **Razón:** Viola DRY
-   - **Sugerencia:** Extraer a hook `useMentorFilters()`
+   - **Sugerencia:** Extraer a hook `use[Entity]Filters()`
 
-4. **`app/mentors/page.tsx:12`** - Hardcoded color
+4. **`app/[feature]/page.tsx:12`** - Hardcoded color
    - **Problema:** `className="bg-blue-500"`
    - **Razón:** No usa design system
    - **Sugerencia:** Usar `bg-primary` del design system
+
+(Donde [EntityList], [Entity], [feature] se determinan según el dominio. Ejemplos: MentorList/useMentorFilters/mentors en MYM, ProductList/useProductFilters/products en SHOP)
 
 ### 💡 NITPICKS (opcional - mejoras):
 
 5. **`lib/utils.ts:8`** - Nombre de variable poco descriptivo
    - **Problema:** `const data = fetchData()`
-   - **Sugerencia:** `const mentorData = fetchMentorData()`
+   - **Sugerencia:** `const [entity]Data = fetch[Entity]Data()`
 
-6. **`components/MentorCard.tsx:15`** - Console.log olvidado
-   - **Problema:** `console.log('mentor:', mentor)`
+6. **`components/[DomainCard].tsx:15`** - Console.log olvidado
+   - **Problema:** `console.log('[entity]:', [entity])`
    - **Sugerencia:** Eliminar
+
+(Donde [entity], [Entity], [DomainCard] se determinan según el dominio. Ejemplos: mentorData/fetchMentorData/MentorCard en MYM)
 
 ---
 
@@ -456,12 +462,12 @@ import { Button } from '@/components/ui/button'
 ## 🎯 Próximos Pasos
 
 **Si APPROVED:**
-- Proceder a Fase 8: Test Automation
-- Usar `.prompts/fase-8-test-automation/`
+- Proceder a Fase 9: Deployment Staging
+- Usar `.prompts/fase-9-deployment-staging/`
 
 **Si CHANGES REQUESTED:**
 - Developer corrige critical/medium issues
-- Usa `.prompts/fase-6-implementation/fix-issues.md`
+- Usa `.prompts/fase-7-implementation/fix-issues.md`
 - Re-review después de correcciones
 ```
 
@@ -470,12 +476,14 @@ import { Button } from '@/components/ui/button'
 ## 🎯 EJEMPLO DE USO
 
 ```markdown
-Revisa el código implementado para STORY-MYM-14-view-mentors.
+Revisa el código implementado para STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}.
 
 **Contexto:**
-- Story: .context/PBI/epics/EPIC-MYM-13-mentor-discovery/stories/STORY-MYM-14-view-mentors/story.md
+- Story: .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/story.md
 - Implementation plan: .../ implementation-plan.md
 - Code standards: .context/guidelines/code-standards.md
+
+(Donde {PROJECT_KEY}, {ISSUE_NUM}, {nombre} se obtienen de la story que estás revisando)
 
 **Proceso:**
 1. Valida que AC se cumplen
@@ -485,10 +493,10 @@ Revisa el código implementado para STORY-MYM-14-view-mentors.
 
 **Importante:**
 - Usa Context7 MCP si dudas de best practices
-- NO revises tests (eso es Fase 8)
+- NO revises tests (unit tests ya en Fase 7, integration/E2E en Fase 11)
 - Sé específico en feedback (archivo:línea)
 ```
 
 ---
 
-**Nota:** Esta fase revisa código estáticamente. Los tests automatizados se revisan/agregan en Fase 8 (Test Automation).
+**Nota:** Esta fase revisa código estáticamente. Los unit tests ya fueron creados en Fase 7. Los integration/E2E tests se crean en Fase 11 (Test Automation).

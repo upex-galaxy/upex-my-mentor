@@ -378,14 +378,18 @@ supabase --version
 - Tablas fundacionales a crear: [listar con razón]
 
 Ejemplo:
-- `profiles` - Requerida por: auth, /dashboard
-- `mentors` - Requerida por: /mentors, MentorCard component
+```pseudocode
+- `profiles` - Requerida por: auth, /[ruta_principal]
+- `[entidad_core]` - Requerida por: /[ruta], [Entity]Card component
+```
 
 ### Mock Data Detectado:
+```pseudocode
 - Archivo: lib/data.ts
-  - mockMentors: 8 registros
-  - mockReviews: 15 registros
+  - mock[Entity1]: [X] registros
+  - mock[Entity2]: [Y] registros
 - Esta estructura se replicará en seed data
+```
 
 ### Stack Técnico Verificado:
 - Framework: Next.js [version] (App Router)
@@ -474,10 +478,12 @@ Para tabla [TABLE_NAME] del ERD:
 ```
 
 **Convenciones:**
-- snake_case: `user_profiles`, `mentor_sessions`
+```pseudocode
+- snake_case: `user_profiles`, `[entity]_[subentity]`
 - UUID para IDs: `gen_random_uuid()`
 - Timestamps: `created_at TIMESTAMPTZ DEFAULT now()`
 - Soft deletes (si aplica): `deleted_at TIMESTAMPTZ`
+```
 
 **Output por tabla:**
 ```
@@ -515,11 +521,11 @@ Para cada tabla:
 ```
 
 **Output:**
-```
+```pseudocode
 ✅ Índices optimizados:
    - profiles.email (búsquedas de login)
-   - mentors.average_rating (ordenamiento)
-   - sessions.user_id (FK + filtros)
+   - [entity_table].[sort_column] (ordenamiento)
+   - [entity_table].[fk_column] (FK + filtros)
 ```
 
 ---
@@ -589,7 +595,7 @@ Para cada tabla:
    - Analizar relaciones entre entidades
 
 2. Preguntar al usuario:
-   "Detecté [X] mentors, [Y] reviews en mock data.
+   "Detecté [X] [entidad1], [Y] [entidad2] en mock data.
     ¿Quieres crear seed data similar en la DB para replicar la UX?"
 
    Opciones:
@@ -600,15 +606,17 @@ Para cada tabla:
 3. SI usuario elige (a):
    Para cada entidad mockeada:
      - Crear registros similares (mismo número aprox)
-     - Mantener tipos de datos (nombres realistas, ratings, etc.)
+     - Mantener tipos de datos (nombres realistas, valores apropiados)
      - Preservar relaciones (FK válidos)
      - Usar datos creativos (NO copiar mock exacto, generar nuevos)
 
    Ejemplo:
-   SI mockMentors tiene 8 registros con ratings 4.5-5.0:
-     Crear 8 mentors en DB con ratings similares
-     Nombres diferentes pero realistas
-     Especialidades variadas como en mock
+   ```pseudocode
+   SI mock[Entity] tiene [N] registros con [propiedad] entre [min-max]:
+     Crear [N] [entity] en DB con [propiedad] similares
+     [Atributos] diferentes pero realistas
+     [Características] variadas como en mock
+   ```
 
 4. SI usuario elige (b):
    Crear 2-3 registros básicos por tabla
@@ -623,14 +631,14 @@ Para cada tabla:
 ```
 
 **Output:**
-```
+```pseudocode
 ✅ Seed data creado:
-   - profiles: 10 registros (replicando mock)
-   - mentors: 8 registros (similar a mockMentors)
-   - reviews: 15 registros (vinculados a mentors)
+   - profiles: [N] registros (replicando mock)
+   - [entity1]: [X] registros (similar a mock[Entity1])
+   - [entity2]: [Y] registros (vinculados a [entity1])
 
 📊 Datos generados:
-   - Nombres realistas (no Lorem Ipsum)
+   - [Atributos] realistas (no Lorem Ipsum)
    - Relaciones válidas (FKs correctos)
    - UX del frontend preservada
 
@@ -816,14 +824,14 @@ Función middleware(req):
   3. Obtener sesión: supabase.auth.getSession()
 
   4. Definir rutas protegidas (del análisis de Fase 1):
-     protectedRoutes = ['/dashboard', '/profile', ...]
+     protectedRoutes = ['/[ruta_protegida_1]', '/[ruta_protegida_2]', ...]
 
   5. Lógica de redirect:
      SI no hay sesión Y ruta es protegida:
        Redirect a /login con param ?redirect=[ruta]
 
      SI hay sesión Y ruta es /login o /signup:
-       Redirect a /dashboard
+       Redirect a /[ruta_principal]
 
   6. Retornar response con cookies actualizadas
 
@@ -888,15 +896,15 @@ Refactorizar AuthContext:
 ### Paso 4.1: Identificar Páginas con Mock Data
 
 **Análisis:**
-```
+```pseudocode
 Buscar en codebase:
-- Imports de mock data (import { mockMentors } from '@/lib/data')
+- Imports de mock data (import { mock[Entity] } from '@/lib/data')
 - Archivos de datos (lib/data.ts, mock/*.ts)
 - Componentes que consumen estos datos
 
 Crear lista:
-- Página X usa mockMentors
-- Página Y usa mockReviews
+- Página [X] usa mock[Entity1]
+- Página [Y] usa mock[Entity2]
 - etc.
 ```
 
@@ -937,10 +945,10 @@ Para página [PageName]:
 ```
 
 **Output:**
-```
+```pseudocode
 ✅ Páginas conectadas a DB:
-   - /mentors: Consume tabla 'mentors'
-   - /dashboard: Consume tabla 'profiles'
+   - /[ruta1]: Consume tabla '[entity1]'
+   - /[ruta2]: Consume tabla '[entity2]'
 ✅ Mock data removido de estas páginas
 ✅ UX idéntica a versión mockeada
 ```
@@ -975,7 +983,7 @@ Contiene:
 
 Uso:
 import { Database } from '@/types/supabase'
-type Mentor = Database['public']['Tables']['mentors']['Row']
+type [Entity] = Database['public']['Tables']['[table_name]']['Row']
 ```
 
 ---

@@ -10,11 +10,11 @@ Crear bug report estructurado en Jira usando Atlassian MCP:
 ### Bug Report Template
 
 ```markdown
-# 🐛 [BUG-XXX]: [Título descriptivo breve]
+# 🐛 [BUG-{PROJECT_KEY}-{ISSUE_NUM}]: [Título descriptivo breve]
 
 ## 📋 Información General
 
-- **Story relacionada:** [STORY-XXX]
+- **Story relacionada:** STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}
 - **Severidad:** [Critical / High / Medium / Low]
 - **Ambiente:** Staging
 - **URL:** [URL donde ocurre]
@@ -96,7 +96,7 @@ Crear bug report estructurado en Jira usando Atlassian MCP:
 
 - `bug`
 - `severity:[critical/high/medium/low]`
-- `[story-number]`
+- `STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}`
 - `exploratory-testing`
 
 ---
@@ -115,15 +115,15 @@ Usa el Atlassian MCP tool para crear el issue:
 ```typescript
 // Ejemplo de llamada MCP
 {
-  "project": "[PROJECT-KEY]",
+  "project": "{PROJECT_KEY}",
   "issueType": "Bug",
   "summary": "[Título del bug]",
   "description": "[Descripción completa formateada]",
   "priority": "[Critical/High/Medium/Low]",
-  "labels": ["bug", "severity:high", "STORY-XXX", "exploratory-testing"]
+  "labels": ["bug", "severity:high", "STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}", "exploratory-testing"]
 }
 ```
 
 ## Output
-- Bug creado en Jira con ID real (BUG-XXX)
+- Bug creado en Jira con ID real (BUG-{PROJECT_KEY}-{ISSUE_NUM})
 - Link al bug para incluir en session notes

@@ -616,16 +616,16 @@ develop (staging)
   ↑
   merge PRs aquí
   ↑
-feature/STORY-XXX
+feature/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}
 ```
 
 ### Workflow Local → Staging → Production
 
 1. **Desarrollo:**
    ```bash
-   git checkout -b feature/STORY-123
+   git checkout -b feature/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}
    # Implementar feature
-   git push origin feature/STORY-123
+   git push origin feature/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}
    ```
 
 2. **Pull Request a develop:**

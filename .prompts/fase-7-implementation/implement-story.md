@@ -4,7 +4,7 @@ Actúa como Senior Full-Stack Developer experto en [tech stack del proyecto].
 
 ## 🎯 TAREA
 
-Implementar la story **STORY-[PROYECTO]-[NUM]-[nombre]** siguiendo su implementation plan.
+Implementar la story **STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}** siguiendo su implementation plan.
 
 ---
 
@@ -55,9 +55,9 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 
 ### 1. Story y Plan de Implementación:
 ```
-.context/PBI/epics/EPIC-[PROYECTO]-[NUM]-[nombre]/stories/STORY-[PROYECTO]-[NUM]-[nombre]/story.md
-.context/PBI/epics/EPIC-[PROYECTO]-[NUM]-[nombre]/stories/STORY-[PROYECTO]-[NUM]-[nombre]/implementation-plan.md
-.context/PBI/epics/EPIC-[PROYECTO]-[NUM]-[nombre]/stories/STORY-[PROYECTO]-[NUM]-[nombre]/test-cases.md
+.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/story.md
+.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/implementation-plan.md
+.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/test-cases.md
 ```
 
 **Propósito:**
@@ -132,7 +132,7 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 ```markdown
 ## Análisis Completado
 
-**Story:** STORY-XXX - [Título]
+**Story:** STORY-{PROJECT_KEY}-{ISSUE_NUM} - [Título]
 
 **Acceptance Criteria:**
 1. [AC1]
@@ -235,7 +235,7 @@ npm run dev
 - **NO usar `console.error`** (usar logger apropiado)
 - **NO crear componentes UI si ya existen** (reusar design system)
 - **NO ejecutar scripts interactivos**
-- **NO agregar tests en esta fase** (eso es Fase 8)
+- **NO implementar integration/E2E tests** (eso es Fase 11: Test Automation)
 
 ### ✅ SÍ HACER:
 - **Seguir structure de carpetas** del proyecto
@@ -282,7 +282,7 @@ npm run build  # o: bun run build
 3. [Resultado esperado] ✅
 ```
 
-**Nota:** Tests automatizados se agregan en Fase 8 (Test Automation).
+**Nota:** Unit tests se crean con el prompt `unit-testing.md`. Integration/E2E tests en Fase 11.
 
 ---
 
@@ -334,19 +334,22 @@ npm run dev
 
 ### 📋 Próximos pasos:
 
-**1. Code Review (Fase 7):**
-   - Usa `.prompts/fase-7-code-review/review-pr.md`
+**1. Unit Tests (si no se hicieron):**
+   - Usa `.prompts/fase-7-implementation/unit-testing.md`
+   - Crea tests para lógica de negocio crítica
+
+**2. Code Review (Fase 8):**
+   - Usa `.prompts/fase-8-code-review/review-pr.md`
    - Revisa código con análisis estático
 
-**2. Test Automation (Fase 8):**
-   - Después de code review aprobado
-   - Agrega tests unitarios e integración
-   - Usa `.prompts/fase-8-test-automation/`
+**3. Integration/E2E Tests (Fase 11):**
+   - Después de code review y deployment staging
+   - Usa `.prompts/fase-11-test-automation/`
 
 ### 💬 Sugerencia de commit message:
 
 ```
-feat(STORY-XXX): [Descripción breve]
+feat(STORY-{PROJECT_KEY}-{ISSUE_NUM}): [Descripción breve]
 
 - Implementa [funcionalidad 1]
 - Agrega [funcionalidad 2]
@@ -360,7 +363,7 @@ Acceptance Criteria:
 Story: [Link a Jira si aplica]
 ```
 
-**Nota:** NO hagas commit todavía - primero pasa por Code Review (Fase 7).
+**Nota:** NO hagas commit todavía - primero crea unit tests y luego pasa por Code Review (Fase 8).
 ```
 
 ---
@@ -368,10 +371,10 @@ Story: [Link a Jira si aplica]
 ## 🎯 EJEMPLO DE USO COMPLETO
 
 ```markdown
-Implementa STORY-MYM-14-view-mentors siguiendo estos pasos:
+Implementa STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre} siguiendo estos pasos:
 
 **Contexto a leer:**
-1. .context/PBI/epics/EPIC-MYM-13-mentor-discovery/stories/STORY-MYM-14-view-mentors/implementation-plan.md
+1. .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/implementation-plan.md
 2. .context/guidelines/ (todos los archivos)
 3. .context/design-system.md
 
@@ -382,10 +385,12 @@ Implementa STORY-MYM-14-view-mentors siguiendo estos pasos:
 4. Al finalizar: dame resumen + comandos para probar + sugerencia de commit
 
 **Importante:**
-- Usa Context7 MCP si tienes dudas de Next.js o React
-- Reutiliza componentes del design system (Button, Card)
-- NO agregues tests (eso es Fase 8)
+- Usa Context7 MCP si tienes dudas sobre las tecnologías del stack
+- Reutiliza componentes del design system
+- Crea unit tests con `unit-testing.md` después
 - Valida con build + prueba manual
+
+(Donde {PROJECT_KEY}, {ISSUE_NUM}, {nombre} se obtienen del epic/story que estás implementando)
 ```
 
 ---
@@ -427,4 +432,4 @@ Este comando requiere input interactivo. Te proporciono los pasos manuales:
 
 ---
 
-**Nota final:** Esta fase implementa funcionalidad. Los tests automatizados (unit, integration, e2e) se agregan en Fase 8 (Test Automation).
+**Nota final:** Esta fase implementa funcionalidad + unit tests. Integration/E2E tests se agregan en Fase 11 (Test Automation).

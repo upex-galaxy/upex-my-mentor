@@ -312,7 +312,7 @@ package-lock.json
 
 4. **Continuar con Code Review:**
    - Ahora que linting está configurado
-   - Usar `.prompts/fase-7-code-review/review-pr.md`
+   - Usar `.prompts/fase-8-code-review/review-pr.md`
 
 ### ⚠️ Notas:
 
@@ -367,4 +367,4 @@ Este comando requiere input interactivo. En su lugar:
 
 ---
 
-**Nota:** Después de configurar linting, procede con code review usando `review-pr.md`.
+**Nota:** Después de configurar linting, procede con code review (Fase 8) usando `review-pr.md`.

@@ -155,7 +155,7 @@ La IA debe advertir y pedir conexión o instruir al usuario cómo ejecutar manua
 ### ❌ NO HACER:
 - **NO hardcodear SQL** - Usa Supabase MCP o instruye al usuario
 - **NO ejecutar scripts interactivos** - Evitar comandos que requieren input del usuario
-- **NO agregar tests en esta fase** - Los tests van en Fase 8
+- **NO hardcodear valores de configuración** - Usa environment variables
 - **NO ignorar error handling** - Implementar según `.context/guidelines/error-handling.md`
 - **NO crear componentes si ya existen** - Reusar design system
 - **NO hacer commits automáticos** - Solo recomendar al usuario
@@ -184,8 +184,10 @@ La IA debe advertir y pedir conexión o instruir al usuario cómo ejecutar manua
 
 **Archivos creados/modificados:**
 - `app/page.tsx` - [Descripción breve]
-- `components/MentorCard.tsx` - [Descripción breve]
-- `lib/api/mentors.ts` - [Descripción breve]
+- `components/[DomainComponent].tsx` - [Descripción breve]
+- `lib/api/[domain-entity].ts` - [Descripción breve]
+
+(Donde [DomainComponent] y [domain-entity] se definen según el dominio de la story. Ejemplos: MentorCard/mentors en MYM, ProductCard/products en SHOP, PostCard/posts en BLOG)
 
 **Funcionalidad implementada:**
 - ✅ AC1: [Descripción]
@@ -200,7 +202,7 @@ La IA debe advertir y pedir conexión o instruir al usuario cómo ejecutar manua
 **Comandos para probar:**
 ```bash
 npm run dev
-# Abre: http://localhost:3000/mentors
+# Abre: http://localhost:3000/[ruta-de-tu-feature]
 ```
 
 **Próximo paso:**
@@ -238,7 +240,7 @@ cd .prompts/fase-7-implementation/
 # 2b. Para crear unit tests:
 #     Copia el contenido de unit-testing.md
 
-# 3. Reemplaza [PROYECTO], [NUM], [nombre] con valores reales
+# 3. Reemplaza {PROJECT_KEY}, {ISSUE_NUM}, {nombre} con valores reales de tu story
 
 # 4. Pégalo en tu chat con la IA
 

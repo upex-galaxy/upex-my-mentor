@@ -4,14 +4,14 @@ Actúa como Senior Full-Stack Developer.
 
 ## 🎯 TAREA
 
-Continuar la implementación de **STORY-[PROYECTO]-[NUM]-[nombre]** que fue pausada.
+Continuar la implementación de **STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}** que fue pausada.
 
 ---
 
 ## 📚 CONTEXTO A LEER
 
 ```
-.context/PBI/epics/EPIC-[PROYECTO]-[NUM]-[nombre]/stories/STORY-[PROYECTO]-[NUM]-[nombre]/implementation-plan.md
+.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/implementation-plan.md
 ```
 
 **Además:**
@@ -42,7 +42,7 @@ Continuar la implementación de **STORY-[PROYECTO]-[NUM]-[nombre]** que fue paus
 
 **Output esperado:**
 ```markdown
-## 📊 Estado Actual de STORY-XXX
+## 📊 Estado Actual de STORY-{PROJECT_KEY}-{ISSUE_NUM}
 
 ### ✅ Completado:
 - Step 1: [Nombre] - [Archivos: x, y, z]
@@ -75,17 +75,18 @@ Continuar la implementación de **STORY-[PROYECTO]-[NUM]-[nombre]** que fue paus
 3. Continúa con el siguiente
 
 **Sigue las mismas restricciones de `implement-story.md`:**
-- ❌ NO tests (eso es Fase 8)
+- ❌ NO integration/E2E tests (eso es Fase 11)
 - ✅ Code standards
 - ✅ Error handling
 - ✅ Design system
+- ✅ Crea unit tests con `unit-testing.md` al finalizar
 
 ---
 
 ## 🎯 EJEMPLO DE USO
 
 ```markdown
-Continúa la implementación de STORY-MYM-14-view-mentors.
+Continúa la implementación de STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}.
 
 **Proceso:**
 1. Analiza qué steps ya están completados
@@ -96,7 +97,9 @@ Continúa la implementación de STORY-MYM-14-view-mentors.
 **Importante:**
 - Lee el implementation plan
 - Revisa código ya existente
-- NO agregues tests (Fase 8)
+- Crea unit tests con `unit-testing.md` al finalizar
+
+(Donde {PROJECT_KEY}, {ISSUE_NUM}, {nombre} se obtienen de la story que estás continuando)
 ```
 
 ---

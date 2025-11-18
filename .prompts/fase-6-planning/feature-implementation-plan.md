@@ -1,16 +1,16 @@
 Actúa como Senior Software Architect, Tech Lead, y UI/UX Designer.
 
 **Input:**
-- Epic: [usar .context/PBI/epics/EPIC-XXX/epic.md]
+- Epic: [usar .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/epic.md]
 - SRS completo: [usar .context/SRS/*.md]
-- Feature Test Plan: [usar .context/PBI/epics/EPIC-XXX/feature-test-plan.md]
+- Feature Test Plan: [usar .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/feature-test-plan.md]
 - **Design System:** [usar .context/design-system.md - para decisiones de UI/UX]
 
-**Genera archivo: feature-implementation-plan.md** (dentro de .context/PBI/epics/EPIC-XXX/)
+**Genera archivo: feature-implementation-plan.md** (dentro de .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/)
 
 ---
 
-# Feature Implementation Plan: EPIC-XXX - [Epic Title]
+# Feature Implementation Plan: EPIC-{PROJECT_KEY}-{ISSUE_NUM} - [Epic Title]
 
 ## Overview
 
@@ -73,7 +73,7 @@ Esta feature implementa [descripción high-level de la feature].
 
 ## UI/UX Design Strategy (Si la feature tiene interfaz)
 
-**⚠️ IMPORTANTE:** Esta feature debe usar el Design System base de Fase 2.5.
+**⚠️ IMPORTANTE:** Esta feature debe usar el Design System base de Fase 3 (frontend-setup.md).
 
 **Design System disponible:** `.context/design-system.md`
 
@@ -85,11 +85,13 @@ Esta feature implementa [descripción high-level de la feature].
 - ✅ [Layout]: [Navbar/Sidebar - si se necesitan ajustes]
 
 **Componentes custom a nivel feature:**
-- 🆕 [FeatureComponentName] (ej: MentorCard, ProjectFilters)
+- 🆕 [FeatureComponentName]
   - **Usado por stories:** [Story A, Story B]
   - **Propósito:** [Descripción]
   - **Diseño base:** [Descripción visual usando design system]
   - **Ubicación:** `components/[feature-domain]/`
+
+(Donde [FeatureComponentName] se define según el dominio de la feature. Ejemplos según proyecto: MentorCard en MYM, ProductCard en SHOP, PostCard en BLOG)
 
 ### Consistencia visual:
 
@@ -170,14 +172,16 @@ Esta feature implementa [descripción high-level de la feature].
 
 **Recomendado:**
 
-1. **STORY-XXX: [Título]** (base para todo)
+1. **STORY-{PROJECT_KEY}-{ISSUE_NUM}: [Título]** (base para todo)
    - Razón: [Por qué primero]
 
-2. **STORY-YYY: [Título]** (depende de STORY-XXX)
+2. **STORY-{PROJECT_KEY}-{ISSUE_NUM}: [Título]** (depende de story anterior)
    - Razón: [Por qué después]
 
-3. **STORY-ZZZ: [Título]** (puede ir en paralelo)
+3. **STORY-{PROJECT_KEY}-{ISSUE_NUM}: [Título]** (puede ir en paralelo)
    - Razón: [Por qué en paralelo]
+
+(Donde los números de issue específicos se obtienen del epic.md y sus stories)
 
 ---
 
@@ -212,7 +216,7 @@ Esta feature implementa [descripción high-level de la feature].
 
 ---
 
-**Formato:** Markdown estructurado, listo para copiar a .context/PBI/epics/EPIC-XXX/feature-implementation-plan.md
+**Formato:** Markdown estructurado, listo para copiar a .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/feature-implementation-plan.md
 
 **Restricciones:**
 - Decisiones técnicas justificadas

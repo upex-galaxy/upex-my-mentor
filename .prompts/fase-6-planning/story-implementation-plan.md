@@ -1,17 +1,17 @@
 Actúa como Senior Full-Stack Developer + UI/UX Designer.
 
 **Input:**
-- Story: [usar .context/PBI/epics/EPIC-XXX/stories/STORY-XXX/story.md]
-- Test Cases: [usar .context/PBI/epics/EPIC-XXX/stories/STORY-XXX/test-cases.md]
-- Feature Implementation Plan: [usar .context/PBI/epics/EPIC-XXX/feature-implementation-plan.md]
+- Story: [usar .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/story.md]
+- Test Cases: [usar .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/test-cases.md]
+- Feature Implementation Plan: [usar .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/feature-implementation-plan.md]
 - SRS relevante: [usar secciones relacionadas de .context/SRS/]
 - **Design System:** [usar .context/design-system.md - para decisiones de UI/UX]
 
-**Genera archivo: implementation-plan.md** (dentro de .context/PBI/epics/EPIC-XXX/stories/STORY-XXX/)
+**Genera archivo: implementation-plan.md** (dentro de .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/)
 
 ---
 
-# Implementation Plan: STORY-XXX - [Story Title]
+# Implementation Plan: STORY-{PROJECT_KEY}-{ISSUE_NUM} - [Story Title]
 
 ## Overview
 
@@ -41,7 +41,7 @@ Implementar funcionalidad de [descripción breve].
 
 ## UI/UX Design (Si la story tiene interfaz)
 
-**⚠️ IMPORTANTE:** Esta story debe usar el Design System base de Fase 2.5.
+**⚠️ IMPORTANTE:** Esta story debe usar el Design System base de Fase 3 (frontend-setup.md).
 
 **Design System disponible:** `.context/design-system.md`
 
@@ -57,11 +57,13 @@ Implementar funcionalidad de [descripción breve].
 ### Componentes custom a crear:
 
 **Componentes específicos del dominio (nuevos):**
-- 🆕 [ComponentName] (ej: MentorCard, ProjectTable)
+- 🆕 [ComponentName]
   - **Propósito:** [Descripción]
   - **Props:** [Listar props principales]
   - **Diseño:** [Breve descripción visual - usa design system base]
   - **Ubicación:** `components/[domain]/[component-name].tsx`
+
+(Donde [ComponentName] se define según el dominio de la story. Ejemplos según proyecto: MentorCard en MYM, ProductCard en SHOP, PostCard en BLOG)
 
 ### Wireframes/Layout:
 
@@ -242,7 +244,7 @@ Implementar funcionalidad de [descripción breve].
 
 ---
 
-**Output:** Archivo Markdown listo para .context/PBI/epics/EPIC-XXX/stories/STORY-XXX/implementation-plan.md
+**Output:** Archivo Markdown listo para .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/implementation-plan.md
 
 **Nota para IA:**
 - Si story es compleja, considera crear archivos adicionales opcionales (components.md, api-details.md, database-changes.md)

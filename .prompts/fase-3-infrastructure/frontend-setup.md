@@ -249,7 +249,7 @@ const UserCard = ({ user }: { user: User }) => {
 - **NO implementar todas las páginas del MVP** - Solo 2-3 páginas demo estratégicas
 - **NO implementar funcionalidad real** - Solo UI bonita con mock data para validar design system
 - **NO implementar criterios de aceptación completos** - Eso es para Fase 7 (Implementation)
-- **NO hardcodear nombres genéricos** (ej: "Dashboard", "Settings") - Usa nombres del dominio del negocio
+- **NO usar nombres de ejemplo de otros dominios** - Analiza el PRD/SRS/PBI del proyecto actual e identifica el vocabulario específico del dominio de este negocio
 - **NO ejecutar comandos interactivos** (ej: `npm run dev`) - Solo comandos que terminen
 - **NO hacer commits automáticos** - Solo recomendar al usuario
 - **NO crear diseños genéricos/aburridos** - Debe ser visualmente impresionante
@@ -503,7 +503,7 @@ Hoy en día, hay alternativas **mucho más rápidas y eficientes** que npm:
 **Opciones:**
 
 1. **Azul Profesional** (Confianza y corporativo)
-   - **Descripción:** "Tonos azules (ej: #3B82F6). Transmite confianza, profesionalismo. Ideal para: SaaS empresarial, fintech, herramientas B2B."
+   - **Descripción:** "Tonos azules (ej: #3B82F6). Transmite confianza, profesionalismo. Ideal para: SaaS empresarial, aplicaciones B2B, plataformas corporativas."
 
 2. **Verde Moderno** (Crecimiento y tech)
    - **Descripción:** "Tonos verdes (ej: #10B981). Transmite innovación, crecimiento. Ideal para: Startups tech, sostenibilidad, salud."
@@ -512,7 +512,7 @@ Hoy en día, hay alternativas **mucho más rápidas y eficientes** que npm:
    - **Descripción:** "Tonos morados (ej: #8B5CF6). Transmite creatividad, lujo. Ideal para: Apps creativas, comunidades, productos premium."
 
 4. **Naranja Energético** (Energía y acción)
-   - **Descripción:** "Tonos naranjas (ej: #F59E0B). Transmite energía, call-to-action. Ideal para: E-commerce, marketplaces, apps de acción."
+   - **Descripción:** "Tonos naranjas (ej: #F59E0B). Transmite energía, call-to-action. Ideal para: Plataformas transaccionales, apps de acción, servicios dinámicos."
 
 5. **Elige por mí** (Basado en tu negocio)
    - **Descripción:** "La IA analizará la personalidad de tu negocio (del PRD) y seleccionará la paleta más apropiada automáticamente."
@@ -683,10 +683,19 @@ Basándome en tus preferencias y el análisis del proyecto, aquí está el plan 
 - Típicamente: Auth + 1-2 páginas core del dominio
 
 **Ejemplos según tipo de app:**
-- **SaaS Dashboard**: Login + Home/Dashboard principal
-- **E-commerce**: Login + Product Grid
-- **Social**: Login + Feed principal
-- **Marketplace**: Login + Listings principal
+```pseudocode
+SI app_tipo == "dashboard/herramienta":
+  Páginas: Login + Vista principal (grid de entidades)
+
+SI app_tipo == "plataforma transaccional":
+  Páginas: Login + Grid de items principales
+
+SI app_tipo == "comunidad/social":
+  Páginas: Login + Feed/listado principal
+
+SI app_tipo == "gestión de recursos":
+  Páginas: Login + Listado de recursos principales
+```
 
 **Output de este paso:**
 ```markdown
@@ -1157,7 +1166,7 @@ export function cn(...inputs: ClassValue[]) {
 
 **Directiva para la IA:**
 
-"Crea un Navbar component responsive. En desktop muestra links inline, en mobile muestra hamburger menu. Usa el Button component del design system. Aplica bg-card/50 con backdrop-blur para efecto moderno si el estilo es 'Moderno/Bold'. Include user avatar si hay autenticación. Usa nombres de navegación del dominio del negocio (NO 'Dashboard' genérico)."
+"Crea un Navbar component responsive. En desktop muestra links inline, en mobile muestra hamburger menu. Usa el Button component del design system. Aplica bg-card/50 con backdrop-blur para efecto moderno si el estilo es 'Moderno/Bold'. Include user avatar si hay autenticación. Analiza el PRD/PBI para identificar las secciones principales de navegación del proyecto y usa esos nombres específicos del dominio de negocio."
 
 ---
 
@@ -1194,7 +1203,7 @@ export function cn(...inputs: ClassValue[]) {
 
 **Directiva para la IA:**
 
-"Crea un Sidebar component con estado de collapsed/expanded si es collapsible. Usa lucide-react para iconos. Aplica hover y active states usando la paleta primary. Si es collapsible, muestra solo iconos cuando está collapsed. Use nombres del dominio para navigation items (inferir del PBI)."
+"Crea un Sidebar component con estado de collapsed/expanded si es collapsible. Usa lucide-react para iconos. Aplica hover y active states usando la paleta primary. Si es collapsible, muestra solo iconos cuando está collapsed. Analiza el PRD/PBI para identificar las secciones y entidades principales del proyecto, y crea los navigation items usando esa nomenclatura específica del dominio de negocio."
 
 ---
 
@@ -1294,9 +1303,9 @@ export function cn(...inputs: ClassValue[]) {
 ### Paso 5.2: Crear Página Principal/Home
 
 ```markdown
-### 🏠 Creando Página [Nombre según dominio]
+### 🏠 Creando Página Principal
 
-**Ruta:** `/[ruta]` (inferir del dominio - NO usar "/dashboard" genérico)
+**Ruta:** (Analizar el PRD/PBI para determinar la ruta apropiada según el dominio de negocio del proyecto)
 **Archivo:** [Ubicación según framework]
 
 **Diseño a implementar:**
@@ -1309,11 +1318,20 @@ export function cn(...inputs: ClassValue[]) {
 **Grid de Cards o Sección principal:**
 [Analizar épicas del PBI para decidir qué mostrar]
 
-Ejemplos:
-- Si es app de proyectos → Grid de project cards
-- Si es app de mentores → Grid de mentor cards
-- Si es fintech → Dashboard con stats cards
-- Si es e-commerce → Product grid
+**Pseudocódigo para inferir:**
+```pseudocode
+Analizar épicas del PBI:
+  Identificar ENTIDAD_PRINCIPAL del dominio
+  
+  SI épica principal muestra listado de [ENTIDAD]:
+    Crear: Grid de [ENTIDAD] cards (responsive, hover effects)
+  
+  SI épica principal muestra estadísticas:
+    Crear: Dashboard con stats cards (métricas del PRD)
+  
+  SI épica principal muestra flujo/timeline:
+    Crear: Feed/timeline de [ENTIDAD] items
+```
 
 **Componentes a usar:**
 - Card component del design system
@@ -1342,7 +1360,7 @@ const mockData: [Entity][] = [...]
 
 **Directiva para la IA:**
 
-"Crea página home/principal del dominio. Analiza las épicas del PBI para identificar qué entidades mostrar (proyectos, productos, mentores, etc.). **USA los tipos del backend importados de @/lib/types** para crear mock data type-safe. Crea 4-6 items de mock data realistas que cumplan con la estructura del tipo. Usa Card component con hover effect. Include loading skeleton states. Si grid está vacío, muestra empty state bonito con ilustración/ícono + CTA. Usa paleta de colores del theme. Title con text-3xl font-bold, description con text-muted-foreground."
+"Crea página home/principal del dominio. Analiza las épicas del PBI para identificar ENTIDAD_PRINCIPAL (la entidad core del negocio). **USA los tipos del backend importados de @/lib/types** para crear mock data type-safe. Crea 4-6 items de mock data realistas que cumplan con la estructura del tipo. Usa Card component con hover effect. Include loading skeleton states. Si grid está vacío, muestra empty state bonito con ilustración/ícono + CTA. Usa paleta de colores del theme. Title con text-3xl font-bold, description con text-muted-foreground."
 
 ---
 
@@ -2084,7 +2102,7 @@ Checklist interno (NO mostrar al usuario):
 
 ### FASE 6 (Planning + UI Design - Por cada story):
 - ✅ Wireframes/mockups específicos de la story
-- ✅ Componentes custom del dominio (ej: MentorCard, ProjectTable)
+- ✅ Componentes custom del dominio (ej: [Entity]Card, [Entity]Table basados en negocio)
 - ✅ Flujos de UX específicos
 - ✅ Validaciones y estados visuales
 - ✅ 20% del diseño específico

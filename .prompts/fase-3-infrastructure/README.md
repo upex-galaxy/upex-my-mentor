@@ -278,8 +278,8 @@ Fase 7: Implementation (Sprints iterativos)
 - Auth flow (login, signup) → Configurado UNA vez
 
 **Después solo implementas features específicas:**
-- Story 1: "Como user, quiero ver mentors"
-- Story 2: "Como user, quiero reservar sesión"
+- Story 1: "Como user, quiero ver [lista de recursos]"
+- Story 2: "Como user, quiero crear [item de negocio]"
 
 ---
 
@@ -291,7 +291,7 @@ Fase 7: Implementation (Sprints iterativos)
 - Creadas en `backend-setup.md`
 
 **Tablas de features (Fase 7):**
-- mentors, sessions, reviews, payments
+- {entity_name}, {bookings}, {reviews}, {payments}
 - Tablas específicas de cada story
 - Creadas durante Implementation según el PBI
 
@@ -302,10 +302,10 @@ Fase 3 (backend-setup.md):
   ✅ profiles
   ✅ roles
 
-Fase 7 (implementando story "Ver mentors"):
-  ✅ mentors
-  ✅ mentor_skills
-  ✅ mentor_availability
+Fase 7 (implementando story "Ver [recursos de negocio]"):
+  ✅ {entity_name}
+  ✅ {entity_name}_attributes
+  ✅ {entity_name}_metadata
 ```
 
 ---

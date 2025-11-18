@@ -8,13 +8,15 @@ Actúa como QA Engineer experto en Shift-Left Testing, Test Case Design y Critic
 
 ### 1. Story Path Local (OBLIGATORIO)
 
-**Formato:** `.context/PBI/epics/EPIC-{PROYECTO}-{NUM}-{nombre}/stories/STORY-{PROYECTO}-{NUM}-{nombre}/`
-**Ejemplo:** `.context/PBI/epics/EPIC-UPEX-001-auth/stories/STORY-UPEX-005-login/`
+**Formato:** `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/`
+**Ejemplo:** `.context/PBI/epics/EPIC-UPEX-13-auth/stories/STORY-UPEX-45-login/`
 
 **⚠️ IMPORTANTE - Diferencia entre Nomenclaturas:**
 
-- **Path Local (carpeta):** `STORY-UPEX-005-login` ← Nomenclatura de carpetas
-- **Jira Key (real):** `UPEX-456` ← Key real del issue en Jira
+- **Path Local (carpeta):** `STORY-UPEX-45-login` ← Nomenclatura de carpetas
+- **Jira Key (real):** `UPEX-45` ← Key real del issue en Jira
+
+**Nota:** Los números de issue son idénticos en ambos formatos (ej: 45). La diferencia está solo en el prefijo STORY-
 
 **Proceso:**
 
@@ -139,12 +141,12 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
 
 ---
 
-# Test Cases: STORY-{PROYECTO}-{NUM} - [Story Title]
+# Test Cases: STORY-{PROJECT_KEY}-{ISSUE_NUM} - [Story Title]
 
 **Fecha:** [YYYY-MM-DD]
 **QA Engineer:** [Nombre o "TBD"]
-**Story Jira Key:** [STORY-XXX]
-**Epic:** EPIC-{PROYECTO}-{NUM} - [Epic Title]
+**Story Jira Key:** [{PROJECT_KEY}-{ISSUE_NUM}]
+**Epic:** EPIC-{PROJECT_KEY}-{ISSUE_NUM} - [Epic Title]
 **Status:** Draft | In Review | Approved
 
 ---
@@ -575,7 +577,7 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
   },
   "user": {
     "email": "testuser@example.com",
-    "role": "mentee"
+    "role": "user_role_from_PRD"
   }
 }
 ```
@@ -777,8 +779,8 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
 
 1. **Leer story actual de Jira:**
    - Usar MCP de Atlassian para obtener la issue
-   - Input: Jira Key real extraído de story.md (ej: UPEX-456)
-   - ⚠️ **NO usar** nomenclatura de carpeta (STORY-UPEX-005)
+   - Input: Jira Key real extraído de story.md (ej: UPEX-45)
+   - ⚠️ **NO usar** nomenclatura de carpeta (STORY-UPEX-45)
    - Obtener: description, acceptance criteria actuales
 
 2. **Preparar contenido refinado:**
@@ -872,7 +874,7 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
 ---
 
 **Documentation:** Full test cases also available at:
-`.context/PBI/epics/EPIC-{...}/stories/STORY-{...}/test-cases.md`
+`.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/test-cases.md`
 ```
 
 **Pasos a ejecutar:**
@@ -893,7 +895,7 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
 
 **Objetivo:** Crear archivo local `.md` como MIRROR del comentario en Jira para version control y documentación offline.
 
-**Path:** `.context/PBI/epics/EPIC-{...}/stories/STORY-{...}/test-cases.md`
+**Path:** `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/test-cases.md`
 
 **Contenido:** IDÉNTICO al contenido generado en FASE 5b (desde línea 64 hasta línea 783 de este prompt)
 
@@ -1039,7 +1041,7 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
 
 **Local Files:**
 
-- ✅ `test-cases.md` created at: `.context/PBI/epics/EPIC-{...}/stories/STORY-{...}/`
+- ✅ `test-cases.md` created at: `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/`
 
 **Test Coverage:**
 
@@ -1064,7 +1066,7 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
 **⚠️ BLOCKER:** Dev should NOT start implementation until critical questions are answered by PO.
 
 **Jira Link:** [Link to story in Jira]
-**Local Test Cases:** `.context/PBI/epics/EPIC-{...}/stories/STORY-{...}/test-cases.md`
+**Local Test Cases:** `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/test-cases.md`
 
 ---
 
@@ -1092,9 +1094,9 @@ Esta story se considera "Done" desde QA cuando:
 
 ## 📎 Related Documentation
 
-- **Story:** `.context/PBI/epics/EPIC-{...}/stories/STORY-{...}/story.md`
-- **Epic:** `.context/PBI/epics/EPIC-{...}/epic.md`
-- **Feature Test Plan:** `.context/PBI/epics/EPIC-{...}/feature-test-plan.md`
+- **Story:** `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/story.md`
+- **Epic:** `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/epic.md`
+- **Feature Test Plan:** `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/feature-test-plan.md`
 - **Business Model:** `.context/idea/business-model.md`
 - **PRD:** `.context/PRD/` (all files)
 - **SRS:** `.context/SRS/` (all files)
@@ -1136,9 +1138,9 @@ Esta story se considera "Done" desde QA cuando:
 - ✅ TODOS los archivos de contexto (idea, PRD, SRS) deben estar completos
 - ✅ Feature test plan debe existir
 - ✅ Story.md local debe existir
-- ✅ **Story Path local disponible** (ej: `.context/PBI/epics/EPIC-XXX-name/stories/STORY-XXX-name/`)
-- ✅ **Story.md debe contener campo `Jira Key:`** con el key real (ej: UPEX-456)
-- ✅ **Epic.md debe contener campo `Jira Key:`** con el epic key real (ej: UPEX-123)
+- ✅ **Story Path local disponible** (ej: `.context/PBI/epics/EPIC-UPEX-13-name/stories/STORY-UPEX-45-name/`)
+- ✅ **Story.md debe contener campo `Jira Key:`** con el key real (ej: UPEX-45)
+- ✅ **Epic.md debe contener campo `Jira Key:`** con el epic key real (ej: UPEX-13)
 - ✅ **Acceso a MCP de Atlassian configurado y funcionando**
 - ✅ Tiempo para analizar críticamente y no solo generar test cases mecánicamente
 
@@ -1146,10 +1148,10 @@ Esta story se considera "Done" desde QA cuando:
 
 El archivo story.md debe contener en su metadata:
 ```markdown
-**Jira Key:** UPEX-456
-**Epic:** EPIC-UPEX-001-feature-name
+**Jira Key:** UPEX-45
+**Epic:** EPIC-UPEX-13-feature-name
 ```
-Estos son los datos reales (NO nomenclatura de carpeta para Jira Key).
+Estos son los datos reales. Nota: El número de issue (45, 13) es el mismo en la nomenclatura de carpeta y en el Jira Key.
 
 ---
 
@@ -1158,23 +1160,23 @@ Estos son los datos reales (NO nomenclatura de carpeta para Jira Key).
 ### Input requerido del usuario:
 
 ```
-Story Path: .context/PBI/epics/EPIC-XXX-nombre/stories/STORY-XXX-nombre/
+Story Path: .context/PBI/epics/EPIC-UPEX-13-nombre/stories/STORY-UPEX-45-nombre/
 ```
 
 **⚠️ Proceso Automático:**
 1. Prompt lee: `{STORY_PATH}/story.md`
-2. Prompt extrae: Campo `**Jira Key:**` (ej: UPEX-456)
+2. Prompt extrae: Campo `**Jira Key:**` (ej: UPEX-45)
 3. Prompt extrae: Campo `**Epic:**` para encontrar epic path
-4. Prompt lee: Epic.md y extrae Epic Jira Key
+4. Prompt lee: Epic.md y extrae Epic Jira Key (ej: UPEX-13)
 5. Prompt usa: Jira Keys reales para operaciones MCP
 
 ### Orden de ejecución:
 
 **Pre-requisito: Extraer Jira Keys**
 1. Leer `{STORY_PATH}/story.md` proporcionado por usuario
-2. Extraer campo `**Jira Key:**` de story (ej: UPEX-456)
+2. Extraer campo `**Jira Key:**` de story (ej: UPEX-45)
 3. Extraer campo `**Epic:**` para obtener epic path
-4. Leer epic.md y extraer Epic Jira Key (ej: UPEX-123)
+4. Leer epic.md y extraer Epic Jira Key (ej: UPEX-13)
 5. Guardar ambos Jira Keys reales para FASE 5a y 5b
 
 **Leer Contexto Completo:**
