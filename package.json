@@ -9,7 +9,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "ai": "node scripts/mcp-builder.js",
-    "up:prompt": "node scripts/update-prompts.js"
+    "up": "node scripts/update-prompts.js"
   },
   "dependencies": {
     "@supabase/ssr": "^0.7.0",
