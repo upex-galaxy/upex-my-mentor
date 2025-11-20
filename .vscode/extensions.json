@@ -33,7 +33,6 @@
     "usernamehw.errorlens", // Error Lens - Muestra errores inline
     "formulahendry.auto-rename-tag", // Auto Rename Tag - Renombra tags HTML/XML automáticamente
     "christian-kohler.path-intellisense", // Path Intellisense - Autocompletado de rutas
-    "visualstudioexptteam.vscodeintellicode", // IntelliCode - AI-powered code completion
     // =====================
     // Testing
     // =====================
