@@ -216,7 +216,7 @@ Al finalizar esta fase tendrás:
 **Situación:** CI/CD ya está configurado, quieres desplegar nueva feature.
 
 **Flujo:**
-1. Implementa feature en `feature/STORY-XXX` branch
+1. Implementa feature en `feature/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}` branch
 2. Crea Pull Request a `develop`
 3. GitHub Actions ejecuta: lint → test → build (automático)
 4. Si CI pasa → Code review (Fase 8)

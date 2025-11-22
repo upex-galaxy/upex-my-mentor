@@ -428,23 +428,47 @@ Ejemplo:
    - @supabase/supabase-js@[version]
    ```
 
-### Paso 1.5.2: Instalar
+### Paso 1.5.2: Instalar Dependencias Verificadas
 
 ```bash
+# Remover dependencias deprecadas (si existen)
 [package-manager] remove @supabase/auth-helpers-nextjs
-[package-manager] add @supabase/ssr @supabase/supabase-js
+
+# Instalar versiones estables actuales
+[package-manager] add @supabase/ssr@latest @supabase/supabase-js@latest
 ```
 
-**Validar:**
+**Validar versiones instaladas:**
 ```bash
 [package-manager] list | grep supabase
 ```
 
-**Output:**
+**Output esperado:**
 ```
-✅ @supabase/ssr@[version]
-✅ @supabase/supabase-js@[version]
-✅ Deprecados removidos
+✅ Dependencias Supabase instaladas:
+   - @supabase/ssr@0.x.x (estable)
+   - @supabase/supabase-js@2.x.x (estable)
+✅ Deprecados removidos: @supabase/auth-helpers-nextjs
+
+📋 Versiones instaladas:
+   @supabase/ssr: ^0.x.x
+   @supabase/supabase-js: ^2.x.x
+
+⚠️ Si las versiones son diferentes:
+   - Verificar compatibilidad con Context7
+   - Asegurar que @supabase/ssr es 0.x+ (no alpha/beta)
+   - Asegurar que @supabase/supabase-js es 2.x+ (no 1.x)
+```
+
+**Verificación adicional de compatibilidad:**
+```bash
+# Verificar versión de Next.js
+[package-manager] list next
+
+# Compatibilidad validada:
+# - Next.js 15.x + @supabase/ssr 0.x ✅
+# - Next.js 14.x + @supabase/ssr 0.x ✅
+# - Next.js 13.x + @supabase/ssr 0.x ✅
 ```
 
 ---
@@ -959,7 +983,47 @@ Para página [PageName]:
 
 **Objetivo:** Generar tipos TypeScript y validar integración.
 
-### Paso 5.1: Generar Tipos de Supabase
+### Paso 5.1: Verificar Versiones de Dependencias
+
+**CRÍTICO - Validar antes de generar tipos:**
+
+```markdown
+## 🔍 Verificando Versiones de Dependencias Backend
+
+**Propósito:** Asegurar compatibilidad entre Next.js y Supabase.
+```
+
+**Comando:**
+```bash
+[package-manager] list | grep -E "(next|react|supabase)"
+```
+
+**Output esperado (Noviembre 2025):**
+```
+✅ Versiones Validadas:
+
+Stack Base:
+- next: 15.x.x ✓ (estable)
+- react: 19.x.x ✓ (estable)
+- react-dom: 19.x.x ✓ (estable)
+
+Stack Supabase:
+- @supabase/ssr: 0.x.x ✓ (estable)
+- @supabase/supabase-js: 2.x.x ✓ (estable)
+
+⚠️ Si alguna versión NO coincide:
+1. Consultar Context7 MCP: "[paquete] latest stable version compatibility"
+2. Actualizar: [pm] add [paquete]@latest
+3. Re-ejecutar esta validación
+
+📋 Compatibilidad crítica verificada:
+- ✅ Next.js 15.x + @supabase/ssr 0.x → async cookies compatible
+- ✅ React 19.x + Next.js 15.x → compatible oficialmente
+```
+
+---
+
+### Paso 5.2: Generar Tipos de Supabase
 
 **Comando (verificar con Context7):**
 ```bash
@@ -967,9 +1031,10 @@ supabase gen types typescript --project-id [PROJECT_ID] > src/types/supabase.ts
 ```
 
 **Validar:**
-- Archivo creado
+- Archivo creado: `src/types/supabase.ts`
 - Contiene tipos de todas las tablas
 - No hay errores de sintaxis
+- Tamaño del archivo > 0 bytes
 
 **Explicar:**
 ```
@@ -984,11 +1049,14 @@ Contiene:
 Uso:
 import { Database } from '@/types/supabase'
 type [Entity] = Database['public']['Tables']['[table_name]']['Row']
+
+⚠️ Regenerar tipos cada vez que cambies el schema:
+   supabase gen types typescript --project-id [PROJECT_ID] > src/types/supabase.ts
 ```
 
 ---
 
-### Paso 5.2: Validar TypeScript
+### Paso 5.3: Validar TypeScript
 
 ```bash
 [package-manager] run typecheck
@@ -999,12 +1067,24 @@ type [Entity] = Database['public']['Tables']['[table_name]']['Row']
 - ✅ Sin errores TypeScript
 - ✅ Imports correctos
 - ✅ Config.ts valida
+- ✅ Tipos de Supabase accesibles
 
 **Si errores:** Revisar y corregir.
 
+**Problemas comunes:**
+```markdown
+❌ Error: Cannot find module '@/types/supabase'
+   → Verificar que el archivo existe
+   → Verificar alias @ en tsconfig.json
+
+❌ Error: Property 'X' does not exist on type 'Database'
+   → Regenerar tipos (schema cambió)
+   → Verificar nombre de tabla en minúsculas/snake_case
+```
+
 ---
 
-### Paso 5.3: Validar Build Completo
+### Paso 5.4: Validar Build Completo
 
 ```bash
 [package-manager] run build
@@ -1013,14 +1093,32 @@ type [Entity] = Database['public']['Tables']['[table_name]']['Row']
 **Verificar:**
 - ✅ Build exitoso
 - ✅ Sin warnings de env vars
-- ✅ Middleware compila
-- ✅ Server Components OK
+- ✅ Middleware compila correctamente
+- ✅ Server Components OK (sin errores de cookies)
+- ✅ AuthContext compila
 
 **Si errores:** Analizar, corregir, documentar.
 
-**Output:**
+**Problemas comunes:**
+```markdown
+❌ Error: cookies() expects to be called within a request scope
+   → Verificar que usas await cookies() en Next.js 15
+   → Código correcto: const cookieStore = await cookies()
+
+❌ Error: Environment variables missing
+   → Verificar .env existe
+   → Verificar config.ts lee correctamente
+   → Verificar nombres: NEXT_PUBLIC_SUPABASE_URL (con prefijo)
+
+❌ Error: Module not found '@supabase/ssr'
+   → Re-instalar: [pm] add @supabase/ssr@latest
+   → Limpiar cache: rm -rf node_modules && [pm] install
 ```
-✅ TypeScript validated
+
+**Output esperado:**
+```
+✅ Versiones validadas (Next 15 + Supabase SSR 0.x)
+✅ TypeScript validated (sin errores)
 ✅ Production build successful
 ✅ Ready for development
 ```
