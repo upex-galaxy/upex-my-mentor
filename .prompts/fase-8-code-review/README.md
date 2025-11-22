@@ -1,4 +1,4 @@
-# Fase 7: Code Review - Guías de Prompts
+# Fase 8: Code Review - Guías de Prompts
 
 > **Tipo de fase:** Asincrónica (iterativa por story)
 > **Propósito:** Revisar código estáticamente antes de merge
@@ -7,7 +7,7 @@
 
 ## 🎯 ¿Qué es esta fase?
 
-En esta fase se realiza **code review estático** del código implementado en Fase 6.
+En esta fase se realiza **code review estático** del código implementado en Fase 7 (Implementation).
 
 **Esta fase se enfoca SOLO en:**
 - ✅ **Análisis estático** del código
@@ -18,28 +18,28 @@ En esta fase se realiza **code review estático** del código implementado en Fa
 - ✅ **Cumplimiento de Acceptance Criteria**
 
 **Esta fase NO incluye:**
-- ❌ Tests unitarios (eso es Fase 8: Test Automation)
-- ❌ Tests de integración (eso es Fase 8)
-- ❌ Test coverage (eso es Fase 8)
-- ❌ Ejecución de tests automatizados (eso es Fase 8)
+- ❌ Tests unitarios (eso es Fase 7: Unit Testing - durante implementation)
+- ❌ Tests de integración (eso es Fase 11: Test Automation)
+- ❌ Test coverage (eso es Fase 7 y Fase 11)
+- ❌ Ejecución de tests automatizados (eso es Fase 7 y Fase 11)
 
 ---
 
 ## 📋 Cuándo usar esta fase
 
 **Prerequisitos:**
-- ✅ Story implementada completamente (Fase 6)
+- ✅ Story implementada completamente (Fase 7: Implementation)
 - ✅ Build exitoso sin errores TypeScript
 - ✅ Funcionalidad validada manualmente
 
 **Workflow típico:**
 ```
-Fase 6 (Implementation)
+Fase 7 (Implementation)
     ↓
-Fase 7 (Code Review) ← ESTÁS AQUÍ
+Fase 8 (Code Review) ← ESTÁS AQUÍ
     ↓
-[Si aprobado] → Fase 8 (Test Automation)
-[Si cambios requeridos] → Volver a Fase 6
+[Si aprobado] → Fase 9 (Deployment Staging)
+[Si cambios requeridos] → Volver a Fase 7 (usar fix-issues.md)
 ```
 
 ---
@@ -100,14 +100,14 @@ Fase 7 (Code Review) ← ESTÁS AQUÍ
 ## 🚫 ¿Qué NO revisa esta fase?
 
 **Tests automatizados:**
-- ❌ NO revisa tests unitarios (Fase 8)
-- ❌ NO revisa tests de integración (Fase 8)
-- ❌ NO revisa test coverage (Fase 8)
-- ❌ NO ejecuta tests automatizados (Fase 8)
+- ❌ NO revisa tests unitarios (ya creados en Fase 7)
+- ❌ NO revisa tests de integración (eso es Fase 11: Test Automation)
+- ❌ NO revisa test coverage (eso es Fase 7 y Fase 11)
+- ❌ NO ejecuta tests automatizados (ya ejecutados en Fase 7)
 
 **Razón:** La separación entre Code Review (estático) y Test Automation (dinámico) permite:
-- QA Engineer se enfoca en testing (Fase 8)
-- Tech Lead se enfoca en calidad de código (Fase 7)
+- QA Engineer se enfoca en integration/E2E testing (Fase 11)
+- Tech Lead se enfoca en calidad de código (Fase 8)
 - Procesos paralelos y especializados
 
 ---
@@ -132,15 +132,15 @@ Fase 7 (Code Review) ← ESTÁS AQUÍ
 ### Escenario 1: Review de PR
 
 ```bash
-# 1. Código ya implementado (Fase 6)
+# 1. Código ya implementado (Fase 7)
 # 2. Usa el prompt principal
 Use: review-pr.md
 
 # 3. La IA analiza y genera reporte
 # 4. Decide: APPROVE / CHANGES REQUESTED
 
-# Si APPROVE → Fase 8 (Test Automation)
-# Si CHANGES REQUESTED → Dev corrige (Fase 6)
+# Si APPROVE → Fase 9 (Deployment Staging)
+# Si CHANGES REQUESTED → Dev corrige (Fase 7: usar fix-issues.md)
 ```
 
 ### Escenario 2: Proyecto sin linter
@@ -164,7 +164,7 @@ Use: setup-linting.md
 - **NO aprobar código con `any` en TypeScript (salvo excepciones justificadas)**
 - **NO ignorar violaciones de DRY**
 - **NO ejecutar scripts interactivos** para configurar tools
-- **NO revisar tests automatizados** (eso es Fase 8)
+- **NO revisar tests automatizados** (unit tests ya en Fase 7, integration/E2E en Fase 11)
 
 ### ✅ SÍ HACER:
 - **Ejecutar linting** (`npm run lint`)
@@ -181,7 +181,7 @@ Use: setup-linting.md
 **Reporte completo de review:**
 
 ```markdown
-# Code Review: STORY-XXX
+# Code Review: STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}
 
 ## ✅ APPROVED / ❌ CHANGES REQUESTED / ⚠️ APPROVED with comments
 
@@ -198,9 +198,11 @@ Use: setup-linting.md
 ## 🔍 Issues Encontrados
 
 ### 🚨 Critical (debe corregirse):
-1. **`app/mentors/page.tsx:45`** - API key hardcodeada
+1. **`app/[feature]/page.tsx:45`** - API key hardcodeada
    - **Razón:** Security risk
    - **Sugerencia:** Mover a `.env`
+
+(Donde [feature] se determina según el dominio del proyecto)
 
 ### ⚠️ Medium (debería corregirse):
 2. **`lib/api.ts:12`** - Código duplicado
@@ -208,8 +210,10 @@ Use: setup-linting.md
    - **Sugerencia:** Extraer a función reutilizable
 
 ### 💡 Nitpicks (opcional):
-3. **`components/MentorCard.tsx:8`** - Nombre de variable poco descriptivo
-   - **Sugerencia:** `data` → `mentorData`
+3. **`components/[DomainCard].tsx:8`** - Nombre de variable poco descriptivo
+   - **Sugerencia:** `data` → `[entity]Data`
+
+(Donde [DomainCard] y [entity] se determinan según el dominio del proyecto. Ejemplos: MentorCard/mentorData en MYM, ProductCard/productData en SHOP)
 
 ---
 
@@ -231,7 +235,7 @@ Use: setup-linting.md
 
 ## 🎯 Decisión Final
 
-- [ ] ✅ **APPROVED** - Listo para Fase 8 (Test Automation)
+- [ ] ✅ **APPROVED** - Listo para Fase 9 (Deployment Staging)
 - [ ] ⚠️ **APPROVED with comments** - Merge + crear issues para mejoras menores
 - [ ] ❌ **CHANGES REQUESTED** - Corregir critical/medium issues antes de continuar
 
@@ -244,8 +248,8 @@ Use: setup-linting.md
 ---
 
 **Próximo paso:**
-- Si APPROVED → Fase 8: Test Automation (`.prompts/fase-8-test-automation/`)
-- Si CHANGES REQUESTED → Fase 6: Corregir issues (`.prompts/fase-6-implementation/fix-issues.md`)
+- Si APPROVED → Fase 9: Deployment Staging (`.prompts/fase-9-deployment-staging/`)
+- Si CHANGES REQUESTED → Fase 7: Corregir issues (`.prompts/fase-7-implementation/fix-issues.md`)
 ```
 
 ---
@@ -258,8 +262,8 @@ Use: setup-linting.md
 - `.context/design-system.md` - UI/UX standards
 
 **Story context:**
-- `.context/PBI/epics/EPIC-XXX/stories/STORY-XXX/story.md` - Acceptance Criteria
-- `.context/PBI/epics/EPIC-XXX/stories/STORY-XXX/implementation-plan.md` - Plan técnico
+- `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/story.md` - Acceptance Criteria
+- `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/implementation-plan.md` - Plan técnico
 
 ---
 
@@ -267,12 +271,12 @@ Use: setup-linting.md
 
 ```bash
 # 1. Elige el prompt apropiado
-cd .prompts/fase-7-code-review/
+cd .prompts/fase-8-code-review/
 
 # 2. Si proyecto sin linter → setup-linting.md
 # 3. Para review normal → review-pr.md
 
-# 4. Copia el contenido y reemplaza [PROYECTO], [NUM], [nombre]
+# 4. Copia el contenido y reemplaza {PROJECT_KEY}, {ISSUE_NUM}, {nombre}
 
 # 5. Pégalo en tu chat con la IA
 
@@ -281,4 +285,4 @@ cd .prompts/fase-7-code-review/
 
 ---
 
-**Nota:** Esta fase revisa código estáticamente. Los tests automatizados se revisan/crean en Fase 8 (Test Automation).
+**Nota:** Esta fase revisa código estáticamente. Los unit tests ya fueron creados en Fase 7. Los integration/E2E tests se crean en Fase 11 (Test Automation).

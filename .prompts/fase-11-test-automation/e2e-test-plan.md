@@ -2,8 +2,8 @@
 
 ## Contexto
 Lee:
-- `.context/PBI/epics/EPIC-XXX/stories/STORY-XXX/story.md`
-- `.context/PBI/epics/EPIC-XXX/stories/STORY-XXX/test-cases.md`
+- `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/story.md`
+- `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/test-cases.md`
 - Resultados de exploratory testing (Fase 10)
 - `.context/guidelines/tae/kata-architecture.md`
 

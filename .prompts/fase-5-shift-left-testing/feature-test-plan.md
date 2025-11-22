@@ -8,13 +8,19 @@ Actúa como QA Lead experto en Shift-Left Testing, Test Strategy y Quality Analy
 
 ### 1. Epic Path Local (OBLIGATORIO)
 
-**Formato:** `.context/PBI/epics/EPIC-{PROYECTO}-{NUM}-{nombre}/`
-**Ejemplo:** `.context/PBI/epics/EPIC-UPEX-001-user-authentication/`
+**Formato:** `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/`
+**Ejemplo:** `.context/PBI/epics/EPIC-UPEX-13-user-authentication/`
+
+**Importante:** {ISSUE_NUM} es asignado secuencialmente por Jira (1, 2, 13, 45...) sin ceros a la izquierda
 
 **⚠️ IMPORTANTE - Diferencia entre Nomenclaturas:**
 
-- **Path Local (carpeta):** `EPIC-UPEX-001-user-authentication` ← Nomenclatura de carpetas
-- **Jira Key (real):** `UPEX-123` ← Key real del issue en Jira
+- **Path Local (carpeta):** `EPIC-UPEX-13-user-authentication` ← Nomenclatura de carpetas
+- **Jira Key (real):** `UPEX-13` ← Key real del issue en Jira
+
+**Nota:** Los números de issue son idénticos en ambos formatos (ej: 13). La diferencia está solo en el prefijo:
+- Carpeta local: `EPIC-` + Jira Key
+- Jira: Solo el Key (sin prefijo EPIC-)
 
 **Proceso:**
 
@@ -127,11 +133,11 @@ Este prompt trabaja en 5 fases para entregar un plan de pruebas completo con an�
 
 ---
 
-# Feature Test Plan: EPIC-{PROYECTO}-{NUM} - [Epic Title]
+# Feature Test Plan: EPIC-{PROJECT_KEY}-{ISSUE_NUM} - [Epic Title]
 
 **Fecha:** [YYYY-MM-DD]
 **QA Lead:** [Nombre o "TBD"]
-**Epic Jira Key:** [EPIC-XXX]
+**Epic Jira Key:** [{PROJECT_KEY}-{ISSUE_NUM}]
 **Status:** Draft | In Review | Approved
 
 ---
@@ -153,16 +159,18 @@ Este prompt trabaja en 5 fases para entregar un plan de pruebas completo con an�
 - [KPI 2 del Executive Summary que esta épica impacta]
 
 **User Impact:**
-[Listar qué user personas son afectadas por esta épica]
+(Analizar .context/PRD/user-personas.md para identificar qué personas son afectadas por esta épica)
 
-- Persona 1: [Nombre] - [Cómo le afecta]
-- Persona 2: [Nombre] - [Cómo le afecta]
+- [User Persona identificada del PRD]: [Cómo le afecta específicamente según el epic.md]
+- [Otra User Persona si aplica]: [Cómo le afecta]
 
 **Critical User Journeys:**
-[Listar user journeys del PRD que esta épica habilita o modifica]
+(Analizar .context/PRD/user-journeys.md para identificar qué journeys habilita o modifica esta épica)
 
-- Journey 1: [Nombre]
-- Journey 2: [Nombre]
+- [Journey identificado del PRD]
+- [Otro Journey si aplica]
+
+(Donde las personas y journeys se determinan analizando el PRD del proyecto actual y relacionándolos con el scope del epic)
 
 ---
 
@@ -171,24 +179,30 @@ Este prompt trabaja en 5 fases para entregar un plan de pruebas completo con an�
 ### Architecture Components Involved
 
 **Frontend:**
+(Analizar .context/SRS/architecture-specs.md y el epic.md para identificar)
 
-- [Componentes React/Vue a crear o modificar]
-- [Páginas/rutas afectadas]
+- Componentes a crear/modificar: [listar según análisis del SRS]
+- Páginas/rutas afectadas: [listar según análisis del SRS]
 
 **Backend:**
+(Analizar .context/SRS/api-contracts.yaml y architecture-specs.md)
 
-- [APIs a crear o modificar - referenciar api-contracts.yaml]
-- [Servicios de negocio afectados]
+- APIs a crear/modificar: [referenciar endpoints específicos de api-contracts.yaml]
+- Servicios de negocio afectados: [listar según análisis del SRS]
 
 **Database:**
+(Analizar .context/SRS/architecture-specs.md)
 
-- [Tablas involucradas - referenciar architecture-specs.md]
-- [Queries críticos]
+- Tablas involucradas: [listar tablas específicas del schema según SRS]
+- Queries críticos: [identificar queries complejos o de alto impacto]
 
 **External Services:**
+(Analizar .context/SRS/architecture-specs.md y epic.md)
 
-- [APIs externas involucradas]
-- [Third-party services (Stripe, email, etc.)]
+- APIs externas: [listar servicios externos específicos según SRS]
+- Third-party services: [ej: procesador de pagos, servicio de email, etc.]
+
+(Donde todos los componentes, APIs, tablas y servicios se determinan analizando el SRS/PRD/epic del proyecto actual)
 
 ### Integration Points (Critical for Testing)
 
@@ -286,13 +300,13 @@ User → Frontend → API Gateway → Service X → Database
 
 **Ambiguity 1:** [Descripción de la ambigüedad]
 
-- **Found in:** STORY-{PROYECTO}-{NUM}
+- **Found in:** STORY-{PROJECT_KEY}-{ISSUE_NUM}
 - **Question for PO:** [Pregunta específica]
 - **Impact if not clarified:** [Qué problemas puede causar]
 
 **Ambiguity 2:** [Descripción]
 
-- **Found in:** EPIC-{PROYECTO}-{NUM} scope
+- **Found in:** EPIC-{PROJECT_KEY}-{ISSUE_NUM} scope
 - **Question for Dev:** [Pregunta técnica]
 - **Impact if not clarified:** ...
 
@@ -320,7 +334,7 @@ User → Frontend → API Gateway → Service X → Database
 
 **Improvement 1:** [Sugerencia]
 
-- **Story Affected:** STORY-{PROYECTO}-{NUM}
+- **Story Affected:** STORY-{PROJECT_KEY}-{ISSUE_NUM}
 - **Current State:** [Cómo está ahora]
 - **Suggested Change:** [Cómo debería estar]
 - **Benefit:** [Por qué mejora la quality]
@@ -433,7 +447,7 @@ Por cada story de esta épica, se deben cubrir:
 
 [Por cada story de la épica, estimar cuántos test cases se necesitan - SIN forzar número mínimo]
 
-### STORY-{PROYECTO}-{NUM}: [Story Title]
+### STORY-{PROJECT_KEY}-{ISSUE_NUM}: [Story Title]
 
 **Complexity:** Low | Medium | High
 **Estimated Test Cases:** [Número realista - puede ser 1, puede ser 20]
@@ -452,7 +466,7 @@ Por cada story de esta épica, se deben cubrir:
 
 ---
 
-### STORY-{PROYECTO}-{NUM}: [Story Title]
+### STORY-{PROJECT_KEY}-{ISSUE_NUM}: [Story Title]
 
 **Complexity:** ...
 **Estimated Test Cases:** ...
@@ -806,7 +820,7 @@ Epic is considered "Done" from QA perspective when:
 ---
 
 **Documentation:** Full test plan also available at:
-`.context/PBI/epics/EPIC-{...}/feature-test-plan.md`
+`.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/feature-test-plan.md`
 ```
 
 **Pasos a ejecutar:**
@@ -827,7 +841,7 @@ Epic is considered "Done" from QA perspective when:
 
 **Objetivo:** Crear archivo local `.md` como MIRROR del comentario en Jira para version control y documentación offline.
 
-**Path:** `.context/PBI/epics/EPIC-{...}/feature-test-plan.md`
+**Path:** `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/feature-test-plan.md`
 
 **Contenido:** IDÉNTICO al contenido generado en FASE 5b (todo el test plan)
 
@@ -947,7 +961,7 @@ Epic is considered "Done" from QA perspective when:
 
 **Local Files:**
 
-- ✅ `feature-test-plan.md` created at: `.context/PBI/epics/EPIC-{...}/`
+- ✅ `feature-test-plan.md` created at: `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/`
 
 **Analysis Completed:**
 
@@ -987,7 +1001,7 @@ Epic is considered "Done" from QA perspective when:
 **⚠️ BLOCKER:** Epic should NOT start implementation until critical questions are resolved by PO/Dev.
 
 **Jira Link:** [Link to epic in Jira]
-**Local Test Plan:** `.context/PBI/epics/EPIC-{...}/feature-test-plan.md`
+**Local Test Plan:** `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/feature-test-plan.md`
 
 ---
 
@@ -1017,8 +1031,8 @@ Epic is considered "Done" from QA perspective when:
 
 ## 📎 Related Documentation
 
-- **Epic:** `.context/PBI/epics/EPIC-{PROYECTO}-{NUM}-{nombre}/epic.md`
-- **Stories:** `.context/PBI/epics/EPIC-{PROYECTO}-{NUM}-{nombre}/stories/STORY-*/story.md`
+- **Epic:** `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/epic.md`
+- **Stories:** `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-*/story.md`
 - **Business Model:** `.context/idea/business-model.md`
 - **PRD:** `.context/PRD/` (all files)
 - **SRS:** `.context/SRS/` (all files)
@@ -1035,8 +1049,8 @@ Epic is considered "Done" from QA perspective when:
 
 - ✅ TODOS los archivos de contexto (idea, PRD, SRS) deben estar completos
 - ✅ Epic.md y todos los story.md de la épica deben existir
-- ✅ **Epic Path local disponible** (ej: `.context/PBI/epics/EPIC-UPEX-001-feature/`)
-- ✅ **Epic.md debe contener campo `Jira Key:`** con el key real (ej: UPEX-123)
+- ✅ **Epic Path local disponible** (ej: `.context/PBI/epics/EPIC-UPEX-13-feature/`)
+- ✅ **Epic.md debe contener campo `Jira Key:`** con el key real (ej: UPEX-13)
 - ✅ **Acceso a MCP de Atlassian configurado y funcionando**
 - ✅ Tiempo para analizar críticamente, no solo generar checklist
 
@@ -1044,9 +1058,11 @@ Epic is considered "Done" from QA perspective when:
 
 El archivo epic.md debe contener en su metadata:
 ```markdown
-**Jira Key:** UPEX-123
+**Jira Key:** UPEX-13
 ```
 Este es el Jira Key REAL del issue en Jira (NO la nomenclatura de carpeta).
+
+**Nota:** El número de issue (ej: 13) es el mismo en la nomenclatura de carpeta y en el Jira Key.
 
 ---
 
@@ -1055,19 +1071,21 @@ Este es el Jira Key REAL del issue en Jira (NO la nomenclatura de carpeta).
 ### Input requerido del usuario:
 
 ```
-Epic Path: .context/PBI/epics/EPIC-UPEX-XXX-nombre-feature/
+Epic Path: .context/PBI/epics/EPIC-UPEX-13-nombre-feature/
 ```
 
 **⚠️ Proceso Automático:**
-1. Prompt lee: `.context/PBI/epics/EPIC-UPEX-XXX-nombre-feature/epic.md`
-2. Prompt extrae: Campo `**Jira Key:**` (ej: UPEX-123)
-3. Prompt usa: Jira Key real UPEX-123 para operaciones MCP
+1. Prompt lee: `.context/PBI/epics/EPIC-UPEX-13-nombre-feature/epic.md`
+2. Prompt extrae: Campo `**Jira Key:**` (ej: UPEX-13)
+3. Prompt usa: Jira Key real UPEX-13 para operaciones MCP
+
+**Nota:** El número de issue (13) es el mismo en la carpeta y en Jira. NO se usan formatos como 001 o XXX.
 
 ### Orden de ejecución:
 
 **Pre-requisito: Extraer Jira Key**
 1. Leer `{EPIC_PATH}/epic.md` proporcionado por usuario
-2. Extraer campo `**Jira Key:**` (ej: UPEX-123)
+2. Extraer campo `**Jira Key:**` (ej: UPEX-13)
 3. Guardar Jira Key real para usar en FASE 5a y 5b
 
 **Análisis y Diseño:**

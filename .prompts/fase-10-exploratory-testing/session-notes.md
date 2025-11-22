@@ -10,7 +10,7 @@ Documentar hallazgos de la sesión:
 ### Session Notes Template
 
 ```markdown
-# Exploratory Testing Session: [STORY-XXX]
+# Exploratory Testing Session: [STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}]
 
 **Fecha:** [Fecha]
 **QA:** [Nombre]
@@ -36,26 +36,26 @@ Documentar hallazgos de la sesión:
 
 ### [Área 2]
 - ✅ [Funcionalidad validada 1]
-- ⚠️ [Funcionalidad con issue - ver BUG-XXX]
+- ⚠️ [Funcionalidad con issue - ver BUG-{PROJECT_KEY}-{ISSUE_NUM}]
 
 ---
 
 ## 🐛 Bugs Encontrados
 
 ### 🔴 Critical (bloquean funcionalidad)
-1. **[BUG-XXX]:** [Descripción breve]
+1. **[BUG-{PROJECT_KEY}-{ISSUE_NUM}]:** [Descripción breve]
    - Severidad: Critical
    - Steps to reproduce: [Breve]
    - Reportado en Jira: [Link]
 
 ### 🟠 High (funcionalidad parcial)
-1. **[BUG-XXX]:** [Descripción breve]
+1. **[BUG-{PROJECT_KEY}-{ISSUE_NUM}]:** [Descripción breve]
    - Severidad: High
    - Steps to reproduce: [Breve]
    - Reportado en Jira: [Link]
 
 ### 🟡 Medium (UX issues)
-1. **[BUG-XXX]:** [Descripción breve]
+1. **[BUG-{PROJECT_KEY}-{ISSUE_NUM}]:** [Descripción breve]
    - Severidad: Medium
    - Reportado en Jira: [Link]
 

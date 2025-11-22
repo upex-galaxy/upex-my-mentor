@@ -7,8 +7,9 @@ import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Navbar } from "@/components/layout/navbar";
-import { LogIn } from "lucide-react";
+import { LogIn, Info, GraduationCap, Briefcase } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -17,6 +18,16 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const fillMentorDemo = () => {
+    setEmail("mentor.demo@upexmymentor.com");
+    setPassword("Demo123!");
+  };
+
+  const fillStudentDemo = () => {
+    setEmail("student.demo@upexmymentor.com");
+    setPassword("Demo123!");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,6 +60,57 @@ export default function LoginPage() {
           </CardHeader>
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
+              {/* Demo Credentials Alert */}
+              <Alert className="border-primary/50 bg-primary/5">
+                <Info className="h-4 w-4 text-primary" />
+                <AlertTitle className="text-primary font-semibold mb-3">Credenciales Demo</AlertTitle>
+                <AlertDescription className="space-y-3">
+                  {/* Mentor Demo */}
+                  <div className="p-3 rounded-md bg-background/50 border border-primary/20">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Briefcase className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-semibold">Mentor (Laura Martínez)</span>
+                    </div>
+                    <div className="font-mono text-xs space-y-1 mb-2 text-muted-foreground">
+                      <div>mentor.demo@upexmymentor.com</div>
+                      <div>Demo123!</div>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={fillMentorDemo}
+                      className="w-full"
+                    >
+                      <Briefcase className="h-3 w-3 mr-1" />
+                      Usar como Mentor
+                    </Button>
+                  </div>
+
+                  {/* Student Demo */}
+                  <div className="p-3 rounded-md bg-background/50 border border-primary/20">
+                    <div className="flex items-center gap-2 mb-2">
+                      <GraduationCap className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-semibold">Estudiante (Alex García)</span>
+                    </div>
+                    <div className="font-mono text-xs space-y-1 mb-2 text-muted-foreground">
+                      <div>student.demo@upexmymentor.com</div>
+                      <div>Demo123!</div>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={fillStudentDemo}
+                      className="w-full"
+                    >
+                      <GraduationCap className="h-3 w-3 mr-1" />
+                      Usar como Estudiante
+                    </Button>
+                  </div>
+                </AlertDescription>
+              </Alert>
+
               {error && (
                 <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md">
                   {error}

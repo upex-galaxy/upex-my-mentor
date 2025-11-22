@@ -18,9 +18,9 @@ Crear unit tests para funciones y lógica de negocio implementadas en la story a
 
 **Leer TODOS estos archivos:**
 
-- `.context/PBI/[EPIC-XXX]/[STORY-YYY]/story.md` - **CRÍTICO** - Descripción de la story, criterios de aceptación
-- `.context/PBI/[EPIC-XXX]/[STORY-YYY]/implementation-plan.md` - Plan técnico, módulos a crear
-- `.context/PBI/[EPIC-XXX]/[STORY-YYY]/test-cases.md` - (Opcional) Test cases de Fase 5
+- `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/story.md` - **CRÍTICO** - Descripción de la story, criterios de aceptación
+- `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/implementation-plan.md` - Plan técnico, módulos a crear
+- `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/test-cases.md` - (Opcional) Test cases de Fase 5
 
 **Qué identificar:**
 1. **Funcionalidad implementada:** Qué hace la story
@@ -173,8 +173,8 @@ El proceso se divide en 5 pasos ejecutados secuencialmente.
 
 **Acción:**
 
-1. Leer `.context/PBI/[EPIC-XXX]/[STORY-YYY]/story.md`
-2. Leer `.context/PBI/[EPIC-XXX]/[STORY-YYY]/implementation-plan.md`
+1. Leer `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/story.md`
+2. Leer `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/implementation-plan.md`
 3. Buscar archivos implementados en esta story:
    ```bash
    # El AI puede usar grep/find para identificar módulos nuevos

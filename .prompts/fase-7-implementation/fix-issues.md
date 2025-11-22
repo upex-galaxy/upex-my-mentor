@@ -4,7 +4,7 @@ Actúa como Senior Full-Stack Developer y Debugging Expert.
 
 ## 🎯 TAREA
 
-Debuggear y corregir errores en la implementación de **STORY-[PROYECTO]-[NUM]-[nombre]**.
+Debuggear y corregir errores en la implementación de **STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}**.
 
 ---
 
@@ -189,12 +189,12 @@ npm run build
 ## 🎯 EJEMPLO DE USO
 
 ```markdown
-Tengo este error en STORY-MYM-14-view-mentors:
+Tengo este error en STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}:
 
 **Error:**
 ```
-Type 'undefined' is not assignable to type 'Mentor[]'
-  at MentorList.tsx:15
+Type 'undefined' is not assignable to type 'EntityType[]'
+  at EntityList.tsx:15
 ```
 
 **Proceso:**
@@ -208,6 +208,8 @@ Type 'undefined' is not assignable to type 'Mentor[]'
 - Consulta Context7 MCP si no estás seguro
 - Sigue code standards al corregir
 - Valida con build + prueba manual
+
+(Donde EntityType y EntityList se reemplazan según el dominio del proyecto. Ejemplos: Mentor[]/MentorList en MYM, Product[]/ProductList en SHOP)
 ```
 
 ---

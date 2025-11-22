@@ -4,7 +4,7 @@ Actúa como Scrum Master y Product Owner.
 
 - PRD: [usar .context/PRD/mvp-scope.md]
 - SRS: [usar .context/SRS/functional-specs.md]
-- Código del proyecto en Jira: [especificar, ej: MYM]
+- **PROJECT_KEY:** Se solicitará al usuario en PASO 0 (ej: MYM, SHOP, BLOG, UPEX)
 
 ---
 
@@ -26,38 +26,130 @@ Actúa como Scrum Master y Product Owner.
 
 ## 📝 NOMENCLATURA DE CARPETAS
 
+### Entendiendo los Componentes de la Nomenclatura
+
+**IMPORTANTE:** La nomenclatura tiene 4 partes con diferentes orígenes:
+
+#### 1. **Fijo (del template):**
+- `EPIC-` o `STORY-` - Prefijo que indica el tipo de issue
+- **No cambia nunca, es parte del sistema**
+
+#### 2. **Variable del proyecto (usuario define):**
+- `{PROJECT_KEY}` - Código del proyecto en Jira
+  - Ejemplos: `MYM`, `SHOP`, `BLOG`, `UPEX`, etc.
+  - Lo define el usuario al crear el proyecto en Jira
+  - **Debe preguntarse al usuario en PASO 0**
+  - Características: MAYÚSCULAS, 2-5 caracteres, sin espacios
+
+#### 3. **Autogenerado por Jira (NO controlable):**
+- `{ISSUE_NUM}` - Número secuencial que Jira asigna automáticamente
+  - Ejemplos: `1`, `2`, `13`, `45`, etc.
+  - **NO lo controla la IA ni el usuario**
+  - Se obtiene DESPUÉS de crear el issue en Jira mediante MCP
+  - Siempre es secuencial y sin ceros a la izquierda
+
+#### 4. **Definido por análisis del dominio:**
+- `{nombre-descriptivo}` - 2-4 palabras en kebab-case
+  - Se infiere analizando el PRD/SRS del proyecto actual
+  - Usa el vocabulario específico del dominio de negocio
+  - Formato: minúsculas, kebab-case
+
+---
+
 ### Reglas para Épicas
 
-**Formato:** `EPIC-{PROYECTO}-{NUMERO}-{nombre-descriptivo}/`
+**Formato:** `EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre-descriptivo}/`
 
-**Componentes:**
+**Ejemplos con diferentes proyectos:**
 
-- `{PROYECTO}`: Código del proyecto en Jira (ej: MYM, UPEX) - MAYÚSCULAS
-- `{NUMERO}`: ID numérico de Jira sin ceros a la izquierda (ej: 2, 13, 28)
-- `{nombre-descriptivo}`: 2-4 palabras en kebab-case, minúsculas, descriptivo
-
-**Ejemplos válidos:**
-
+Proyecto "MYM" (Jira asignó issues #2 y #13):
 - ✅ `EPIC-MYM-2-user-authentication-profiles/`
-- ✅ `EPIC-MYM-13-mentor-discovery-search/`
-- ✅ `EPIC-UPEX-45-payment-processing/`
+- ✅ `EPIC-MYM-13-entity-discovery-search/`
+
+Proyecto "SHOP" (Jira asignó issue #45):
+- ✅ `EPIC-SHOP-45-payment-processing/`
+
+Proyecto "BLOG" (Jira asignó issue #1):
+- ✅ `EPIC-BLOG-1-content-management-system/`
 
 **Ejemplos INVÁLIDOS:**
 
-- ❌ `EPIC-001-user-auth/` (falta código proyecto)
-- ❌ `EPIC_MYM_2_UserAuth/` (formato incorrecto)
-- ❌ `EPIC-MYM-002-auth/` (no usar ceros a la izquierda)
-- ❌ `EPIC-MYM-2-user-authentication-and-comprehensive-profile-management-system/` (muy largo)
+- ❌ `EPIC-001-user-auth/` (falta PROJECT_KEY)
+- ❌ `EPIC_MYM_2_UserAuth/` (formato incorrecto, debe usar guiones)
+- ❌ `EPIC-MYM-002-auth/` (NO usar ceros a la izquierda, Jira nunca los genera)
+- ❌ `EPIC-MYM-2-user-authentication-and-comprehensive-profile-management-system/` (nombre muy largo)
+
+---
 
 ### Reglas para Stories
 
-**Formato:** `STORY-{PROYECTO}-{NUMERO}-{nombre-descriptivo}/`
+**Formato:** `STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre-descriptivo}/`
+
 (Mismas reglas que épicas)
 
-**Ejemplos válidos:**
+**Ejemplos con diferentes proyectos:**
 
+Proyecto "MYM" (Jira asignó issues #3 y #14):
 - ✅ `STORY-MYM-3-user-signup-email/`
-- ✅ `STORY-MYM-14-view-all-mentors/`
+- ✅ `STORY-MYM-14-view-all-entities/`
+
+Proyecto "SHOP" (Jira asignó issue #46):
+- ✅ `STORY-SHOP-46-add-to-cart-flow/`
+
+Proyecto "BLOG" (Jira asignó issue #2):
+- ✅ `STORY-BLOG-2-create-blog-post/`
+
+---
+
+## **PASO 0: Obtener Project Key de Jira**
+
+**CRÍTICO:** Este paso debe ejecutarse PRIMERO, antes de crear cualquier carpeta o archivo.
+
+### Objetivo
+
+Obtener el **Project Key** (código del proyecto en Jira) que se usará en toda la nomenclatura de carpetas.
+
+### Acción
+
+**Preguntar al usuario:**
+
+```
+🔑 ¿Cuál es el código/key de tu proyecto en Jira?
+
+Ejemplos válidos: MYM, SHOP, BLOG, UPEX, TASK, etc.
+
+Características:
+- 2-5 caracteres
+- MAYÚSCULAS
+- Sin espacios ni caracteres especiales
+- Es el prefijo que aparece en todos los issues de Jira (ej: MYM-1, MYM-2, etc.)
+
+Por favor ingresa el PROJECT_KEY:
+```
+
+### Validación
+
+Si el usuario proporciona un valor inválido:
+- ❌ `mym` → Debe ser MAYÚSCULAS
+- ❌ `MY-M` → No debe tener guiones ni espacios
+- ❌ `MYPROJECT` → Muy largo (máximo 5 caracteres)
+
+Pedir corrección hasta que sea válido.
+
+### Output
+
+**Guardar el PROJECT_KEY** para usar en:
+- Nomenclatura de carpetas: `EPIC-{PROJECT_KEY}-{NUM}-{nombre}/`
+- Consultas MCP a Jira
+- Documentación generada
+
+**Ejemplo:**
+
+Si el usuario responde: `MYM`
+
+Entonces TODAS las carpetas usarán:
+- `EPIC-MYM-{NUM}-{nombre}/`
+- `STORY-MYM-{NUM}-{nombre}/`
 
 ---
 
@@ -76,7 +168,7 @@ Actúa como Scrum Master y Product Owner.
 
 Total Epics: [número]
 Total User Stories: [número]
-Project Code: [PROYECTO]
+Project Code: {PROJECT_KEY obtenido en PASO 0}
 Jira Project: [URL del proyecto en Jira]
 
 ---
@@ -84,13 +176,13 @@ Jira Project: [URL del proyecto en Jira]
 ## Epic Hierarchy
 
 ### EPIC 1: [Epic Title]
-**Planned Jira Key:** [PROYECTO]-TBD
+**Planned Jira Key:** {PROJECT_KEY}-TBD
 **Priority:** CRITICAL | HIGH | MEDIUM | LOW
 **Description:** [1-2 líneas]
 
 **User Stories (estimado: X):**
-1. [PROYECTO]-TBD - As a [user], I want to [action] so that [benefit]
-2. [PROYECTO]-TBD - As a [user], I want to [action] so that [benefit]
+1. {PROJECT_KEY}-TBD - As a [user], I want to [action] so that [benefit]
+2. {PROJECT_KEY}-TBD - As a [user], I want to [action] so that [benefit]
 ...
 
 ---
@@ -131,7 +223,7 @@ Jira Project: [URL del proyecto en Jira]
 
 **Datos necesarios para crear la épica:**
 
-- **Proyecto:** Código del proyecto en Jira (ej: MYM, UPEX)
+- **Proyecto:** {PROJECT_KEY obtenido en PASO 0}
 - **Tipo de issue:** Epic
 - **Título (Summary):** Nombre de la épica del PRD
 - **Descripción:** Descripción detallada de la épica (2-3 párrafos)
@@ -142,26 +234,36 @@ Jira Project: [URL del proyecto en Jira]
 
 1. Usa las herramientas MCP para crear un issue de tipo "Epic" en Jira
 2. Completa todos los campos requeridos
-3. **IMPORTANTE:** Captura el ID/Key que Jira asigna a la épica (ej: MYM-13)
+3. **IMPORTANTE:** Captura el **Issue Number** que Jira asigna a la épica
+   - Formato del key: `{PROJECT_KEY}-{ISSUE_NUM}`
+   - Ejemplo: Si PROJECT_KEY es "MYM" y Jira asigna el número 13 → Key completo es "MYM-13"
 
 **Resultado esperado:**
 
 - Épica creada exitosamente en Jira
-- Obtener y guardar el **Jira Key real** (ej: MYM-13) para usarlo en nomenclatura
+- Obtener y guardar el **Jira Key completo** (ej: MYM-13, SHOP-5, BLOG-1)
+- Extraer el **ISSUE_NUM** para usarlo en nomenclatura de carpeta
 
 ---
 
 ### **2.2 - Crear Carpeta Local de Épica**
 
-**Acción:** Crear carpeta usando el ID real de Jira obtenido en 2.1
+**Acción:** Crear carpeta usando el Jira Key obtenido en 2.1
 
-**Nomenclatura:** `EPIC-{PROYECTO}-{NUMERO}-{nombre-descriptivo}/`
+**Nomenclatura:** `EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre-descriptivo}/`
 
-**Ejemplo:** Si Jira devolvió `MYM-13`, crear:
+**Ejemplo:**
 
+Si en PASO 0 obtuviste PROJECT_KEY = "MYM"
+Y en paso 2.1 Jira asignó el issue number = 13
+Entonces el Jira Key completo es: "MYM-13"
+
+Crear carpeta:
 ```
-.context/PBI/epics/EPIC-MYM-13-mentor-discovery-search/
+.context/PBI/epics/EPIC-MYM-13-{nombre-segun-dominio}/
 ```
+
+(Donde `{nombre-segun-dominio}` se infiere del análisis del PRD/SRS del proyecto actual)
 
 ---
 
@@ -192,8 +294,8 @@ Jira Project: [URL del proyecto en Jira]
 
 ## User Stories
 
-1. **[PROYECTO]-TBD** - As a [user], I want to [action] so that [benefit]
-2. **[PROYECTO]-TBD** - As a [user], I want to [action] so that [benefit]
+1. **{PROJECT_KEY}-TBD** - As a [user], I want to [action] so that [benefit]
+2. **{PROJECT_KEY}-TBD** - As a [user], I want to [action] so that [benefit]
 ...
 
 **NOTA:** Los IDs serán actualizados cuando se creen las stories en Jira (siguiente paso)
@@ -281,7 +383,7 @@ See: `.context/SRS/functional-specs.md`
 
 ## Testing Strategy
 
-See: `.context/PBI/epics/EPIC-[PROYECTO]-[NUM]/feature-test-plan.md` (se crea en Fase 4)
+See: `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{nombre}/feature-test-plan.md` (se crea en Fase 5)
 
 ### Test Coverage Requirements
 - **Unit Tests:** [Qué cubrir]
@@ -292,7 +394,7 @@ See: `.context/PBI/epics/EPIC-[PROYECTO]-[NUM]/feature-test-plan.md` (se crea en
 
 ## Implementation Plan
 
-See: `.context/PBI/epics/EPIC-[PROYECTO]-[NUM]/feature-implementation-plan.md` (se crea en Fase 5)
+See: `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{nombre}/feature-implementation-plan.md` (se crea en Fase 6)
 
 ### Recommended Story Order
 1. [KEY-1] - [Story title] - Foundation
@@ -320,7 +422,7 @@ See: `.context/PBI/epics/EPIC-[PROYECTO]-[NUM]/feature-implementation-plan.md` (
 - **API Contracts:** `.context/SRS/api-contracts.yaml`
 ```
 
-**Output esperado:** `.context/PBI/epics/EPIC-[PROYECTO]-[NUM]-[nombre]/epic.md`
+**Output esperado:** `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{nombre}/epic.md`
 
 ---
 
@@ -334,11 +436,12 @@ See: `.context/PBI/epics/EPIC-[PROYECTO]-[NUM]/feature-implementation-plan.md` (
 
 **Datos necesarios para crear cada story:**
 
-- **Proyecto:** Código del proyecto en Jira (mismo que la épica)
+- **Proyecto:** {PROJECT_KEY obtenido en PASO 0} (mismo que la épica)
 - **Tipo de issue:** Story
 - **Título (Summary):** As a [user], I want to [action] so that [benefit]
 - **Descripción:** Descripción detallada + acceptance criteria en formato Gherkin
-- **Epic Link:** Jira Key de la épica padre (el que obtuviste en paso 2.1, ej: MYM-13)
+- **Epic Link:** Jira Key de la épica padre (el que obtuviste en paso 2.1)
+  - Ejemplo: MYM-13, SHOP-5, BLOG-1, etc.
 - **Prioridad:** High | Medium | Low
 - **Story Points:** 1, 2, 3, 5, 8, o 13 (escala Fibonacci)
 - **Labels:** mvp, sprint-1 (ajustar según corresponda)
@@ -348,13 +451,16 @@ See: `.context/PBI/epics/EPIC-[PROYECTO]-[NUM]/feature-implementation-plan.md` (
 1. Usa las herramientas MCP para crear un issue de tipo "Story" en Jira
 2. Vincula la story a la épica usando el epic link
 3. Completa todos los campos requeridos
-4. **IMPORTANTE:** Captura el ID/Key que Jira asigna a cada story (ej: MYM-14, MYM-15, etc.)
+4. **IMPORTANTE:** Captura el **Issue Number** que Jira asigna a cada story
+   - Formato del key: `{PROJECT_KEY}-{ISSUE_NUM}`
+   - Ejemplo: Si PROJECT_KEY es "MYM" y Jira asigna números 14, 15, 16... → Keys: "MYM-14", "MYM-15", "MYM-16"
 
 **Resultado esperado:**
 
 - Story creada exitosamente en Jira
-- Story vinculada a su épica
-- Obtener y guardar el **Jira Key real** (ej: MYM-14) para usarlo en nomenclatura
+- Story vinculada a su épica padre
+- Obtener y guardar el **Jira Key completo** de cada story (ej: MYM-14, SHOP-46, BLOG-2)
+- Extraer el **ISSUE_NUM** para usarlo en nomenclatura de carpeta
 
 ---
 
@@ -362,15 +468,23 @@ See: `.context/PBI/epics/EPIC-[PROYECTO]-[NUM]/feature-implementation-plan.md` (
 
 **Acción:** Por cada story creada en Jira, crear su carpeta local.
 
-**Nomenclatura:** `STORY-{PROYECTO}-{NUMERO}-{nombre-descriptivo}/`
+**Nomenclatura:** `STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre-descriptivo}/`
 
-**Ubicación:** `.context/PBI/epics/EPIC-[PROYECTO]-[NUM]-[nombre]/stories/`
+**Ubicación:** `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{nombre}/stories/`
 
-**Ejemplo:** Si Jira devolvió `MYM-14`, crear:
+**Ejemplo:**
 
+Si en PASO 0 obtuviste PROJECT_KEY = "MYM"
+Y la épica padre es "MYM-13"
+Y en paso 3.1 Jira asignó el issue number = 14 a la story
+Entonces el Jira Key completo de la story es: "MYM-14"
+
+Crear carpeta:
 ```
-.context/PBI/epics/EPIC-MYM-13-mentor-discovery-search/stories/STORY-MYM-14-view-all-mentors/
+.context/PBI/epics/EPIC-MYM-13-{epic-name}/stories/STORY-MYM-14-{story-name}/
 ```
+
+(Donde `{epic-name}` y `{story-name}` se infieren del análisis del PRD/SRS del proyecto actual)
 
 ---
 
@@ -383,8 +497,8 @@ See: `.context/PBI/epics/EPIC-[PROYECTO]-[NUM]/feature-implementation-plan.md` (
 ```markdown
 # [Story Title]
 
-**Jira Key:** [KEY real de Jira, ej: MYM-14]
-**Epic:** [EPIC-PROYECTO-NUM] ([Epic Title])
+**Jira Key:** [KEY real de Jira, ej: MYM-14, SHOP-46, BLOG-2]
+**Epic:** [EPIC-{PROJECT_KEY}-{NUM}] ([Epic Title])
 **Priority:** [High | Medium | Low]
 **Story Points:** [1, 2, 3, 5, 8, 13]
 **Status:** To Do
@@ -483,7 +597,7 @@ See: `.context/PBI/epics/EPIC-[PROYECTO]-[NUM]/feature-implementation-plan.md` (
 
 ## Testing Strategy
 
-See: `.context/PBI/epics/EPIC-[PROYECTO]-[NUM]/stories/STORY-[PROYECTO]-[NUM]/test-cases.md` (se crea en Fase 4)
+See: `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{NUM}-{nombre}/test-cases.md` (se crea en Fase 5)
 
 **Test Cases Expected:** 6+ detailed test cases covering:
 - Happy path
@@ -495,7 +609,7 @@ See: `.context/PBI/epics/EPIC-[PROYECTO]-[NUM]/stories/STORY-[PROYECTO]-[NUM]/te
 
 ## Implementation Plan
 
-See: `.context/PBI/epics/EPIC-[PROYECTO]-[NUM]/stories/STORY-[PROYECTO]-[NUM]/implementation-plan.md` (se crea en Fase 5)
+See: `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{NUM}-{nombre}/implementation-plan.md` (se crea en Fase 6)
 
 **Implementation Steps Expected:**
 - Step-by-step technical plan
@@ -514,7 +628,7 @@ See: `.context/PBI/epics/EPIC-[PROYECTO]-[NUM]/stories/STORY-[PROYECTO]-[NUM]/im
 
 ## Related Documentation
 
-- **Epic:** `.context/PBI/epics/EPIC-[PROYECTO]-[NUM]/epic.md`
+- **Epic:** `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{nombre}/epic.md`
 - **PRD:** `.context/PRD/user-journeys.md`
 - **SRS:** `.context/SRS/functional-specs.md` (FR-XXX)
 - **API Contracts:** `.context/SRS/api-contracts.yaml`
@@ -533,11 +647,13 @@ See: `.context/PBI/epics/EPIC-[PROYECTO]-[NUM]/stories/STORY-[PROYECTO]-[NUM]/im
 ```markdown
 ## User Stories
 
-1. **MYM-14** - As a Mentee, I want to see a gallery of all available mentors
-2. **MYM-15** - As a Mentee, I want to search for mentors by keyword
-3. **MYM-16** - As a Mentee, I want to filter mentors by their skills
-4. **MYM-17** - As a Mentee, I want to view a mentor's detailed profile
+1. **{PROJECT_KEY}-14** - As a [user-type], I want to [view/list all entities] so that [benefit]
+2. **{PROJECT_KEY}-15** - As a [user-type], I want to [search entities by keyword] so that [benefit]
+3. **{PROJECT_KEY}-16** - As a [user-type], I want to [filter entities by attributes] so that [benefit]
+4. **{PROJECT_KEY}-17** - As a [user-type], I want to [view entity details] so that [benefit]
 ```
+
+(Donde `{PROJECT_KEY}` es el obtenido en PASO 0, los números 14-17 son los asignados por Jira, `[user-type]` y `entities` se determinan analizando el PRD/SRS del proyecto actual)
 
 ---
 
@@ -548,18 +664,21 @@ Una vez completada la épica actual (épica en Jira + carpeta local + epic.md + 
 **Workflow incremental:**
 
 ```
+PASO 0:
+  └─ Obtener PROJECT_KEY del usuario (ej: MYM) ✅
+
 ÉPICA 1:
-  ├─ Crear épica en Jira → ID: MYM-2
+  ├─ Crear épica en Jira → Jira asigna issue #2 → Key completo: MYM-2
   ├─ Crear carpeta: EPIC-MYM-2-user-authentication-profiles/
   ├─ Crear epic.md
-  ├─ Crear stories en Jira → IDs: MYM-3, MYM-4, MYM-5, MYM-6, MYM-7
+  ├─ Crear stories en Jira → Jira asigna issues #3, #4, #5, #6, #7 → Keys: MYM-3, MYM-4, MYM-5, MYM-6, MYM-7
   ├─ Crear carpetas: STORY-MYM-3-..., STORY-MYM-4-..., etc.
   ├─ Crear story.md para cada una
   └─ Actualizar epic.md con IDs reales ✅
 
 ÉPICA 2:
-  ├─ Crear épica en Jira → ID: MYM-8
-  ├─ Crear carpeta: EPIC-MYM-8-mentor-vetting-onboarding/
+  ├─ Crear épica en Jira → Jira asigna issue #8 → Key completo: MYM-8
+  ├─ Crear carpeta: EPIC-MYM-8-{nombre-segun-dominio}/
   ├─ Crear epic.md
   ...
 ```
@@ -568,17 +687,21 @@ Una vez completada la épica actual (épica en Jira + carpeta local + epic.md + 
 
 ## **RESUMEN DEL FLUJO COMPLETO**
 
+### Paso Inicial (Una sola vez)
+
+0. **PASO 0:** Obtener PROJECT_KEY del usuario (ej: MYM, SHOP, BLOG, etc.)
+
 ### Primera Ejecución (Planificación)
 
-1. Generar `epic-tree.md` con TODAS las épicas y stories planificadas
+1. **PASO 1:** Generar `epic-tree.md` con TODAS las épicas y stories planificadas
 
 ### Por Cada Épica (Incremental)
 
-2. **Jira:** Crear épica → Obtener ID real (ej: MYM-13)
-3. **Local:** Crear carpeta `EPIC-MYM-13-mentor-discovery-search/`
+2. **Jira:** Crear épica → Jira asigna issue number (ej: 13) → Key completo: {PROJECT_KEY}-13
+3. **Local:** Crear carpeta `EPIC-{PROJECT_KEY}-13-{nombre-segun-dominio}/`
 4. **Local:** Crear archivo `epic.md` con datos completos
-5. **Jira:** Crear story 1 de épica → Obtener ID (ej: MYM-14)
-6. **Local:** Crear carpeta `STORY-MYM-14-view-all-mentors/`
+5. **Jira:** Crear story 1 de épica → Jira asigna issue number (ej: 14) → Key completo: {PROJECT_KEY}-14
+6. **Local:** Crear carpeta `STORY-{PROJECT_KEY}-14-{nombre-segun-dominio}/`
 7. **Local:** Crear archivo `story.md` con datos completos
 8. Repetir pasos 5-7 para todas las stories de la épica
 9. **Local:** Actualizar `epic.md` con IDs reales de stories
@@ -628,7 +751,7 @@ Una vez completada la épica actual (épica en Jira + carpeta local + epic.md + 
 ## **NOTAS IMPORTANTES**
 
 1. **MCP Atlassian debe estar configurado** antes de ejecutar este prompt
-2. **Especificar código del proyecto** (ej: MYM, UPEX) al inicio
+2. **Obtener PROJECT_KEY en PASO 0** (ej: MYM, SHOP, BLOG, UPEX) - Código del proyecto en Jira
 3. **Trabajar épica por épica** - NO intentar crear todo de una vez
 4. **Validar IDs** después de cada creación en Jira antes de crear carpetas
 5. **Mantener epic-tree.md actualizado** con IDs reales conforme avanzas
@@ -652,7 +775,7 @@ Al completar este prompt para todo el MVP (todas las épicas), tendrás:
     │       ├── STORY-MYM-4-user-login-logout/
     │       │   └── story.md
     │       └── ...
-    ├── EPIC-MYM-8-mentor-vetting-onboarding/
+    ├── EPIC-MYM-8-{nombre-segun-dominio}/
     │   ├── epic.md
     │   └── stories/
     │       └── ...

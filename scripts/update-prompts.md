@@ -40,21 +40,38 @@ Abre tu `package.json` y agrega esta línea en la sección `"scripts"`:
 ```json
 {
   "scripts": {
-    "up:prompt": "node scripts/update-prompts.js"
+    "up": "node scripts/update-prompts.js"
   }
 }
 ```
+
+**5. Agregar `.backups` en tu `.gitignore` (recomendado):**
+
+Abre tu archivo `.gitignore` y agrega esta línea en cualquier parte:
+
+```
+.backups
+```
+
+**¿Por qué?** Cada vez que actualices los prompts, el script genera un backup automático con timestamp (ej: `.backups/prompts-2024-11-13-101845/`). Estos backups son útiles para revertir cambios si algo sale mal, pero **no necesitas versionar cada backup en Git** ya que son copias temporales de trabajo.
+
+Ignorar `.backups` ayuda a:
+- 🧹 Mantener tu repo limpio de archivos temporales
+- 🚀 Hacer commits más rápidos (menos archivos que revisar)
+- 📦 Reducir el tamaño del repositorio a largo plazo
+
+💡 **Nota:** Este paso no es crítico para el funcionamiento del script, es solo una buena práctica para mantener tu Git organizado.
 
 ---
 
 ### 🔄 Actualizar (cuando Ely anuncie cambios)
 ```bash
 # con Bun:
-bun up:prompt
+bun up
 ```
 ```bash
 # con pnpm:
-pnpm run up:prompt
+pnpm run up
 ```
 
 **Eso es todo.** Funciona igual en Mac, Windows y Linux.
@@ -69,10 +86,17 @@ pnpm run up:prompt
 - `docs/` → Solo archivos del template:
   - `ai-driven-software-project-blueprint.md`
   - `kata-test-architecture.md`
+  - `GITFLOW.md`
+  - `AMBIENTES.md`
   - `mcp-config-*.md` (todos los archivos de MCP)
 - `scripts/` → Solo los scripts de actualización:
   - `update-prompts.js`
   - `update-prompts.md`
+- `templates/mcp/` → Todos los templates de configuración de MCP:
+  - `claude.template.json`
+  - `codex.template.toml`
+  - `gemini.template.json`
+  - `README.md`
 
 ❌ **NO se tocan (tu trabajo):**
 - `.context/` → Toda tu documentación del proyecto
@@ -123,13 +147,14 @@ ls -la .backups/
 # Restaurar el último backup (reemplaza la fecha con la del backup que quieres)
 cp -r .backups/prompts-2024-XX-XX-XXXXXX/.prompts .
 cp .backups/prompts-2024-XX-XX-XXXXXX/context-engineering.md .
+cp -r .backups/prompts-2024-XX-XX-XXXXXX/templates/mcp templates/
 ```
 
 ---
 
 ### 💡 Tips
 
-- Ejecuta `update-prompts.js` (ya sea directamente con node o con un script con bun) cada vez que Ely anuncie actualizaciones en Slack
+- Ejecuta `bun up` (o `pnpm run up`) cada vez que Ely anuncie actualizaciones en Slack
 - El script **nunca toca** tu carpeta `.context/` donde está tu trabajo
 - Si tienes dudas, revisa el CHANGELOG.md para ver qué cambió
 - Los backups se guardan automáticamente, así que puedes probar sin miedo

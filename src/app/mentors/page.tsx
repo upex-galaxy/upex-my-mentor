@@ -119,19 +119,25 @@ function transformToMentor(profile: ProfileRow): Mentor {
 
 
 
-export default async function MentorsPage({ searchParams }: any) {
+export default async function MentorsPage({
+  searchParams
+}: {
+  searchParams: Promise<{ q?: string; skill?: string | string[] }>
+}) {
 
   const supabase = await createServer();
 
-  const query = searchParams.q as string | undefined;
+  const params = await searchParams;
 
-  const skills = Array.isArray(searchParams.skill)
+  const query = params.q as string | undefined;
 
-    ? searchParams.skill
+  const skills = Array.isArray(params.skill)
 
-    : searchParams.skill
+    ? params.skill
 
-    ? [searchParams.skill]
+    : params.skill
+
+    ? [params.skill]
 
     : [];
 

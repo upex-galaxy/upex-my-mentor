@@ -6,7 +6,7 @@ Actúa como Product Owner, Scrum Master y Solution Architect experto.
 - Epic tree existente: [usar .context/PBI/epic-tree.md]
 - PRD (opcional): [usar .context/PRD/mvp-scope.md si necesitas contexto adicional]
 - SRS (opcional): [usar .context/SRS/functional-specs.md si necesitas contexto técnico]
-- Código del proyecto en Jira: [especificar, ej: MYM]
+- **PROJECT_KEY:** Código del proyecto en Jira (ej: MYM, SHOP, BLOG, UPEX) - Debe obtenerse del epic-tree.md o preguntar al usuario
 
 ---
 
@@ -36,9 +36,11 @@ Analizar una nueva idea/feature y determinar cómo agregarla eficientemente al b
 
 **Ejemplos:**
 
-- "Agregar filtro por precio en la búsqueda de mentores" (→ Epic: Mentor Discovery)
-- "Permitir cancelar sesión con más de 48h de anticipación" (→ Epic: Session Management)
-- "Agregar notificación email cuando mentor acepta sesión" (→ Epic: Scheduling)
+- "Agregar filtro por [atributo] en la búsqueda de [entidad principal]" (→ Epic existente relacionada con búsqueda/descubrimiento)
+- "Permitir cancelar [acción de negocio] con X horas de anticipación" (→ Epic existente relacionada con gestión de operaciones)
+- "Agregar notificación email cuando [evento de negocio] ocurre" (→ Epic existente relacionada con notificaciones)
+
+(Donde [entidad principal], [atributo], [acción de negocio] y [evento de negocio] se determinan analizando el PRD/SRS del proyecto actual)
 
 **Acción:** → Ir a **FASE 2A**
 
@@ -58,9 +60,11 @@ Analizar una nueva idea/feature y determinar cómo agregarla eficientemente al b
 
 **Ejemplos:**
 
-- "Sistema de mensajería entre mentor y mentee"
-- "Dashboard de analytics para mentores"
-- "Sistema de certificados al completar sesiones"
+- "Sistema de mensajería entre [user-type-1] y [user-type-2]"
+- "Dashboard de analytics para [user-type]"
+- "Sistema de certificados/badges al completar [evento de negocio]"
+
+(Donde [user-type-1], [user-type-2] y [evento de negocio] se determinan analizando el PRD/SRS del proyecto actual)
 
 **Acción:** → Ir a **FASE 2B**
 
@@ -114,7 +118,7 @@ Antes de clasificar, pregúntate:
 - Story Points totales: [estimación]
 - Épicas necesarias: [número] - [nombres si aplica]
 
-**Épica existente (si aplica):** [EPIC-XXX-nombre] o "N/A - requiere nueva épica"
+**Épica existente (si aplica):** EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre} o "N/A - requiere nueva épica"
 
 **Dependencias identificadas:**
 [Listar dependencias con otras épicas o sistemas]
@@ -135,7 +139,7 @@ Antes de clasificar, pregúntate:
 **Output:**
 
 ```markdown
-**Épica seleccionada:** EPIC-{PROYECTO}-{NUM}-{nombre}
+**Épica seleccionada:** EPIC-{PROJECT_KEY}-{NUM}-{nombre}
 **Razón:** [Por qué esta story pertenece a esta épica]
 ```
 
@@ -147,11 +151,12 @@ Antes de clasificar, pregúntate:
 
 **Datos necesarios:**
 
-- **Proyecto:** Código del proyecto en Jira
+- **Proyecto:** {PROJECT_KEY obtenido del input}
 - **Tipo de issue:** Story
 - **Título (Summary):** As a [user], I want to [action] so that [benefit]
 - **Descripción:** Descripción detallada + acceptance criteria en Gherkin
-- **Epic Link:** Jira Key de la épica padre (ej: MYM-13)
+- **Epic Link:** Jira Key de la épica padre (identificada en Paso 1)
+  - Ejemplo: MYM-13, SHOP-5, BLOG-1, etc.
 - **Prioridad:** High | Medium | Low
 - **Story Points:** 1, 2, 3, 5, 8, o 13
 - **Labels:** feature-extension, post-mvp (ajustar según corresponda)
@@ -160,23 +165,33 @@ Antes de clasificar, pregúntate:
 
 1. Usa las herramientas MCP para crear un issue de tipo "Story"
 2. Vincula a la épica padre usando epic link
-3. **IMPORTANTE:** Captura el ID/Key asignado (ej: MYM-45)
+3. **IMPORTANTE:** Captura el **Issue Number** que Jira asigna a la story
+   - Formato del key: `{PROJECT_KEY}-{ISSUE_NUM}`
+   - Ejemplo: Si PROJECT_KEY es "MYM" y Jira asigna el número 45 → Key completo es "MYM-45"
 
 ---
 
 ### Paso 3: Crear Carpeta Local de Story
 
-**Acción:** Crea carpeta local usando el ID real obtenido.
+**Acción:** Crea carpeta local usando el Jira Key obtenido en Paso 2.
 
-**Nomenclatura:** `STORY-{PROYECTO}-{NUMERO}-{nombre-descriptivo}/`
+**Nomenclatura:** `STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre-descriptivo}/`
 
-**Ubicación:** `.context/PBI/epics/EPIC-{...}/stories/`
+**Ubicación:** `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{nombre}/stories/`
 
 **Ejemplo:**
 
+Si en input obtuviste PROJECT_KEY = "MYM"
+Y la épica padre es "MYM-13"
+Y en Paso 2 Jira asignó el issue number = 45
+Entonces el Jira Key completo de la story es: "MYM-45"
+
+Crear carpeta:
 ```
-.context/PBI/epics/EPIC-MYM-13-mentor-discovery-search/stories/STORY-MYM-45-filter-by-price/
+.context/PBI/epics/EPIC-MYM-13-{epic-name}/stories/STORY-MYM-45-{story-name}/
 ```
+
+(Donde `{epic-name}` y `{story-name}` se infieren del análisis del dominio del proyecto actual)
 
 ---
 
@@ -187,8 +202,8 @@ Antes de clasificar, pregúntate:
 ```markdown
 # [Story Title]
 
-**Jira Key:** [KEY real de Jira, ej: MYM-45]
-**Epic:** [EPIC-PROYECTO-NUM] ([Epic Title])
+**Jira Key:** [KEY real de Jira, ej: MYM-45, SHOP-82, BLOG-23]
+**Epic:** [EPIC-{PROJECT_KEY}-{NUM}] ([Epic Title])
 **Priority:** [High | Medium | Low]
 **Story Points:** [1, 2, 3, 5, 8, 13]
 **Status:** To Do
@@ -287,7 +302,7 @@ Antes de clasificar, pregúntate:
 
 ## Related Documentation
 
-- **Epic:** `.context/PBI/epics/EPIC-[PROYECTO]-[NUM]/epic.md`
+- **Epic:** `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{nombre}/epic.md`
 - **PRD:** `.context/PRD/[relevant-section].md`
 - **SRS:** `.context/SRS/functional-specs.md`
 ```
@@ -306,8 +321,10 @@ Antes de clasificar, pregúntate:
 ## User Stories
 
 [... stories existentes ...]
-X. **MYM-45** - As a Mentee, I want to filter mentors by price range
+X. **{PROJECT_KEY}-{ISSUE_NUM}** - As a [user-type], I want to [action on entities] so that [benefit]
 ```
+
+(Donde `{PROJECT_KEY}` y `{ISSUE_NUM}` son los obtenidos en Paso 2, y `[user-type]`, `[action on entities]` y `[benefit]` se determinan del análisis del proyecto actual)
 
 ---
 
@@ -318,13 +335,15 @@ X. **MYM-45** - As a Mentee, I want to filter mentors by price range
 **Ejemplo:**
 
 ```markdown
-EPIC-MYM-13: Mentor Discovery & Search
-├── STORY-MYM-14: View all mentors
-├── STORY-MYM-15: Search by keyword
-├── STORY-MYM-16: Filter by skills
-├── STORY-MYM-17: View mentor profile
-└── STORY-MYM-45: Filter by price range ⭐ NEW
+EPIC-{PROJECT_KEY}-{NUM}: [Epic Title según dominio]
+├── STORY-{PROJECT_KEY}-{NUM}: [Existing story 1]
+├── STORY-{PROJECT_KEY}-{NUM}: [Existing story 2]
+├── STORY-{PROJECT_KEY}-{NUM}: [Existing story 3]
+├── STORY-{PROJECT_KEY}-{NUM}: [Existing story 4]
+└── STORY-{PROJECT_KEY}-{ISSUE_NUM}: [New story title] ⭐ NEW
 ```
+
+(Los nombres de stories y epic se determinan analizando el dominio del proyecto actual)
 
 ---
 
@@ -377,7 +396,7 @@ EPIC-MYM-13: Mentor Discovery & Search
 
 **Datos necesarios:**
 
-- **Proyecto:** Código del proyecto en Jira
+- **Proyecto:** {PROJECT_KEY obtenido del input}
 - **Tipo de issue:** Epic
 - **Título (Summary):** [Nombre de la épica]
 - **Descripción:** [Descripción detallada 2-3 párrafos]
@@ -387,19 +406,28 @@ EPIC-MYM-13: Mentor Discovery & Search
 **Instrucciones:**
 
 1. Usa las herramientas MCP para crear un issue de tipo "Epic"
-2. **IMPORTANTE:** Captura el ID/Key asignado (ej: MYM-50)
+2. **IMPORTANTE:** Captura el **Issue Number** que Jira asigna a la épica
+   - Formato del key: `{PROJECT_KEY}-{ISSUE_NUM}`
+   - Ejemplo: Si PROJECT_KEY es "MYM" y Jira asigna el número 50 → Key completo es "MYM-50"
 
 ---
 
 ### Paso 3: Crear Carpeta Local de Épica
 
-**Nomenclatura:** `EPIC-{PROYECTO}-{NUMERO}-{nombre-descriptivo}/`
+**Nomenclatura:** `EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre-descriptivo}/`
 
 **Ejemplo:**
 
+Si en input obtuviste PROJECT_KEY = "MYM"
+Y en Paso 2 Jira asignó el issue number = 50
+Entonces el Jira Key completo es: "MYM-50"
+
+Crear carpeta:
 ```
-.context/PBI/epics/EPIC-MYM-50-messaging-system/
+.context/PBI/epics/EPIC-MYM-50-{nombre-segun-dominio}/
 ```
+
+(Donde `{nombre-segun-dominio}` se infiere del análisis del PRD/SRS del proyecto actual)
 
 ---
 
@@ -433,11 +461,12 @@ Incluye todas las secciones:
 
 **Datos necesarios por story:**
 
-- **Proyecto:** Código del proyecto
+- **Proyecto:** {PROJECT_KEY obtenido del input}
 - **Tipo de issue:** Story
 - **Título (Summary):** As a [user], I want to [action] so that [benefit]
 - **Descripción:** Descripción detallada + acceptance criteria Gherkin
-- **Epic Link:** Jira Key de la nueva épica (ej: MYM-50)
+- **Epic Link:** Jira Key de la nueva épica creada en Paso 2
+  - Ejemplo: MYM-50, SHOP-15, BLOG-8, etc.
 - **Prioridad:** High | Medium | Low
 - **Story Points:** 1, 2, 3, 5, 8, o 13
 - **Labels:** post-mvp, new-feature
@@ -445,7 +474,9 @@ Incluye todas las secciones:
 **Instrucciones:**
 
 1. Crea cada story vinculada a la épica
-2. **IMPORTANTE:** Captura todos los IDs asignados (ej: MYM-51, MYM-52, MYM-53...)
+2. **IMPORTANTE:** Captura todos los **Issue Numbers** que Jira asigna a cada story
+   - Formato del key: `{PROJECT_KEY}-{ISSUE_NUM}`
+   - Ejemplo: Si PROJECT_KEY es "MYM" y Jira asigna números 51, 52, 53... → Keys: "MYM-51", "MYM-52", "MYM-53"
 
 ---
 
@@ -453,18 +484,22 @@ Incluye todas las secciones:
 
 **Acción:** Por cada story creada, crea su carpeta local.
 
-**Nomenclatura:** `STORY-{PROYECTO}-{NUMERO}-{nombre-descriptivo}/`
+**Nomenclatura:** `STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre-descriptivo}/`
 
-**Ubicación:** `.context/PBI/epics/EPIC-MYM-50-messaging-system/stories/`
+**Ubicación:** `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{epic-name}/stories/`
 
 **Ejemplo:**
 
+Si PROJECT_KEY = "MYM", épica padre = "MYM-50", y stories con issue numbers 51, 52, 53:
+
 ```
-.context/PBI/epics/EPIC-MYM-50-messaging-system/stories/
-├── STORY-MYM-51-send-message/
-├── STORY-MYM-52-receive-notification/
-└── STORY-MYM-53-view-message-history/
+.context/PBI/epics/EPIC-MYM-50-{epic-name}/stories/
+├── STORY-MYM-51-{story-name-1}/
+├── STORY-MYM-52-{story-name-2}/
+└── STORY-MYM-53-{story-name-3}/
 ```
+
+(Donde `{epic-name}` y `{story-name-X}` se infieren del análisis del dominio del proyecto actual)
 
 ---
 
@@ -485,10 +520,12 @@ Incluye todas las secciones:
 ```markdown
 ## User Stories
 
-1. **MYM-51** - As a user, I want to send a message to my mentor/mentee
-2. **MYM-52** - As a user, I want to receive notifications of new messages
-3. **MYM-53** - As a user, I want to view my message history
+1. **{PROJECT_KEY}-51** - As a [user-type], I want to [action 1] so that [benefit]
+2. **{PROJECT_KEY}-52** - As a [user-type], I want to [action 2] so that [benefit]
+3. **{PROJECT_KEY}-53** - As a [user-type], I want to [action 3] so that [benefit]
 ```
+
+(Donde `{PROJECT_KEY}` es el obtenido del input, los números son los asignados por Jira, y las user stories se determinan del análisis del proyecto actual)
 
 ---
 
@@ -505,16 +542,16 @@ Incluye todas las secciones:
 
 ## Post-MVP Features
 
-### ⭐ EPIC-MYM-50: Messaging System
-**Jira Key:** MYM-50
+### ⭐ EPIC-{PROJECT_KEY}-{NUM}: [Epic Title según dominio]
+**Jira Key:** {PROJECT_KEY}-{ISSUE_NUM}
 **Status:** BACKLOG
 **Priority:** MEDIUM (Post-MVP)
-**Description:** Real-time messaging between mentors and mentees.
+**Description:** [Descripción de la épica según análisis del dominio del proyecto actual]
 
-**User Stories (3):**
-1. **MYM-51** - Send message to mentor/mentee
-2. **MYM-52** - Receive notifications of new messages
-3. **MYM-53** - View message history
+**User Stories (X):**
+1. **{PROJECT_KEY}-{NUM}** - [Story title 1]
+2. **{PROJECT_KEY}-{NUM}** - [Story title 2]
+3. **{PROJECT_KEY}-{NUM}** - [Story title 3]
 
 **Related Functional Requirements:** N/A (new feature)
 ```
@@ -634,21 +671,21 @@ Esta feature requiere **[número] épicas** para implementarse correctamente.
 ## Orden de Implementación Recomendado
 
 ### Fase 1: Foundation (Sprint 1-X)
-1. **ÉPICA [NUM]** - [Nombre] (base fundamental)
+1. **EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}** - [Descripción] (base fundamental)
    - **¿Por qué primero?** [Razón]
 
 ### Fase 2: Core Features (Sprint X-Y)
-2. **ÉPICA [NUM]** - [Nombre] (funcionalidad principal)
-   - **Depende de:** ÉPICA [NUM]
+2. **EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}** - [Descripción] (funcionalidad principal)
+   - **Depende de:** EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}
    - **¿Por qué ahora?** [Razón]
 
-3. **ÉPICA [NUM]** - [Nombre]
-   - **Depende de:** ÉPICA [NUM]
+3. **EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}** - [Descripción]
+   - **Depende de:** EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}
    - **¿Por qué ahora?** [Razón]
 
 ### Fase 3: Enhancements (Sprint Y-Z)
-4. **ÉPICA [NUM]** - [Nombre] (mejoras y optimizaciones)
-   - **Depende de:** ÉPICA [NUM], ÉPICA [NUM]
+4. **EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}** - [Descripción] (mejoras y optimizaciones)
+   - **Depende de:** EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}, EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}
    - **¿Por qué al final?** [Razón]
 
 ---
@@ -784,7 +821,7 @@ STORY-{PROYECTO}-{NUMERO}-{nombre-descriptivo}/
 1. Analizar → Clasificar como Nivel 1
 2. Identificar épica padre existente
 3. Crear story en Jira → Obtener ID
-4. Crear carpeta local STORY-XXX/
+4. Crear carpeta local STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/
 5. Crear story.md
 6. Actualizar epic.md de épica padre
 7. Actualizar epic-tree.md
@@ -797,10 +834,10 @@ STORY-{PROYECTO}-{NUMERO}-{nombre-descriptivo}/
 1. Analizar → Clasificar como Nivel 2
 2. Definir épica y descomponer en stories
 3. Crear épica en Jira → Obtener ID
-4. Crear carpeta local EPIC-XXX/
+4. Crear carpeta local EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/
 5. Crear epic.md
 6. Crear todas las stories en Jira → Obtener IDs
-7. Crear carpetas locales STORY-XXX/
+7. Crear carpetas locales STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/
 8. Crear archivos story.md
 9. Actualizar epic.md con IDs reales
 10. Actualizar epic-tree.md
