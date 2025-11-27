@@ -64,7 +64,7 @@ The project follows a highly structured, AI-driven development methodology outli
 
 When using Atlassian MCP tools to interact with Jira, always use the following default values:
 
--   **Cloud ID (`cloudId`):** `e7975fd7-55bc-430a-8e25-560375493dd7`
+-   **Cloud ID (`cloudId`):** `348c51d9-ae78-4544-b33e-4ee8e89a7534`
 -   **Project Key (`projectKey`):** `MYM`
 
 ## Supabase Configuration
