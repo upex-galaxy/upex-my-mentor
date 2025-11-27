@@ -4,6 +4,7 @@
 **Epic:** MYM-2 - User Authentication & Profiles
 **Status:** RESOLVED
 **Priority:** Medium
+**Story Points:** 5
 
 ---
 
