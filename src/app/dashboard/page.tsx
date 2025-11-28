@@ -237,11 +237,18 @@ export default async function DashboardPage() {
                   </>
                 )}
 
-                <p className="text-sm text-muted-foreground pt-4">
-                  {profile.role === "mentor"
-                    ? "Los perfiles completos reciben 3x más solicitudes de sesión."
-                    : "Un perfil completo ayuda a los mentores a entender mejor tus necesidades."}
-                </p>
+                <div className="pt-4 flex items-center justify-between">
+                  <p className="text-sm text-muted-foreground">
+                    {profile.role === "mentor"
+                      ? "Los perfiles completos reciben 3x más solicitudes de sesión."
+                      : "Un perfil completo ayuda a los mentores a entender mejor tus necesidades."}
+                  </p>
+                  <Link href="/profile/edit">
+                    <Button variant="outline" size="sm">
+                      Editar Perfil
+                    </Button>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
           </div>
