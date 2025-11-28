@@ -4,14 +4,17 @@ This directory contains **pre-configured MCP server templates** for different AI
 
 ## 📋 Available Templates
 
-| File | For Tool | Description |
-|------|----------|-------------|
-| `gemini.template.json` | Gemini CLI | Template with Gemini-specific format |
+| File                   | For Tool    | Description                          |
+| ---------------------- | ----------- | ------------------------------------ |
+| `gemini.template.json` | Gemini CLI  | Template with Gemini-specific format |
 | `claude.template.json` | Claude Code | Template with Claude-specific format |
+| `cursor.template.json` | Cursor IDE  | Template with Cursor/VS Code format  |
+| `codex.template.toml`  | Codex CLI   | Template with Codex TOML format      |
 
 ## 🎯 What's Included
 
 Each template contains popular MCP servers:
+
 - **playwright** - E2E browser testing
 - **devtools** - Chrome DevTools
 - **supabase** - PostgreSQL database
@@ -29,14 +32,30 @@ Each template contains popular MCP servers:
 ### 1. Copy Template
 
 **For Gemini CLI**:
+
 ```bash
 mkdir -p .gemini
 cp templates/mcp/gemini.template.json .gemini/settings.catalog.json
 ```
 
 **For Claude Code**:
+
 ```bash
 cp templates/mcp/claude.template.json .mcp.catalog.json
+```
+
+**For Cursor IDE**:
+
+```bash
+mkdir -p .cursor
+cp templates/mcp/cursor.template.json .cursor/mcp.json
+```
+
+**For Codex CLI**:
+
+```bash
+mkdir -p ~/.codex
+cp templates/mcp/codex.template.toml ~/.codex/config.toml
 ```
 
 ### 2. Add Your API Keys
@@ -46,7 +65,9 @@ Open your new catalog file and replace placeholders:
 ```json
 "SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}"
 ```
+
 ↓
+
 ```json
 "SUPABASE_ACCESS_TOKEN": "sbp_your_real_token_here"
 ```
