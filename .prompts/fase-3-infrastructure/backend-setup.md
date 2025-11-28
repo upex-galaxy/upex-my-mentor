@@ -688,10 +688,13 @@ Para cada tabla:
 
 **Archivo:** `src/lib/config.ts`
 
+**⚠️ CRÍTICO - Variables NEXT_PUBLIC_*:**
+En Next.js, las variables `NEXT_PUBLIC_*` se reemplazan **estáticamente durante el build**. NO uses acceso dinámico como `process.env[variableName]`. Siempre accede directamente: `process.env.NEXT_PUBLIC_SUPABASE_URL`.
+
 **Pseudocódigo:**
 ```
 Crear archivo config que:
-1. Importa process.env variables
+1. Importa process.env variables con ACCESO ESTÁTICO DIRECTO
 2. Exporta constantes tipadas
 3. Valida que variables requeridas existen
 4. Lanza errores descriptivos si faltan
@@ -706,6 +709,13 @@ Estructura:
 Validaciones:
 - throw Error si falta supabaseUrl
 - throw Error si falta supabaseAnonKey
+
+CORRECTO:
+  export const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+
+INCORRECTO:
+  const getEnv = (key: string) => process.env[key]  // ❌ NO funciona en cliente
+  export const supabaseUrl = getEnv('NEXT_PUBLIC_SUPABASE_URL')
 ```
 
 **Output:**
@@ -760,6 +770,9 @@ SIEMPRE:
 ### Paso 3.4: Crear Supabase Clients
 
 **USAR CÓDIGO VERIFICADO CON CONTEXT7**
+
+**⚠️ IMPORTANTE - Sobre config.ts:**
+El archivo `config.ts` se importa tanto en cliente como servidor. Asegúrate de que las variables públicas (`NEXT_PUBLIC_*`) usen acceso estático directo, no funciones helper que lean dinámicamente de `process.env`.
 
 **Archivos a crear:**
 
@@ -982,6 +995,13 @@ Para página [PageName]:
 ## ✅ FASE 5: TIPADOS & VALIDACIÓN
 
 **Objetivo:** Generar tipos TypeScript y validar integración.
+
+**⚠️ CRÍTICO - Después de cambios en .env:**
+Next.js NO detecta cambios en variables de entorno automáticamente durante desarrollo. SIEMPRE ejecutar:
+```bash
+rm -rf .next && [package-manager] run dev
+```
+para limpiar caché después de modificar `.env`.
 
 ### Paso 5.1: Verificar Versiones de Dependencias
 
