@@ -1480,6 +1480,338 @@ This story is considered "Done" from QA when:
 
 ---
 
+## 🔄 UPDATE: Test Cases Aligned with PO Decisions (2025-11-19)
+
+**Context:** Following PO decisions on Q1-Q4, the test suite has been updated to align with clarified acceptance criteria.
+
+### Summary of Changes
+
+| Decision | Impact | Test Cases Affected |
+|----------|--------|---------------------|
+| **Q1: Email verification NOT blocking** | Major | TC-001, TC-002, TC-031, **NEW: TC-033, TC-034** |
+| **Q2: Password max 128 chars** | New test | **NEW: TC-035** |
+| **Q3: Role via URL param** | Minor | TC-001, TC-002 preconditions |
+| **Q4: Auto-login with JWT** | Major | TC-001, TC-002 expected results |
+
+**Test Cases Added:** 3 new (TC-033, TC-034, TC-035)
+**Test Cases Updated:** 6 existing
+**Total Test Cases:** 32 → 35
+**Coverage:** 95% → 98%
+
+---
+
+### NEW: TC-033 - Mentee Access Without Email Verification
+
+**Source:** PO Decision Q1
+**Type:** Positive
+**Priority:** P1 (Critical)
+**Related Scenario:** Scenario 1 (Mentee Signup) + Scenario 7 (Email Verification)
+
+**Objective:** Verify mentee can use full platform without email verification (non-blocking)
+
+**Preconditions:**
+- Mentee registered successfully (via TC-001)
+- Email NOT verified (`auth.users.email_verified_at = NULL`)
+- User logged in with active JWT session
+
+**Test Steps:**
+1. Navigate to `/dashboard`
+2. Browse mentors list (`GET /api/mentors`)
+3. View mentor profile (`/mentors/[mentor-id]`)
+4. Initiate booking flow (select session time)
+5. Verify verification banner displayed on all pages
+
+**Expected Results:**
+- ✅ Step 1: Dashboard loads successfully (NO redirect to `/verify-email`)
+- ✅ Step 2: Mentor list API returns `200 OK` with mentor data
+- ✅ Step 3: Mentor profile page loads without restrictions
+- ✅ Step 4: Booking flow proceeds normally (can add to cart, proceed to payment)
+- ✅ Step 5: Persistent banner shown at top of every page:
+  ```
+  ✉️ Please verify your email to unlock full features
+  [Resend Verification Email] [x]
+  ```
+- ✅ Banner is **informational only** (does not block any functionality)
+- ✅ Banner can be dismissed (X button) but reappears on page reload until verified
+
+**Database Validation:**
+- `auth.users.email_verified_at = NULL` for this user
+- `profiles.role = "mentee"`
+
+**Pass Criteria:** Mentee has 100% access to platform features without email verification
+
+---
+
+### NEW: TC-034 - Mentor Cannot Publish Without Email Verification
+
+**Source:** PO Decision Q1
+**Type:** Negative
+**Priority:** P0 (Critical - Trust/Quality Gate)
+**Related Scenario:** Scenario 2 (Mentor Signup) + Scenario 7 (Email Verification)
+
+**Objective:** Verify mentor CANNOT publish services until email is verified (blocking restriction)
+
+**Preconditions:**
+- Mentor registered successfully (via TC-002)
+- Email NOT verified (`auth.users.email_verified_at = NULL`)
+- Mentor profile completed (specialties added, hourly rate set, bio written)
+- `mentors.is_verified = false` in database
+
+**Test Steps:**
+1. Login as mentor and navigate to `/profile` or `/mentor/availability`
+2. Attempt to toggle availability from "Hidden" to "Available"
+3. Attempt to click "Save" or "Publish Profile"
+4. Observe error message and UI state
+5. Verify email via verification link
+6. Retry toggling availability to "Available"
+
+**Expected Results:**
+
+**Before Email Verification:**
+- ❌ Step 2: Toggle switch is DISABLED or shows warning tooltip on hover:
+  ```
+  ⚠️ Verify your email before publishing your services
+  ```
+- ❌ Step 3: If toggle somehow clicked, API returns `403 Forbidden`:
+  ```json
+  {
+    "success": false,
+    "error": {
+      "code": "EMAIL_NOT_VERIFIED",
+      "message": "Please verify your email before publishing your mentor profile.",
+      "action": "verify_email",
+      "resendUrl": "/api/auth/resend-verification"
+    }
+  }
+  ```
+- ✅ Step 4 (UI): Error toast notification shown:
+  ```
+  ⚠️ Please verify your email before publishing your services
+  [Resend Verification Email]
+  ```
+- ✅ Step 4 (UI): "Resend Verification Email" button prominently displayed
+- ✅ Step 4 (UI): Profile page shows banner:
+  ```
+  ⚠️ Verify your email to publish your services and become visible to students
+  [Resend Email] [Check Inbox]
+  ```
+
+**After Email Verification:**
+- ✅ Step 6: Toggle switch is ENABLED
+- ✅ Step 6: Can successfully toggle to "Available"
+- ✅ Step 6: API returns `200 OK`, profile becomes visible in `GET /api/mentors` for students
+
+**Database Validation:**
+- **Before verification:**
+  - `auth.users.email_verified_at = NULL`
+  - `mentors.is_verified = false`
+  - Profile NOT returned in student-facing mentor search API
+- **After verification:**
+  - `auth.users.email_verified_at = [TIMESTAMP]`
+  - `mentors.is_verified = true` (may require admin approval separately - document)
+  - Profile IS returned in student-facing mentor search API
+
+**API Endpoint Validation:**
+- `GET /api/mentors` (student view): Should NOT include mentors with `is_verified = false`
+- `PATCH /api/mentors/[id]/availability`: Should return `403` if `is_verified = false`
+
+**Pass Criteria:** Mentor is effectively blocked from listing services until email verification complete
+
+**Note:** This implements the Q1 PO decision: "Mentors CANNOT publish services until email verified" as a quality gate to protect platform reputation.
+
+---
+
+### NEW: TC-035 - Password Maximum Length Validation (128 chars)
+
+**Source:** PO Decision Q2
+**Type:** Boundary
+**Priority:** P1 (Security Policy)
+**Related Scenario:** Scenario 4 (Invalid Password)
+
+**Objective:** Verify password validation enforces 128-character maximum length limit
+
+**Background:**
+- Supabase Auth uses bcrypt (72-char internal limit)
+- PO decided 128-char max for future flexibility (argon2 migration)
+- Prevents DoS attacks with extremely long passwords
+- Accommodates password managers (typically generate 32-64 chars)
+
+**Test Data (Parametrized - 4 Sub-Tests):**
+
+```typescript
+const passwordTests = [
+  {
+    id: "TC-035a",
+    length: 127,
+    password: "A1!" + "a".repeat(124),  // 127 chars total
+    email: "test127@example.com",
+    expected: "success"
+  },
+  {
+    id: "TC-035b",
+    length: 128,
+    password: "A1!" + "a".repeat(125),  // 128 chars total
+    email: "test128@example.com",
+    expected: "success"
+  },
+  {
+    id: "TC-035c",
+    length: 129,
+    password: "A1!" + "a".repeat(126),  // 129 chars total
+    email: "test129@example.com",
+    expected: "error"
+  },
+  {
+    id: "TC-035d",
+    length: 200,
+    password: "A1!" + "a".repeat(197),  // 200 chars total
+    email: "test200@example.com",
+    expected: "error"
+  }
+]
+```
+
+**Test Steps (Run 4 times with different data):**
+
+**Sub-Test 1: TC-035a - 127 characters (just under limit)**
+1. Navigate to `/signup?role=mentee`
+2. Enter email: `test127@example.com`
+3. Enter password: 127-character password (complies with policy: A1! + 124x 'a')
+4. Select role: `mentee` (pre-filled)
+5. Click "Create Account"
+
+**Expected Result:**
+- ✅ Client validation passes
+- ✅ API returns `201 Created`
+- ✅ User created successfully in database
+- ✅ JWT token returned
+
+---
+
+**Sub-Test 2: TC-035b - 128 characters (exactly at limit)**
+1-5. Same as TC-035a but with 128-char password
+
+**Expected Result:**
+- ✅ Client validation passes
+- ✅ API returns `201 Created`
+- ✅ User created successfully
+- ✅ JWT token returned
+
+---
+
+**Sub-Test 3: TC-035c - 129 characters (just over limit) ⚠️ CRITICAL**
+1-5. Same as TC-035a but with 129-char password
+
+**Expected Result:**
+- ❌ Client-side validation shows error BEFORE API call (instant feedback):
+  ```
+  Password must not exceed 128 characters.
+  ```
+- ❌ If client validation bypassed (e.g., direct API call), server returns `400 Bad Request`:
+  ```json
+  {
+    "success": false,
+    "error": {
+      "code": "PASSWORD_TOO_LONG",
+      "message": "Password must not exceed 128 characters.",
+      "field": "password",
+      "maxLength": 128,
+      "providedLength": 129
+    }
+  }
+  ```
+- ❌ NO user created in database
+- ❌ NO JWT token returned
+
+---
+
+**Sub-Test 4: TC-035d - 200 characters (far exceeds limit)**
+1-5. Same as TC-035a but with 200-char password
+
+**Expected Result:**
+- Same as TC-035c (error message, no user created)
+
+---
+
+**Validation Points:**
+
+1. **Client-Side Validation:**
+   - Zod schema enforces `max(128)`
+   - Error message displays immediately on blur or submit
+   - User sees real-time feedback (character counter: "129 / 128 max")
+
+2. **Server-Side Validation:**
+   - API Route validates with same Zod schema
+   - Rejects passwords > 128 chars (security layer, not relying on client)
+   - Returns clear error message
+
+3. **Supabase Auth Behavior:**
+   - Internally truncates to 72 chars for bcrypt hashing
+   - This happens transparently (users see 128 limit, Supabase handles internal limit)
+
+4. **User Experience:**
+   - Error message is user-friendly (no mention of "bcrypt" or technical details)
+   - Suggests password managers if needed
+
+**Implementation Validation (Code Review):**
+
+```typescript
+// Expected implementation (from PO comment):
+const passwordSchema = z.string()
+  .min(8, "Password must be at least 8 characters")
+  .max(128, "Password must not exceed 128 characters")
+  .regex(/[A-Z]/, "Must include uppercase letter")
+  .regex(/[0-9]/, "Must include number")
+  .regex(/[^A-Za-z0-9]/, "Must include special character")
+```
+
+**Pass Criteria:**
+- ✅ TC-035a (127 chars): User created successfully
+- ✅ TC-035b (128 chars): User created successfully
+- ❌ TC-035c (129 chars): Signup rejected with clear error
+- ❌ TC-035d (200 chars): Signup rejected with clear error
+
+**Related NFR:** `.context/SRS/non-functional-specs.md` - Password Policy
+
+**Note:** This test can be automated with parametrized testing framework (Playwright, Cypress, Jest) to run all 4 sub-tests in one execution.
+
+---
+
+### Updated Test Execution Checklist
+
+**Total Test Cases:** 35 (was 32)
+
+**Critical Path Tests (Must Pass):**
+1. ✅ TC-001 (Mentee Happy Path) → TC-033 (Mentee Access) → TC-031 (Verification)
+2. ✅ TC-002 (Mentor Happy Path) → TC-034 (Mentor Blocked) → TC-031 (Verification)
+3. ✅ TC-003 (Duplicate Email) + TC-032 (Race Condition)
+4. ✅ TC-035 (Password Max Length - 4 sub-tests)
+
+**Updated Coverage:**
+- Scenario 1 (Mentee): TC-001, TC-033 (100%)
+- Scenario 2 (Mentor): TC-002, TC-034 (100%)
+- Scenario 7 (Verification): TC-031, TC-033, TC-034 (100%)
+- Scenario 4 (Password): TC-004-006, TC-015, TC-035 (100%)
+
+**Updated Test Execution Time Estimate:**
+- Original: 19 hours (32 tests)
+- Added: 3 hours (3 new tests)
+- **Total: 22 hours**
+
+**PO Decisions Implemented:**
+- [x] Q1: Email verification non-blocking (TC-033, TC-034)
+- [x] Q2: Password max 128 chars (TC-035)
+- [x] Q3: Role via URL param (TC-001, TC-002 updated)
+- [x] Q4: Auto-login with JWT (TC-001, TC-002 updated)
+
+---
+
+**Test Case Update Completed:** 2025-11-19
+**Updated By:** QA Shift-Left Analysis
+**Related Jira Comment:** See `jira-qa-comment.md` in this folder for full details to post in MYM-3
+
+---
+
 **Generated with Shift-Left Testing Methodology**
 **Principle:** Analyze early, test early, prevent bugs before code is written.
 
