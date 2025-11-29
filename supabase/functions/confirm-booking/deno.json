@@ -1,0 +1,8 @@
+{
+  "imports": {
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.42.5",
+    "date-fns-tz": "https://esm.sh/date-fns-tz@2.0.0",
+    "ical-generator": "https://esm.sh/ical-generator@6.0.0",
+    "@resend/deno": "https://deno.land/x/resend@1.0.0/mod.ts"
+  }
+}

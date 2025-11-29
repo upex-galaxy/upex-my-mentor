@@ -72,3 +72,14 @@ When using Atlassian MCP tools to interact with Jira, always use the following d
 When using Supabase tools, always use the following default values:
 
 -   **Project ID (`projectId`):** `ionevzckjyxtpmyenbxc`
+
+## Supabase Edge Function Environment Variables (STORY-MYM-22)
+
+The `confirm-booking` Edge Function requires the following environment variables to be configured in your Supabase project settings or `.env.local` for local development:
+
+-   `SUPABASE_URL`: The URL of your Supabase project (e.g., `https://abcdefg.supabase.co`).
+-   `SUPABASE_ANON_KEY`: Your Supabase public anon key.
+-   `RESEND_API_KEY`: The API key for the Resend email service.
+-   `FROM_EMAIL`: The email address used as the sender for confirmation emails (e.g., `confirmations@upexmymentor.com`).
+-   `FROM_NAME`: The name associated with the sender email (e.g., `Upex My Mentor`).
+

@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
+    "test:confirm-booking": "./run-deno-tests.bat",
     "ai": "node scripts/mcp-builder.js",
     "up": "node scripts/update-prompts.js"
   },
