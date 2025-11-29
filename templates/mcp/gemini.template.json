@@ -62,7 +62,8 @@
       "httpUrl": "https://mcp.notion.com/mcp"
     },
     "atlassian": {
-      "httpUrl": "https://mcp.atlassian.com/v1/sse"
+      "type": "sse",
+      "url": "https://mcp.atlassian.com/v1/sse"
     },
     "github": {
       "httpUrl": "https://api.githubcopilot.com/mcp",

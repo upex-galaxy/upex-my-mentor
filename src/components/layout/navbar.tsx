@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { User, LogOut, Menu } from "lucide-react";
@@ -9,6 +10,12 @@ import { useState } from "react";
 export function Navbar() {
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    router.push("/login");
+  };
 
   return (
     <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
@@ -55,7 +62,7 @@ export function Navbar() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={logout}
+                    onClick={handleLogout}
                     title="Cerrar sesión"
                   >
                     <LogOut className="h-4 w-4" />
@@ -119,7 +126,7 @@ export function Navbar() {
                     variant="outline"
                     className="w-full"
                     onClick={() => {
-                      logout();
+                      handleLogout();
                       setMobileMenuOpen(false);
                     }}
                   >
