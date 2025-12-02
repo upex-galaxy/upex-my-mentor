@@ -12,9 +12,9 @@
 |---------|----------|
 | Total de Stories en repo | 31 |
 | Stories con Shift-Left aplicado (Jira) | 20 |
-| Implementation plans creados | 4 |
-| Implementation plans pendientes | 16 |
-| PRs abiertos relacionados | 5 |
+| Implementation plans creados | 5 |
+| Implementation plans pendientes | 15 |
+| PRs abiertos relacionados | 4 |
 
 ---
 
@@ -27,7 +27,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | Key | Summary | Status Jira | Implementation Plan | PR |
 |-----|---------|-------------|---------------------|-----|
 | **MYM-3** | User Sign Up | Ready For QA | ✅ en staging | [#18](../../pulls/18) MERGED |
-| **MYM-4** | Login/Logout | In Progress | ✅ branch `feat/MYM-4/login-logout` | - |
+| **MYM-4** | Login/Logout | Ready For QA | ✅ en staging | [#19](../../pulls/19) MERGED |
 | **MYM-6** | Mentor Profile | Ready For QA | ✅ en main | [#9](../../pulls/9) MERGED |
 | **MYM-7** | Password Reset | In Progress | ✅ branch `feat/MYM-7/password-reset` | [#4](../../pulls/4) OPEN |
 | **MYM-9** | View Pending Applications | Ready For QA | ❌ Pendiente | - |
@@ -99,7 +99,6 @@ Los siguientes implementation plans están en branches feature, no en main:
 
 | Branch | Story | Contenido |
 |--------|-------|-----------|
-| `feat/MYM-4/login-logout` | MYM-4 | implementation-plan.md |
 | `feat/MYM-7/password-reset` | MYM-7 | implementation-plan.md |
 
 **Acción requerida:** Crear PRs para mergear estos planes a main/staging.
@@ -126,9 +125,11 @@ Las siguientes US del repo local NO tienen análisis Shift-Left en Jira:
 
 ## Próximos Pasos Recomendados
 
-1. **Mergear branches pendientes** - MYM-3, MYM-4, MYM-7 tienen planes listos
+1. **Mergear branches pendientes** - MYM-7 tiene plan listo en branch
 2. **Crear implementation plans** - Empezar por las 10 de prioridad alta
 3. **Completar Shift-Left** - Para las 11 US que aún no lo tienen
+
+> **Última US completada:** MYM-4 (Login/Logout) - PR #19 merged 2025-12-02
 
 ---
 
