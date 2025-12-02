@@ -42,7 +42,7 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 
 ---
 
-## Los 10 Pasos del Workflow
+## Los 11 Pasos del Workflow
 
 ### PASO 1: Verificar Status en Jira
 
@@ -214,6 +214,34 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 
 ---
 
+### PASO 11: Preparar Siguiente US
+
+**Objetivo:** Sincronizar staging y preparar la rama de la siguiente US.
+
+**Acciones:**
+1. Moverse a staging y hacer pull:
+   ```bash
+   git checkout staging && git pull origin staging
+   ```
+2. Commitear cambios de documentacion pendientes en staging (si hay):
+   ```bash
+   git add .context/ && git commit -m "docs: update status report and workflow"
+   git push origin staging
+   ```
+3. Identificar siguiente US segun `shift-left-status-report.md`
+4. Moverse a la rama de la siguiente US y sincronizar con staging:
+   ```bash
+   git checkout feat/MYM-{N}/{short-name}
+   git merge staging -m "chore: sync with staging after MYM-{prev} completion"
+   ```
+5. Continuar con Paso 1 de la nueva US
+
+**Criterio de exito:** Rama de siguiente US actualizada con cambios de staging
+
+**Nota:** Este paso asegura que cada nueva US comience con el codigo mas reciente y evita conflictos de merge.
+
+---
+
 ## Sistema de Tracking de Progreso
 
 ### Template de Estado por US
@@ -235,6 +263,7 @@ Usar este template al inicio de cada sesion para identificar donde quedamos:
 | 8. Jira Ready For QA | [Pendiente/Completado/Manual requerido] | |
 | 9. Comentario Jira | [Pendiente/Completado] | |
 | 10. Docs Actualizados | [Pendiente/Completado] | |
+| 11. Preparar Siguiente US | [Pendiente/Completado] | Rama: feat/MYM-{next}/... |
 
 **Siguiente paso:** [Numero y descripcion del paso pendiente]
 **Blocker actual:** [Si hay alguno]
