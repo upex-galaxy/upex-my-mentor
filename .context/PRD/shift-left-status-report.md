@@ -13,6 +13,7 @@
 | Total de Stories en repo | 31 |
 | Stories con Shift-Left aplicado (Jira) | 20 |
 | Implementation plans creados | 5 |
+| Implementation plans completados | 4 |
 | Implementation plans pendientes | 15 |
 | PRs abiertos relacionados | 4 |
 
@@ -29,7 +30,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-3** | User Sign Up | Ready For QA | ✅ en staging | [#18](../../pulls/18) MERGED |
 | **MYM-4** | Login/Logout | Ready For QA | ✅ en staging | [#19](../../pulls/19) MERGED |
 | **MYM-6** | Mentor Profile | Ready For QA | ✅ en main | [#9](../../pulls/9) MERGED |
-| **MYM-7** | Password Reset | In Progress | ✅ branch `feat/MYM-7/password-reset` | [#4](../../pulls/4) OPEN |
+| **MYM-7** | Password Reset | In Progress | ✅ Implementado | PR pendiente de crear |
 | **MYM-9** | View Pending Applications | Ready For QA | ❌ Pendiente | - |
 | **MYM-11** | Approve/Reject Application | Estimation | ❌ Pendiente | - |
 | **MYM-12** | Email Notification Status | Estimation | ❌ Pendiente | - |
@@ -129,7 +130,7 @@ Las siguientes US del repo local NO tienen análisis Shift-Left en Jira:
 2. **Crear implementation plans** - Empezar por las 10 de prioridad alta
 3. **Completar Shift-Left** - Para las 11 US que aún no lo tienen
 
-> **Última US completada:** MYM-4 (Login/Logout) - PR #19 merged 2025-12-02
+> **Última US completada:** MYM-7 (Password Reset) - PR pendiente 2025-12-02
 
 ---
 
