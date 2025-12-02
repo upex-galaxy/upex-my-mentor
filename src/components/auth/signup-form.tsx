@@ -97,7 +97,7 @@ export function SignupForm({ defaultRole }: SignupFormProps) {
           type="email"
           placeholder="tu@email.com"
           autoComplete="email"
-          className={errors.email ? 'border-red-500' : ''}
+          className={errors.email ? 'border-destructive' : ''}
           {...register('email')}
         />
         {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}

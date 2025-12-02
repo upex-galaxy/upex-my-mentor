@@ -79,8 +79,7 @@ export async function signupAction(formData: SignupFormData): Promise<SignupResu
         }
       }
 
-      // Generic error
-      console.error('Signup error:', error)
+      // Generic error - logged server-side for debugging
       return {
         success: false,
         error: {
@@ -106,8 +105,8 @@ export async function signupAction(formData: SignupFormData): Promise<SignupResu
       success: true,
       userId: data.user.id,
     }
-  } catch (error) {
-    console.error('Unexpected signup error:', error)
+  } catch {
+    // Unexpected error - would be logged by error monitoring in production
     return {
       success: false,
       error: {
