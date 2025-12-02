@@ -197,48 +197,63 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 
 ---
 
-### PASO 10: Actualizar Documentacion
+### PASO 10: Actualizar Documentacion (en rama de la US)
 
 **Objetivo:** Mantener el status report y release notes actualizados.
 
 **Acciones:**
-1. Actualizar `.context/PRD/shift-left-status-report.md`:
-   - Marcar implementation plan como completado
-   - Actualizar estado del PR (MERGED)
-   - Actualizar contadores
-2. Actualizar/crear `.context/PRD/release-notes.md`:
-   - Agregar entrada para la US implementada
-   - Formato changelog estandar
+1. **ANTES del merge**, en la rama de la US, actualizar:
+   - `.context/PRD/shift-left-status-report.md`:
+     - Marcar implementation plan como completado
+     - Actualizar estado del PR (MERGED o por mergear)
+     - Actualizar contadores
+   - `.context/PRD/release-notes.md` (opcional):
+     - Agregar entrada para la US implementada
+     - Formato changelog estandar
 
-**Criterio de exito:** Archivos de documentacion actualizados
+2. Incluir cambios de docs en el commit de la US o como commit separado en la misma rama:
+   ```bash
+   git add .context/ && git commit -m "docs: update status report after MYM-{N} completion"
+   ```
+
+**Criterio de exito:** Cambios de documentacion incluidos en el PR de la US
+
+**Nota:** Los docs viajan junto con el codigo de la US, no se pushean directo a staging.
 
 ---
 
-### PASO 11: Preparar Siguiente US
+### PASO 11: Sincronizar y Esperar Instrucciones
 
-**Objetivo:** Sincronizar staging y preparar la rama de la siguiente US.
+**Objetivo:** Sincronizar staging local con los cambios mergeados y preparar para la siguiente US.
 
 **Acciones:**
-1. Moverse a staging y hacer pull:
+1. Moverse a staging y hacer pull de los cambios mergeados:
    ```bash
    git checkout staging && git pull origin staging
    ```
-2. Commitear cambios de documentacion pendientes en staging (si hay):
+
+2. Verificar que el merge se refleja localmente:
    ```bash
-   git add .context/ && git commit -m "docs: update status report and workflow"
-   git push origin staging
+   git log --oneline -3
    ```
-3. Identificar siguiente US segun `shift-left-status-report.md`
-4. Moverse a la rama de la siguiente US y sincronizar con staging:
+
+3. Esperar instrucciones del usuario sobre cual US trabajar a continuacion
+
+4. Cuando se indique la siguiente US, crear o moverse a su rama:
    ```bash
+   # Si la rama no existe:
+   git checkout -b feat/MYM-{N}/{short-name}
+
+   # Si la rama ya existe:
    git checkout feat/MYM-{N}/{short-name}
    git merge staging -m "chore: sync with staging after MYM-{prev} completion"
    ```
+
 5. Continuar con Paso 1 de la nueva US
 
-**Criterio de exito:** Rama de siguiente US actualizada con cambios de staging
+**Criterio de exito:** Staging local actualizado, listo para siguiente US
 
-**Nota:** Este paso asegura que cada nueva US comience con el codigo mas reciente y evita conflictos de merge.
+**Nota:** No se pushea nada a staging directamente. Los cambios de docs viajan con el PR de cada US.
 
 ---
 
