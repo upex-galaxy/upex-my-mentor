@@ -1,10 +1,11 @@
 # Implementation Plan: STORY-MYM-7 - Password Reset
 
-**Fecha:** 2025-11-28
+**Fecha:** 2025-12-02 (Actualizado)
 **Autor:** AI-Generated
 **Story Jira Key:** MYM-7
 **Epic:** EPIC-MYM-2 - User Authentication & Profiles
-**Status:** Ready For Implementation
+**Branch:** `feat/MYM-7/password-reset`
+**Status Jira:** In Progress
 
 ---
 
@@ -35,10 +36,14 @@ Implementar el flujo completo de recuperación de contraseña para la plataforma
 |---------|--------|--------|
 | `src/app/password-reset/page.tsx` | ❌ No existe | CREAR: página de solicitud |
 | `src/app/password-reset/confirm/page.tsx` | ❌ No existe | CREAR: página de reset con token |
-| `src/contexts/auth-context.tsx` | ✅ Funcional | EXTENDER: agregar `resetPassword` methods |
-| `src/lib/validations/auth.ts` | CREAR en MYM-4 | EXTENDER: agregar reset schemas |
-| `src/components/auth/password-input.tsx` | CREAR en MYM-4 | REUTILIZAR |
+| `src/app/auth/confirm/route.ts` | ❌ No existe | CREAR: route handler PKCE |
+| `src/contexts/auth-context.tsx` | ✅ Funcional | SIN CAMBIOS |
+| `src/lib/validations/auth.ts` | ✅ Ya existe (MYM-4) | SIN CAMBIOS - schemas listos |
+| `src/components/auth/password-input.tsx` | ✅ Ya existe (MYM-4) | REUTILIZAR |
+| `src/components/auth/password-strength.tsx` | ✅ Ya existe (MYM-4) | REUTILIZAR |
 | `middleware.ts` | ✅ Funcional | ACTUALIZAR: agregar rutas públicas |
+
+**Nota:** MYM-4 (Login/Logout) ya fue completado y mergeado. Los schemas `forgotPasswordSchema` y `resetPasswordSchema` ya existen en `auth.ts`.
 
 ### Funcionalidades de Supabase Auth a usar:
 - `supabase.auth.resetPasswordForEmail(email)` → Envía email con magic link
@@ -216,21 +221,20 @@ export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>
 
 ## Implementation Steps
 
-### **Step 1: Extender validations/auth.ts con schemas de reset**
+### **Step 1: Verificar schemas existentes** ✅ COMPLETADO
 
-**Task:** Agregar schemas de validación para password reset
+**Task:** Verificar que los schemas de validación existen
 
-**File:** `src/lib/validations/auth.ts` (EXTENDER)
+**File:** `src/lib/validations/auth.ts`
 
-**Details:**
-- Agregar `forgotPasswordSchema` (email only)
-- Agregar `resetPasswordSchema` (password + confirmPassword + policy)
-- Extraer password policy regex a constante compartida con signup
+**Status:** ✅ Ya implementado en MYM-4
 
-**Testing:**
-- Unit test: Validación de email
-- Unit test: Password policy validation
-- Unit test: Password mismatch detection
+**Schemas disponibles:**
+- `forgotPasswordSchema` → `{ email: string }`
+- `resetPasswordSchema` → `{ password: string, confirmPassword: string }` con refine
+- `getPasswordRequirements()` → Helper para strength indicator
+
+**No requiere cambios** - Proceder al Step 2
 
 ---
 
@@ -525,13 +529,19 @@ if (!session && !isPublicRoute && !isMentorsRoute && !isPasswordResetRoute) {
 
 ## Dependencies
 
-**Pre-requisitos (depende de MYM-4):**
-- [ ] `PasswordInput` component creado
-- [ ] `PasswordStrengthIndicator` component creado
-- [ ] `src/lib/validations/auth.ts` existe
+**Pre-requisitos (MYM-4 completado):** ✅
+- [x] `PasswordInput` component creado
+- [x] `PasswordStrength` component creado
+- [x] `src/lib/validations/auth.ts` con schemas de reset
+- [x] Link "¿Olvidaste tu contraseña?" en login page
 
 **Nuevas dependencias:**
 - Ninguna adicional (usa Supabase SDK existente)
+
+**Configuración Supabase requerida:**
+- Verificar Redirect URLs en Authentication > URL Configuration
+- Agregar `http://localhost:3000/auth/confirm` (dev)
+- Agregar URL de producción cuando se despliegue
 
 ---
 
@@ -640,4 +650,5 @@ if (!session && !isPublicRoute && !isMentorsRoute && !isPasswordResetRoute) {
 ---
 
 **Generated:** 2025-11-28
+**Actualizado:** 2025-12-02
 **Ready for implementation**
