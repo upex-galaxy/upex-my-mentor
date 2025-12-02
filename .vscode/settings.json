@@ -19,7 +19,7 @@
   //? Files Configuration
   // =====================
   "files.eol": "\n", // Usa LF (Unix) para consistencia entre OS
-  "files.autoSave": "onFocusChange", // Auto-guarda al cambiar de archivo
+  "files.autoSave": "afterDelay", // Auto-guarda al cambiar de archivo
   "files.trimTrailingWhitespace": true, // Elimina espacios al final de línea
   "files.insertFinalNewline": true, // Agrega línea final (POSIX standard)
   "files.trimFinalNewlines": true, // Elimina líneas vacías extras al final
