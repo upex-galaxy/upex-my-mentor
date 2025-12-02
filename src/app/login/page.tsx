@@ -13,12 +13,13 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Navbar } from "@/components/layout/navbar";
-import { LogIn, Info, GraduationCap, Briefcase } from "lucide-react";
+import { LogIn, Info, GraduationCap, Briefcase, CheckCircle } from "lucide-react";
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") || "/dashboard";
+  const passwordResetSuccess = searchParams.get("reset") === "success";
   const { login } = useAuth();
   const [serverError, setServerError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -88,6 +89,19 @@ function LoginForm() {
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="space-y-4">
+          {/* Password Reset Success Message */}
+          {passwordResetSuccess && (
+            <Alert className="border-green-500/50 bg-green-50">
+              <CheckCircle className="h-4 w-4 text-green-600" />
+              <AlertTitle className="text-green-700 font-semibold">
+                Contraseña actualizada
+              </AlertTitle>
+              <AlertDescription className="text-green-600">
+                Tu contraseña ha sido cambiada exitosamente. Inicia sesión con tu nueva contraseña.
+              </AlertDescription>
+            </Alert>
+          )}
+
           {/* Demo Credentials Alert */}
           <Alert className="border-primary/50 bg-primary/5">
             <Info className="h-4 w-4 text-primary" />

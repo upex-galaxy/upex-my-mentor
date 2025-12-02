@@ -38,9 +38,10 @@ export async function middleware(req: NextRequest) {
   const publicRoutes = ['/', '/login', '/signup']
   const isPublicRoute = publicRoutes.includes(req.nextUrl.pathname)
   const isMentorsRoute = req.nextUrl.pathname.startsWith('/mentors')
+  const isPasswordResetRoute = req.nextUrl.pathname.startsWith('/password-reset')
 
   // if user is not signed in and the current path is not a public route, redirect the user to /login
-  if (!session && !isPublicRoute && !isMentorsRoute) {
+  if (!session && !isPublicRoute && !isMentorsRoute && !isPasswordResetRoute) {
     const redirectUrl = new URL('/login', req.url)
     // Preserve the original URL so user can be redirected back after login
     redirectUrl.searchParams.set('redirectTo', req.nextUrl.pathname)

@@ -37,8 +37,16 @@
 #### MYM-7: Password Reset
 - **Epic:** EPIC-MYM-2 (User Authentication & Profiles)
 - **Branch:** `feat/MYM-7/password-reset`
-- **PR:** [#4](../../pulls/4) OPEN
-- **Estado:** Implementation plan creado
+- **PR:** Pendiente de crear
+- **Estado:** ✅ Implementado
+- **Descripcion:** Flujo completo de recuperación de contraseña
+- **Cambios principales:**
+  - Página `/password-reset` para solicitar enlace de recuperación
+  - Página `/password-reset/confirm` para establecer nueva contraseña
+  - Componentes: ForgotPasswordForm, ResetPasswordForm, TokenErrorState
+  - Indicador de fortaleza de contraseña
+  - Mensaje de éxito en login después de reset
+  - Middleware actualizado para rutas públicas de reset
 
 ---
 
