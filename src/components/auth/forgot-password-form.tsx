@@ -58,7 +58,7 @@ export function ForgotPasswordForm() {
 
   if (isSubmitted) {
     return (
-      <div className="space-y-6 text-center">
+      <div data-testid="success_message" className="space-y-6 text-center">
         <div className="mx-auto h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
           <CheckCircle className="h-6 w-6 text-green-600" />
         </div>
@@ -72,6 +72,7 @@ export function ForgotPasswordForm() {
         </div>
         <Link
           href="/login"
+          data-testid="back_to_login_link"
           className="inline-flex items-center gap-2 text-sm text-primary hover:underline"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -82,9 +83,9 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form data-testid="forgotPasswordForm" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {error && (
-        <Alert variant="destructive">
+        <Alert data-testid="error_alert" variant="destructive">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
@@ -97,6 +98,7 @@ export function ForgotPasswordForm() {
           <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             id="email"
+            data-testid="email_input"
             type="email"
             placeholder="tu@email.com"
             className={`pl-10 ${errors.email ? 'border-destructive' : ''}`}
@@ -105,11 +107,11 @@ export function ForgotPasswordForm() {
           />
         </div>
         {errors.email && (
-          <p className="text-sm text-destructive">{errors.email.message}</p>
+          <p data-testid="email_error" className="text-sm text-destructive">{errors.email.message}</p>
         )}
       </div>
 
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
+      <Button data-testid="submit_button" type="submit" className="w-full" disabled={isSubmitting}>
         {isSubmitting ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -123,6 +125,7 @@ export function ForgotPasswordForm() {
       <div className="text-center">
         <Link
           href="/login"
+          data-testid="back_to_login_link"
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary"
         >
           <ArrowLeft className="h-4 w-4" />

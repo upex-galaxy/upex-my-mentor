@@ -65,11 +65,11 @@ export default function ResetPasswordConfirmPage() {
   }, [supabase])
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div data-testid="passwordResetConfirmPage" className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50">
         {tokenState === 'loading' && (
-          <Card className="w-full max-w-md">
+          <Card data-testid="loading_state" className="w-full max-w-md">
             <CardContent className="flex flex-col items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
               <p className="text-muted-foreground">Verificando enlace...</p>
@@ -78,7 +78,7 @@ export default function ResetPasswordConfirmPage() {
         )}
 
         {tokenState === 'valid' && (
-          <Card className="w-full max-w-md">
+          <Card data-testid="form_card" className="w-full max-w-md">
             <CardHeader className="space-y-1 text-center">
               <div className="mx-auto mb-4 h-12 w-12 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
                 <LockKeyhole className="h-6 w-6 text-white" />

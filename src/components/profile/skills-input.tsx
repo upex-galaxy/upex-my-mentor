@@ -79,10 +79,11 @@ export function SkillsInput({
   )
 
   return (
-    <div className="space-y-3">
+    <div data-testid="skillsInput" className="space-y-3">
       <div className="flex gap-2">
         <Input
           ref={inputRef}
+          data-testid="input_field"
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
@@ -98,6 +99,7 @@ export function SkillsInput({
           aria-describedby={error ? 'skills-error' : undefined}
         />
         <Button
+          data-testid="add_button"
           type="button"
           variant="outline"
           onClick={addSkill}
@@ -110,7 +112,7 @@ export function SkillsInput({
 
       {/* Duplicate warning */}
       {duplicateWarning && (
-        <p className="text-sm text-amber-600">
+        <p data-testid="duplicate_warning" className="text-sm text-amber-600">
           Esta especialidad ya está añadida
         </p>
       )}
@@ -121,12 +123,14 @@ export function SkillsInput({
           {value.map((skill) => (
             <Badge
               key={skill}
+              data-testid="skill_badge"
               variant="secondary"
               className="gap-1 pr-1 text-sm"
             >
               {skill}
               <button
                 type="button"
+                data-testid="remove_skill_button"
                 onClick={() => removeSkill(skill)}
                 disabled={disabled}
                 className="ml-1 rounded-full p-0.5 hover:bg-secondary-foreground/20 focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-50"
@@ -140,18 +144,18 @@ export function SkillsInput({
       )}
 
       {/* Counter */}
-      <div className="flex items-center justify-between text-xs text-muted-foreground">
+      <div data-testid="skills_counter" className="flex items-center justify-between text-xs text-muted-foreground">
         <span>
           {value.length} de {maxSkills} especialidades
         </span>
         {isAtLimit && (
-          <span className="text-amber-600">Límite alcanzado</span>
+          <span data-testid="limit_warning" className="text-amber-600">Límite alcanzado</span>
         )}
       </div>
 
       {/* Error message */}
       {error && (
-        <p id="skills-error" className="text-sm text-destructive">
+        <p data-testid="skills_error" id="skills-error" className="text-sm text-destructive">
           {error}
         </p>
       )}

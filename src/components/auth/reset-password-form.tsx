@@ -64,9 +64,9 @@ export function ResetPasswordForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form data-testid="resetPasswordForm" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {error && (
-        <Alert variant="destructive">
+        <Alert data-testid="error_alert" variant="destructive">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
@@ -77,13 +77,14 @@ export function ResetPasswordForm() {
         </label>
         <PasswordInput
           id="password"
+          data-testid="password_input"
           placeholder="••••••••"
           error={errors.password?.message}
           {...register('password')}
           disabled={isSubmitting}
         />
         {errors.password && (
-          <p className="text-sm text-destructive">{errors.password.message}</p>
+          <p data-testid="password_error" className="text-sm text-destructive">{errors.password.message}</p>
         )}
       </div>
 
@@ -97,19 +98,20 @@ export function ResetPasswordForm() {
         </label>
         <PasswordInput
           id="confirmPassword"
+          data-testid="confirm_password_input"
           placeholder="••••••••"
           error={errors.confirmPassword?.message}
           {...register('confirmPassword')}
           disabled={isSubmitting}
         />
         {errors.confirmPassword && (
-          <p className="text-sm text-destructive">
+          <p data-testid="confirm_password_error" className="text-sm text-destructive">
             {errors.confirmPassword.message}
           </p>
         )}
       </div>
 
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
+      <Button data-testid="submit_button" type="submit" className="w-full" disabled={isSubmitting}>
         {isSubmitting ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

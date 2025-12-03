@@ -211,7 +211,7 @@ export default async function MentorsPage({
 
   return (
 
-    <div className="min-h-screen flex flex-col">
+    <div data-testid="mentorsPage" className="min-h-screen flex flex-col">
 
       <Navbar />
 
@@ -219,13 +219,13 @@ export default async function MentorsPage({
 
         {/* Header */}
 
-        <div className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 py-12">
+        <div data-testid="page_header" className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 py-12">
 
           <div className="container mx-auto px-4">
 
-            <h1 className="text-4xl font-bold mb-4">Explorar Mentores</h1>
+            <h1 data-testid="page_title" className="text-4xl font-bold mb-4">Explorar Mentores</h1>
 
-            <p className="text-lg text-muted-foreground max-w-2xl">
+            <p data-testid="page_description" className="text-lg text-muted-foreground max-w-2xl">
 
               Encuentra al mentor perfecto para acelerar tu carrera tech. Todos
 
@@ -245,7 +245,7 @@ export default async function MentorsPage({
 
             {/* Sidebar - Filters */}
 
-            <div className="lg:col-span-1">
+            <div data-testid="filters_sidebar" className="lg:col-span-1">
 
               <MentorFilters allSkills={allSkills} />
 
@@ -261,7 +261,7 @@ export default async function MentorsPage({
 
               <div className="mb-6">
 
-                <p className="text-sm text-muted-foreground">
+                <p data-testid="results_count" className="text-sm text-muted-foreground">
 
                   {mentors.length} mentor
 
@@ -279,7 +279,7 @@ export default async function MentorsPage({
 
               {mentors.length > 0 ? (
 
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div data-testid="mentors_grid" className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
                   {mentors.map((mentor) => (
 
@@ -291,7 +291,7 @@ export default async function MentorsPage({
 
               ) : (
 
-                <div className="text-center py-12">
+                <div data-testid="empty_state" className="text-center py-12">
 
                   <p className="text-muted-foreground mb-4">
 

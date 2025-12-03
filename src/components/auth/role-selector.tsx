@@ -35,7 +35,7 @@ const roleOptions: RoleOption[] = [
 
 export function RoleSelector({ value, onChange, error }: RoleSelectorProps) {
   return (
-    <div className="space-y-2">
+    <div data-testid="roleSelector" className="space-y-2">
       <div className="grid grid-cols-2 gap-3">
         {roleOptions.map((option) => (
           <RoleCard
@@ -47,7 +47,7 @@ export function RoleSelector({ value, onChange, error }: RoleSelectorProps) {
           />
         ))}
       </div>
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {error && <p data-testid="role_error" className="text-xs text-red-500">{error}</p>}
     </div>
   )
 }
@@ -63,6 +63,7 @@ function RoleCard({ option, isSelected, onSelect, hasError }: RoleCardProps) {
   return (
     <button
       type="button"
+      data-testid={`${option.value}_role_card`}
       onClick={onSelect}
       className={cn(
         'flex flex-col items-center gap-2 rounded-lg border-2 p-4 text-center transition-all duration-200',

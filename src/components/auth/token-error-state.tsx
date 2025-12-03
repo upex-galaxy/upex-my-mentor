@@ -43,16 +43,16 @@ export function TokenErrorState({ type = 'invalid' }: TokenErrorStateProps) {
   const message = getMessage()
 
   return (
-    <Card className="w-full max-w-md">
+    <Card data-testid="tokenErrorState" className="w-full max-w-md">
       <CardHeader className="space-y-1 text-center">
-        <div className="mx-auto mb-4 h-12 w-12 rounded-lg bg-destructive/10 flex items-center justify-center">
+        <div data-testid="error_icon" className="mx-auto mb-4 h-12 w-12 rounded-lg bg-destructive/10 flex items-center justify-center">
           <AlertTriangle className="h-6 w-6 text-destructive" />
         </div>
-        <CardTitle className="text-2xl">{message.title}</CardTitle>
-        <CardDescription>{message.description}</CardDescription>
+        <CardTitle data-testid="error_title" className="text-2xl">{message.title}</CardTitle>
+        <CardDescription data-testid="error_description">{message.description}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Button asChild className="w-full">
+        <Button data-testid="request_new_link_button" asChild className="w-full">
           <Link href="/password-reset">
             Solicitar nuevo enlace
             <ArrowRight className="ml-2 h-4 w-4" />
@@ -61,6 +61,7 @@ export function TokenErrorState({ type = 'invalid' }: TokenErrorStateProps) {
         <div className="text-center">
           <Link
             href="/login"
+            data-testid="back_to_login_link"
             className="text-sm text-muted-foreground hover:text-primary"
           >
             Volver a iniciar sesión

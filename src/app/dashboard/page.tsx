@@ -56,15 +56,15 @@ export default async function DashboardPage() {
   const hasRate = profile.hourly_rate && profile.hourly_rate > 0;
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div data-testid="dashboardPage" className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 bg-muted/30">
         {/* Header */}
-        <div className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 py-12">
+        <div data-testid="header_section" className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 py-12">
           <div className="container mx-auto px-4">
             <div className="flex items-center gap-4">
               {profile.photo_url ? (
-                <div className="relative h-20 w-20 rounded-full overflow-hidden ring-4 ring-background">
+                <div data-testid="user_avatar" className="relative h-20 w-20 rounded-full overflow-hidden ring-4 ring-background">
                   <Image
                     src={profile.photo_url}
                     alt={profile.name || "User"}
@@ -73,17 +73,17 @@ export default async function DashboardPage() {
                   />
                 </div>
               ) : (
-                <div className="h-20 w-20 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-3xl font-bold ring-4 ring-background">
+                <div data-testid="user_avatar" className="h-20 w-20 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-3xl font-bold ring-4 ring-background">
                   {profile.name?.charAt(0) || "U"}
                 </div>
               )}
               <div>
-                <h1 className="text-3xl font-bold">Bienvenido, {profile.name}</h1>
+                <h1 data-testid="user_name" className="text-3xl font-bold">Bienvenido, {profile.name}</h1>
                 <div className="flex items-center gap-2 mt-1">
-                  <Badge variant={profile.role === "mentor" ? "default" : "secondary"}>
+                  <Badge data-testid="user_role_badge" variant={profile.role === "mentor" ? "default" : "secondary"}>
                     {profile.role === "mentor" ? "Mentor" : "Estudiante"}
                   </Badge>
-                  <span className="text-sm text-muted-foreground">
+                  <span data-testid="user_email" className="text-sm text-muted-foreground">
                     {profile.email}
                   </span>
                 </div>
@@ -94,9 +94,9 @@ export default async function DashboardPage() {
 
         {/* Dashboard Content */}
         <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <div data-testid="stats_section" className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             {/* Quick Stats */}
-            <Card>
+            <Card data-testid="upcoming_sessions_stat">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   Sesiones Programadas
@@ -114,7 +114,7 @@ export default async function DashboardPage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card data-testid="total_hours_stat">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   {profile.role === "mentor" ? "Total Sesiones" : "Horas de Mentoría"}
@@ -131,7 +131,7 @@ export default async function DashboardPage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card data-testid="rating_stat">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   Valoración Promedio
@@ -152,7 +152,7 @@ export default async function DashboardPage() {
           {/* Main Content */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Upcoming Sessions */}
-            <Card>
+            <Card data-testid="upcoming_sessions_card">
               <CardHeader>
                 <CardTitle>Sesiones Próximas</CardTitle>
                 <CardDescription>
@@ -161,21 +161,21 @@ export default async function DashboardPage() {
               </CardHeader>
               <CardContent>
                 {upcomingSessions.length === 0 ? (
-                  <div className="text-center py-12">
+                  <div data-testid="sessions_empty_state" className="text-center py-12">
                     <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <p className="text-muted-foreground mb-4">
                       No tienes sesiones programadas
                     </p>
                     {profile.role === "student" && (
                       <Link href="/mentors">
-                        <Button>Explorar Mentores</Button>
+                        <Button data-testid="explore_mentors_button">Explorar Mentores</Button>
                       </Link>
                     )}
                   </div>
                 ) : (
                   <div className="space-y-4">
                     {upcomingSessions.slice(0, 3).map((booking) => (
-                      <div key={booking.id} className="flex items-center justify-between p-4 rounded-lg border">
+                      <div key={booking.id} data-testid="session_item" className="flex items-center justify-between p-4 rounded-lg border">
                         <div>
                           <p className="font-medium">
                             {isStudent ? booking.mentor?.name : booking.student?.name}
@@ -193,7 +193,7 @@ export default async function DashboardPage() {
             </Card>
 
             {/* Profile Completion */}
-            <Card>
+            <Card data-testid="profile_completion_card">
               <CardHeader>
                 <CardTitle>Completa tu Perfil</CardTitle>
                 <CardDescription>
@@ -201,7 +201,7 @@ export default async function DashboardPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center justify-between p-4 rounded-lg border">
+                <div data-testid="profile_item" className="flex items-center justify-between p-4 rounded-lg border">
                   <div className="flex items-center gap-3">
                     <User className="h-5 w-5 text-primary" />
                     <span className="font-medium">Información básica</span>
@@ -211,7 +211,7 @@ export default async function DashboardPage() {
 
                 {profile.role === "mentor" && (
                   <>
-                    <div className={`flex items-center justify-between p-4 rounded-lg border ${hasSpecialties ? '' : 'border-dashed'}`}>
+                    <div data-testid="profile_item" className={`flex items-center justify-between p-4 rounded-lg border ${hasSpecialties ? '' : 'border-dashed'}`}>
                       <div className="flex items-center gap-3">
                         <BookOpen className={`h-5 w-5 ${hasSpecialties ? 'text-primary' : 'text-muted-foreground'}`} />
                         <span className={`font-medium ${hasSpecialties ? '' : 'text-muted-foreground'}`}>
@@ -223,7 +223,7 @@ export default async function DashboardPage() {
                       </Badge>
                     </div>
 
-                    <div className={`flex items-center justify-between p-4 rounded-lg border ${hasRate ? '' : 'border-dashed'}`}>
+                    <div data-testid="profile_item" className={`flex items-center justify-between p-4 rounded-lg border ${hasRate ? '' : 'border-dashed'}`}>
                       <div className="flex items-center gap-3">
                         <Calendar className={`h-5 w-5 ${hasRate ? 'text-primary' : 'text-muted-foreground'}`} />
                         <span className={`font-medium ${hasRate ? '' : 'text-muted-foreground'}`}>
@@ -244,7 +244,7 @@ export default async function DashboardPage() {
                       : "Un perfil completo ayuda a los mentores a entender mejor tus necesidades."}
                   </p>
                   <Link href="/profile/edit">
-                    <Button variant="outline" size="sm">
+                    <Button data-testid="edit_profile_button" variant="outline" size="sm">
                       Editar Perfil
                     </Button>
                   </Link>
@@ -255,7 +255,7 @@ export default async function DashboardPage() {
 
           {/* CTA Section */}
           {profile.role === "student" && (
-            <Card className="mt-6 bg-gradient-to-r from-primary to-accent text-white border-none">
+            <Card data-testid="cta_section" className="mt-6 bg-gradient-to-r from-primary to-accent text-white border-none">
               <CardContent className="p-8">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                   <div>
@@ -267,7 +267,7 @@ export default async function DashboardPage() {
                     </p>
                   </div>
                   <Link href="/mentors">
-                    <Button size="lg" variant="secondary">
+                    <Button data-testid="cta_button" size="lg" variant="secondary">
                       Explorar Mentores
                     </Button>
                   </Link>

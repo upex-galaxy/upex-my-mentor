@@ -77,7 +77,7 @@ function LoginForm() {
   };
 
   return (
-    <Card className="w-full max-w-md">
+    <Card data-testid="loginCard" className="w-full max-w-md">
       <CardHeader className="space-y-1 text-center">
         <div className="mx-auto mb-4 h-12 w-12 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
           <LogIn className="h-6 w-6 text-white" />
@@ -91,7 +91,7 @@ function LoginForm() {
         <CardContent className="space-y-4">
           {/* Password Reset Success Message */}
           {passwordResetSuccess && (
-            <Alert className="border-green-500/50 bg-green-50">
+            <Alert data-testid="reset_success_alert" className="border-green-500/50 bg-green-50">
               <CheckCircle className="h-4 w-4 text-green-600" />
               <AlertTitle className="text-green-700 font-semibold">
                 Contraseña actualizada
@@ -103,7 +103,7 @@ function LoginForm() {
           )}
 
           {/* Demo Credentials Alert */}
-          <Alert className="border-primary/50 bg-primary/5">
+          <Alert data-testid="demo_alert" className="border-primary/50 bg-primary/5">
             <Info className="h-4 w-4 text-primary" />
             <AlertTitle className="text-primary font-semibold mb-3">Credenciales Demo</AlertTitle>
             <AlertDescription className="space-y-3">
@@ -118,6 +118,7 @@ function LoginForm() {
                   <div>Demo123!</div>
                 </div>
                 <Button
+                  data-testid="mentor_demo_button"
                   type="button"
                   variant="outline"
                   size="sm"
@@ -140,6 +141,7 @@ function LoginForm() {
                   <div>Demo123!</div>
                 </div>
                 <Button
+                  data-testid="student_demo_button"
                   type="button"
                   variant="outline"
                   size="sm"
@@ -155,7 +157,7 @@ function LoginForm() {
 
           {/* Server Error */}
           {serverError && (
-            <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md">
+            <div data-testid="server_error" className="p-3 text-sm text-destructive bg-destructive/10 rounded-md">
               {serverError}
             </div>
           )}
@@ -167,13 +169,14 @@ function LoginForm() {
             </label>
             <Input
               id="email"
+              data-testid="email_input"
               type="email"
               placeholder="tu@email.com"
               {...register("email")}
               className={errors.email ? "border-red-500" : ""}
             />
             {errors.email && (
-              <p className="text-sm text-red-500">{errors.email.message}</p>
+              <p data-testid="email_error" className="text-sm text-red-500">{errors.email.message}</p>
             )}
           </div>
 
@@ -184,12 +187,13 @@ function LoginForm() {
             </label>
             <PasswordInput
               id="password"
+              data-testid="password_input"
               placeholder="••••••••"
               {...register("password")}
               error={errors.password?.message}
             />
             {errors.password && (
-              <p className="text-sm text-red-500">{errors.password.message}</p>
+              <p data-testid="password_error" className="text-sm text-red-500">{errors.password.message}</p>
             )}
           </div>
 
@@ -197,6 +201,7 @@ function LoginForm() {
           <div className="text-right">
             <Link
               href="/password-reset"
+              data-testid="forgot_password_link"
               className="text-sm text-primary hover:underline"
             >
               ¿Olvidaste tu contraseña?
@@ -204,12 +209,12 @@ function LoginForm() {
           </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button data-testid="submit_button" type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
           </Button>
           <div className="text-sm text-center text-muted-foreground">
             ¿No tienes una cuenta?{" "}
-            <Link href="/signup" className="text-primary hover:underline">
+            <Link href="/signup" data-testid="signup_link" className="text-primary hover:underline">
               Regístrate aquí
             </Link>
           </div>
@@ -247,7 +252,7 @@ function LoginFormSkeleton() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div data-testid="loginPage" className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50">
         <Suspense fallback={<LoginFormSkeleton />}>

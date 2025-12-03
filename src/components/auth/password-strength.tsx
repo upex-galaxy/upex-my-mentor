@@ -18,9 +18,9 @@ export function PasswordStrengthIndicator({
   const allMet = metCount === requirements.length
 
   return (
-    <div className={cn('space-y-2', className)}>
+    <div data-testid="passwordStrength" className={cn('space-y-2', className)}>
       {/* Progress bar */}
-      <div className="flex gap-1">
+      <div data-testid="progress_bar" className="flex gap-1">
         {requirements.map((_, index) => (
           <div
             key={index}
@@ -37,7 +37,7 @@ export function PasswordStrengthIndicator({
       </div>
 
       {/* Requirements list */}
-      <ul className="space-y-1">
+      <ul data-testid="requirements_list" className="space-y-1">
         {requirements.map((requirement, index) => (
           <RequirementItem key={index} requirement={requirement} />
         ))}
@@ -49,6 +49,7 @@ export function PasswordStrengthIndicator({
 function RequirementItem({ requirement }: { requirement: PasswordRequirement }) {
   return (
     <li
+      data-testid="requirement_item"
       className={cn(
         'flex items-center gap-2 text-xs transition-colors duration-200',
         requirement.met ? 'text-green-600' : 'text-muted-foreground'
