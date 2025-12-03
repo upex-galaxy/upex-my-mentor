@@ -4,12 +4,15 @@
 
 Implementar una vista administrativa que permita a los administradores ver la lista de mentores pendientes de verificación, con paginación y navegación hacia el detalle de cada aplicación.
 
-**Acceptance Criteria a cumplir:**
+**Acceptance Criteria a cumplir:** (Refined by PO - test-cases.md v2)
 - Admin autenticado puede ver lista de mentores con `is_verified = false` y `role = 'mentor'`
-- La lista muestra: nombre, email, fecha de aplicación
+- La lista muestra: **Mentor Name, Email, Application Date, Specialties (top 3)**
+- Ordenado por `created_at` ascendente (oldest first)
 - Paginación funcional (20 items por página)
-- Estados de UI: loading, empty, error
-- Usuarios no-admin son redirigidos
+- Estados de UI: loading skeleton, empty state, error con retry
+- Usuarios no-admin son redirigidos a `/dashboard`
+
+**⚠️ GAP Identificado:** El test-cases.md menciona `vetting_status = 'pending'` pero la DB actual solo tiene `is_verified` (boolean). Para esta story usaremos `is_verified = false` como "pending". El campo `vetting_status` se podría añadir en futuras stories (MYM-11) para estados rejected.
 
 ---
 
@@ -70,24 +73,24 @@ Implementar una vista administrativa que permita a los administradores ver la li
 
 **Estructura de la página `/admin/applications`:**
 ```
-┌──────────────────────────────────────────────────────────┐
-│ AdminLayout                                               │
-├─────────┬────────────────────────────────────────────────┤
-│ Sidebar │  Header: "Pending Applications (5)"            │
-│         ├────────────────────────────────────────────────┤
-│ - Apps  │  ┌─────────────────────────────────────────┐   │
-│ - ...   │  │ Table                                    │   │
-│         │  │ ┌────────┬──────────┬────────┬────────┐ │   │
-│         │  │ │ Name   │ Email    │ Date   │ Action │ │   │
-│         │  │ ├────────┼──────────┼────────┼────────┤ │   │
-│         │  │ │ Carlos │ c@e.com  │ Dec 1  │ Review │ │   │
-│         │  │ │ Ana    │ a@e.com  │ Dec 2  │ Review │ │   │
-│         │  │ └────────┴──────────┴────────┴────────┘ │   │
-│         │  └─────────────────────────────────────────┘   │
-│         │  ┌─────────────────────────────────────────┐   │
-│         │  │ Pagination: < 1 2 3 >                   │   │
-│         │  └─────────────────────────────────────────┘   │
-└─────────┴────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────┐
+│ AdminLayout                                                             │
+├─────────┬──────────────────────────────────────────────────────────────┤
+│ Sidebar │  Header: "Pending Applications (5)"                          │
+│         ├──────────────────────────────────────────────────────────────┤
+│ - Apps  │  ┌────────────────────────────────────────────────────────┐  │
+│ - ...   │  │ Table                                                   │  │
+│         │  │ ┌────────┬──────────┬────────┬──────────────┬────────┐ │  │
+│         │  │ │ Name   │ Email    │ Date   │ Specialties  │ Action │ │  │
+│         │  │ ├────────┼──────────┼────────┼──────────────┼────────┤ │  │
+│         │  │ │ Carlos │ c@e.com  │ Dec 1  │ React, Node  │ Review │ │  │
+│         │  │ │ Ana    │ a@e.com  │ Dec 2  │ Python, AWS  │ Review │ │  │
+│         │  │ └────────┴──────────┴────────┴──────────────┴────────┘ │  │
+│         │  └────────────────────────────────────────────────────────┘  │
+│         │  ┌────────────────────────────────────────────────────────┐  │
+│         │  │ Pagination: < Page 1 of 2 >                            │  │
+│         │  └────────────────────────────────────────────────────────┘  │
+└─────────┴──────────────────────────────────────────────────────────────┘
 ```
 
 ### Estados de UI:
@@ -126,6 +129,7 @@ export interface PendingApplication {
   name: string | null
   email: string
   created_at: string
+  specialties: string[] | null  // Show top 3 in UI
   linkedin_url: string | null
   github_url: string | null
 }
@@ -303,9 +307,10 @@ export function ApplicationsTable({ applications, isLoading }: ApplicationsTable
     <table data-testid="applications-table">
       <thead>
         <tr>
-          <th>Name</th>
+          <th>Mentor Name</th>
           <th>Email</th>
-          <th>Applied</th>
+          <th>Application Date</th>
+          <th>Specialties</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -317,6 +322,9 @@ export function ApplicationsTable({ applications, isLoading }: ApplicationsTable
     </table>
   )
 }
+
+// ApplicationRow shows specialties as badges (top 3)
+// <Badge>{specialty}</Badge> for each, with "+N" if more than 3
 ```
 
 **data-testid attributes:**
@@ -402,7 +410,7 @@ export default async function AdminApplicationsPage({
   // Fetch pending mentor applications
   const { data: applications, count, error } = await supabase
     .from('profiles')
-    .select('id, name, email, created_at, linkedin_url, github_url', { count: 'exact' })
+    .select('id, name, email, created_at, specialties, linkedin_url, github_url', { count: 'exact' })
     .eq('role', 'mentor')
     .eq('is_verified', false)
     .order('created_at', { ascending: true })
@@ -554,10 +562,13 @@ export default async function AdminApplicationsPage({
   - [ ] `pagination-next`
   - [ ] `pagination-prev`
   - [ ] `retry-button`
-- [ ] Tests de integración pasando
-  - [ ] TC-001 to TC-006 (Positive)
-  - [ ] TC-007 to TC-010 (Negative)
-  - [ ] TC-011 to TC-013 (Boundary)
+- [ ] Tests pasando (referencia: test-cases.md v2)
+  - [ ] TC-MYM9-01: Successful display of pending applications list
+  - [ ] TC-MYM9-02: Pagination functionality
+  - [ ] TC-MYM9-03: Display of empty state
+  - [ ] TC-MYM9-04: Access denied for non-admin roles (Security)
+  - [ ] TC-MYM9-05: API contract for successful data retrieval
+  - [ ] TC-MYM9-06: API security for unauthorized access
 - [ ] Sin errores de linting/TypeScript
   - [ ] `bun run lint` passes
   - [ ] `bun run build` passes
