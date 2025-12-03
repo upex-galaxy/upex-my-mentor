@@ -15,6 +15,40 @@ Lee:
 
 Implementar E2E tests siguiendo el plan y arquitectura KATA:
 
+### Paso 0: Uso de Selectores data-testid
+
+**Referencia:** `.context/guidelines/data-testid-standards.md`
+
+Los componentes de la aplicación incluyen atributos `data-testid` para facilitar la automatización. Usa estos selectores para tests estables:
+
+```typescript
+// ✅ Selectores con data-testid (preferidos - estables)
+page.locator('[data-testid="loginForm"]')
+page.locator('[data-testid="email_input"]')
+page.locator('[data-testid="submit_button"]')
+
+// ✅ Selectores descendientes (componente + elemento interno)
+page.locator('[data-testid="mentorCard"] [data-testid="book_session_button"]')
+page.locator('[data-testid="mentorCard"] button')  // Cualquier botón dentro
+
+// ✅ Múltiples elementos del mismo tipo
+page.locator('[data-testid="mentorCard"]').nth(0)  // Primera card
+page.locator('[data-testid="mentorCard"]').nth(2)  // Tercera card
+
+// ✅ Combinar con otros selectores
+page.locator('[data-testid="mentorCard"]:has-text("Juan")')
+```
+
+**Nomenclatura esperada:**
+- Componentes (root): `camelCase` → `mentorCard`, `loginForm`
+- Elementos internos: `snake_case` → `email_input`, `submit_button`
+
+**Cuándo usar otros selectores:**
+- `getByRole()`, `getByLabel()`, `getByText()` siguen siendo válidos
+- Prefiere `data-testid` cuando el elemento no tiene rol/label semántico claro
+
+---
+
 ### Paso 1: Crear Components (Page Objects)
 
 ```typescript
@@ -29,9 +63,10 @@ export class LoginPage {
 
   constructor(page: Page) {
     this.page = page
-    this.emailInput = page.getByLabel('Email')
-    this.passwordInput = page.getByLabel('Password')
-    this.submitButton = page.getByRole('button', { name: 'Sign in' })
+    // Usar data-testid para selectores estables
+    this.emailInput = page.locator('[data-testid="email_input"]')
+    this.passwordInput = page.locator('[data-testid="password_input"]')
+    this.submitButton = page.locator('[data-testid="submit_button"]')
   }
 
   async goto() {
