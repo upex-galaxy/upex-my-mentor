@@ -72,10 +72,6 @@
   "editor.wordWrap": "on", // Ajusta líneas largas (mejora lectura)
   "editor.wordWrapColumn": 120, // Límite de columna para wrap
   "editor.wrappingIndent": "indent", // Mantiene indentación en líneas wrapped
-  "editor.rulers": [
-    80,
-    120
-  ], // Guías visuales para longitud de línea
   // =====================
   //? Editor - Code Actions & Fixes
   // =====================

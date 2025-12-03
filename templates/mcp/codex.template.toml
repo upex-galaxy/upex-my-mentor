@@ -28,6 +28,10 @@ args = [
 command = "npx"
 args = ["-y", "chrome-devtools-mcp"]
 
+[mcp_servers.shadcn]
+command = "npx"
+args = ["-y", "shadcn@latest", "mcp"]
+
 [mcp_servers.supabase]
 command = "npx"
 args = ["-y", "@supabase/mcp-server-supabase@latest"]

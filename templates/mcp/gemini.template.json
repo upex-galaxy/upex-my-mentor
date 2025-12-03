@@ -21,6 +21,10 @@
         "chrome-devtools-mcp"
       ]
     },
+    "shadcn": {
+      "command": "npx",
+      "args": ["shadcn@latest", "mcp"]
+    },
     "supabase": {
       "command": "npx",
       "args": [
@@ -62,7 +66,6 @@
       "httpUrl": "https://mcp.notion.com/mcp"
     },
     "atlassian": {
-      "type": "sse",
       "url": "https://mcp.atlassian.com/v1/sse"
     },
     "github": {

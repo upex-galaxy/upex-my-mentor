@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
-import { User, LogOut, Menu } from "lucide-react";
+import { User, LogOut, Menu, Settings } from "lucide-react";
 import { useState } from "react";
 
 export function Navbar() {
@@ -59,6 +59,15 @@ export function Navbar() {
                     <User className="h-4 w-4" />
                     <span className="text-sm font-medium">{user.name}</span>
                   </div>
+                  <Link href="/profile/edit">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      title="Editar perfil"
+                    >
+                      <Settings className="h-4 w-4" />
+                    </Button>
+                  </Link>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -122,6 +131,12 @@ export function Navbar() {
                     <User className="h-4 w-4" />
                     <span className="text-sm font-medium">{user.name}</span>
                   </div>
+                  <Link href="/profile/edit" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="outline" className="w-full">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Editar Perfil
+                    </Button>
+                  </Link>
                   <Button
                     variant="outline"
                     className="w-full"

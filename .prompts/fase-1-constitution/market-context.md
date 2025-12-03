@@ -1,7 +1,7 @@
 Actúa como Market Research Analyst.
 
 **Contexto:**
-Tengo este modelo de negocio: @.context/idea/business-model.md
+Tengo este modelo de negocio: [usar business-model.md]
 
 **Genera análisis de mercado ligero con:**
 

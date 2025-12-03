@@ -4,8 +4,8 @@
 
 This document provides a high-level view of all epics in the Upex My Mentor MVP. The structure reflects the actual epics and stories currently in Jira (Project MYM).
 
-**Total Epics:** 7
-**Total User Stories:** 27
+**Total Epics:** 8
+**Total User Stories:** 31
 **Source of Truth:** Jira Project MYM (https://upexgalaxy61.atlassian.net/jira/software/c/projects/MYM/boards/27)
 
 ---
@@ -126,6 +126,23 @@ This document provides a high-level view of all epics in the Upex My Mentor MVP.
 
 ---
 
+### 💬 EPIC 8: Messaging System
+**Jira Key:** MYM-55
+**Status:** ASSIGNED
+**Priority:** HIGH (Enhanced UX)
+**Description:** Enables direct communication between mentors and mentees within the platform. Addresses the need for pre-booking conversations and post-session follow-ups, which are essential for building trust and reducing booking friction.
+
+**User Stories (4):**
+1. **MYM-56** - As a Mentee, I want to send a message to a mentor before booking so that I can clarify doubts
+2. **MYM-57** - As a User, I want to view my conversation history so that I can follow up on previous discussions
+3. **MYM-58** - As a User, I want to receive notifications when I get a new message so that I can respond promptly
+4. **MYM-59** - As a Mentor, I want to respond to messages from my dashboard so that I can manage inquiries efficiently
+
+**Related Functional Requirements:** FR-NEW-001, FR-NEW-002, FR-NEW-003
+**Note:** Post-MVP enhancement. Industry standard feature (MentorCruise, Clarity.fm). Reduces booking friction and increases platform engagement.
+
+---
+
 ## Epic Prioritization
 
 ### Phase 1: Foundation (Sprint 1-2)
@@ -140,8 +157,9 @@ This document provides a high-level view of all epics in the Upex My Mentor MVP.
 5. **Payments & Payouts** (MYM-23) - Revenue model
 6. **Reputation & Reviews System** (MYM-32) - Trust mechanism
 
-### Phase 4: Enhanced UX (Sprint 7)
+### Phase 4: Enhanced UX (Sprint 7-8)
 7. **Session Management** (MYM-28) - Lifecycle management
+8. **Messaging System** (MYM-55) - Direct communication between users
 
 ---
 
@@ -155,8 +173,9 @@ This document provides a high-level view of all epics in the Upex My Mentor MVP.
 | EPIC-UPEX-004: Reputación y Feedback | MYM-32: Reputation & Reviews System | ✅ Added to Jira |
 | EPIC-UPEX-005: Procesamiento de Pagos | MYM-23: Payments & Payouts | ✅ Mapped |
 | N/A (Not in PRD) | MYM-8: Mentor Vetting & Onboarding | ✅ New (Quality Control) |
+| N/A (Not in PRD) | MYM-55: Messaging System | ✅ New (Enhanced UX) |
 
-**Total:** 5 original PRD epics expanded to 7 comprehensive Jira epics with enhanced scope.
+**Total:** 5 original PRD epics expanded to 8 comprehensive Jira epics with enhanced scope.
 
 ---
 
