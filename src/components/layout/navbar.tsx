@@ -11,11 +11,11 @@ export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+    <nav data-testid="navbar" className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/" data-testid="logo_link" className="flex items-center space-x-2">
             <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
               <span className="text-white font-bold text-lg">U</span>
             </div>
@@ -25,15 +25,17 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div data-testid="desktop_nav" className="hidden md:flex items-center space-x-6">
             <Link
               href="/mentors"
+              data-testid="explore_mentors_link"
               className="text-sm font-medium hover:text-primary transition-colors"
             >
               Explorar Mentores
             </Link>
             <Link
               href="/how-it-works"
+              data-testid="how_it_works_link"
               className="text-sm font-medium hover:text-primary transition-colors"
             >
               Cómo Funciona
@@ -43,17 +45,19 @@ export function Navbar() {
               <>
                 <Link
                   href="/dashboard"
+                  data-testid="dashboard_link"
                   className="text-sm font-medium hover:text-primary transition-colors"
                 >
                   Dashboard
                 </Link>
-                <div className="flex items-center space-x-2">
+                <div data-testid="user_info" className="flex items-center space-x-2">
                   <div className="flex items-center space-x-2 px-3 py-2 rounded-md bg-muted">
                     <User className="h-4 w-4" />
                     <span className="text-sm font-medium">{user.name}</span>
                   </div>
                   <Link href="/profile/edit">
                     <Button
+                      data-testid="settings_button"
                       variant="ghost"
                       size="icon"
                       title="Editar perfil"
@@ -62,6 +66,7 @@ export function Navbar() {
                     </Button>
                   </Link>
                   <Button
+                    data-testid="logout_button"
                     variant="ghost"
                     size="icon"
                     onClick={logout}
@@ -74,10 +79,10 @@ export function Navbar() {
             ) : (
               <>
                 <Link href="/login">
-                  <Button variant="ghost">Iniciar Sesión</Button>
+                  <Button data-testid="login_button" variant="ghost">Iniciar Sesión</Button>
                 </Link>
                 <Link href="/signup">
-                  <Button>Registrarse</Button>
+                  <Button data-testid="signup_button">Registrarse</Button>
                 </Link>
               </>
             )}
@@ -85,6 +90,7 @@ export function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
+            data-testid="mobile_menu_button"
             className="md:hidden"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
@@ -94,9 +100,10 @@ export function Navbar() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 space-y-3">
+          <div data-testid="mobile_menu" className="md:hidden py-4 space-y-3">
             <Link
               href="/mentors"
+              data-testid="mobile_explore_mentors_link"
               className="block py-2 text-sm font-medium hover:text-primary"
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -104,6 +111,7 @@ export function Navbar() {
             </Link>
             <Link
               href="/how-it-works"
+              data-testid="mobile_how_it_works_link"
               className="block py-2 text-sm font-medium hover:text-primary"
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -114,6 +122,7 @@ export function Navbar() {
               <>
                 <Link
                   href="/dashboard"
+                  data-testid="mobile_dashboard_link"
                   className="block py-2 text-sm font-medium hover:text-primary"
                   onClick={() => setMobileMenuOpen(false)}
                 >
@@ -125,12 +134,13 @@ export function Navbar() {
                     <span className="text-sm font-medium">{user.name}</span>
                   </div>
                   <Link href="/profile/edit" onClick={() => setMobileMenuOpen(false)}>
-                    <Button variant="outline" className="w-full">
+                    <Button data-testid="mobile_settings_button" variant="outline" className="w-full">
                       <Settings className="h-4 w-4 mr-2" />
                       Editar Perfil
                     </Button>
                   </Link>
                   <Button
+                    data-testid="mobile_logout_button"
                     variant="outline"
                     className="w-full"
                     onClick={() => {
@@ -146,12 +156,12 @@ export function Navbar() {
             ) : (
               <div className="space-y-2 pt-2">
                 <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full">
+                  <Button data-testid="mobile_login_button" variant="ghost" className="w-full">
                     Iniciar Sesión
                   </Button>
                 </Link>
                 <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
-                  <Button className="w-full">Registrarse</Button>
+                  <Button data-testid="mobile_signup_button" className="w-full">Registrarse</Button>
                 </Link>
               </div>
             )}

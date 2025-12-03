@@ -1,0 +1,379 @@
+# US Development Workflow Strategy
+
+> **Contexto Constante para IA** - Este archivo debe leerse al inicio de cada sesion de trabajo para mantener continuidad y saber exactamente que hacer y donde estamos.
+
+---
+
+## Proposito
+
+Este documento define la estrategia completa de desarrollo por User Story (US), desde que tiene Shift-Left Testing hasta su despliegue a staging. Sirve como guia para ejecutar las **Fases 6-9** del blueprint de manera sistematica.
+
+**Objetivo:** Implementar cada US que tenga Shift-Left completado, siguiendo un flujo estandarizado que garantiza calidad, trazabilidad y documentacion automatica.
+
+---
+
+## Archivos de Contexto Esenciales
+
+### Leer SIEMPRE al inicio de sesion:
+
+| Archivo | Proposito |
+|---------|-----------|
+| `.context/PRD/shift-left-status-report.md` | Lista de US con Shift-Left listas para implementar |
+| `.context/us-dev-workflow.md` | **Este archivo** - Estrategia de workflow |
+| `CLAUDE.md` | Instrucciones del proyecto y configuracion |
+
+### Leer segun la US en trabajo:
+
+| Archivo | Cuando leer |
+|---------|-------------|
+| `.context/PBI/epics/EPIC-MYM-{N}-{name}/stories/STORY-MYM-{N}-{name}/story.md` | Antes de planificar |
+| `.context/PBI/epics/EPIC-MYM-{N}-{name}/stories/STORY-MYM-{N}-{name}/test-cases.md` | Durante planificacion |
+| `.context/design-system.md` | Durante implementacion UI |
+| `.context/guidelines/code-standards.md` | Durante code review |
+
+### Prompts a ejecutar (leer UNO a la vez, cuando toque):
+
+| Fase | Prompt | Cuando ejecutar |
+|------|--------|-----------------|
+| 6 | `.prompts/fase-6-planning/story-implementation-plan.md` | Paso 2: Crear plan |
+| 7 | `.prompts/fase-7-implementation/implement-story.md` | Paso 3: Implementar |
+| Git | `.prompts/git-flow.md` | Paso 4: Git flow y PR |
+| 8 | `.prompts/fase-8-code-review/review-pr.md` | Paso 6: Code review |
+
+---
+
+## Los 11 Pasos del Workflow
+
+### PASO 1: Verificar Status en Jira
+
+**Objetivo:** Asegurar que la US esta en estado correcto para trabajar.
+
+**Acciones:**
+1. Obtener detalles de la US en Jira usando `mcp__atlassian__getJiraIssue`
+2. Verificar que el status sea `Ready For Dev`
+3. Si no esta en `Ready For Dev`, transitar al estado correcto
+4. Transitar a `In Progress` usando `mcp__atlassian__transitionJiraIssue`
+
+**Criterio de exito:** US en Jira con status `In Progress`
+
+---
+
+### PASO 2: Crear Plan de Implementacion (Fase 6)
+
+**Objetivo:** Definir como se implementara la US tecnicamente.
+
+**Acciones:**
+1. Leer el prompt `.prompts/fase-6-planning/story-implementation-plan.md`
+2. Leer la story (`story.md`) y test cases (`test-cases.md`)
+3. Crear rama local: `git checkout -b feat/MYM-{N}/{short-name}`
+4. Generar `implementation-plan.md` en la carpeta de la story
+5. Commit del plan
+
+**Criterio de exito:** Archivo `implementation-plan.md` creado y commiteado
+
+---
+
+### PASO 3: Implementar el Plan (Fase 7)
+
+**Objetivo:** Escribir el codigo funcional segun el plan.
+
+**Acciones:**
+1. Leer el prompt `.prompts/fase-7-implementation/implement-story.md`
+2. Seguir los steps del `implementation-plan.md` creado
+3. Implementar codigo respetando:
+   - Design system (`.context/design-system.md`)
+   - Code standards (`.context/guidelines/code-standards.md`)
+   - Types del backend (`src/lib/types.ts`)
+4. Verificar que pasa linting y build: `bun run lint && bun run build`
+5. Commits atomicos por cada step completado
+
+**Criterio de exito:** Codigo implementado, linting y build pasan
+
+---
+
+### PASO 4: Git Flow y Crear PR
+
+**Objetivo:** Subir cambios y crear Pull Request hacia staging.
+
+**Acciones:**
+1. Seguir instrucciones de `.prompts/git-flow.md`
+2. Push de la rama: `git push -u origin feat/MYM-{N}/{short-name}`
+3. Crear PR con `gh pr create`:
+   - Base branch: `staging`
+   - Titulo: `feat(MYM-{N}): {descripcion corta}`
+   - Body: Resumen de cambios + link a Jira
+4. Obtener URL del PR creado
+
+**Criterio de exito:** PR creado apuntando a staging, URL obtenida
+
+---
+
+### PASO 5: Verificar Transicion Automatica en Jira
+
+**Objetivo:** Confirmar que la automation rule de Jira detecto el PR.
+
+**Acciones:**
+1. Esperar ~30 segundos para que la automation se ejecute
+2. Verificar status de la US en Jira con `mcp__atlassian__getJiraIssue`
+3. El status deberia ser `In Review` automaticamente
+
+**Si el status NO cambio:**
+- Informar al usuario que la automation rule no funciono
+- Puede ser necesario revisar la configuracion de Jira
+
+**Criterio de exito:** US en Jira con status `In Review` (o informar si no cambio)
+
+---
+
+### PASO 6: Code Review (Fase 8)
+
+**Objetivo:** Verificar calidad del codigo antes de merge.
+
+**Acciones:**
+1. Leer el prompt `.prompts/fase-8-code-review/review-pr.md`
+2. Revisar el codigo en local siguiendo el checklist:
+   - Acceptance Criteria cumplidos
+   - Linting y build pasan
+   - Code standards respetados
+   - Security checks
+   - UI/UX segun design system
+3. Si hay issues criticos o medium:
+   - Corregir en la misma rama
+   - Hacer push de los fixes
+   - Re-verificar
+
+**Criterio de exito:** Code review aprobado, todos los checks pasan
+
+---
+
+### PASO 7: Merge del PR
+
+**Objetivo:** Mergear el PR a staging (auto-deploy).
+
+**Acciones:**
+1. Verificar que todos los checks del PR estan en verde
+2. Mergear usando `gh pr merge {PR_NUMBER} --squash`
+3. Eliminar rama local: `git checkout main && git branch -d feat/MYM-{N}/{short-name}`
+4. Pull de staging: `git checkout staging && git pull`
+
+**Criterio de exito:** PR mergeado, rama eliminada, staging actualizado
+
+---
+
+### PASO 8: Verificar Transicion a Ready For QA
+
+**Objetivo:** Confirmar que la automation rule detecto el merge.
+
+**Acciones:**
+1. Esperar ~30 segundos para que la automation se ejecute
+2. Verificar status de la US en Jira con `mcp__atlassian__getJiraIssue`
+3. El status deberia ser `Ready For QA` automaticamente
+
+**Si el status NO cambio:**
+- Informar al usuario que la automation rule no funciono
+- Puede ser necesario transitar manualmente
+
+**Criterio de exito:** US en Jira con status `Ready For QA` (o informar si no cambio)
+
+---
+
+### PASO 9: Notificar en Jira
+
+**Objetivo:** Informar al equipo de QA que la feature esta lista para pruebas.
+
+**Acciones:**
+1. Identificar quien realizo el Shift-Left Testing (buscar en comentarios de Jira)
+2. Agregar comentario en Jira usando `mcp__atlassian__addCommentToJiraIssue`:
+   ```
+   Feature implementada y desplegada en staging.
+
+   PR: [URL del PR]
+   Branch: feat/MYM-{N}/{short-name}
+
+   @{qa-person} La funcionalidad esta lista para pruebas en el ambiente de staging.
+   ```
+
+**Criterio de exito:** Comentario agregado en Jira
+
+---
+
+### PASO 10: Actualizar Documentacion (en rama de la US)
+
+**Objetivo:** Mantener el status report y release notes actualizados.
+
+**Acciones:**
+1. **ANTES del merge**, en la rama de la US, actualizar:
+   - `.context/PRD/shift-left-status-report.md`:
+     - Marcar implementation plan como completado
+     - Actualizar estado del PR (MERGED o por mergear)
+     - Actualizar contadores
+   - `.context/PRD/release-notes.md` (opcional):
+     - Agregar entrada para la US implementada
+     - Formato changelog estandar
+
+2. Incluir cambios de docs en el commit de la US o como commit separado en la misma rama:
+   ```bash
+   git add .context/ && git commit -m "docs: update status report after MYM-{N} completion"
+   ```
+
+**Criterio de exito:** Cambios de documentacion incluidos en el PR de la US
+
+**Nota:** Los docs viajan junto con el codigo de la US, no se pushean directo a staging.
+
+---
+
+### PASO 11: Sincronizar y Esperar Instrucciones
+
+**Objetivo:** Sincronizar staging local con los cambios mergeados y preparar para la siguiente US.
+
+**Acciones:**
+1. Moverse a staging y hacer pull de los cambios mergeados:
+   ```bash
+   git checkout staging && git pull origin staging
+   ```
+
+2. Verificar que el merge se refleja localmente:
+   ```bash
+   git log --oneline -3
+   ```
+
+3. Esperar instrucciones del usuario sobre cual US trabajar a continuacion
+
+4. Cuando se indique la siguiente US, crear o moverse a su rama:
+   ```bash
+   # Si la rama no existe:
+   git checkout -b feat/MYM-{N}/{short-name}
+
+   # Si la rama ya existe:
+   git checkout feat/MYM-{N}/{short-name}
+   git merge staging -m "chore: sync with staging after MYM-{prev} completion"
+   ```
+
+5. Continuar con Paso 1 de la nueva US
+
+**Criterio de exito:** Staging local actualizado, listo para siguiente US
+
+**Nota:** No se pushea nada a staging directamente. Los cambios de docs viajan con el PR de cada US.
+
+---
+
+## Sistema de Tracking de Progreso
+
+### Template de Estado por US
+
+Usar este template al inicio de cada sesion para identificar donde quedamos:
+
+```markdown
+## US en Trabajo: MYM-{N}
+
+| Paso | Estado | Notas |
+|------|--------|-------|
+| 1. Jira In Progress | [Pendiente/Completado] | |
+| 2. Implementation Plan | [Pendiente/Completado] | Branch: feat/MYM-{N}/... |
+| 3. Implementacion | [Pendiente/En progreso/Completado] | |
+| 4. PR Creado | [Pendiente/Completado] | PR #... |
+| 5. Jira In Review | [Pendiente/Completado/Manual requerido] | |
+| 6. Code Review | [Pendiente/Completado] | |
+| 7. Merge PR | [Pendiente/Completado] | |
+| 8. Jira Ready For QA | [Pendiente/Completado/Manual requerido] | |
+| 9. Comentario Jira | [Pendiente/Completado] | |
+| 10. Docs Actualizados | [Pendiente/Completado] | |
+| 11. Preparar Siguiente US | [Pendiente/Completado] | Rama: feat/MYM-{next}/... |
+
+**Siguiente paso:** [Numero y descripcion del paso pendiente]
+**Blocker actual:** [Si hay alguno]
+```
+
+---
+
+## Como Identificar Donde Quedamos
+
+Al inicio de cada sesion, la IA debe:
+
+1. **Verificar ramas locales:**
+   ```bash
+   git branch --list 'feat/MYM-*'
+   ```
+
+2. **Verificar PRs abiertos:**
+   ```bash
+   gh pr list --state open
+   ```
+
+3. **Revisar shift-left-status-report.md:**
+   - Ver columna "Implementation Plan"
+   - Ver columna "PR"
+
+4. **Consultar Jira si es necesario:**
+   - Status actual de la US
+   - Ultimo comentario
+
+Con esta informacion, construir el estado actual y determinar el siguiente paso.
+
+---
+
+## Release Notes Format
+
+Archivo: `.context/PRD/release-notes.md`
+
+```markdown
+# Release Notes - Upex My Mentor
+
+## [Unreleased]
+
+### Features Implementadas
+
+#### MYM-{N}: {Titulo de la Story}
+- **Epic:** EPIC-MYM-{N} ({nombre del epic})
+- **PR:** #{numero}
+- **Implementado por:** Claude + Developer
+- **Descripcion:** {Descripcion breve de la funcionalidad}
+- **Cambios principales:**
+  - {Cambio 1}
+  - {Cambio 2}
+
+---
+
+## [v0.x.x] - {YYYY-MM-DD}
+
+### Added
+- ...
+
+### Fixed
+- ...
+
+### Changed
+- ...
+```
+
+---
+
+## Reglas Importantes
+
+1. **Leer un prompt a la vez:** No leer prompts de fases futuras hasta que toque ejecutarlas
+2. **Commits atomicos:** Un commit por step o cambio logico
+3. **Verificar siempre:** Linting y build antes de push
+4. **Documentar progreso:** Actualizar el tracking despues de cada paso
+5. **No asumir:** Verificar estados en Jira, no asumir que las automations funcionaron
+
+---
+
+## Configuracion Jira (Referencia Rapida)
+
+- **Cloud ID:** `348c51d9-ae78-4544-b33e-4ee8e89a7534`
+- **Project Key:** `MYM`
+- **Transiciones comunes:**
+  - `Ready For Dev` -> `In Progress`: Usar transition disponible
+  - `In Progress` -> `In Review`: Automatico via PR
+  - `In Review` -> `Ready For QA`: Automatico via Merge
+
+---
+
+## Supabase (Referencia Rapida)
+
+- **Project ID:** `ionevzckjyxtpmyenbxc`
+
+---
+
+*Ultima actualizacion: 2025-12-02*
+*Generado por Claude Code*
