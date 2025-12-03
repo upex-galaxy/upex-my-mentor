@@ -124,13 +124,107 @@ Las siguientes US del repo local NO tienen análisis Shift-Left en Jira:
 
 ---
 
+## Orden Recomendado de Implementación por Épica
+
+Basado en el análisis de dependencias entre épicas:
+
+```
+EPIC-MYM-2 (Auth) ✅ COMPLETADO
+    │
+    └──► EPIC-MYM-8 (Vetting) ──► EPIC-MYM-13 (Discovery) ──┬──► EPIC-MYM-18 (Scheduling)
+                                                            │           │
+                                                            │           ├──► EPIC-MYM-23 (Payments)
+                                                            │           │           │
+                                                            │           └──► EPIC-MYM-28 (Sessions) ◄── Payments
+                                                            │                       │
+                                                            │                       └──► EPIC-MYM-32 (Reviews)
+                                                            │
+                                                            └──► EPIC-MYM-55 (Messaging) [paralelo]
+```
+
+### Orden de Implementación
+
+| # | Épica | Nombre | Dependencias | Shift-Left | US Listas para Implementar |
+|---|-------|--------|--------------|------------|----------------------------|
+| ✅ | EPIC-MYM-2 | Auth & Profiles | Ninguna | 80% (4/5) | ✅ MYM-3, MYM-4, MYM-6, MYM-7 completados |
+| **1** | EPIC-MYM-8 | Mentor Vetting | Auth ✅ | 75% (3/4) | MYM-9 ✅, MYM-11, MYM-12 |
+| **2** | EPIC-MYM-13 | Mentor Discovery | Vetting | 25% (1/4) | MYM-14 ✅ |
+| **3** | EPIC-MYM-18 | Scheduling & Booking | Discovery | 75% (3/4) | MYM-19 ✅, MYM-20, MYM-22 |
+| **4** | EPIC-MYM-23 | Payments & Payouts | Scheduling | 50% (2/4) | MYM-25, MYM-27 ✅ |
+| **5** | EPIC-MYM-28 | Session Management | Scheduling + Payments | 100% (3/3) | MYM-29, MYM-30, MYM-31 |
+| **6** | EPIC-MYM-32 | Reviews & Reputation | Sessions | 67% (2/3) | MYM-34, MYM-35 ✅ |
+| **||** | EPIC-MYM-55 | Messaging (paralelo) | Discovery | 50% (2/4) | MYM-56 ✅, MYM-58 |
+
+> **Leyenda:**
+> - ✅ en "US Listas" = Tiene Shift-Left completado en Jira
+> - **||** = Puede implementarse en paralelo después de su dependencia
+
+### Detalle por Épica a Implementar
+
+#### 1. EPIC-MYM-8 (Mentor Vetting) - SIGUIENTE
+| US | Summary | Shift-Left | Status Jira |
+|----|---------|------------|-------------|
+| MYM-9 | View Pending Applications | ✅ Listo | Ready For QA |
+| MYM-10 | Admin Dashboard | ❌ Pendiente | - |
+| MYM-11 | Approve/Reject Application | ✅ Listo | Estimation |
+| MYM-12 | Email Notification Status | ✅ Listo | Estimation |
+
+#### 2. EPIC-MYM-13 (Mentor Discovery)
+| US | Summary | Shift-Left | Status Jira |
+|----|---------|------------|-------------|
+| MYM-14 | View All Mentors | ✅ Listo | In Progress |
+| MYM-15 | Search Mentors by Specialty | ❌ Pendiente | - |
+| MYM-16 | Filter Mentors | ❌ Pendiente | - |
+| MYM-17 | View Mentor Profile Detail | ❌ Pendiente | - |
+
+#### 3. EPIC-MYM-18 (Scheduling & Booking)
+| US | Summary | Shift-Left | Status Jira |
+|----|---------|------------|-------------|
+| MYM-19 | Set Mentor Availability | ✅ Listo | In Progress |
+| MYM-20 | Timezone Conversion | ✅ Listo | Ready For QA |
+| MYM-21 | Book a Session | ❌ Pendiente | - |
+| MYM-22 | Email Calendar Invite | ✅ Listo | Ready For Dev |
+
+#### 4. EPIC-MYM-23 (Payments & Payouts)
+| US | Summary | Shift-Left | Status Jira |
+|----|---------|------------|-------------|
+| MYM-24 | Session Payment | ❌ Pendiente | - |
+| MYM-25 | Stripe Connect | ✅ Listo | Ready For Dev |
+| MYM-26 | Platform Fee | ❌ Pendiente | - |
+| MYM-27 | Automated Payouts | ✅ Listo | In Progress |
+
+#### 5. EPIC-MYM-28 (Session Management)
+| US | Summary | Shift-Left | Status Jira |
+|----|---------|------------|-------------|
+| MYM-29 | Session Dashboard | ✅ Listo | Ready For QA |
+| MYM-30 | Join Video Call | ✅ Listo | In Progress |
+| MYM-31 | Cancel Session | ✅ Listo | Ready For QA |
+
+#### 6. EPIC-MYM-32 (Reviews & Reputation)
+| US | Summary | Shift-Left | Status Jira |
+|----|---------|------------|-------------|
+| MYM-33 | Leave Review After Session | ❌ Pendiente | - |
+| MYM-34 | Mentor Review Mentee | ✅ Listo | Shift-Left QA |
+| MYM-35 | View Profile Reviews | ✅ Listo | In Progress |
+
+#### || EPIC-MYM-55 (Messaging - Paralelo)
+| US | Summary | Shift-Left | Status Jira |
+|----|---------|------------|-------------|
+| MYM-56 | Send Message to Mentor | ✅ Listo | In Progress |
+| MYM-57 | View Conversation List | ❌ Pendiente | - |
+| MYM-58 | Message Notifications | ✅ Listo | Shift-Left QA |
+| MYM-59 | Real-time Message Updates | ❌ Pendiente | - |
+
+---
+
 ## Próximos Pasos Recomendados
 
-1. **Mergear branches pendientes** - MYM-7 tiene plan listo en branch
-2. **Crear implementation plans** - Empezar por las 10 de prioridad alta
-3. **Completar Shift-Left** - Para las 11 US que aún no lo tienen
+1. **Implementar EPIC-MYM-8** - Comenzar con MYM-9 (View Pending Applications)
+2. **Completar Shift-Left faltante** - Para US sin análisis en cada épica antes de implementar
+3. **Mergear branches pendientes** - MYM-7 tiene plan listo en branch
 
 > **Última US completada:** MYM-7 (Password Reset) - PR pendiente 2025-12-02
+> **Siguiente épica:** EPIC-MYM-8 (Mentor Vetting)
 
 ---
 

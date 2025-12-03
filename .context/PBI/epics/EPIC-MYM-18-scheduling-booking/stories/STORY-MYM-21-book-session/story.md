@@ -63,4 +63,4 @@ This is the critical action where a mentee finalizes their choice. They need to 
 * **Epic:** `.context/PBI/epics/EPIC-MYM-18-scheduling-booking/epic.md`
 * **Test Cases:** `.context/PBI/epics/EPIC-MYM-18-scheduling-booking/stories/STORY-MYM-21-book-session/test-cases.md`
 * **Implementation Plan:** `.context/PBI/epics/EPIC-MYM-18-scheduling-booking/stories/STORY-MYM-21-book-session/implementation-plan.md`
-* **Jira:** https://upexgalaxy61.atlassian.net/browse/MYM-21
+* **Jira:** https://upexgalaxy62.atlassian.net/browse/MYM-21
