@@ -4,6 +4,7 @@
 **Epic:** MYM-2 - User Authentication & Profiles
 **Status:** RESOLVED
 **Priority:** Medium
+**Story Points:** 5
 
 ---
 
@@ -66,6 +67,7 @@ Users who have forgotten their password need a self-service way to regain access
 ## Related Documentation
 
 * **Epic:** `.context/PBI/epics/EPIC-MYM-2-user-authentication-profiles/epic.md`
+* **Feature Test Plan:** `.context/PBI/epics/EPIC-MYM-2-user-authentication-profiles/feature-test-plan.md`
 * **Test Cases:** `.context/PBI/epics/EPIC-MYM-2-user-authentication-profiles/stories/STORY-MYM-7-password-reset/test-cases.md`
-* **Implementation Plan:** `.context/PBI/epics/EPIC-MYM-2-user-authentication-profiles/stories/STORY-MYM-7-password-reset/implementation-plan.md`
-* **Jira:** https://upexgalaxy61.atlassian.net/browse/MYM-7
+* **QA Summary:** `.context/PBI/epics/EPIC-MYM-2-user-authentication-profiles/stories/STORY-MYM-7-password-reset/jira-qa-comment.md`
+* **Jira:** https://upexgalaxy62.atlassian.net/browse/MYM-7
