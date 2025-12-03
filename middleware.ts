@@ -39,6 +39,7 @@ export async function middleware(req: NextRequest) {
   const isPublicRoute = publicRoutes.includes(req.nextUrl.pathname)
   const isMentorsRoute = req.nextUrl.pathname.startsWith('/mentors')
   const isPasswordResetRoute = req.nextUrl.pathname.startsWith('/password-reset')
+  const isAdminRoute = req.nextUrl.pathname.startsWith('/admin')
 
   // if user is not signed in and the current path is not a public route, redirect the user to /login
   if (!session && !isPublicRoute && !isMentorsRoute && !isPasswordResetRoute) {
@@ -46,6 +47,20 @@ export async function middleware(req: NextRequest) {
     // Preserve the original URL so user can be redirected back after login
     redirectUrl.searchParams.set('redirectTo', req.nextUrl.pathname)
     return NextResponse.redirect(redirectUrl)
+  }
+
+  // For admin routes, verify user has admin role
+  if (isAdminRoute && session) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', session.user.id)
+      .single()
+
+    if (profile?.role !== 'admin') {
+      // Non-admin users are redirected to dashboard
+      return NextResponse.redirect(new URL('/dashboard', req.url))
+    }
   }
 
   // if user is signed in and the current path is /login or /signup, redirect the user to /dashboard
