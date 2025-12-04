@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
-import { User, LogOut, Menu, Settings } from "lucide-react";
+import { User, LogOut, Menu, Settings, Shield } from "lucide-react";
 import { useState } from "react";
 
 export function Navbar() {
@@ -43,6 +43,16 @@ export function Navbar() {
 
             {user ? (
               <>
+                {user.role === "admin" && (
+                  <Link
+                    href="/admin/applications"
+                    data-testid="admin_link"
+                    className="flex items-center gap-1 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                  >
+                    <Shield className="h-4 w-4" />
+                    Admin
+                  </Link>
+                )}
                 <Link
                   href="/dashboard"
                   data-testid="dashboard_link"
@@ -120,6 +130,17 @@ export function Navbar() {
 
             {user ? (
               <>
+                {user.role === "admin" && (
+                  <Link
+                    href="/admin/applications"
+                    data-testid="mobile_admin_link"
+                    className="flex items-center gap-2 py-2 text-sm font-medium text-primary hover:text-primary/80"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Shield className="h-4 w-4" />
+                    Admin Panel
+                  </Link>
+                )}
                 <Link
                   href="/dashboard"
                   data-testid="mobile_dashboard_link"
