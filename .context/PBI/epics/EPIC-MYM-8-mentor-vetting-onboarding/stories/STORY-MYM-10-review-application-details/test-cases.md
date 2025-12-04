@@ -4,7 +4,7 @@
 **QA Engineer:** AI-Generated (Claude Code)
 **Story Jira Key:** MYM-10
 **Epic:** EPIC-MYM-8 - Mentor Vetting & Onboarding
-**Status:** Draft - Pending Review
+**Status:** ✅ Approved - PO Questions Resolved (2025-12-04)
 
 ---
 
@@ -46,7 +46,7 @@
 **Backend:**
 
 - Query: Supabase `SELECT * FROM profiles WHERE id = {application_id}`
-- Fields Required: id, name, email, bio, specialties, linkedin_url, github_url, avatar_url, created_at, hourly_rate, is_verified, role
+- Fields Required: id, name, email, bio, specialties, linkedin_url, github_url, avatar_url, created_at, hourly_rate, is_verified, role, **years_of_experience**, **languages**, **timezone** (PO Decision: Extended fields)
 - Security: RLS policy must allow admin to read mentor profiles
 
 **External Services:**
@@ -1116,16 +1116,47 @@ The Feature Test Plan estimated 16 test cases for MYM-10. This covers:
 ### FASE 5a: Story Updated in Jira
 
 - ✅ Label `shift-left-reviewed` added to MYM-10
-- ⏳ Description update pending (markdown formatting)
 
 ### FASE 5b: Test Cases Comment in Jira
 
-- ⏳ Pending - requires Jira MCP re-authentication
+- ✅ Test cases comment added (Comment ID: 41536)
+- ✅ PO Response comment added (Comment ID: 41537)
 
 ### FASE 5c: Local test-cases.md
 
-- ✅ This file created at:
-  `.context/PBI/epics/EPIC-MYM-8-mentor-vetting-onboarding/stories/STORY-MYM-10-review-application-details/test-cases.md`
+- ✅ This file created and synced with Jira
+
+---
+
+## ✅ PO Decisions (2025-12-04)
+
+### 1. Campos a mostrar en UI
+
+**Decision:** Campos extendidos
+
+**Field List Confirmed:**
+- name, email, bio, specialties[], linkedin_url, github_url, avatar_url, created_at, hourly_rate
+- **NEW:** years_of_experience, languages, timezone
+
+> **Note:** Los campos nuevos deberán agregarse a la tabla profiles si no existen.
+
+### 2. Visibilidad de aplicaciones procesadas
+
+**Decision:** Sí, todas visibles para auditoría
+
+- Admin puede ver aplicaciones en CUALQUIER estado: PENDING, VERIFIED, REJECTED
+- UI debe mostrar indicador de estado claramente
+
+### 3. Manejo de campos opcionales vacíos
+
+**Decision:** Placeholders para todos
+
+- `avatar_url = null` → Placeholder avatar (user icon)
+- `github_url = null` → "Not provided"
+- `linkedin_url = null` → "Not provided"
+- `specialties = []` → "No specialties listed"
+
+> **Rationale:** Consistencia visual, admin siempre ve todas las secciones
 
 ---
 
