@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
@@ -13,7 +13,7 @@ import { PasswordInput } from '@/components/auth/password-input'
 import { PasswordStrengthIndicator } from '@/components/auth/password-strength'
 import { RoleSelector } from '@/components/auth/role-selector'
 import { signupSchema, type SignupFormData } from '@/lib/validations/auth'
-import { signupAction, type SignupResult } from '@/app/signup/actions'
+import { createClient } from '@/lib/supabase/client'
 
 interface SignupFormProps {
   defaultRole?: 'mentor' | 'student'
@@ -21,7 +21,7 @@ interface SignupFormProps {
 
 export function SignupForm({ defaultRole }: SignupFormProps) {
   const router = useRouter()
-  const [isPending, startTransition] = useTransition()
+  const [isLoading, setIsLoading] = useState(false)
   const [serverError, setServerError] = useState<string | null>(null)
 
   const {
@@ -42,25 +42,43 @@ export function SignupForm({ defaultRole }: SignupFormProps) {
   const password = watch('password', '')
   const selectedRole = watch('role')
 
-  const onSubmit = (data: SignupFormData) => {
+  const onSubmit = async (data: SignupFormData) => {
     setServerError(null)
+    setIsLoading(true)
 
-    startTransition(async () => {
-      const result: SignupResult = await signupAction(data)
+    try {
+      const supabase = createClient()
 
-      if (result.success) {
-        // Redirect to dashboard on success
-        router.push('/dashboard')
-        router.refresh()
-      } else if (result.error) {
-        // Handle specific field errors
-        if (result.error.field === 'email' && result.error.code === 'EMAIL_ALREADY_EXISTS') {
-          setServerError(result.error.message)
+      const { error } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          data: {
+            role: data.role,
+          },
+        },
+      })
+
+      if (error) {
+        // Map Supabase errors to user-friendly messages
+        if (error.message.includes('already registered') || error.code === 'user_already_exists') {
+          setServerError('Este email ya tiene una cuenta. ¿Quieres iniciar sesión?')
+        } else if (error.message.includes('password') || error.code === 'weak_password') {
+          setServerError('La contraseña no cumple los requisitos de seguridad')
         } else {
-          setServerError(result.error.message)
+          setServerError('Error al crear la cuenta. Intenta de nuevo más tarde.')
         }
+        return
       }
-    })
+
+      // Success - redirect to dashboard
+      router.push('/dashboard')
+      router.refresh()
+    } catch {
+      setServerError('Error inesperado. Intenta de nuevo más tarde.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -124,8 +142,8 @@ export function SignupForm({ defaultRole }: SignupFormProps) {
       </div>
 
       {/* Submit Button */}
-      <Button data-testid="submit_button" type="submit" className="w-full" disabled={isPending}>
-        {isPending ? (
+      <Button data-testid="submit_button" type="submit" className="w-full" disabled={isLoading}>
+        {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             Creando cuenta...
