@@ -4,8 +4,8 @@
 
 This document provides a high-level view of all epics in the Upex My Mentor MVP. The structure reflects the actual epics and stories currently in Jira (Project MYM).
 
-**Total Epics:** 8
-**Total User Stories:** 31
+**Total Epics:** 9
+**Total User Stories:** 34
 **Source of Truth:** Jira Project MYM (https://upexgalaxy61.atlassian.net/jira/software/c/projects/MYM/boards/27)
 
 ---
@@ -143,6 +143,22 @@ This document provides a high-level view of all epics in the Upex My Mentor MVP.
 
 ---
 
+### 🌙 EPIC 9: Dark Mode & Theme Preferences
+**Jira Key:** MYM-69
+**Status:** TO DO
+**Priority:** MEDIUM (Post-MVP Enhancement)
+**Description:** Implements a comprehensive dark mode and theme preference system for the platform. Allows users to switch between light and dark color schemes, with automatic system theme detection and preference persistence.
+
+**User Stories (3):**
+1. **MYM-70** - As a user, I want to toggle between light and dark mode so that I can use the app comfortably in any lighting condition
+2. **MYM-71** - As a user, I want my theme preference to be persisted so that it remains consistent across sessions
+3. **MYM-72** - As a user, I want the app to detect my system theme preference so that it automatically matches my device settings
+
+**Related Functional Requirements:** N/A (Post-MVP enhancement)
+**Note:** Post-MVP enhancement. Modern standard feature for user experience and accessibility. Design system already has CSS variables prepared for dark mode.
+
+---
+
 ## Epic Prioritization
 
 ### Phase 1: Foundation (Sprint 1-2)
@@ -161,6 +177,9 @@ This document provides a high-level view of all epics in the Upex My Mentor MVP.
 7. **Session Management** (MYM-28) - Lifecycle management
 8. **Messaging System** (MYM-55) - Direct communication between users
 
+### Phase 5: Post-MVP Enhancements
+9. **Dark Mode & Theme Preferences** (MYM-69) - Theme customization and accessibility
+
 ---
 
 ## Mapping to Original PRD
@@ -174,8 +193,9 @@ This document provides a high-level view of all epics in the Upex My Mentor MVP.
 | EPIC-UPEX-005: Procesamiento de Pagos | MYM-23: Payments & Payouts | ✅ Mapped |
 | N/A (Not in PRD) | MYM-8: Mentor Vetting & Onboarding | ✅ New (Quality Control) |
 | N/A (Not in PRD) | MYM-55: Messaging System | ✅ New (Enhanced UX) |
+| N/A (Not in PRD) | MYM-69: Dark Mode & Theme Preferences | ✅ New (Post-MVP) |
 
-**Total:** 5 original PRD epics expanded to 8 comprehensive Jira epics with enhanced scope.
+**Total:** 5 original PRD epics expanded to 9 comprehensive Jira epics with enhanced scope.
 
 ---
 
