@@ -31,7 +31,8 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-4** | Login/Logout | Ready For QA | ✅ en staging | [#19](../../pulls/19) MERGED |
 | **MYM-6** | Mentor Profile | Ready For QA | ✅ en main | [#9](../../pulls/9) MERGED |
 | **MYM-7** | Password Reset | In Progress | ✅ Implementado | PR pendiente de crear |
-| **MYM-9** | View Pending Applications | Ready For QA | ❌ Pendiente | - |
+| **MYM-9** | View Pending Applications | Ready For QA | ✅ Completado | [#26](../../pulls/26) MERGED |
+| **MYM-10** | Review Application Details | In Progress | ✅ Completado | En branch feat/MYM-10 |
 | **MYM-11** | Approve/Reject Application | Estimation | ❌ Pendiente | - |
 | **MYM-12** | Email Notification Status | Estimation | ❌ Pendiente | - |
 | **MYM-14** | View All Mentors | In Progress | ❌ Pendiente | - |
