@@ -72,6 +72,7 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 .context/guidelines/error-handling.md
 .context/guidelines/context-loading.md
 .context/guidelines/mcp-usage-tips.md
+.context/guidelines/data-testid-standards.md
 ```
 
 **Propósito:**
@@ -80,6 +81,7 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 - Manejo de errores estructurado
 - Qué archivos leer en cada caso
 - Cuándo y cómo usar MCPs
+- **Atributos `data-testid` para testing E2E**
 
 ### 3. Design System (Si story tiene UI):
 ```
@@ -199,6 +201,29 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 - Sigue code standards (`.context/guidelines/code-standards.md`)
 - Aplica error handling (`.context/guidelines/error-handling.md`)
 - Si hay UI: usa componentes del design system
+- **Agrega `data-testid`** a todos los componentes UI (ver abajo)
+
+**B.1) Data-TestID para Testing E2E:**
+
+⚠️ **OBLIGATORIO** para todos los componentes con UI:
+
+```tsx
+// Componentes: camelCase en el root
+<Card data-testid="mentorCard">...</Card>
+<form data-testid="loginForm">...</form>
+
+// Elementos específicos dentro: snake_case
+<input data-testid="email_input" />
+<button data-testid="submit_button">Enviar</button>
+```
+
+**Reglas clave:**
+- `data-testid` en el **elemento raíz** del componente (camelCase)
+- Elementos interactivos internos: **snake_case** (`email_input`, `submit_button`)
+- **NUNCA** usar IDs dinámicos: ❌ `data-testid={`card-${id}`}`
+- Permite selectores: `$('[data-testid="mentorCard"] button')`
+
+**Referencia completa:** `.context/guidelines/data-testid-standards.md`
 
 **C) Explica decisiones importantes:**
 ```markdown
@@ -244,6 +269,7 @@ npm run dev
 - **Manejar errores apropiadamente** (try-catch, error boundaries)
 - **Usar componentes del design system** (Button, Card, etc.)
 - **Validar inputs de usuario** (sanitización, validación)
+- **Agregar `data-testid` a componentes UI** (ver guidelines `data-testid-standards.md`)
 
 ---
 
