@@ -207,21 +207,36 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 
 ⚠️ **OBLIGATORIO** para todos los componentes con UI:
 
-```tsx
-// Componentes: camelCase en el root
-<Card data-testid="mentorCard">...</Card>
-<form data-testid="loginForm">...</form>
+**Regla crítica - Dónde agregar el data-testid:**
 
-// Elementos específicos dentro: snake_case
-<input data-testid="email_input" />
-<button data-testid="submit_button">Enviar</button>
+| Tipo | Dónde agregarlo | Ejemplo |
+|------|-----------------|---------|
+| Componentes UI base (Button, Card, Input de shadcn) | Donde se **usa** | `<Button data-testid="submit_button">` |
+| Componentes de dominio (MentorCard, LoginForm, etc.) | En la **definición** | Ver ejemplo abajo |
+
+```tsx
+// ✅ Componente de dominio específico: data-testid en la DEFINICIÓN
+export function MentorCard({ mentor }) {
+  return (
+    <Card data-testid="mentorCard">  {/* Root: camelCase */}
+      <h3 data-testid="mentor_name">{mentor.name}</h3>  {/* Interno: snake_case */}
+      <Button data-testid="book_session_button">Agendar</Button>
+    </Card>
+  )
+}
+
+// ✅ Uso de componentes UI base: data-testid donde se USA
+<Input data-testid="email_input" type="email" />
+<Button data-testid="login_button">Iniciar sesión</Button>
 ```
 
+**Nomenclatura:**
+- Componente root: **camelCase** (`mentorCard`, `loginForm`)
+- Elementos internos: **snake_case** (`email_input`, `submit_button`)
+
 **Reglas clave:**
-- `data-testid` en el **elemento raíz** del componente (camelCase)
-- Elementos interactivos internos: **snake_case** (`email_input`, `submit_button`)
-- **NUNCA** usar IDs dinámicos: ❌ `data-testid={`card-${id}`}`
-- Permite selectores: `$('[data-testid="mentorCard"] button')`
+- **NUNCA** IDs dinámicos: ❌ `data-testid={`card-${id}`}`
+- Permite selectores descendientes: `$('[data-testid="mentorCard"] button')`
 
 **Referencia completa:** `.context/guidelines/data-testid-standards.md`
 

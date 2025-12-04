@@ -95,10 +95,10 @@ export function MentorProfileForm({
   }
 
   return (
-    <Card className="shadow-lg">
+    <Card data-testid="mentorProfileForm" className="shadow-lg">
       <CardHeader>
-        <CardTitle className="text-2xl">Construye tu perfil profesional</CardTitle>
-        <CardDescription>
+        <CardTitle data-testid="form_title" className="text-2xl">Construye tu perfil profesional</CardTitle>
+        <CardDescription data-testid="form_description">
           Tu perfil es tu carta de presentación ante estudiantes que buscan crecer
         </CardDescription>
       </CardHeader>
@@ -107,7 +107,7 @@ export function MentorProfileForm({
         <CardContent className="space-y-6">
           {/* Server error alert */}
           {serverError && (
-            <Alert variant="destructive">
+            <Alert data-testid="server_error_alert" variant="destructive">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>{serverError}</AlertDescription>
             </Alert>
@@ -115,7 +115,7 @@ export function MentorProfileForm({
 
           {/* Success alert */}
           {successMessage && (
-            <Alert className="border-green-500 bg-green-50 text-green-700">
+            <Alert data-testid="success_alert" className="border-green-500 bg-green-50 text-green-700">
               <CheckCircle2 className="h-4 w-4 text-green-600" />
               <AlertDescription>{successMessage}</AlertDescription>
             </Alert>
@@ -128,13 +128,14 @@ export function MentorProfileForm({
             </Label>
             <Input
               id="name"
+              data-testid="name_input"
               placeholder="Ej: Carlos Ramírez"
               {...register('name')}
               className={cn(errors.name && 'border-destructive')}
               aria-invalid={!!errors.name}
             />
             {errors.name && (
-              <p className="text-sm text-destructive">{errors.name.message}</p>
+              <p data-testid="name_error" className="text-sm text-destructive">{errors.name.message}</p>
             )}
           </div>
 
@@ -145,18 +146,19 @@ export function MentorProfileForm({
             </Label>
             <Textarea
               id="description"
+              data-testid="description_textarea"
               placeholder="Cuéntanos sobre tu experiencia, logros y qué te motiva a ser mentor..."
               rows={4}
               {...register('description')}
               className={cn(errors.description && 'border-destructive')}
               aria-invalid={!!errors.description}
             />
-            <div className="flex justify-between text-xs text-muted-foreground">
+            <div data-testid="description_counter" className="flex justify-between text-xs text-muted-foreground">
               <span>Mínimo 10 caracteres</span>
               <span>Máximo 500 caracteres</span>
             </div>
             {errors.description && (
-              <p className="text-sm text-destructive">{errors.description.message}</p>
+              <p data-testid="description_error" className="text-sm text-destructive">{errors.description.message}</p>
             )}
           </div>
 
@@ -190,6 +192,7 @@ export function MentorProfileForm({
               render={({ field }) => (
                 <Select
                   id="years_of_experience"
+                  data-testid="experience_select"
                   value={String(field.value)}
                   onChange={(e) => field.onChange(Number(e.target.value))}
                   className={cn(errors.years_of_experience && 'border-destructive')}
@@ -206,7 +209,7 @@ export function MentorProfileForm({
               )}
             />
             {errors.years_of_experience && (
-              <p className="text-sm text-destructive">
+              <p data-testid="experience_error" className="text-sm text-destructive">
                 {errors.years_of_experience.message}
               </p>
             )}
@@ -227,6 +230,7 @@ export function MentorProfileForm({
                 render={({ field }) => (
                   <Input
                     id="hourly_rate"
+                    data-testid="hourly_rate_input"
                     type="number"
                     step="0.01"
                     min="0.01"
@@ -247,7 +251,7 @@ export function MentorProfileForm({
               />
             </div>
             {errors.hourly_rate && (
-              <p className="text-sm text-destructive">{errors.hourly_rate.message}</p>
+              <p data-testid="hourly_rate_error" className="text-sm text-destructive">{errors.hourly_rate.message}</p>
             )}
           </div>
 
@@ -258,6 +262,7 @@ export function MentorProfileForm({
               <Label htmlFor="linkedin_url">URL de LinkedIn</Label>
               <Input
                 id="linkedin_url"
+                data-testid="linkedin_input"
                 type="url"
                 placeholder="https://linkedin.com/in/tu-perfil"
                 {...register('linkedin_url')}
@@ -265,7 +270,7 @@ export function MentorProfileForm({
                 aria-invalid={!!errors.linkedin_url}
               />
               {errors.linkedin_url && (
-                <p className="text-sm text-destructive">
+                <p data-testid="linkedin_error" className="text-sm text-destructive">
                   {errors.linkedin_url.message}
                 </p>
               )}
@@ -276,6 +281,7 @@ export function MentorProfileForm({
               <Label htmlFor="github_url">URL de GitHub</Label>
               <Input
                 id="github_url"
+                data-testid="github_input"
                 type="url"
                 placeholder="https://github.com/tu-usuario"
                 {...register('github_url')}
@@ -283,7 +289,7 @@ export function MentorProfileForm({
                 aria-invalid={!!errors.github_url}
               />
               {errors.github_url && (
-                <p className="text-sm text-destructive">
+                <p data-testid="github_error" className="text-sm text-destructive">
                   {errors.github_url.message}
                 </p>
               )}
@@ -293,6 +299,7 @@ export function MentorProfileForm({
 
         <CardFooter className="flex flex-col gap-4 sm:flex-row sm:justify-end">
           <Button
+            data-testid="cancel_button"
             type="button"
             variant="outline"
             className="w-full sm:w-auto"
@@ -302,6 +309,7 @@ export function MentorProfileForm({
             Cancelar
           </Button>
           <Button
+            data-testid="submit_button"
             type="submit"
             className="w-full sm:w-auto"
             disabled={isSubmitting || !isDirty}

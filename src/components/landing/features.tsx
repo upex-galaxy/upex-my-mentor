@@ -30,13 +30,13 @@ const features = [
 
 export function Features() {
   return (
-    <section className="py-20">
+    <section data-testid="featuresSection" className="py-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold mb-4 sm:text-4xl">
+          <h2 data-testid="section_title" className="text-3xl font-bold mb-4 sm:text-4xl">
             ¿Por qué Upex My Mentor?
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p data-testid="section_description" className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Una plataforma diseñada para garantizar confianza, calidad y
             resultados en cada interacción.
           </p>
@@ -46,6 +46,7 @@ export function Features() {
           {features.map((feature, index) => (
             <Card
               key={index}
+              data-testid="feature_card"
               className="border-2 hover:border-primary/50 transition-colors"
             >
               <CardContent className="pt-8 pb-6">

@@ -30,13 +30,13 @@ const steps = [
 
 export function HowItWorks() {
   return (
-    <section className="py-20 bg-muted/30">
+    <section data-testid="howItWorksSection" className="py-20 bg-muted/30">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold mb-4 sm:text-4xl">
+          <h2 data-testid="section_title" className="text-3xl font-bold mb-4 sm:text-4xl">
             Cómo Funciona
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p data-testid="section_description" className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Empezar es simple. Sigue estos pasos para conectar con tu mentor
             ideal.
           </p>
@@ -44,7 +44,7 @@ export function HowItWorks() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {steps.map((step, index) => (
-            <Card key={index} className="relative">
+            <Card key={index} data-testid="step_card" className="relative">
               <CardContent className="pt-12 pb-8">
                 {/* Step Number */}
                 <div className="absolute top-4 right-4 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
