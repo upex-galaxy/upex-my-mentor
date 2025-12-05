@@ -19,7 +19,7 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 | Archivo | Proposito |
 |---------|-----------|
 | `.context/PRD/shift-left-status-report.md` | Lista de US con Shift-Left listas para implementar |
-| `.context/us-dev-workflow.md` | **Este archivo** - Estrategia de workflow |
+| `.prompts/us-dev-workflow.md` | **Este archivo** - Estrategia de workflow |
 | `CLAUDE.md` | Instrucciones del proyecto y configuracion |
 
 ### Leer segun la US en trabajo:
@@ -375,5 +375,5 @@ Archivo: `.context/PRD/release-notes.md`
 
 ---
 
-*Ultima actualizacion: 2025-12-02*
+*Ultima actualizacion: 2025-12-05*
 *Generado por Claude Code*

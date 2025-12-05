@@ -4,6 +4,58 @@ Este directorio contiene prompts optimizados para generar documentación de proy
 
 ---
 
+## 🚀 PROMPTS DE SESIÓN (Inicio Rápido)
+
+### `us-dev-session.md` - Prompt Inteligente de Sesión
+
+**Uso:** Copiar y pegar al inicio de cada sesión de desarrollo de User Stories.
+
+**Qué hace:**
+1. Diagnostica automáticamente el estado actual de la US
+2. Identifica si falta Shift-Left Testing, Feature Plan, o Story Plan
+3. Indica exactamente qué acción ejecutar
+4. Evita que la IA pierda contexto entre sesiones
+5. Soporta reanudación con Resumen de Progreso
+
+**Cómo usar:**
+```markdown
+# En tu chat con la IA, pega:
+
+@.prompts/us-dev-session.md
+
+# Y reemplaza los placeholders:
+- EPIC-MYM-{N} → EPIC-MYM-8 (por ejemplo)
+- MYM-{N} → MYM-10 (por ejemplo)
+```
+
+**Lógica condicional:**
+| Estado | Acción |
+|--------|--------|
+| Sin Shift-Left | STOP - Pedir al usuario que lo haga primero |
+| Sin Feature Plan | Crear plan de épica → Terminar sesión |
+| Sin Story Plan | Crear plan de story → Terminar sesión |
+| Todo listo | Implementar según Workflow |
+
+---
+
+### `us-dev-workflow.md` - Los 11 Pasos del Workflow
+
+**Uso:** Referencia maestra de los 11 pasos para implementar una US completa.
+
+**Contiene:**
+- Los 11 pasos detallados del workflow (Jira → Plan → Implementar → PR → Review → Merge → QA)
+- Template de tracking de progreso por US
+- Cómo identificar dónde quedamos entre sesiones
+- Configuración rápida de Jira y Supabase
+- Reglas importantes y formato de Release Notes
+
+**Cuándo consultarlo:**
+- Cuando necesites saber qué paso sigue en el workflow
+- Para entender el criterio de éxito de cada paso
+- Para ver el template de tracking de progreso
+
+---
+
 ## 📋 ÍNDICE DE PROMPTS
 
 ### **🔹 FASES SINCRÓNICAS** (una sola vez, setup inicial)
