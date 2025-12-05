@@ -32,7 +32,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-6** | Mentor Profile | Ready For QA | ✅ en main | [#9](../../pulls/9) MERGED |
 | **MYM-7** | Password Reset | In Progress | ✅ Implementado | PR pendiente de crear |
 | **MYM-9** | View Pending Applications | Ready For QA | ✅ Completado | [#26](../../pulls/26) MERGED |
-| **MYM-10** | Review Application Details | In Progress | ✅ Completado | En branch feat/MYM-10 |
+| **MYM-10** | Review Application Details | In Progress | ✅ Completado | PR pendiente |
 | **MYM-11** | Approve/Reject Application | Estimation | ❌ Pendiente | - |
 | **MYM-12** | Email Notification Status | Estimation | ❌ Pendiente | - |
 | **MYM-14** | View All Mentors | In Progress | ❌ Pendiente | - |
@@ -224,8 +224,8 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 2. **Completar Shift-Left faltante** - Para US sin análisis en cada épica antes de implementar
 3. **Mergear branches pendientes** - MYM-7 tiene plan listo en branch
 
-> **Última US completada:** MYM-7 (Password Reset) - PR pendiente 2025-12-02
-> **Siguiente épica:** EPIC-MYM-8 (Mentor Vetting)
+> **Última US completada:** MYM-10 (Review Application Details) - PR pendiente 2025-12-05
+> **Siguiente US:** MYM-11 (Approve/Reject Application)
 
 ---
 
