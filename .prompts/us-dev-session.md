@@ -11,10 +11,12 @@
 **Primero, determina en qué modo estás:**
 
 ### Modo A: Sesión Nueva (sin resumen adjunto)
+
 - No hay `## Resumen de Progreso` adjunto después de este prompt
 - Ejecutar diagnóstico completo desde Paso 1
 
 ### Modo B: Sesión de Reanudación (con resumen adjunto)
+
 - El usuario adjuntó un `## Resumen de Progreso` de una sesión anterior
 - **Saltar directamente a la sección "Reanudación de Sesión"** más abajo
 - Verificar el progreso reportado antes de continuar
@@ -77,6 +79,7 @@
 **Condición:** Todos los planes existen.
 
 **Acciones:**
+
 1. Verificar estado en Jira (Paso 1 del Workflow)
 2. Transitar a "In Progress" si es necesario
 3. Implementar según `.prompts/fase-7-implementation/implement-story.md`
@@ -109,6 +112,7 @@
 ## Contexto Adicional de la Story
 
 El contexto completo de cada US está en su directorio correspondiente en PBI:
+
 ```
 .context/PBI/epics/EPIC-MYM-{N}-*/stories/STORY-MYM-{N}-*/
 ├── story.md              # Descripción y Acceptance Criteria
@@ -164,6 +168,7 @@ También puedes consultar Jira con el MCP de Atlassian para ver comentarios del 
 ### Cuándo Generar Resumen de Progreso
 
 **Genera el resumen automáticamente al completar estos hitos:**
+
 - ✅ Al terminar de crear un `feature-implementation-plan.md`
 - ✅ Al terminar de crear un `implementation-plan.md` de story
 - ✅ Al completar cada Step del implementation plan durante implementación
@@ -172,6 +177,7 @@ También puedes consultar Jira con el MCP de Atlassian para ver comentarios del 
 **También genera resumen si el usuario lo solicita explícitamente.**
 
 **Mensaje al generar:**
+
 ```
 📋 Generando Resumen de Progreso para continuidad entre sesiones.
 Copia este resumen y pégalo junto con el prompt en tu próxima sesión.
@@ -235,6 +241,7 @@ Para verificar este progreso, la nueva sesión debe:
 ### Paso R1: Verificar Progreso Reportado
 
 **Ejecuta verificaciones:**
+
 ```bash
 # Ver commits recientes
 git log --oneline -5
@@ -251,11 +258,13 @@ git branch --show-current
 ### Paso R2: Validar Alineación
 
 Compara el progreso reportado con:
+
 1. **El implementation-plan.md** de la story → ¿Los steps reportados coinciden?
 2. **El workflow** (`.prompts/us-dev-workflow.md`) → ¿El paso actual es correcto?
 3. **Los archivos reales** → ¿El código existe y está correcto?
 
 **Si hay discrepancias:**
+
 ```markdown
 ⚠️ Detecté diferencias entre el resumen y el estado actual:
 - Resumen dice: {X}
@@ -267,6 +276,7 @@ Voy a continuar basándome en el estado real del código.
 ### Paso R3: Reportar y Continuar
 
 **Reporta el estado verificado:**
+
 ```markdown
 ## Reanudación Verificada
 
@@ -310,6 +320,7 @@ Voy a continuar basándome en el estado real del código.
 ```
 
 **Comandos del usuario para generar resumen manualmente:**
+
 - `resumen` - Genera resumen del progreso actual
 - `pausa` - Genera resumen y termina la sesión
 - `guardar progreso` - Genera resumen detallado

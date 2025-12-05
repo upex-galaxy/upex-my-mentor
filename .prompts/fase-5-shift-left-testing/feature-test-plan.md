@@ -32,10 +32,10 @@ Actúa como QA Lead experto en Shift-Left Testing, Test Strategy y Quality Analy
 **Uso del path:**
 
 - Leer epic.md local para obtener Jira Key real
-- Leer el epic actual de Jira con MCP (FASE 5a)
-- Actualizar el epic en Jira con findings (FASE 5a)
-- Agregar comentario con test plan completo (FASE 5b)
-- Generar archivo feature-test-plan.md en esa carpeta (FASE 5c)
+- Leer el epic actual de Jira con MCP (Paso 5)
+- Actualizar el epic en Jira con findings (Paso 5)
+- Agregar comentario con test plan completo (Paso 6)
+- Generar archivo feature-test-plan.md en esa carpeta (Paso 7)
 
 ---
 
@@ -89,33 +89,37 @@ Actúa como QA Lead experto en Shift-Left Testing, Test Strategy y Quality Analy
 
 ### Para Usuario:
 
-1. **Reporte:** Resumen ejecutivo con critical questions y next steps (FASE 5d)
+1. **Reporte:** Resumen ejecutivo con critical questions y next steps (Paso 8)
 
 ---
 
 ## 🎯 FLUJO DE TRABAJO
 
-Este prompt trabaja en 5 fases para entregar un plan de pruebas completo con análisis crítico, siguiendo **JIRA-FIRST → LOCAL MIRROR**:
+Este prompt trabaja en **8 pasos** organizados en 2 partes, siguiendo **JIRA-FIRST → LOCAL MIRROR**:
 
-### FASE 1: Análisis de Contexto
+---
+
+### 📊 PARTE 1: ANÁLISIS Y DISEÑO
+
+#### Paso 1: Análisis de Contexto
 
 - Entender el valor de negocio de la épica
 - Identificar usuarios afectados
 - Analizar arquitectura involucrada
 
-### FASE 2: Análisis de Riesgos
+#### Paso 2: Análisis de Riesgos
 
 - Identificar riesgos técnicos
 - Identificar riesgos de negocio
 - Identificar puntos de integración críticos
 
-### FASE 3: Estrategia de Testing
+#### Paso 3: Estrategia de Testing
 
 - Definir niveles de testing requeridos
 - Definir tipos de testing por story
 - Definir scope de testing
 
-### FASE 4: Análisis Crítico & Plan de Testing
+#### Paso 4: Análisis Crítico & Plan de Testing
 
 - Identificar ambigüedades en épica/stories
 - Generar preguntas para PO/Dev
@@ -124,12 +128,25 @@ Este prompt trabaja en 5 fases para entregar un plan de pruebas completo con an�
 - Test data requirements
 - Estimación de test cases por story
 
-### FASE 5: Jira Integration & Local Mirroring
+---
 
-- **FASE 5a:** Update Epic in Jira (agregar test strategy summary y label)
-- **FASE 5b:** Add Test Plan as Comment in Jira Epic
-- **FASE 5c:** Generate Local feature-test-plan.md (mirroring)
-- **FASE 5d:** Final QA Feedback Report (resumen para usuario)
+### 🔄 PARTE 2: INTEGRACIÓN Y OUTPUT
+
+#### Paso 5: Update Epic in Jira
+
+- Agregar test strategy summary y label `test-plan-ready`
+
+#### Paso 6: Add Test Plan as Comment in Jira Epic
+
+- Agregar test plan completo como comentario con tags al equipo
+
+#### Paso 7: Generate Local feature-test-plan.md
+
+- Crear mirror local del comentario de Jira
+
+#### Paso 8: Final QA Feedback Report
+
+- Generar resumen ejecutivo para el usuario
 
 ---
 
@@ -697,13 +714,13 @@ Epic is considered "Done" from QA perspective when:
 
 ---
 
-## 📝 FASE 5: Jira Integration & Local Mirroring
+## 📝 PARTE 2: Integración y Output
 
-**⚠️ IMPORTANTE:** Esta fase implementa el flujo **JIRA-FIRST → LOCAL MIRROR** para mantener consistencia con el proceso de gestión de epics.
+**⚠️ IMPORTANTE:** Esta parte implementa el flujo **JIRA-FIRST → LOCAL MIRROR** para mantener consistencia con el proceso de gestión de epics.
 
 ---
 
-### FASE 5a: Update Epic in Jira
+### Paso 5: Update Epic in Jira
 
 **Objetivo:** Actualizar el epic en Jira CON los findings críticos del análisis de testing, ANTES de generar archivo local.
 
@@ -719,11 +736,11 @@ Epic is considered "Done" from QA perspective when:
 
 2. **Preparar contenido del summary:**
 
-   Basado en análisis de FASE 1-4, preparar:
+   Basado en análisis de Pasos 1-4, preparar:
 
-   - **Top Critical Risks** (de FASE 2)
-   - **Test Coverage Summary** (de FASE 4)
-   - **Critical Questions** (de FASE 4)
+   - **Top Critical Risks** (de Paso 2)
+   - **Test Coverage Summary** (de Paso 4)
+   - **Critical Questions** (de Paso 4)
 
 3. **Actualizar epic en Jira:**
    - Usar MCP de Atlassian para editar el epic
@@ -764,7 +781,7 @@ Epic is considered "Done" from QA perspective when:
 
 ---
 
-### FASE 5b: Add Feature Test Plan as Comment in Jira
+### Paso 6: Add Feature Test Plan as Comment in Jira
 
 **Objetivo:** Agregar TODO el feature test plan como comentario en el epic de Jira para máxima visibilidad del equipo.
 
@@ -837,13 +854,13 @@ Epic is considered "Done" from QA perspective when:
 
 ---
 
-### FASE 5c: Generate Local feature-test-plan.md (Mirroring)
+### Paso 7: Generate Local feature-test-plan.md (Mirroring)
 
 **Objetivo:** Crear archivo local `.md` como MIRROR del comentario en Jira para version control y documentación offline.
 
 **Path:** `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/feature-test-plan.md`
 
-**Contenido:** IDÉNTICO al contenido generado en FASE 5b (todo el test plan)
+**Contenido:** IDÉNTICO al contenido generado en Paso 6 (todo el test plan)
 
 **Output esperado:**
 
@@ -853,7 +870,7 @@ Epic is considered "Done" from QA perspective when:
 
 ---
 
-### FASE 5d: Final QA Feedback Report
+### Paso 8: Final QA Feedback Report
 
 **Objetivo:** Reportar al USUARIO el resumen ejecutivo y acciones pendientes.
 
@@ -1086,16 +1103,16 @@ Epic Path: .context/PBI/epics/EPIC-UPEX-13-nombre-feature/
 **Pre-requisito: Extraer Jira Key**
 1. Leer `{EPIC_PATH}/epic.md` proporcionado por usuario
 2. Extraer campo `**Jira Key:**` (ej: UPEX-13)
-3. Guardar Jira Key real para usar en FASE 5a y 5b
+3. Guardar Jira Key real para usar en Pasos 5 y 6
 
-**Análisis y Diseño:**
-4. **FASE 1-4:** Analizar contexto, riesgos, estrategia, test cases (contenido Markdown)
+**PARTE 1 - Análisis y Diseño:**
+4. **Pasos 1-4:** Analizar contexto, riesgos, estrategia, test cases (contenido Markdown)
 
-**Jira Integration:**
-5. **FASE 5a:** Actualizar epic en Jira con test strategy summary (MCP Atlassian + Jira Key real)
-6. **FASE 5b:** Crear comentario en Jira con test plan completo (MCP Atlassian + Jira Key real)
-7. **FASE 5c:** Generar archivo local `feature-test-plan.md` en {EPIC_PATH}/ (Write tool)
-8. **FASE 5d:** Reportar resumen al usuario (Output)
+**PARTE 2 - Integración y Output:**
+5. **Paso 5:** Actualizar epic en Jira con test strategy summary (MCP Atlassian + Jira Key real)
+6. **Paso 6:** Crear comentario en Jira con test plan completo (MCP Atlassian + Jira Key real)
+7. **Paso 7:** Generar archivo local `feature-test-plan.md` en {EPIC_PATH}/ (Write tool)
+8. **Paso 8:** Reportar resumen al usuario (Output)
 
 ### Herramientas a usar:
 
@@ -1187,7 +1204,7 @@ Epic Path: .context/PBI/epics/EPIC-UPEX-13-nombre-feature/
 **Última actualización:** 2025-01-05
 **Cambios principales:**
 
-- ✅ Agregado flujo Jira-First (FASE 5a, 5b, 5c, 5d)
+- ✅ Agregado flujo Jira-First (Pasos 5-8)
 - ✅ Integración con MCP de Atlassian
 - ✅ Test plan en comentarios (no artefactos separados)
 - ✅ Refinamiento automático de epic en Jira
