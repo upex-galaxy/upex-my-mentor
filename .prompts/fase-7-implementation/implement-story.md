@@ -72,6 +72,7 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 .context/guidelines/error-handling.md
 .context/guidelines/context-loading.md
 .context/guidelines/mcp-usage-tips.md
+.context/guidelines/data-testid-standards.md
 ```
 
 **Propósito:**
@@ -80,6 +81,7 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 - Manejo de errores estructurado
 - Qué archivos leer en cada caso
 - Cuándo y cómo usar MCPs
+- **Atributos `data-testid` para testing E2E**
 
 ### 3. Design System (Si story tiene UI):
 ```
@@ -199,6 +201,44 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 - Sigue code standards (`.context/guidelines/code-standards.md`)
 - Aplica error handling (`.context/guidelines/error-handling.md`)
 - Si hay UI: usa componentes del design system
+- **Agrega `data-testid`** a todos los componentes UI (ver abajo)
+
+**B.1) Data-TestID para Testing E2E:**
+
+⚠️ **OBLIGATORIO** para todos los componentes con UI:
+
+**Regla crítica - Dónde agregar el data-testid:**
+
+| Tipo | Dónde agregarlo | Ejemplo |
+|------|-----------------|---------|
+| Componentes UI base (Button, Card, Input de shadcn) | Donde se **usa** | `<Button data-testid="submit_button">` |
+| Componentes de dominio (MentorCard, LoginForm, etc.) | En la **definición** | Ver ejemplo abajo |
+
+```tsx
+// ✅ Componente de dominio específico: data-testid en la DEFINICIÓN
+export function MentorCard({ mentor }) {
+  return (
+    <Card data-testid="mentorCard">  {/* Root: camelCase */}
+      <h3 data-testid="mentor_name">{mentor.name}</h3>  {/* Interno: snake_case */}
+      <Button data-testid="book_session_button">Agendar</Button>
+    </Card>
+  )
+}
+
+// ✅ Uso de componentes UI base: data-testid donde se USA
+<Input data-testid="email_input" type="email" />
+<Button data-testid="login_button">Iniciar sesión</Button>
+```
+
+**Nomenclatura:**
+- Componente root: **camelCase** (`mentorCard`, `loginForm`)
+- Elementos internos: **snake_case** (`email_input`, `submit_button`)
+
+**Reglas clave:**
+- **NUNCA** IDs dinámicos: ❌ `data-testid={`card-${id}`}`
+- Permite selectores descendientes: `$('[data-testid="mentorCard"] button')`
+
+**Referencia completa:** `.context/guidelines/data-testid-standards.md`
 
 **C) Explica decisiones importantes:**
 ```markdown
@@ -244,6 +284,7 @@ npm run dev
 - **Manejar errores apropiadamente** (try-catch, error boundaries)
 - **Usar componentes del design system** (Button, Card, etc.)
 - **Validar inputs de usuario** (sanitización, validación)
+- **Agregar `data-testid` a componentes UI** (ver guidelines `data-testid-standards.md`)
 
 ---
 

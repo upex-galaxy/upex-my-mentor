@@ -39,7 +39,7 @@ export default async function ProfileEditPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50">
+    <div data-testid="editProfilePage" className="min-h-screen bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50">
       <div className="container mx-auto px-4 py-8 md:py-12">
         <div className="mx-auto max-w-2xl">
           <MentorProfileForm initialData={profile} />

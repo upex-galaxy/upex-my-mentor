@@ -80,6 +80,7 @@ Actúa como QA Engineer experto en Shift-Left Testing, Test Case Design y Critic
 - Story (Jira): [usar MCP de Atlassian con el Story Jira Key real extraído del paso 1]
 
 **⚠️ IMPORTANTE:** Leer los comentarios del epic en Jira proporciona contexto actualizado incluyendo:
+
 - Respuestas de PO/Dev a preguntas críticas
 - Discusiones y clarificaciones adicionales
 - Updates al test plan después de refinements
@@ -88,17 +89,17 @@ Actúa como QA Engineer experto en Shift-Left Testing, Test Case Design y Critic
 
 ## 📤 Output Generado
 
-### En Jira (vía MCP Atlassian):
+### En Jira (vía MCP Atlassian)
 
 1. **Story actualizada** con refined acceptance criteria y label `shift-left-reviewed`
 2. **Comentario agregado** con test cases completos y tags al equipo
 
-### En Local:
+### En Local
 
 1. **Archivo:** `.context/PBI/epics/EPIC-{...}/stories/STORY-{...}/test-cases.md`
 2. **Contenido:** Mirror exacto del comentario en Jira
 
-### Para Usuario:
+### Para Usuario
 
 1. **Reporte:** Resumen ejecutivo con critical questions y next steps (FASE 5d)
 
@@ -796,18 +797,22 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
    - Agregar nueva sección al description con el siguiente contenido:
 
    ---
+
    ## 🧪 QA Refinements (Shift-Left Analysis)
 
    **Analysis Date:** [YYYY-MM-DD]
    **Status:** Refined by QA
 
    ### Refined Acceptance Criteria
+
    [Pegar refined scenarios de FASE 3]
 
    ### Edge Cases Identified
+
    [Listar edge cases de FASE 2]
 
    ### Clarified Business Rules
+
    [Agregar clarificaciones de FASE 2]
 
    ---
@@ -1147,32 +1152,36 @@ Esta story se considera "Done" desde QA cuando:
 **⚠️ Validación de story.md:**
 
 El archivo story.md debe contener en su metadata:
+
 ```markdown
 **Jira Key:** UPEX-45
 **Epic:** EPIC-UPEX-13-feature-name
 ```
+
 Estos son los datos reales. Nota: El número de issue (45, 13) es el mismo en la nomenclatura de carpeta y en el Jira Key.
 
 ---
 
 ## 📋 Flujo de Ejecución (Para la IA)
 
-### Input requerido del usuario:
+### Input requerido del usuario
 
 ```
 Story Path: .context/PBI/epics/EPIC-UPEX-13-nombre/stories/STORY-UPEX-45-nombre/
 ```
 
 **⚠️ Proceso Automático:**
+
 1. Prompt lee: `{STORY_PATH}/story.md`
 2. Prompt extrae: Campo `**Jira Key:**` (ej: UPEX-45)
 3. Prompt extrae: Campo `**Epic:**` para encontrar epic path
 4. Prompt lee: Epic.md y extrae Epic Jira Key (ej: UPEX-13)
 5. Prompt usa: Jira Keys reales para operaciones MCP
 
-### Orden de ejecución:
+### Orden de ejecución
 
 **Pre-requisito: Extraer Jira Keys**
+
 1. Leer `{STORY_PATH}/story.md` proporcionado por usuario
 2. Extraer campo `**Jira Key:**` de story (ej: UPEX-45)
 3. Extraer campo `**Epic:**` para obtener epic path
@@ -1197,9 +1206,10 @@ Story Path: .context/PBI/epics/EPIC-UPEX-13-nombre/stories/STORY-UPEX-45-nombre/
 16. **FASE 5c:** Generar archivo local `test-cases.md` en {STORY_PATH}/ (Write tool)
 17. **FASE 5d:** Reportar resumen al usuario (Output)
 
-### Herramientas a usar:
+### Herramientas a usar
 
 **MCP de Atlassian:**
+
 - Para leer story de Jira
 - Para leer epic de Jira (description actualizado)
 - **Para leer comentarios del epic en Jira** (especialmente "Feature Test Plan")
@@ -1207,6 +1217,7 @@ Story Path: .context/PBI/epics/EPIC-UPEX-13-nombre/stories/STORY-UPEX-45-nombre/
 - Para agregar comentarios a issues
 
 **File Operations:**
+
 - Para crear archivo local test-cases.md
 - Para leer archivos de contexto (PRD, SRS, epic, feature-test-plan, story.md)
 
@@ -1214,7 +1225,7 @@ Story Path: .context/PBI/epics/EPIC-UPEX-13-nombre/stories/STORY-UPEX-45-nombre/
 
 ## ⚠️ IMPORTANTE: Principios de Ejecución
 
-### Shift-Left Testing Philosophy:
+### Shift-Left Testing Philosophy
 
 - ✅ **Análisis crítico primero, test design después**
 - ✅ **Feedback temprano es MÁS valioso que test cases perfectos**
@@ -1226,14 +1237,14 @@ Story Path: .context/PBI/epics/EPIC-UPEX-13-nombre/stories/STORY-UPEX-45-nombre/
   - Integration points críticos
   - Updates posteriores al test plan inicial
 
-### Test Design Guidelines:
+### Test Design Guidelines
 
 - ❌ **NO forzar número mínimo de test cases** - depende de complejidad
 - ✅ **Usar parametrización cuando aplique** - reduce duplicación
 - ✅ **Identificar edge cases NO cubiertos** en story original
 - ✅ **Hacer preguntas críticas a PO/Dev** - mejor clarificar que asumir
 
-### Jira-First Workflow:
+### Jira-First Workflow
 
 - ✅ **SIEMPRE actualizar Jira primero, luego local** (consistencia con flujo de stories)
 - ✅ **Test cases van en comentarios, NO en subtareas** (naturaleza exploratoria)
@@ -1244,7 +1255,7 @@ Story Path: .context/PBI/epics/EPIC-UPEX-13-nombre/stories/STORY-UPEX-45-nombre/
 
 ## 🎯 Post-Generación: Acciones del Equipo
 
-### Inmediatamente después de ejecutar este prompt:
+### Inmediatamente después de ejecutar este prompt
 
 1. **PO debe:**
    - Revisar comentario en Jira con test cases
@@ -1272,7 +1283,7 @@ Story Path: .context/PBI/epics/EPIC-UPEX-13-nombre/stories/STORY-UPEX-45-nombre/
 
 ## 🚀 Evolución de Test Cases (Post Shift-Left)
 
-### Opciones para formalizar test cases:
+### Opciones para formalizar test cases
 
 Una vez que PO/Dev han clarificado todas las preguntas y la story está refinada:
 
@@ -1298,7 +1309,7 @@ Una vez que PO/Dev han clarificado todas las preguntas y la story está refinada
 
 ## 🔄 Workflow Integrado: Epic ↔ Story Context
 
-### Flujo de Información:
+### Flujo de Información
 
 ```
 1. Epic Test Plan generado → Comentario en Epic (Jira)

@@ -54,13 +54,14 @@ export function MentorFilters({ allSkills }: MentorFiltersProps) {
   const hasActiveFilters = query || selectedSkills.length > 0;
 
   return (
-    <div className="sticky top-20 space-y-6">
+    <div data-testid="mentorFilters" className="sticky top-20 space-y-6">
       {/* Search */}
       <div>
-        <label className="text-sm font-medium mb-2 block">Buscar</label>
+        <label data-testid="search_label" className="text-sm font-medium mb-2 block">Buscar</label>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
+            data-testid="search_input"
             placeholder="Buscar por nombre, skill..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -72,9 +73,10 @@ export function MentorFilters({ allSkills }: MentorFiltersProps) {
       {/* Skills Filter */}
       <div>
         <div className="flex items-center justify-between mb-2">
-          <label className="text-sm font-medium">Filtrar por Skills</label>
+          <label data-testid="skills_label" className="text-sm font-medium">Filtrar por Skills</label>
           {hasActiveFilters && (
             <button
+              data-testid="clear_filters_button"
               onClick={clearFilters}
               className="text-xs text-primary hover:underline"
             >
@@ -86,6 +88,7 @@ export function MentorFilters({ allSkills }: MentorFiltersProps) {
           {allSkills.map((skill) => (
             <Badge
               key={skill}
+              data-testid="skill_badge"
               variant={selectedSkills.includes(skill) ? "default" : "outline"}
               className="cursor-pointer"
               onClick={() => toggleSkill(skill)}
@@ -98,7 +101,7 @@ export function MentorFilters({ allSkills }: MentorFiltersProps) {
 
       {/* Active Filters */}
       {selectedSkills.length > 0 && (
-        <div>
+        <div data-testid="active_filters_section">
           <label className="text-sm font-medium mb-2 block">
             Filtros Activos
           </label>
@@ -106,10 +109,12 @@ export function MentorFilters({ allSkills }: MentorFiltersProps) {
             {selectedSkills.map((skill) => (
               <div
                 key={skill}
+                data-testid="active_filter_item"
                 className="flex items-center justify-between p-2 rounded-md bg-muted"
               >
                 <span className="text-sm">{skill}</span>
                 <button
+                  data-testid="remove_filter_button"
                   onClick={() => toggleSkill(skill)}
                   className="text-muted-foreground hover:text-foreground"
                 >
