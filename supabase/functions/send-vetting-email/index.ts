@@ -36,8 +36,9 @@ Deno.serve(async (req: Request) => {
     const { subject, html } = getEmailContent(payload);
 
     // Send email via Resend
+    // Using Resend's test domain for MVP - change to verified domain in production
     const { data, error } = await resend.emails.send({
-      from: "Upex My Mentor <noreply@upexgalaxy.com>",
+      from: "Upex My Mentor <onboarding@resend.dev>",
       to: payload.mentor_email,
       subject: subject,
       html: html,
