@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { User, LogOut, Menu, Settings, Shield } from "lucide-react";
 import { useState } from "react";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export function Navbar() {
   const { user, logout } = useAuth();
@@ -96,6 +97,11 @@ export function Navbar() {
                 </Link>
               </>
             )}
+
+            {/* Theme toggle */}
+            <div className="ml-4" data-testid="theme_toggle_container">
+              <ModeToggle />
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -186,6 +192,11 @@ export function Navbar() {
                 </Link>
               </div>
             )}
+
+            {/* Theme toggle (mobile) */}
+            <div className="pt-2" data-testid="mobile_theme_toggle_container">
+              <ModeToggle />
+            </div>
           </div>
         )}
       </div>

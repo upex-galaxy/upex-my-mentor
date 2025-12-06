@@ -9,7 +9,12 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "ai": "node scripts/mcp-builder.js",
-    "up": "node scripts/update-prompts.js"
+    "up": "node scripts/update-prompts.js",
+    "test:unit": "jest --runInBand",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:install": "npx playwright install --with-deps || playwright install --with-deps"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -42,6 +47,14 @@
     "postcss": "^8",
     "autoprefixer": "^10.4.20",
     "eslint": "^9",
-    "eslint-config-next": "^15.1.5"
+    "eslint-config-next": "^15.1.5",
+    "@playwright/test": "^1.51.1",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "@types/jest": "^29.5.14",
+    "jest-environment-jsdom": "^29.7.0",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/jest-dom": "^6.6.3",
+    "identity-obj-proxy": "^3.0.0"
   }
 }
