@@ -65,7 +65,10 @@ export function ApplicationDetailView({ application }: ApplicationDetailProps) {
 
           {/* Status Badge */}
           <div className="flex-shrink-0">
-            <StatusBadge isVerified={application.is_verified} />
+            <StatusBadge
+              isVerified={application.is_verified}
+              rejectionReason={application.rejection_reason}
+            />
           </div>
         </div>
 
