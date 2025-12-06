@@ -1,11 +1,13 @@
 import { Badge } from "@/components/ui/badge"
-import { CheckCircle, Clock } from "lucide-react"
+import { CheckCircle, Clock, XCircle } from "lucide-react"
 
 interface StatusBadgeProps {
   isVerified: boolean
+  rejectionReason?: string | null
 }
 
-export function StatusBadge({ isVerified }: StatusBadgeProps) {
+export function StatusBadge({ isVerified, rejectionReason }: StatusBadgeProps) {
+  // Verified state
   if (isVerified) {
     return (
       <Badge
@@ -18,6 +20,20 @@ export function StatusBadge({ isVerified }: StatusBadgeProps) {
     )
   }
 
+  // Rejected state (not verified but has rejection reason)
+  if (rejectionReason) {
+    return (
+      <Badge
+        data-testid="status_badge_rejected"
+        variant="destructive"
+      >
+        <XCircle className="mr-1 h-3 w-3" />
+        Rejected
+      </Badge>
+    )
+  }
+
+  // Pending state (not verified, no rejection reason)
   return (
     <Badge
       data-testid="status_badge_pending"

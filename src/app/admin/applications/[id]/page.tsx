@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react"
 import { createServer } from "@/lib/supabase/server"
 import { AdminLayout } from "@/components/admin/admin-layout"
 import { ApplicationDetailView } from "@/components/admin/application-detail"
+import { VerificationActions } from "@/components/admin/verification-actions"
 import { Button } from "@/components/ui/button"
 import type { ApplicationDetail } from "@/types"
 
@@ -37,7 +38,8 @@ export default async function ApplicationDetailPage({ params }: PageProps) {
       is_verified,
       years_of_experience,
       average_rating,
-      total_reviews
+      total_reviews,
+      rejection_reason
     `)
     .eq("id", id)
     .eq("role", "mentor")
@@ -62,6 +64,7 @@ export default async function ApplicationDetailPage({ params }: PageProps) {
     years_of_experience: data.years_of_experience,
     average_rating: data.average_rating,
     total_reviews: data.total_reviews,
+    rejection_reason: data.rejection_reason,
   }
 
   return (
@@ -84,13 +87,13 @@ export default async function ApplicationDetailPage({ params }: PageProps) {
         {/* Application Detail */}
         <ApplicationDetailView application={application} />
 
-        {/* Placeholder for MYM-11: Approve/Reject buttons */}
-        <div
-          data-testid="action_buttons_placeholder"
-          className="text-center text-muted-foreground text-sm"
-        >
-          {/* Action buttons will be added in MYM-11 */}
-        </div>
+        {/* MYM-11: Approve/Reject Buttons */}
+        <VerificationActions
+          applicationId={application.id}
+          applicationName={application.name || 'Unknown'}
+          isVerified={application.is_verified}
+          isRejected={!!application.rejection_reason}
+        />
       </div>
     </AdminLayout>
   )
