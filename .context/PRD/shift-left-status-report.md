@@ -12,9 +12,9 @@
 |---------|----------|
 | Total de Stories en repo | 31 |
 | Stories con Shift-Left aplicado (Jira) | 20 |
-| Implementation plans creados | 5 |
-| Implementation plans completados | 4 |
-| Implementation plans pendientes | 15 |
+| Implementation plans creados | 6 |
+| Implementation plans completados | 5 |
+| Implementation plans pendientes | 14 |
 | PRs abiertos relacionados | 4 |
 
 ---
@@ -32,8 +32,8 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-6** | Mentor Profile | Ready For QA | ✅ en main | [#9](../../pulls/9) MERGED |
 | **MYM-7** | Password Reset | In Progress | ✅ Implementado | PR pendiente de crear |
 | **MYM-9** | View Pending Applications | Ready For QA | ✅ Completado | [#26](../../pulls/26) MERGED |
-| **MYM-10** | Review Application Details | In Progress | ✅ Completado | PR pendiente |
-| **MYM-11** | Approve/Reject Application | Estimation | ❌ Pendiente | - |
+| **MYM-10** | Review Application Details | Ready For QA | ✅ Completado | [#32](../../pulls/32) MERGED |
+| **MYM-11** | Approve/Reject Application | Ready For QA | ✅ Completado | [#33](../../pulls/33) MERGED |
 | **MYM-12** | Email Notification Status | Estimation | ❌ Pendiente | - |
 | **MYM-14** | View All Mentors | In Progress | ❌ Pendiente | - |
 | **MYM-20** | Timezone Conversion | Ready For QA | ❌ Pendiente | - |
@@ -56,12 +56,12 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 
 ---
 
-## Implementation Plans Pendientes (16)
+## Implementation Plans Pendientes (14)
 
 Estas US ya tienen Shift-Left y están listas para crear su `implementation-plan.md`:
 
 ### Prioridad Alta (Ready For Dev / In Progress)
-1. **MYM-9** - View Pending Applications (EPIC-MYM-8)
+1. **MYM-12** - Email Notification Status (EPIC-MYM-8)
 2. **MYM-14** - View All Mentors (EPIC-MYM-13)
 3. **MYM-19** - Set Mentor Availability (EPIC-MYM-18)
 4. **MYM-22** - Email Calendar Invite (EPIC-MYM-18)
@@ -73,12 +73,10 @@ Estas US ya tienen Shift-Left y están listas para crear su `implementation-plan
 10. **MYM-56** - Send Message to Mentor (EPIC-MYM-55)
 
 ### Prioridad Media (Estimation / Shift-Left QA)
-11. **MYM-11** - Approve/Reject Application (EPIC-MYM-8)
-12. **MYM-12** - Email Notification Status (EPIC-MYM-8)
-13. **MYM-20** - Timezone Conversion (EPIC-MYM-18)
-14. **MYM-30** - Join Video Call (EPIC-MYM-28)
-15. **MYM-34** - Mentor Review Mentee (EPIC-MYM-32)
-16. **MYM-58** - Message Notifications (EPIC-MYM-55)
+11. **MYM-20** - Timezone Conversion (EPIC-MYM-18)
+12. **MYM-30** - Join Video Call (EPIC-MYM-28)
+13. **MYM-34** - Mentor Review Mentee (EPIC-MYM-32)
+14. **MYM-58** - Message Notifications (EPIC-MYM-55)
 
 ---
 
@@ -162,12 +160,12 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 
 ### Detalle por Épica a Implementar
 
-#### 1. EPIC-MYM-8 (Mentor Vetting) - SIGUIENTE
+#### 1. EPIC-MYM-8 (Mentor Vetting) - EN PROGRESO
 | US | Summary | Shift-Left | Status Jira |
 |----|---------|------------|-------------|
-| MYM-9 | View Pending Applications | ✅ Listo | Ready For QA |
-| MYM-10 | Admin Dashboard | ❌ Pendiente | - |
-| MYM-11 | Approve/Reject Application | ✅ Listo | Estimation |
+| MYM-9 | View Pending Applications | ✅ Completado | Ready For QA |
+| MYM-10 | Review Application Details | ✅ Completado | Ready For QA |
+| MYM-11 | Approve/Reject Application | ✅ Completado | Ready For QA |
 | MYM-12 | Email Notification Status | ✅ Listo | Estimation |
 
 #### 2. EPIC-MYM-13 (Mentor Discovery)
@@ -220,12 +218,12 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 
 ## Próximos Pasos Recomendados
 
-1. **Implementar EPIC-MYM-8** - Comenzar con MYM-9 (View Pending Applications)
+1. **Completar EPIC-MYM-8** - Implementar MYM-12 (Email Notification Status)
 2. **Completar Shift-Left faltante** - Para US sin análisis en cada épica antes de implementar
 3. **Mergear branches pendientes** - MYM-7 tiene plan listo en branch
 
-> **Última US completada:** MYM-10 (Review Application Details) - PR pendiente 2025-12-05
-> **Siguiente US:** MYM-11 (Approve/Reject Application)
+> **Última US completada:** MYM-11 (Approve/Reject Application) - [PR #33](../../pulls/33) MERGED 2025-12-06
+> **Siguiente US:** MYM-12 (Email Notification Status)
 
 ---
 
