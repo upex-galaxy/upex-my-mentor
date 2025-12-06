@@ -21,6 +21,7 @@ export interface ApplicationDetail extends PendingApplication {
   years_of_experience: number | null
   average_rating: number | null
   total_reviews: number | null
+  rejection_reason?: string | null  // MYM-11: Added for rejected status display
 }
 
 export interface PaginatedResponse<T> {
@@ -117,4 +118,19 @@ export interface LoginCredentials {
 export interface SignupData extends LoginCredentials {
   name: string;
   role: UserRole;
+}
+
+// MYM-11: Verification Actions (Approve/Reject Mentor Application)
+export type VerificationAction = 'approve' | 'reject'
+
+export interface VerificationPayload {
+  applicationId: string
+  action: VerificationAction
+  reason?: string  // Required if action is 'reject'
+}
+
+export interface VerificationResult {
+  success: boolean
+  error?: string
+  updatedAt?: string
 }
