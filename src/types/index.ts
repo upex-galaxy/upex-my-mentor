@@ -107,3 +107,18 @@ export interface SignupData extends LoginCredentials {
   name: string;
   role: UserRole;
 }
+
+// MYM-11: Verification Actions (Approve/Reject Mentor Application)
+export type VerificationAction = 'approve' | 'reject'
+
+export interface VerificationPayload {
+  applicationId: string
+  action: VerificationAction
+  reason?: string  // Required if action is 'reject'
+}
+
+export interface VerificationResult {
+  success: boolean
+  error?: string
+  updatedAt?: string
+}

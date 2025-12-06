@@ -14,15 +14,15 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 
 ## Archivos de Contexto Esenciales
 
-### Leer SIEMPRE al inicio de sesion:
+### Leer SIEMPRE al inicio de sesion
 
 | Archivo | Proposito |
 |---------|-----------|
 | `.context/PRD/shift-left-status-report.md` | Lista de US con Shift-Left listas para implementar |
-| `.context/us-dev-workflow.md` | **Este archivo** - Estrategia de workflow |
+| `.prompts/us-dev-workflow.md` | **Este archivo** - Estrategia de workflow |
 | `CLAUDE.md` | Instrucciones del proyecto y configuracion |
 
-### Leer segun la US en trabajo:
+### Leer segun la US en trabajo
 
 | Archivo | Cuando leer |
 |---------|-------------|
@@ -31,7 +31,7 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 | `.context/design-system.md` | Durante implementacion UI |
 | `.context/guidelines/code-standards.md` | Durante code review |
 
-### Prompts a ejecutar (leer UNO a la vez, cuando toque):
+### Prompts a ejecutar (leer UNO a la vez, cuando toque)
 
 | Fase | Prompt | Cuando ejecutar |
 |------|--------|-----------------|
@@ -49,6 +49,7 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 **Objetivo:** Asegurar que la US esta en estado correcto para trabajar.
 
 **Acciones:**
+
 1. Obtener detalles de la US en Jira usando `mcp__atlassian__getJiraIssue`
 2. Verificar que el status sea `Ready For Dev`
 3. Si no esta en `Ready For Dev`, transitar al estado correcto
@@ -63,6 +64,7 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 **Objetivo:** Definir como se implementara la US tecnicamente.
 
 **Acciones:**
+
 1. Leer el prompt `.prompts/fase-6-planning/story-implementation-plan.md`
 2. Leer la story (`story.md`) y test cases (`test-cases.md`)
 3. Crear rama local: `git checkout -b feat/MYM-{N}/{short-name}`
@@ -78,6 +80,7 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 **Objetivo:** Escribir el codigo funcional segun el plan.
 
 **Acciones:**
+
 1. Leer el prompt `.prompts/fase-7-implementation/implement-story.md`
 2. Seguir los steps del `implementation-plan.md` creado
 3. Implementar codigo respetando:
@@ -96,6 +99,7 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 **Objetivo:** Subir cambios y crear Pull Request hacia staging.
 
 **Acciones:**
+
 1. Seguir instrucciones de `.prompts/git-flow.md`
 2. Push de la rama: `git push -u origin feat/MYM-{N}/{short-name}`
 3. Crear PR con `gh pr create`:
@@ -113,11 +117,13 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 **Objetivo:** Confirmar que la automation rule de Jira detecto el PR.
 
 **Acciones:**
+
 1. Esperar ~30 segundos para que la automation se ejecute
 2. Verificar status de la US en Jira con `mcp__atlassian__getJiraIssue`
 3. El status deberia ser `In Review` automaticamente
 
 **Si el status NO cambio:**
+
 - Informar al usuario que la automation rule no funciono
 - Puede ser necesario revisar la configuracion de Jira
 
@@ -130,6 +136,7 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 **Objetivo:** Verificar calidad del codigo antes de merge.
 
 **Acciones:**
+
 1. Leer el prompt `.prompts/fase-8-code-review/review-pr.md`
 2. Revisar el codigo en local siguiendo el checklist:
    - Acceptance Criteria cumplidos
@@ -151,6 +158,7 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 **Objetivo:** Mergear el PR a staging (auto-deploy).
 
 **Acciones:**
+
 1. Verificar que todos los checks del PR estan en verde
 2. Mergear usando `gh pr merge {PR_NUMBER} --squash`
 3. Eliminar rama local: `git checkout main && git branch -d feat/MYM-{N}/{short-name}`
@@ -165,11 +173,13 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 **Objetivo:** Confirmar que la automation rule detecto el merge.
 
 **Acciones:**
+
 1. Esperar ~30 segundos para que la automation se ejecute
 2. Verificar status de la US en Jira con `mcp__atlassian__getJiraIssue`
 3. El status deberia ser `Ready For QA` automaticamente
 
 **Si el status NO cambio:**
+
 - Informar al usuario que la automation rule no funciono
 - Puede ser necesario transitar manualmente
 
@@ -182,8 +192,10 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 **Objetivo:** Informar al equipo de QA que la feature esta lista para pruebas.
 
 **Acciones:**
+
 1. Identificar quien realizo el Shift-Left Testing (buscar en comentarios de Jira)
 2. Agregar comentario en Jira usando `mcp__atlassian__addCommentToJiraIssue`:
+
    ```
    Feature implementada y desplegada en staging.
 
@@ -202,6 +214,7 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 **Objetivo:** Mantener el status report y release notes actualizados.
 
 **Acciones:**
+
 1. **ANTES del merge**, en la rama de la US, actualizar:
    - `.context/PRD/shift-left-status-report.md`:
      - Marcar implementation plan como completado
@@ -212,6 +225,7 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
      - Formato changelog estandar
 
 2. Incluir cambios de docs en el commit de la US o como commit separado en la misma rama:
+
    ```bash
    git add .context/ && git commit -m "docs: update status report after MYM-{N} completion"
    ```
@@ -227,12 +241,15 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 **Objetivo:** Sincronizar staging local con los cambios mergeados y preparar para la siguiente US.
 
 **Acciones:**
+
 1. Moverse a staging y hacer pull de los cambios mergeados:
+
    ```bash
    git checkout staging && git pull origin staging
    ```
 
 2. Verificar que el merge se refleja localmente:
+
    ```bash
    git log --oneline -3
    ```
@@ -240,6 +257,7 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 3. Esperar instrucciones del usuario sobre cual US trabajar a continuacion
 
 4. Cuando se indique la siguiente US, crear o moverse a su rama:
+
    ```bash
    # Si la rama no existe:
    git checkout -b feat/MYM-{N}/{short-name}
@@ -291,11 +309,13 @@ Usar este template al inicio de cada sesion para identificar donde quedamos:
 Al inicio de cada sesion, la IA debe:
 
 1. **Verificar ramas locales:**
+
    ```bash
    git branch --list 'feat/MYM-*'
    ```
 
 2. **Verificar PRs abiertos:**
+
    ```bash
    gh pr list --state open
    ```
@@ -375,5 +395,5 @@ Archivo: `.context/PRD/release-notes.md`
 
 ---
 
-*Ultima actualizacion: 2025-12-02*
+*Ultima actualizacion: 2025-12-05*
 *Generado por Claude Code*

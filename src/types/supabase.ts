@@ -84,6 +84,7 @@ export type Database = {
           linkedin_url: string | null
           name: string | null
           photo_url: string | null
+          rejection_reason: string | null
           role: Database["public"]["Enums"]["user_role"]
           specialties: string[] | null
           total_reviews: number | null
@@ -102,6 +103,7 @@ export type Database = {
           linkedin_url?: string | null
           name?: string | null
           photo_url?: string | null
+          rejection_reason?: string | null
           role: Database["public"]["Enums"]["user_role"]
           specialties?: string[] | null
           total_reviews?: number | null
@@ -120,6 +122,7 @@ export type Database = {
           linkedin_url?: string | null
           name?: string | null
           photo_url?: string | null
+          rejection_reason?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           specialties?: string[] | null
           total_reviews?: number | null
@@ -179,6 +182,7 @@ export type Database = {
     }
     Functions: {
       get_all_unique_skills: { Args: never; Returns: string[] }
+      is_admin: { Args: never; Returns: boolean }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
     }
