@@ -153,7 +153,35 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 
 ---
 
-### PASO 7: Merge del PR
+### PASO 7: Actualizar Documentacion (en rama de la US)
+
+**Objetivo:** Mantener el status report y release notes actualizados ANTES del merge.
+
+**Acciones:**
+
+1. En la rama de la US (antes del merge), actualizar:
+   - `.context/PRD/shift-left-status-report.md`:
+     - Marcar implementation plan como completado
+     - Actualizar estado del PR (indicar que sera MERGED)
+     - Actualizar contadores
+   - `.context/PRD/release-notes.md` (opcional):
+     - Agregar entrada para la US implementada
+     - Formato changelog estandar
+
+2. Commit y push de los cambios de documentacion:
+
+   ```bash
+   git add .context/ && git commit -m "docs: update status report for MYM-{N}"
+   git push
+   ```
+
+**Criterio de exito:** Cambios de documentacion incluidos en el PR de la US
+
+**Nota importante:** Los docs viajan junto con el codigo de la US en el mismo PR. NO se pushean directo a staging.
+
+---
+
+### PASO 8: Merge del PR
 
 **Objetivo:** Mergear el PR a staging (auto-deploy).
 
@@ -161,14 +189,14 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 
 1. Verificar que todos los checks del PR estan en verde
 2. Mergear usando `gh pr merge {PR_NUMBER} --squash`
-3. Eliminar rama local: `git checkout main && git branch -d feat/MYM-{N}/{short-name}`
+3. Eliminar rama local: `git checkout staging && git branch -d feat/MYM-{N}/{short-name}`
 4. Pull de staging: `git checkout staging && git pull`
 
 **Criterio de exito:** PR mergeado, rama eliminada, staging actualizado
 
 ---
 
-### PASO 8: Verificar Transicion a Ready For QA
+### PASO 9: Verificar Transicion a Ready For QA
 
 **Objetivo:** Confirmar que la automation rule detecto el merge.
 
@@ -187,7 +215,7 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 
 ---
 
-### PASO 9: Notificar en Jira
+### PASO 10: Notificar en Jira
 
 **Objetivo:** Informar al equipo de QA que la feature esta lista para pruebas.
 
@@ -206,33 +234,6 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
    ```
 
 **Criterio de exito:** Comentario agregado en Jira
-
----
-
-### PASO 10: Actualizar Documentacion (en rama de la US)
-
-**Objetivo:** Mantener el status report y release notes actualizados.
-
-**Acciones:**
-
-1. **ANTES del merge**, en la rama de la US, actualizar:
-   - `.context/PRD/shift-left-status-report.md`:
-     - Marcar implementation plan como completado
-     - Actualizar estado del PR (MERGED o por mergear)
-     - Actualizar contadores
-   - `.context/PRD/release-notes.md` (opcional):
-     - Agregar entrada para la US implementada
-     - Formato changelog estandar
-
-2. Incluir cambios de docs en el commit de la US o como commit separado en la misma rama:
-
-   ```bash
-   git add .context/ && git commit -m "docs: update status report after MYM-{N} completion"
-   ```
-
-**Criterio de exito:** Cambios de documentacion incluidos en el PR de la US
-
-**Nota:** Los docs viajan junto con el codigo de la US, no se pushean directo a staging.
 
 ---
 
@@ -292,10 +293,10 @@ Usar este template al inicio de cada sesion para identificar donde quedamos:
 | 4. PR Creado | [Pendiente/Completado] | PR #... |
 | 5. Jira In Review | [Pendiente/Completado/Manual requerido] | |
 | 6. Code Review | [Pendiente/Completado] | |
-| 7. Merge PR | [Pendiente/Completado] | |
-| 8. Jira Ready For QA | [Pendiente/Completado/Manual requerido] | |
-| 9. Comentario Jira | [Pendiente/Completado] | |
-| 10. Docs Actualizados | [Pendiente/Completado] | |
+| 7. Docs Actualizados | [Pendiente/Completado] | En rama de la US |
+| 8. Merge PR | [Pendiente/Completado] | |
+| 9. Jira Ready For QA | [Pendiente/Completado/Manual requerido] | |
+| 10. Comentario Jira | [Pendiente/Completado] | |
 | 11. Preparar Siguiente US | [Pendiente/Completado] | Rama: feat/MYM-{next}/... |
 
 **Siguiente paso:** [Numero y descripcion del paso pendiente]
@@ -395,5 +396,5 @@ Archivo: `.context/PRD/release-notes.md`
 
 ---
 
-*Ultima actualizacion: 2025-12-05*
+*Ultima actualizacion: 2025-12-07*
 *Generado por Claude Code*
