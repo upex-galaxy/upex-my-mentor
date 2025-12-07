@@ -77,7 +77,7 @@ export default async function MentorProfilePage({
   const { id } = await params;
   const supabase = await createServer();
 
-  // Fetch mentor with reviews
+  // Fetch mentor with reviews (only verified mentors are publicly accessible)
   const { data: mentorData, error: mentorError } = await supabase
     .from('profiles')
     .select(`
@@ -92,6 +92,7 @@ export default async function MentorProfilePage({
     `)
     .eq('id', id)
     .eq('role', 'mentor')
+    .eq('is_verified', true)
     .single();
 
   if (mentorError || !mentorData) {
