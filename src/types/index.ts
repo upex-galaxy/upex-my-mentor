@@ -12,6 +12,18 @@ export interface PendingApplication {
   github_url: string | null
 }
 
+// MYM-10: Application Detail (extends PendingApplication for detail view)
+export interface ApplicationDetail extends PendingApplication {
+  description: string | null
+  photo_url: string | null
+  hourly_rate: number | null
+  is_verified: boolean
+  years_of_experience: number | null
+  average_rating: number | null
+  total_reviews: number | null
+  rejection_reason?: string | null  // MYM-11: Added for rejected status display
+}
+
 export interface PaginatedResponse<T> {
   data: T[]
   total: number
