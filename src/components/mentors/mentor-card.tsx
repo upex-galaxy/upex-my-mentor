@@ -1,10 +1,13 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Mentor } from "@/types";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, MapPin } from "lucide-react";
+import { Star } from "lucide-react";
 
 interface MentorCardProps {
   mentor: Mentor;
@@ -12,23 +15,25 @@ interface MentorCardProps {
 
 export function MentorCard({ mentor }: MentorCardProps) {
   const { profile } = mentor;
+  const [imageError, setImageError] = useState(false);
 
   return (
     <Card data-testid="mentorCard" className="overflow-hidden hover:shadow-lg transition-shadow">
       <CardContent className="p-6">
         {/* Header with Avatar */}
         <div className="flex items-start space-x-4 mb-4">
-          {mentor.photoUrl ? (
+          {mentor.photoUrl && !imageError ? (
             <div data-testid="avatar_image" className="relative h-16 w-16 rounded-full overflow-hidden bg-muted">
               <Image
                 src={mentor.photoUrl}
                 alt={mentor.name}
                 fill
                 className="object-cover"
+                onError={() => setImageError(true)}
               />
             </div>
           ) : (
-            <div data-testid="avatar_image" className="h-16 w-16 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-2xl font-bold">
+            <div data-testid="avatar_fallback" className="h-16 w-16 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-2xl font-bold">
               {mentor.name.charAt(0)}
             </div>
           )}
