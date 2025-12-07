@@ -12,10 +12,10 @@
 |---------|----------|
 | Total de Stories en repo | 31 |
 | Stories con Shift-Left aplicado (Jira) | 20 |
-| Implementation plans creados | 6 |
-| Implementation plans completados | 5 |
-| Implementation plans pendientes | 14 |
-| PRs abiertos relacionados | 4 |
+| Implementation plans creados | 7 |
+| Implementation plans completados | 6 |
+| Implementation plans pendientes | 13 |
+| PRs abiertos relacionados | 5 |
 
 ---
 
@@ -34,7 +34,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-9** | View Pending Applications | Ready For QA | ✅ Completado | [#26](../../pulls/26) MERGED |
 | **MYM-10** | Review Application Details | Ready For QA | ✅ Completado | [#32](../../pulls/32) MERGED |
 | **MYM-11** | Approve/Reject Application | Ready For QA | ✅ Completado | [#33](../../pulls/33) MERGED |
-| **MYM-12** | Email Notification Status | Estimation | ❌ Pendiente | - |
+| **MYM-12** | Email Notification Status | In Review | ✅ Completado | [#35](../../pulls/35) OPEN |
 | **MYM-14** | View All Mentors | In Progress | ❌ Pendiente | - |
 | **MYM-20** | Timezone Conversion | Ready For QA | ❌ Pendiente | - |
 | **MYM-22** | Email Calendar Invite | Ready For Dev | ❌ Pendiente | - |
@@ -56,13 +56,12 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 
 ---
 
-## Implementation Plans Pendientes (14)
+## Implementation Plans Pendientes (13)
 
 Estas US ya tienen Shift-Left y están listas para crear su `implementation-plan.md`:
 
 ### Prioridad Alta (Ready For Dev / In Progress)
-1. **MYM-12** - Email Notification Status (EPIC-MYM-8)
-2. **MYM-14** - View All Mentors (EPIC-MYM-13)
+1. **MYM-14** - View All Mentors (EPIC-MYM-13)
 3. **MYM-19** - Set Mentor Availability (EPIC-MYM-18)
 4. **MYM-22** - Email Calendar Invite (EPIC-MYM-18)
 5. **MYM-25** - Stripe Connect (EPIC-MYM-23)
@@ -84,6 +83,7 @@ Estas US ya tienen Shift-Left y están listas para crear su `implementation-plan
 
 | PR | Branch | Story | Estado | Descripción |
 |----|--------|-------|--------|-------------|
+| #35 | feat/MYM-12/email-notifications | MYM-12 | OPEN | Email notifications on vetting status |
 | #12 | MYM-56-... | MYM-56 | OPEN | Messaging implementation |
 | #10 | feature/MYM-19-... | MYM-19 | OPEN | Mentor availability tests |
 | #8 | test/MYM-27/... | MYM-27 | OPEN | Automated payouts test cases |
@@ -160,13 +160,13 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 
 ### Detalle por Épica a Implementar
 
-#### 1. EPIC-MYM-8 (Mentor Vetting) - EN PROGRESO
+#### 1. EPIC-MYM-8 (Mentor Vetting) - ✅ COMPLETADO
 | US | Summary | Shift-Left | Status Jira |
 |----|---------|------------|-------------|
 | MYM-9 | View Pending Applications | ✅ Completado | Ready For QA |
 | MYM-10 | Review Application Details | ✅ Completado | Ready For QA |
 | MYM-11 | Approve/Reject Application | ✅ Completado | Ready For QA |
-| MYM-12 | Email Notification Status | ✅ Listo | Estimation |
+| MYM-12 | Email Notification Status | ✅ Completado | In Review |
 
 #### 2. EPIC-MYM-13 (Mentor Discovery)
 | US | Summary | Shift-Left | Status Jira |
@@ -218,12 +218,13 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 
 ## Próximos Pasos Recomendados
 
-1. **Completar EPIC-MYM-8** - Implementar MYM-12 (Email Notification Status)
-2. **Completar Shift-Left faltante** - Para US sin análisis en cada épica antes de implementar
-3. **Mergear branches pendientes** - MYM-7 tiene plan listo en branch
+1. **Mergear PR #35** - MYM-12 (Email Notification Status) - completa EPIC-MYM-8
+2. **Iniciar EPIC-MYM-13** - MYM-14 (View All Mentors)
+3. **Completar Shift-Left faltante** - Para US sin análisis en cada épica antes de implementar
+4. **Mergear branches pendientes** - MYM-7 tiene plan listo en branch
 
-> **Última US completada:** MYM-11 (Approve/Reject Application) - [PR #33](../../pulls/33) MERGED 2025-12-06
-> **Siguiente US:** MYM-12 (Email Notification Status)
+> **Última US completada:** MYM-12 (Email Notification Status) - [PR #35](../../pulls/35) OPEN 2025-12-06
+> **Siguiente US:** MYM-14 (View All Mentors) - EPIC-MYM-8 completado
 
 ---
 
