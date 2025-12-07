@@ -11,11 +11,11 @@
 | Métrica | Cantidad |
 |---------|----------|
 | Total de Stories en repo | 31 |
-| Stories con Shift-Left aplicado (Jira) | 20 |
-| Implementation plans creados | 8 |
-| Implementation plans completados | 7 |
+| Stories con Shift-Left aplicado (Jira) | 21 |
+| Implementation plans creados | 9 |
+| Implementation plans completados | 8 |
 | Implementation plans pendientes | 12 |
-| PRs abiertos relacionados | 4 |
+| PRs abiertos relacionados | 5 |
 
 ---
 
@@ -36,6 +36,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-11** | Approve/Reject Application | Ready For QA | ✅ Completado | [#33](../../pulls/33) MERGED |
 | **MYM-12** | Email Notification Status | In Review | ✅ Completado | [#35](../../pulls/35) OPEN |
 | **MYM-14** | View All Mentors | Ready For QA | ✅ Completado | [#38](../../pulls/38) MERGED |
+| **MYM-17** | View Mentor Profile Detail | In Review | ✅ Completado | [#40](../../pulls/40) OPEN |
 | **MYM-20** | Timezone Conversion | Ready For QA | ❌ Pendiente | - |
 | **MYM-22** | Email Calendar Invite | Ready For Dev | ❌ Pendiente | - |
 | **MYM-25** | Stripe Connect | Ready For Dev | ❌ Pendiente | - |
@@ -173,7 +174,7 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 | MYM-14 | View All Mentors | ✅ Completado | Ready For QA |
 | MYM-15 | Search Mentors by Specialty | ❌ Pendiente | - |
 | MYM-16 | Filter Mentors | ❌ Pendiente | - |
-| MYM-17 | View Mentor Profile Detail | ❌ Pendiente | - |
+| MYM-17 | View Mentor Profile Detail | ✅ Completado | In Review |
 
 #### 3. EPIC-MYM-18 (Scheduling & Booking)
 | US | Summary | Shift-Left | Status Jira |
@@ -217,13 +218,14 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 
 ## Próximos Pasos Recomendados
 
-1. **Mergear PR #35** - MYM-12 (Email Notification Status) - completa EPIC-MYM-8
-2. **Continuar EPIC-MYM-13** - MYM-15 (Search Mentors by Specialty) o MYM-17 (View Mentor Profile Detail)
-3. **Completar Shift-Left faltante** - Para US sin análisis en cada épica antes de implementar
-4. **Mergear branches pendientes** - MYM-7 tiene plan listo en branch
+1. **Mergear PR #40** - MYM-17 (View Mentor Profile Detail) - en review
+2. **Mergear PR #35** - MYM-12 (Email Notification Status) - completa EPIC-MYM-8
+3. **Continuar EPIC-MYM-13** - MYM-15 (Search Mentors by Specialty) - requiere Shift-Left
+4. **Completar Shift-Left faltante** - Para US sin análisis en cada épica antes de implementar
+5. **Mergear branches pendientes** - MYM-7 tiene plan listo en branch
 
-> **Última US completada:** MYM-14 (View All Mentors) - [PR #38](../../pulls/38) MERGED 2025-12-07
-> **Siguiente US:** MYM-15 o MYM-17 (EPIC-MYM-13) - requiere Shift-Left
+> **Última US completada:** MYM-17 (View Mentor Profile Detail) - [PR #40](../../pulls/40) IN REVIEW 2025-12-07
+> **Siguiente US:** MYM-15 o MYM-16 (EPIC-MYM-13) - requieren Shift-Left
 
 ---
 
@@ -232,7 +234,7 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 ```
 EPIC-MYM-2  (Auth & Profiles):     4/5  con Shift-Left (80%)
 EPIC-MYM-8  (Mentor Vetting):      3/4  con Shift-Left (75%)
-EPIC-MYM-13 (Mentor Discovery):    1/4  con Shift-Left (25%)
+EPIC-MYM-13 (Mentor Discovery):    2/4  con Shift-Left (50%)  ← +MYM-17
 EPIC-MYM-18 (Scheduling):          3/4  con Shift-Left (75%)  ← +MYM-19
 EPIC-MYM-23 (Payments):            2/4  con Shift-Left (50%)
 EPIC-MYM-28 (Session Management):  3/3  con Shift-Left (100%) ← +MYM-31
