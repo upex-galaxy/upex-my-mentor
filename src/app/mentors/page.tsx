@@ -5,6 +5,7 @@ import { Footer } from "@/components/layout/footer";
 import { MentorCard } from "@/components/mentors/mentor-card";
 import { MentorFilters } from "@/components/mentors/mentor-filters";
 import { MentorPagination } from "@/components/mentors/mentor-pagination";
+import { ClearSearchButton } from "@/components/mentors/clear-search-button";
 import { Mentor } from "@/types";
 import { Database } from "@/types/supabase";
 
@@ -120,7 +121,7 @@ export default async function MentorsPage({
   searchParams
 }: {
   searchParams: Promise<{
-    q?: string;
+    keyword?: string;  // MYM-15: Renamed from 'q' to 'keyword'
     skill?: string | string[];
     cursor?: string;
     page?: string;
@@ -129,7 +130,8 @@ export default async function MentorsPage({
   const supabase = await createServer();
   const params = await searchParams;
 
-  const query = params.q as string | undefined;
+  // MYM-15: Renamed from 'q' to 'keyword', trim whitespace
+  const keyword = (params.keyword || "").trim().slice(0, 100); // Max 100 chars
   const skills = Array.isArray(params.skill)
     ? params.skill
     : params.skill
@@ -140,43 +142,65 @@ export default async function MentorsPage({
 
 
 
-  // Build query
-  let mentorQuery = supabase
-    .from("profiles")
-    .select("*")
-    .eq("role", "mentor")
-    .eq("is_verified", true);
+  // MYM-15: Use RPC function for keyword search across name, description, and specialties
+  // This provides case-insensitive, partial matching with OR logic for multiple words
+  let mentorsResult;
 
-  if (query) {
-    mentorQuery = mentorQuery.ilike("name", `%${query}%`);
+  if (keyword) {
+    // Use the search_mentors_by_keyword RPC function
+    let searchQuery = supabase.rpc('search_mentors_by_keyword', {
+      search_keyword: keyword
+    });
+
+    // Apply skill filter if selected
+    if (skills.length > 0) {
+      searchQuery = searchQuery.contains("specialties", skills);
+    }
+
+    // Apply cursor-based pagination
+    searchQuery = searchQuery.limit(PAGE_SIZE + 1);
+
+    if (cursor) {
+      const [cursorRating, cursorId] = cursor.split(":");
+      searchQuery = searchQuery.or(
+        `average_rating.lt.${cursorRating},and(average_rating.eq.${cursorRating},id.gt.${cursorId})`
+      );
+    }
+
+    mentorsResult = await searchQuery;
+  } else {
+    // No keyword - use regular query
+    let mentorQuery = supabase
+      .from("profiles")
+      .select("*")
+      .eq("role", "mentor")
+      .eq("is_verified", true);
+
+    if (skills.length > 0) {
+      mentorQuery = mentorQuery.contains("specialties", skills);
+    }
+
+    // Apply cursor-based pagination
+    mentorQuery = mentorQuery
+      .order("average_rating", { ascending: false, nullsFirst: false })
+      .order("id", { ascending: true })
+      .limit(PAGE_SIZE + 1);
+
+    if (cursor) {
+      const [cursorRating, cursorId] = cursor.split(":");
+      mentorQuery = mentorQuery.or(
+        `average_rating.lt.${cursorRating},and(average_rating.eq.${cursorRating},id.gt.${cursorId})`
+      );
+    }
+
+    mentorsResult = await mentorQuery;
   }
 
-  if (skills.length > 0) {
-    mentorQuery = mentorQuery.contains("specialties", skills);
-  }
-
-  // Apply cursor-based pagination
-  // Fetch one extra to determine if there's a next page
-  mentorQuery = mentorQuery
-    .order("average_rating", { ascending: false, nullsFirst: false })
-    .order("id", { ascending: true }) // Secondary sort for stable pagination
-    .limit(PAGE_SIZE + 1);
-
-  if (cursor) {
-    // Cursor format: "rating:id" - get items after this combination
-    const [cursorRating, cursorId] = cursor.split(":");
-    mentorQuery = mentorQuery.or(
-      `average_rating.lt.${cursorRating},and(average_rating.eq.${cursorRating},id.gt.${cursorId})`
-    );
-  }
-
-  // Fetch mentors, skills, and total count in parallel
+  // Fetch skills and total count in parallel (mentors already fetched above)
   const [
-    { data: mentorsData, error: mentorsError },
     { data: skillsData, error: skillsError },
     { count: totalVerifiedMentors, error: countError },
   ] = await Promise.all([
-    mentorQuery,
     supabase.rpc('get_all_unique_skills'),
     // Count total verified mentors (without filters) to detect empty system
     supabase
@@ -186,8 +210,12 @@ export default async function MentorsPage({
       .eq("is_verified", true),
   ]);
 
+  // Extract mentors data from result
+  const { data: mentorsData, error: mentorsError } = mentorsResult;
+
   const hasNoMentorsInSystem = (totalVerifiedMentors ?? 0) === 0;
-  const hasFiltersApplied = !!query || skills.length > 0;
+  // MYM-15: Updated to use keyword instead of query
+  const hasFiltersApplied = !!keyword || skills.length > 0;
 
   if (mentorsError || skillsError || countError) {
     console.error("Error fetching mentors:", mentorsError || skillsError || countError);
@@ -299,14 +327,22 @@ export default async function MentorsPage({
                   </p>
                 </div>
               ) : (
+                // MYM-15: Updated empty state with keyword display and clear button
                 <div data-testid="empty_state_no_results" className="text-center py-12">
                   <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
                     <span className="text-3xl">🔍</span>
                   </div>
                   <h3 className="text-lg font-semibold mb-2">Sin resultados</h3>
-                  <p className="text-muted-foreground mb-4">
-                    No se encontraron mentores con los filtros seleccionados.
+                  <p data-testid="no_results_message" className="text-muted-foreground mb-4">
+                    {keyword ? (
+                      <>No mentors found matching &apos;{keyword}&apos;. Try a different search term.</>
+                    ) : (
+                      <>No se encontraron mentores con los filtros seleccionados.</>
+                    )}
                   </p>
+                  {hasFiltersApplied && (
+                    <ClearSearchButton />
+                  )}
                 </div>
               )}
 
