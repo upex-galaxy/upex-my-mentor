@@ -12,10 +12,10 @@
 |---------|----------|
 | Total de Stories en repo | 31 |
 | Stories con Shift-Left aplicado (Jira) | 20 |
-| Implementation plans creados | 7 |
-| Implementation plans completados | 6 |
-| Implementation plans pendientes | 13 |
-| PRs abiertos relacionados | 5 |
+| Implementation plans creados | 8 |
+| Implementation plans completados | 7 |
+| Implementation plans pendientes | 12 |
+| PRs abiertos relacionados | 4 |
 
 ---
 
@@ -35,7 +35,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-10** | Review Application Details | Ready For QA | ✅ Completado | [#32](../../pulls/32) MERGED |
 | **MYM-11** | Approve/Reject Application | Ready For QA | ✅ Completado | [#33](../../pulls/33) MERGED |
 | **MYM-12** | Email Notification Status | In Review | ✅ Completado | [#35](../../pulls/35) OPEN |
-| **MYM-14** | View All Mentors | In Progress | ❌ Pendiente | - |
+| **MYM-14** | View All Mentors | Ready For QA | ✅ Completado | [#38](../../pulls/38) MERGED |
 | **MYM-20** | Timezone Conversion | Ready For QA | ❌ Pendiente | - |
 | **MYM-22** | Email Calendar Invite | Ready For Dev | ❌ Pendiente | - |
 | **MYM-25** | Stripe Connect | Ready For Dev | ❌ Pendiente | - |
@@ -56,13 +56,12 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 
 ---
 
-## Implementation Plans Pendientes (13)
+## Implementation Plans Pendientes (12)
 
 Estas US ya tienen Shift-Left y están listas para crear su `implementation-plan.md`:
 
 ### Prioridad Alta (Ready For Dev / In Progress)
-1. **MYM-14** - View All Mentors (EPIC-MYM-13)
-3. **MYM-19** - Set Mentor Availability (EPIC-MYM-18)
+1. **MYM-19** - Set Mentor Availability (EPIC-MYM-18)
 4. **MYM-22** - Email Calendar Invite (EPIC-MYM-18)
 5. **MYM-25** - Stripe Connect (EPIC-MYM-23)
 6. **MYM-27** - Automated Payouts (EPIC-MYM-23)
@@ -146,8 +145,8 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 | # | Épica | Nombre | Dependencias | Shift-Left | US Listas para Implementar |
 |---|-------|--------|--------------|------------|----------------------------|
 | ✅ | EPIC-MYM-2 | Auth & Profiles | Ninguna | 80% (4/5) | ✅ MYM-3, MYM-4, MYM-6, MYM-7 completados |
-| **1** | EPIC-MYM-8 | Mentor Vetting | Auth ✅ | 75% (3/4) | MYM-9 ✅, MYM-11, MYM-12 |
-| **2** | EPIC-MYM-13 | Mentor Discovery | Vetting | 25% (1/4) | MYM-14 ✅ |
+| **1** | EPIC-MYM-8 | Mentor Vetting | Auth ✅ | 75% (3/4) | ✅ MYM-9, MYM-10, MYM-11, MYM-12 completados |
+| **2** | EPIC-MYM-13 | Mentor Discovery | Vetting | 25% (1/4) | ✅ MYM-14 completado |
 | **3** | EPIC-MYM-18 | Scheduling & Booking | Discovery | 75% (3/4) | MYM-19 ✅, MYM-20, MYM-22 |
 | **4** | EPIC-MYM-23 | Payments & Payouts | Scheduling | 50% (2/4) | MYM-25, MYM-27 ✅ |
 | **5** | EPIC-MYM-28 | Session Management | Scheduling + Payments | 100% (3/3) | MYM-29, MYM-30, MYM-31 |
@@ -171,7 +170,7 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 #### 2. EPIC-MYM-13 (Mentor Discovery)
 | US | Summary | Shift-Left | Status Jira |
 |----|---------|------------|-------------|
-| MYM-14 | View All Mentors | ✅ Listo | In Progress |
+| MYM-14 | View All Mentors | ✅ Completado | Ready For QA |
 | MYM-15 | Search Mentors by Specialty | ❌ Pendiente | - |
 | MYM-16 | Filter Mentors | ❌ Pendiente | - |
 | MYM-17 | View Mentor Profile Detail | ❌ Pendiente | - |
@@ -219,12 +218,12 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 ## Próximos Pasos Recomendados
 
 1. **Mergear PR #35** - MYM-12 (Email Notification Status) - completa EPIC-MYM-8
-2. **Iniciar EPIC-MYM-13** - MYM-14 (View All Mentors)
+2. **Continuar EPIC-MYM-13** - MYM-15 (Search Mentors by Specialty) o MYM-17 (View Mentor Profile Detail)
 3. **Completar Shift-Left faltante** - Para US sin análisis en cada épica antes de implementar
 4. **Mergear branches pendientes** - MYM-7 tiene plan listo en branch
 
-> **Última US completada:** MYM-12 (Email Notification Status) - [PR #35](../../pulls/35) OPEN 2025-12-06
-> **Siguiente US:** MYM-14 (View All Mentors) - EPIC-MYM-8 completado
+> **Última US completada:** MYM-14 (View All Mentors) - [PR #38](../../pulls/38) MERGED 2025-12-07
+> **Siguiente US:** MYM-15 o MYM-17 (EPIC-MYM-13) - requiere Shift-Left
 
 ---
 
