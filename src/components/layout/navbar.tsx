@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { User, LogOut, Menu } from "lucide-react";
 import { useState } from "react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function Navbar() {
   const { user, logout } = useAuth();
@@ -25,25 +26,27 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center space-x-2">
             <Link
               href="/mentors"
-              className="text-sm font-medium hover:text-primary transition-colors"
+              className="text-sm font-medium hover:text-primary transition-colors px-3 py-2"
             >
               Explorar Mentores
             </Link>
             <Link
               href="/how-it-works"
-              className="text-sm font-medium hover:text-primary transition-colors"
+              className="text-sm font-medium hover:text-primary transition-colors px-3 py-2"
             >
               Cómo Funciona
             </Link>
+
+            <ThemeToggle />
 
             {user ? (
               <>
                 <Link
                   href="/dashboard"
-                  className="text-sm font-medium hover:text-primary transition-colors"
+                  className="text-sm font-medium hover:text-primary transition-colors px-3 py-2"
                 >
                   Dashboard
                 </Link>
@@ -86,6 +89,10 @@ export function Navbar() {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden py-4 space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-medium text-muted-foreground">Navegación</span>
+              <ThemeToggle />
+            </div>
             <Link
               href="/mentors"
               className="block py-2 text-sm font-medium hover:text-primary"
@@ -129,9 +136,9 @@ export function Navbar() {
                 </div>
               </>
             ) : (
-              <div className="space-y-2 pt-2">
+              <div className="space-y-2 pt-2 border-t">
                 <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full">
+                  <Button variant="ghost" className="w-full justify-start">
                     Iniciar Sesión
                   </Button>
                 </Link>
