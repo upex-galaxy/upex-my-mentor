@@ -1,17 +1,14 @@
 
 import { createServer } from "@/lib/supabase/server";
-
 import { Navbar } from "@/components/layout/navbar";
-
 import { Footer } from "@/components/layout/footer";
-
 import { MentorCard } from "@/components/mentors/mentor-card";
-
 import { MentorFilters } from "@/components/mentors/mentor-filters";
-
+import { MentorPagination } from "@/components/mentors/mentor-pagination";
 import { Mentor } from "@/types";
-
 import { Database } from "@/types/supabase";
+
+const PAGE_SIZE = 12;
 
 
 
@@ -122,88 +119,96 @@ function transformToMentor(profile: ProfileRow): Mentor {
 export default async function MentorsPage({
   searchParams
 }: {
-  searchParams: Promise<{ q?: string; skill?: string | string[] }>
+  searchParams: Promise<{
+    q?: string;
+    skill?: string | string[];
+    cursor?: string;
+    page?: string;
+  }>
 }) {
-
   const supabase = await createServer();
-
   const params = await searchParams;
 
   const query = params.q as string | undefined;
-
   const skills = Array.isArray(params.skill)
-
     ? params.skill
-
     : params.skill
-
     ? [params.skill]
-
     : [];
+  const cursor = params.cursor;
+  const currentPage = parseInt(params.page || "1", 10);
 
 
 
   // Build query
-
   let mentorQuery = supabase
-
     .from("profiles")
-
     .select("*")
-
     .eq("role", "mentor")
-
     .eq("is_verified", true);
 
-
-
   if (query) {
-
     mentorQuery = mentorQuery.ilike("name", `%${query}%`);
-
-    // In a real app, you'd use full-text search here on multiple columns
-
   }
-
-
 
   if (skills.length > 0) {
-
     mentorQuery = mentorQuery.contains("specialties", skills);
-
   }
 
+  // Apply cursor-based pagination
+  // Fetch one extra to determine if there's a next page
+  mentorQuery = mentorQuery
+    .order("average_rating", { ascending: false, nullsFirst: false })
+    .order("id", { ascending: true }) // Secondary sort for stable pagination
+    .limit(PAGE_SIZE + 1);
 
+  if (cursor) {
+    // Cursor format: "rating:id" - get items after this combination
+    const [cursorRating, cursorId] = cursor.split(":");
+    mentorQuery = mentorQuery.or(
+      `average_rating.lt.${cursorRating},and(average_rating.eq.${cursorRating},id.gt.${cursorId})`
+    );
+  }
 
-  // Fetch mentors and skills in parallel
-
+  // Fetch mentors, skills, and total count in parallel
   const [
-
     { data: mentorsData, error: mentorsError },
-
     { data: skillsData, error: skillsError },
-
+    { count: totalVerifiedMentors, error: countError },
   ] = await Promise.all([
-
-    mentorQuery.order("average_rating", { ascending: false, nullsFirst: false }),
-
-    supabase.rpc('get_all_unique_skills')
-
+    mentorQuery,
+    supabase.rpc('get_all_unique_skills'),
+    // Count total verified mentors (without filters) to detect empty system
+    supabase
+      .from("profiles")
+      .select("*", { count: "exact", head: true })
+      .eq("role", "mentor")
+      .eq("is_verified", true),
   ]);
 
+  const hasNoMentorsInSystem = (totalVerifiedMentors ?? 0) === 0;
+  const hasFiltersApplied = !!query || skills.length > 0;
 
-
-  if (mentorsError || skillsError) {
-
-    console.error("Error fetching mentors:", mentorsError || skillsError);
-
+  if (mentorsError || skillsError || countError) {
+    console.error("Error fetching mentors:", mentorsError || skillsError || countError);
     // Handle error state in UI
-
   }
 
+  // Determine pagination state
+  const allFetchedMentors = (mentorsData || []).map(transformToMentor);
+  const hasNextPage = allFetchedMentors.length > PAGE_SIZE;
+  const hasPreviousPage = currentPage > 1;
 
+  // Limit to PAGE_SIZE for display
+  const mentors: Mentor[] = hasNextPage
+    ? allFetchedMentors.slice(0, PAGE_SIZE)
+    : allFetchedMentors;
 
-  const mentors: Mentor[] = (mentorsData || []).map(transformToMentor);
+  // Create cursor for next page (last item's rating:id)
+  const lastMentor = mentors[mentors.length - 1];
+  const nextCursor = lastMentor
+    ? `${lastMentor.profile.averageRating}:${lastMentor.id}`
+    : undefined;
 
   const allSkills: string[] = skillsData || [];
 
@@ -278,31 +283,40 @@ export default async function MentorsPage({
               {/* Mentors grid */}
 
               {mentors.length > 0 ? (
-
                 <div data-testid="mentors_grid" className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-
                   {mentors.map((mentor) => (
-
                     <MentorCard key={mentor.id} mentor={mentor} />
-
                   ))}
-
                 </div>
-
-              ) : (
-
-                <div data-testid="empty_state" className="text-center py-12">
-
-                  <p className="text-muted-foreground mb-4">
-
-                    No se encontraron mentores con los filtros seleccionados.
-
+              ) : hasNoMentorsInSystem ? (
+                <div data-testid="empty_state_no_mentors" className="text-center py-12">
+                  <div className="h-16 w-16 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center mx-auto mb-4">
+                    <span className="text-3xl">👨‍🏫</span>
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">Aún no hay mentores disponibles</h3>
+                  <p className="text-muted-foreground mb-4 max-w-md mx-auto">
+                    ¡Vuelve pronto o aplica para ser uno de nuestros primeros mentores verificados!
                   </p>
-
                 </div>
-
+              ) : (
+                <div data-testid="empty_state_no_results" className="text-center py-12">
+                  <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+                    <span className="text-3xl">🔍</span>
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">Sin resultados</h3>
+                  <p className="text-muted-foreground mb-4">
+                    No se encontraron mentores con los filtros seleccionados.
+                  </p>
+                </div>
               )}
 
+              {/* Pagination */}
+              <MentorPagination
+                hasNextPage={hasNextPage}
+                hasPreviousPage={hasPreviousPage}
+                nextCursor={nextCursor}
+                currentPage={currentPage}
+              />
             </div>
 
           </div>
