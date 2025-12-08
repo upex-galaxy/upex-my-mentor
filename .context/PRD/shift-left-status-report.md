@@ -15,7 +15,7 @@
 | Implementation plans creados | 11 |
 | Implementation plans completados | 11 |
 | Implementation plans pendientes | 10 |
-| PRs abiertos relacionados | 5 |
+| PRs abiertos relacionados | 4 |
 
 ---
 
@@ -45,7 +45,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-29** | Session Dashboard | Ready For QA | ❌ Pendiente | - |
 | **MYM-30** | Join Video Call | Estimation | ❌ Pendiente | - |
 | **MYM-34** | Mentor Review Mentee | Shift-Left QA | ❌ Pendiente | - |
-| **MYM-35** | View Profile Reviews | In Progress | ✅ Completado | [#42](../../pulls/42) OPEN |
+| **MYM-35** | View Profile Reviews | Ready For QA | ✅ Completado | [#42](../../pulls/42) MERGED |
 | **MYM-58** | Message Notifications | Shift-Left QA | ❌ Pendiente | - |
 | **MYM-19** | Set Mentor Availability | In Progress | ❌ Pendiente | [#10](../../pulls/10) OPEN |
 | **MYM-31** | Cancel Session | Ready For QA | ❌ Pendiente | - |
@@ -83,7 +83,6 @@ Estas US ya tienen Shift-Left y están listas para crear su `implementation-plan
 
 | PR | Branch | Story | Estado | Descripción |
 |----|--------|-------|--------|-------------|
-| #42 | feat/MYM-35/view-profile-reviews | MYM-35 | OPEN | View Profile Reviews implementation |
 | #35 | feat/MYM-12/email-notifications | MYM-12 | OPEN | Email notifications on vetting status |
 | #12 | MYM-56-... | MYM-56 | OPEN | Messaging implementation |
 | #10 | feature/MYM-19-... | MYM-19 | OPEN | Mentor availability tests |
@@ -225,7 +224,7 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 4. **Completar Shift-Left faltante** - Para US sin análisis en cada épica antes de implementar
 5. **Mergear branches pendientes** - MYM-7 tiene plan listo en branch
 
-> **Última US completada:** MYM-35 (View Profile Reviews) - [PR #42](../../pulls/42) OPEN 2025-12-07
+> **Última US completada:** MYM-35 (View Profile Reviews) - [PR #42](../../pulls/42) MERGED 2025-12-07
 > **Siguiente US:** MYM-34 (Mentor Review Mentee - EPIC-MYM-32) - tiene Shift-Left listo
 
 ---
