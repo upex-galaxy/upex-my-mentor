@@ -176,6 +176,23 @@ export interface ReviewSubmission {
   comment?: string;    // max 500 chars
 }
 
+// MYM-25: Stripe Connect - Payment types
+export type {
+  StripeAccount,
+  StripeAccountInsert,
+  StripeAccountUpdate,
+  StripeConnectStatus,
+  StripeConnectState,
+  StripeConnectOnboardRequest,
+  StripeConnectOnboardResponse,
+  StripeConnectStatusResponse,
+  PaymentAPIError,
+  StripeOnboardingResult,
+  PayoutsPageParams,
+} from './payments'
+
+export { getConnectState, STRIPE_CONNECT_MESSAGES } from './payments'
+
 export type ReviewEligibilityReason =
   | 'not_authenticated'
   | 'booking_not_found'
