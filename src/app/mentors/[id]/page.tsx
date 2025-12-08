@@ -6,17 +6,16 @@ import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ReviewsSection } from "@/components/reviews";
 import {
   Star,
   Briefcase,
-  MapPin,
   Linkedin,
   Github,
   Calendar,
   Clock,
 } from "lucide-react";
-import Link from "next/link";
-import type { Mentor } from "@/types";
+import type { Mentor, ReviewWithReviewer } from "@/types";
 import type { Database } from "@/types/supabase";
 
 type ProfileRow = Database['public']['Tables']['profiles']['Row'];
@@ -48,25 +47,15 @@ function transformToMentor(profile: ProfileRow): Mentor {
   };
 }
 
-// Helper to format review date
-function formatReviewDate(dateString: string): string {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffInMs = now.getTime() - date.getTime();
-  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-
-  if (diffInDays < 7) {
-    return `Hace ${diffInDays} día${diffInDays !== 1 ? 's' : ''}`;
-  } else if (diffInDays < 30) {
-    const weeks = Math.floor(diffInDays / 7);
-    return `Hace ${weeks} semana${weeks !== 1 ? 's' : ''}`;
-  } else if (diffInDays < 365) {
-    const months = Math.floor(diffInDays / 30);
-    return `Hace ${months} mes${months !== 1 ? 'es' : ''}`;
-  } else {
-    const years = Math.floor(diffInDays / 365);
-    return `Hace ${years} año${years !== 1 ? 's' : ''}`;
-  }
+// Helper to transform DB reviews to ReviewWithReviewer type
+function transformReviews(dbReviews: ReviewRow[]): ReviewWithReviewer[] {
+  return dbReviews.map((review) => ({
+    id: review.id,
+    rating: review.rating,
+    comment: review.comment,
+    created_at: review.created_at!,
+    reviewer: review.reviewer,
+  }));
 }
 
 export default async function MentorProfilePage({
@@ -100,7 +89,8 @@ export default async function MentorProfilePage({
   }
 
   const mentor = transformToMentor(mentorData);
-  const reviews = (mentorData.reviews as unknown as ReviewRow[]) || [];
+  const dbReviews = (mentorData.reviews as unknown as ReviewRow[]) || [];
+  const reviews = transformReviews(dbReviews);
 
   const { profile } = mentor;
 
@@ -234,52 +224,13 @@ export default async function MentorProfilePage({
           </div>
         </div>
 
-        {/* Reviews Section */}
-        <div data-testid="reviews_section" className="container mx-auto px-4 py-12">
-          <h2 data-testid="reviews_title" className="text-2xl font-bold mb-6">
-            Reviews ({profile.totalReviews})
-          </h2>
-
-          {reviews.length > 0 ? (
-            <div data-testid="reviews_list" className="space-y-6">
-              {reviews.map((review) => (
-                <Card key={review.id} data-testid="review_item">
-                  <CardContent className="pt-6">
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <div className="font-semibold">
-                          {review.reviewer?.name || 'Usuario anónimo'}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          {formatReviewDate(review.created_at!)}
-                        </div>
-                      </div>
-                      <div className="flex items-center">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`h-4 w-4 ${
-                              i < review.rating
-                                ? "fill-yellow-400 text-yellow-400"
-                                : "text-gray-300"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-muted-foreground">{review.comment}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div data-testid="reviews_empty_state" className="text-center py-12">
-              <p className="text-muted-foreground">
-                Este mentor aún no tiene reviews.
-              </p>
-            </div>
-          )}
-        </div>
+        {/* Reviews Section - MYM-35 */}
+        <ReviewsSection
+          mentorId={mentor.id}
+          reviews={reviews}
+          averageRating={profile.averageRating}
+          totalReviews={profile.totalReviews}
+        />
       </main>
       <Footer />
     </div>

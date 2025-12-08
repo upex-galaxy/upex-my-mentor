@@ -104,6 +104,28 @@ export interface Review {
   createdAt: Date;
 }
 
+// MYM-35: View Profile Reviews - Extended types for display
+export interface ReviewWithReviewer {
+  id: string;
+  rating: number;
+  comment: string | null;
+  created_at: string;
+  reviewer: {
+    name: string | null;
+  } | null;
+}
+
+export interface RatingDistribution {
+  5: number;
+  4: number;
+  3: number;
+  2: number;
+  1: number;
+}
+
+export type ReviewSortOption = 'recent' | 'highest' | 'lowest';
+export type ReviewFilterOption = 'all' | '5' | '4' | '3' | '2' | '1';
+
 // Mock Auth Types
 export interface AuthState {
   isAuthenticated: boolean;
