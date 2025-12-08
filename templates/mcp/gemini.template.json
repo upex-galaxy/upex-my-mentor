@@ -23,7 +23,10 @@
     },
     "shadcn": {
       "command": "npx",
-      "args": ["shadcn@latest", "mcp"]
+      "args": [
+        "shadcn@latest",
+        "mcp"
+      ]
     },
     "supabase": {
       "command": "npx",
@@ -66,7 +69,15 @@
       "httpUrl": "https://mcp.notion.com/mcp"
     },
     "atlassian": {
-      "url": "https://mcp.atlassian.com/v1/sse"
+      "command": "uvx",
+      "args": [
+        "mcp-atlassian"
+      ],
+      "env": {
+        "JIRA_URL": "https://tu-servidor.atlassian.net",
+        "JIRA_USERNAME": "tu.email@servidor.com",
+        "JIRA_API_TOKEN": "${JIRA_API_TOKEN}"
+      }
     },
     "github": {
       "httpUrl": "https://api.githubcopilot.com/mcp",
