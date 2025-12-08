@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       bookings: {
         Row: {
+          confirmation_sent_at: string | null  // MYM-22: Email confirmation timestamp
           created_at: string | null
           duration_minutes: number
           id: string
@@ -29,6 +30,7 @@ export type Database = {
           videocall_url: string | null
         }
         Insert: {
+          confirmation_sent_at?: string | null  // MYM-22: Email confirmation timestamp
           created_at?: string | null
           duration_minutes?: number
           id?: string
@@ -42,6 +44,7 @@ export type Database = {
           videocall_url?: string | null
         }
         Update: {
+          confirmation_sent_at?: string | null  // MYM-22: Email confirmation timestamp
           created_at?: string | null
           duration_minutes?: number
           id?: string

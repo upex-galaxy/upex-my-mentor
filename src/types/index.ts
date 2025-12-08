@@ -157,6 +157,17 @@ export interface VerificationResult {
   updatedAt?: string
 }
 
+// MYM-22: Email Confirmation and Calendar Invite - Re-export scheduling types
+export type {
+  BookingConfirmationData,
+  CalendarEventData,
+  EmailSendResult,
+  BookingConfirmationEmailProps,
+  EmailData,
+  BookingConfirmationRequest,
+  BookingConfirmationResponse,
+} from './scheduling'
+
 // MYM-34: Mentor Review Mentee - Review submission types
 export interface ReviewSubmission {
   booking_id: string;
