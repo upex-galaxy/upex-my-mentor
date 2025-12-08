@@ -80,6 +80,11 @@ async function main() {
       recursive: true,
     });
   }
+  if (fs.existsSync(".context/guidelines")) {
+    fs.cpSync(".context/guidelines", path.join(backupDir, ".context/guidelines"), {
+      recursive: true,
+    });
+  }
 
   log(`✅ Backup guardado en: ${backupDir}`, "green");
 
@@ -171,6 +176,35 @@ async function main() {
     fs.cpSync(templatesPath, "templates/mcp", { recursive: true });
   }
 
+  // Actualizar .context/guidelines/ (excepto archivos específicos del proyecto)
+  const guidelinesPath = path.join(TEMP_DIR, ".context", "guidelines");
+  if (fs.existsSync(guidelinesPath)) {
+    log("📖 Actualizando .context/guidelines/...", "yellow");
+
+    // Archivos específicos del proyecto que NO deben sobrescribirse
+    const projectSpecificFiles = ["data-testid-standards.md"];
+
+    // Guardar temporalmente los archivos específicos del proyecto
+    const savedFiles = {};
+    projectSpecificFiles.forEach((file) => {
+      const filePath = path.join(".context/guidelines", file);
+      if (fs.existsSync(filePath)) {
+        savedFiles[file] = fs.readFileSync(filePath);
+      }
+    });
+
+    // Copiar guidelines del template
+    fs.mkdirSync(".context/guidelines", { recursive: true });
+    fs.cpSync(guidelinesPath, ".context/guidelines", { recursive: true });
+
+    // Restaurar archivos específicos del proyecto
+    Object.entries(savedFiles).forEach(([file, content]) => {
+      const filePath = path.join(".context/guidelines", file);
+      fs.writeFileSync(filePath, content);
+      log(`  ↳ Preservado: ${file} (proyecto-específico)`, "yellow");
+    });
+  }
+
   // Limpiar
   fs.rmSync(TEMP_DIR, { recursive: true, force: true });
 
@@ -185,6 +219,7 @@ async function main() {
   console.log("");
   log("📋 Archivos actualizados:", "green");
   console.log("  • .prompts/ (todos los prompts)");
+  console.log("  • .context/guidelines/ (excepto archivos proyecto-específicos)");
   console.log("  • context-engineering.md");
   console.log("  • docs/ (solo archivos del template)");
   console.log("  • scripts/update-prompts.js y .md");

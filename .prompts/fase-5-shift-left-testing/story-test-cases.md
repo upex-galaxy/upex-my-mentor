@@ -102,11 +102,41 @@ Actúa como QA Engineer experto en Shift-Left Testing, Test Case Design y Critic
 
 1. **Reporte:** Resumen ejecutivo con critical questions y next steps (Paso 8)
 
+### En Git (Branch Naming Convention):
+
+**Formato de rama:** `test/{JIRA_ISSUE_KEY}/{short-description}`
+
+**Ejemplos:**
+- `test/UPEX-45/user-login-flow`
+- `test/UPEX-123/profile-update`
+- `test/UPEX-78/checkout-validation`
+
+**Reglas:**
+1. Prefijo `test/` obligatorio (indica trabajo de QA/testing)
+2. Jira Issue Key en mayúsculas (ej: UPEX-45) - extraído del campo `**Jira Key:**` del story.md
+3. Descripción corta en kebab-case (máx 3-4 palabras) - derivada del nombre de la story
+4. Base branch: siempre `staging` (nunca `main`)
+
+**⚠️ IMPORTANTE:**
+- Esta rama SOLO debe contener cambios en archivos de documentación de la story (test-cases.md)
+- NO incluir código de producción, configuración de testing frameworks, ni implementación
+- El nombre de la rama debe derivarse del contexto de la story analizada
+
 ---
 
 ## 🎯 FLUJO DE TRABAJO
 
-Este prompt trabaja en **8 pasos** organizados en 2 partes, siguiendo el principio **JIRA-FIRST → LOCAL MIRROR**:
+Este prompt trabaja en **10 pasos** (Paso 0-9) organizados en 3 partes, siguiendo el principio **JIRA-FIRST → LOCAL MIRROR**:
+
+---
+
+### 🌿 PARTE 0: PREPARACIÓN GIT
+
+#### Paso 0: Crear rama de trabajo
+
+- Checkout desde `staging` y pull de cambios
+- Crear rama con formato `test/{JIRA_KEY}/{short-description}`
+- El Jira Key se extrae del story.md, la descripción del título de la story
 
 ---
 
@@ -155,6 +185,11 @@ Este prompt trabaja en **8 pasos** organizados en 2 partes, siguiendo el princip
 #### Paso 8: Final QA Feedback Report
 
 - Generar resumen ejecutivo para el usuario
+
+#### Paso 9: Commit del archivo test-cases.md
+
+- Hacer commit del archivo `test-cases.md` en la rama de trabajo
+- Mensaje de commit: `test({JIRA_KEY}): add shift-left test cases for {story-title}`
 
 ---
 
@@ -1174,6 +1209,26 @@ Estos son los datos reales. Nota: El número de issue (45, 13) es el mismo en la
 
 ## 📋 Flujo de Ejecución (Para la IA)
 
+### Paso 0: Crear rama de trabajo
+
+**Objetivo:** Crear una rama específica para el trabajo de Shift-Left Testing antes de generar los test cases.
+
+**Pasos a ejecutar:**
+1. Checkout desde `staging`: `git checkout staging && git pull`
+2. Crear rama usando el formato: `test/{JIRA_KEY}/{short-description}`
+3. El `{JIRA_KEY}` se extrae del campo `**Jira Key:**` del story.md
+4. El `{short-description}` se deriva del nombre/título de la story en kebab-case (máx 3-4 palabras)
+
+**Ejemplo:**
+```bash
+git checkout staging && git pull
+git checkout -b test/UPEX-45/user-login-flow
+```
+
+**⚠️ IMPORTANTE:** Esta rama solo contendrá el archivo `test-cases.md` generado. NO incluir otros cambios.
+
+---
+
 ### Input requerido del usuario:
 
 ```
@@ -1189,32 +1244,43 @@ Story Path: .context/PBI/epics/EPIC-UPEX-13-nombre/stories/STORY-UPEX-45-nombre/
 
 ### Orden de ejecución:
 
-**Pre-requisito: Extraer Jira Keys**
+**Paso 0: Crear rama de trabajo**
 1. Leer `{STORY_PATH}/story.md` proporcionado por usuario
 2. Extraer campo `**Jira Key:**` de story (ej: UPEX-45)
-3. Extraer campo `**Epic:**` para obtener epic path
-4. Leer epic.md y extraer Epic Jira Key (ej: UPEX-13)
-5. Guardar ambos Jira Keys reales para Pasos 5 y 6
+3. Derivar `{short-description}` del título de la story en kebab-case
+4. Ejecutar: `git checkout staging && git pull`
+5. Crear rama: `git checkout -b test/{JIRA_KEY}/{short-description}`
+
+**Pre-requisito: Extraer Jira Keys**
+6. Extraer campo `**Epic:**` para obtener epic path
+7. Leer epic.md y extraer Epic Jira Key (ej: UPEX-13)
+8. Guardar ambos Jira Keys reales para Pasos 5 y 6
 
 **Leer Contexto Completo:**
-6. Leer todos los archivos de contexto (PRD, SRS, epic.md local, feature-test-plan.md, story.md)
-7. Leer story actual de Jira con MCP (usando Story Jira Key real)
-8. Leer epic de Jira con MCP (usando Epic Jira Key real)
-9. **Leer comentarios del epic en Jira** - especialmente "Feature Test Plan"
+9. Leer todos los archivos de contexto (PRD, SRS, epic.md local, feature-test-plan.md, story.md)
+10. Leer story actual de Jira con MCP (usando Story Jira Key real)
+11. Leer epic de Jira con MCP (usando Epic Jira Key real)
+12. **Leer comentarios del epic en Jira** - especialmente "Feature Test Plan"
 
 **PARTE 1 - Análisis y Diseño:**
-10. **Paso 1:** Critical Analysis (incluye Epic-Level Context de comentarios)
-11. **Paso 2:** Story Quality Analysis
-12. **Paso 3:** Refined Acceptance Criteria
-13. **Paso 4:** Test Design
+13. **Paso 1:** Critical Analysis (incluye Epic-Level Context de comentarios)
+14. **Paso 2:** Story Quality Analysis
+15. **Paso 3:** Refined Acceptance Criteria
+16. **Paso 4:** Test Design
 
 **PARTE 2 - Integración y Output:**
-14. **Paso 5:** Actualizar story en Jira con refinamientos (MCP + Story Jira Key real)
-15. **Paso 6:** Crear comentario en Jira con test cases completos (MCP + Story Jira Key real)
-16. **Paso 7:** Generar archivo local `test-cases.md` en {STORY_PATH}/ (Write tool)
-17. **Paso 8:** Reportar resumen al usuario (Output)
+17. **Paso 5:** Actualizar story en Jira con refinamientos (MCP + Story Jira Key real)
+18. **Paso 6:** Crear comentario en Jira con test cases completos (MCP + Story Jira Key real)
+19. **Paso 7:** Generar archivo local `test-cases.md` en {STORY_PATH}/ (Write tool)
+20. **Paso 8:** Reportar resumen al usuario (Output)
+21. **Paso 9:** Commit del archivo `test-cases.md` en la rama de trabajo
 
 ### Herramientas a usar:
+
+**Git (Bash):**
+- Para checkout de `staging` y pull de cambios recientes
+- Para crear rama de trabajo con formato `test/{JIRA_KEY}/{short-description}`
+- Para commit del archivo `test-cases.md` generado
 
 **MCP de Atlassian:**
 - Para leer story de Jira
@@ -1374,8 +1440,8 @@ Test Scripts (Playwright/Cypress - opcional)
 
 ---
 
-**Versión:** 3.1 - Jira-First + Epic Context Integration + MCP Atlassian
-**Última actualización:** 2025-01-05
+**Versión:** 3.2 - Git Branch Naming Convention + Paso 0
+**Última actualización:** 2025-12-06
 **Cambios principales:**
 
 - ✅ Agregado flujo Jira-First (Pasos 5-8)
@@ -1391,3 +1457,6 @@ Test Scripts (Playwright/Cypress - opcional)
   - Test strategy del epic
   - Updates y clarificaciones del refinement
   - Cómo la story encaja en el epic
+- ✅ **Branch Naming Convention para Git** - formato `test/{JIRA_KEY}/{short-description}`
+- ✅ **Paso 0: Crear rama de trabajo** - checkout desde `staging` antes de generar test cases
+- ✅ **Paso 9: Commit del archivo** - commit del `test-cases.md` en la rama de trabajo

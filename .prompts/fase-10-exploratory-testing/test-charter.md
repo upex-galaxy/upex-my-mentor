@@ -943,9 +943,9 @@ Buffer:              5% del tiempo (3-5 min)
 **Test charter best practices:**
 - https://www.satisfice.com/download/session-based-test-management
 
-**Guidelines:**
-- `.context/guidelines/exploratory-testing.md`
-- `.context/guidelines/testing-strategy.md`
+**Testing references:**
+- `.prompts/fase-10-exploratory-testing/session-notes.md` - Documentar sesión
+- `.prompts/fase-11-test-automation/test-strategy.md` - Estrategia completa
 
 ---
 

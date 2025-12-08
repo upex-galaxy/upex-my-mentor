@@ -20,14 +20,16 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 |---------|-----------|
 | `.context/PRD/shift-left-status-report.md` | Lista de US con Shift-Left listas para implementar |
 | `.prompts/us-dev-workflow.md` | **Este archivo** - Estrategia de workflow |
-| `CLAUDE.md` | Instrucciones del proyecto y configuracion |
+| `CLAUDE.md` / `GEMINI.md` / `AGENTS.md` | Instrucciones del proyecto y configuracion (según AI tool) |
 
 ### Leer segun la US en trabajo
 
 | Archivo | Cuando leer |
 |---------|-------------|
-| `.context/PBI/epics/EPIC-MYM-{N}-{name}/stories/STORY-MYM-{N}-{name}/story.md` | Antes de planificar |
-| `.context/PBI/epics/EPIC-MYM-{N}-{name}/stories/STORY-MYM-{N}-{name}/test-cases.md` | Durante planificacion |
+| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/feature-test-plan.md` | Paso 0: Verificar precondiciones |
+| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/feature-implementation-plan.md` | Paso 0: Verificar precondiciones |
+| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/stories/STORY-{PROJECT_KEY}-{N}-{name}/story.md` | Antes de planificar |
+| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/stories/STORY-{PROJECT_KEY}-{N}-{name}/test-cases.md` | Durante planificacion |
 | `.context/design-system.md` | Durante implementacion UI |
 | `.context/guidelines/code-standards.md` | Durante code review |
 
@@ -42,7 +44,39 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 
 ---
 
-## Los 11 Pasos del Workflow
+## Los 12 Pasos del Workflow
+
+### PASO 0: Verificar Precondiciones del Epic
+
+**Objetivo:** Asegurar que el Epic tiene los artefactos de planificacion necesarios antes de trabajar en sus stories.
+
+**Acciones:**
+
+1. Identificar el Epic al que pertenece la US (de `story.md` o estructura de carpetas)
+2. Verificar que existen los siguientes archivos en la carpeta del Epic:
+   - `feature-test-plan.md` (Shift-Left Testing a nivel Epic)
+   - `feature-implementation-plan.md` (Plan tecnico a nivel Epic)
+
+**Si alguno NO existe:**
+
+```
+⚠️ PRECONDICION NO CUMPLIDA
+
+El Epic {EPIC-{PROJECT_KEY}-N} no tiene los siguientes artefactos:
+- [ ] feature-test-plan.md (crear con: .prompts/fase-5-shift-left/feature-test-plan.md)
+- [ ] feature-implementation-plan.md (crear con: .prompts/fase-6-planning/feature-implementation-plan.md)
+
+¿Desea proceder sin estos artefactos o crearlos primero?
+```
+
+**Si ambos existen:**
+
+- Leer ambos archivos para contexto
+- Continuar con Paso 1
+
+**Criterio de exito:** Ambos archivos existen O usuario confirma proceder sin ellos
+
+---
 
 ### PASO 1: Verificar Status en Jira
 
@@ -67,9 +101,12 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 
 1. Leer el prompt `.prompts/fase-6-planning/story-implementation-plan.md`
 2. Leer la story (`story.md`) y test cases (`test-cases.md`)
-3. Crear rama local: `git checkout -b feat/MYM-{N}/{short-name}`
-4. Generar `implementation-plan.md` en la carpeta de la story
-5. Commit del plan
+3. **Usar como contexto** el `feature-implementation-plan.md` del Epic (verificado en Paso 0)
+4. Crear rama local: `git checkout -b feat/{PROJECT_KEY}-{N}/{short-name}`
+5. Generar `implementation-plan.md` en la carpeta de la story
+6. Commit del plan
+
+**Nota:** El plan de la story debe alinearse con las decisiones tecnicas del `feature-implementation-plan.md` del Epic.
 
 **Criterio de exito:** Archivo `implementation-plan.md` creado y commiteado
 
@@ -101,10 +138,10 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 **Acciones:**
 
 1. Seguir instrucciones de `.prompts/git-flow.md`
-2. Push de la rama: `git push -u origin feat/MYM-{N}/{short-name}`
+2. Push de la rama: `git push -u origin feat/{PROJECT_KEY}-{N}/{short-name}`
 3. Crear PR con `gh pr create`:
    - Base branch: `staging`
-   - Titulo: `feat(MYM-{N}): {descripcion corta}`
+   - Titulo: `feat({PROJECT_KEY}-{N}): {descripcion corta}`
    - Body: Resumen de cambios + link a Jira
 4. Obtener URL del PR creado
 
@@ -171,7 +208,7 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 2. Commit y push de los cambios de documentacion:
 
    ```bash
-   git add .context/ && git commit -m "docs: update status report for MYM-{N}"
+   git add .context/ && git commit -m "docs: update status report for {PROJECT_KEY}-{N}"
    git push
    ```
 
@@ -189,7 +226,7 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 
 1. Verificar que todos los checks del PR estan en verde
 2. Mergear usando `gh pr merge {PR_NUMBER} --squash`
-3. Eliminar rama local: `git checkout staging && git branch -d feat/MYM-{N}/{short-name}`
+3. Eliminar rama local: `git checkout staging && git branch -d feat/{PROJECT_KEY}-{N}/{short-name}`
 4. Pull de staging: `git checkout staging && git pull`
 
 **Criterio de exito:** PR mergeado, rama eliminada, staging actualizado
@@ -228,7 +265,7 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
    Feature implementada y desplegada en staging.
 
    PR: [URL del PR]
-   Branch: feat/MYM-{N}/{short-name}
+   Branch: feat/{PROJECT_KEY}-{N}/{short-name}
 
    @{qa-person} La funcionalidad esta lista para pruebas en el ambiente de staging.
    ```
@@ -261,11 +298,11 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 
    ```bash
    # Si la rama no existe:
-   git checkout -b feat/MYM-{N}/{short-name}
+   git checkout -b feat/{PROJECT_KEY}-{N}/{short-name}
 
    # Si la rama ya existe:
-   git checkout feat/MYM-{N}/{short-name}
-   git merge staging -m "chore: sync with staging after MYM-{prev} completion"
+   git checkout feat/{PROJECT_KEY}-{N}/{short-name}
+   git merge staging -m "chore: sync with staging after {PROJECT_KEY}-{prev} completion"
    ```
 
 5. Continuar con Paso 1 de la nueva US
@@ -283,12 +320,13 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 Usar este template al inicio de cada sesion para identificar donde quedamos:
 
 ```markdown
-## US en Trabajo: MYM-{N}
+## US en Trabajo: {PROJECT_KEY}-{N}
 
 | Paso | Estado | Notas |
 |------|--------|-------|
+| 0. Precondiciones Epic | [Pendiente/Completado/Omitido] | feature-test-plan.md, feature-implementation-plan.md |
 | 1. Jira In Progress | [Pendiente/Completado] | |
-| 2. Implementation Plan | [Pendiente/Completado] | Branch: feat/MYM-{N}/... |
+| 2. Implementation Plan | [Pendiente/Completado] | Branch: feat/{PROJECT_KEY}-{N}/... |
 | 3. Implementacion | [Pendiente/En progreso/Completado] | |
 | 4. PR Creado | [Pendiente/Completado] | PR #... |
 | 5. Jira In Review | [Pendiente/Completado/Manual requerido] | |
@@ -297,7 +335,7 @@ Usar este template al inicio de cada sesion para identificar donde quedamos:
 | 8. Merge PR | [Pendiente/Completado] | |
 | 9. Jira Ready For QA | [Pendiente/Completado/Manual requerido] | |
 | 10. Comentario Jira | [Pendiente/Completado] | |
-| 11. Preparar Siguiente US | [Pendiente/Completado] | Rama: feat/MYM-{next}/... |
+| 11. Preparar Siguiente US | [Pendiente/Completado] | Rama: feat/{PROJECT_KEY}-{next}/... |
 
 **Siguiente paso:** [Numero y descripcion del paso pendiente]
 **Blocker actual:** [Si hay alguno]
@@ -312,7 +350,7 @@ Al inicio de cada sesion, la IA debe:
 1. **Verificar ramas locales:**
 
    ```bash
-   git branch --list 'feat/MYM-*'
+   git branch --list 'feat/{PROJECT_KEY}-*'
    ```
 
 2. **Verificar PRs abiertos:**
@@ -338,14 +376,14 @@ Con esta informacion, construir el estado actual y determinar el siguiente paso.
 Archivo: `.context/PRD/release-notes.md`
 
 ```markdown
-# Release Notes - Upex My Mentor
+# Release Notes - {PRODUCT_NAME}
 
 ## [Unreleased]
 
 ### Features Implementadas
 
-#### MYM-{N}: {Titulo de la Story}
-- **Epic:** EPIC-MYM-{N} ({nombre del epic})
+#### {PROJECT_KEY}-{N}: {Titulo de la Story}
+- **Epic:** EPIC-{PROJECT_KEY}-{N} ({nombre del epic})
 - **PR:** #{numero}
 - **Implementado por:** Claude + Developer
 - **Descripcion:** {Descripcion breve de la funcionalidad}
@@ -379,22 +417,20 @@ Archivo: `.context/PRD/release-notes.md`
 
 ---
 
-## Configuracion Jira (Referencia Rapida)
+## Configuracion del Proyecto (Referencia)
 
-- **Cloud ID:** `348c51d9-ae78-4544-b33e-4ee8e89a7534`
-- **Project Key:** `MYM`
-- **Transiciones comunes:**
-  - `Ready For Dev` -> `In Progress`: Usar transition disponible
-  - `In Progress` -> `In Review`: Automatico via PR
-  - `In Review` -> `Ready For QA`: Automatico via Merge
+> **Nota:** Los siguientes valores deben estar definidos en el archivo de configuración del AI tool que se esté usando (`CLAUDE.md`, `GEMINI.md`, `AGENTS.md`, `CURSOR.md`, etc.):
+> - `PROJECT_KEY`: Key del proyecto en Jira (ej: MYM, UPEX, etc.)
+> - `PRODUCT_NAME`: Nombre del producto para release notes
+> - `JIRA_CLOUD_ID`: ID del cloud de Jira (si se usa MCP Atlassian)
+> - `SUPABASE_PROJECT_ID`: ID del proyecto en Supabase (si aplica)
 
----
-
-## Supabase (Referencia Rapida)
-
-- **Project ID:** `ionevzckjyxtpmyenbxc`
+**Transiciones comunes en Jira:**
+- `Ready For Dev` -> `In Progress`: Usar transition disponible
+- `In Progress` -> `In Review`: Automatico via PR
+- `In Review` -> `Ready For QA`: Automatico via Merge
 
 ---
 
-*Ultima actualizacion: 2025-12-07*
+*Ultima actualizacion: 2025-12-08*
 *Generado por Claude Code*
