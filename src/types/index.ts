@@ -156,3 +156,36 @@ export interface VerificationResult {
   error?: string
   updatedAt?: string
 }
+
+// MYM-34: Mentor Review Mentee - Review submission types
+export interface ReviewSubmission {
+  booking_id: string;
+  subject_id: string;  // The reviewee (mentee in MYM-34, mentor in MYM-33)
+  rating: number;      // 1-5
+  comment?: string;    // max 500 chars
+}
+
+export type ReviewEligibilityReason =
+  | 'not_authenticated'
+  | 'booking_not_found'
+  | 'not_participant'
+  | 'not_completed'
+  | 'too_early'
+  | 'already_reviewed';
+
+export interface ReviewEligibility {
+  canReview: boolean;
+  reason?: ReviewEligibilityReason;
+  booking?: BookingForReview;
+}
+
+export interface BookingForReview {
+  id: string;
+  mentor_id: string;
+  student_id: string;
+  mentor_name: string | null;
+  student_name: string | null;
+  session_date: string;
+  duration_minutes: number;
+  status: string;
+}
