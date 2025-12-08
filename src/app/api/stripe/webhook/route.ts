@@ -1,6 +1,7 @@
 /**
  * POST /api/stripe/webhook
  * MYM-25: Handle Stripe webhooks for Connect events
+ * MYM-24: Handle Stripe Checkout completion events
  *
  * This endpoint receives webhook events from Stripe and updates
  * the local database accordingly.
@@ -50,10 +51,14 @@ export async function POST(request: NextRequest) {
         await handleAccountUpdated(event.data.object as Stripe.Account)
         break
 
-      // Future events for MYM-24, MYM-26, MYM-27:
-      // case 'checkout.session.completed':
-      // case 'payment_intent.succeeded':
+      // MYM-24: Payment checkout completed
+      case 'checkout.session.completed':
+        await handleCheckoutSessionCompleted(event.data.object as Stripe.Checkout.Session)
+        break
+
+      // Future events for MYM-26, MYM-27:
       // case 'transfer.created':
+      // case 'transfer.paid':
 
       default:
         console.log(`[Stripe Webhook] Unhandled event type: ${event.type}`)
@@ -124,4 +129,78 @@ async function handleAccountUpdated(account: Stripe.Account): Promise<void> {
     charges_enabled: chargesEnabled,
     payouts_enabled: payoutsEnabled,
   })
+}
+
+/**
+ * MYM-24: Handle checkout.session.completed event
+ * Creates transaction record and updates booking status to 'confirmed'
+ */
+async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session): Promise<void> {
+  console.log(`[Stripe Webhook] checkout.session.completed for ${session.id}`)
+
+  // Extract metadata
+  const { booking_id, mentee_id, mentor_id, gross_amount, platform_fee, net_amount } = session.metadata || {}
+
+  if (!booking_id || !mentee_id || !mentor_id) {
+    console.error('[Stripe Webhook] Missing required metadata in checkout session:', session.metadata)
+    return
+  }
+
+  // Idempotency check: Skip if transaction already exists for this session
+  const { data: existingTransaction } = await supabaseAdmin
+    .from('transactions')
+    .select('id')
+    .eq('stripe_checkout_session_id', session.id)
+    .single()
+
+  if (existingTransaction) {
+    console.log(`[Stripe Webhook] Transaction already exists for session ${session.id}, skipping`)
+    return
+  }
+
+  // Get payment intent for additional details
+  const paymentIntentId = typeof session.payment_intent === 'string'
+    ? session.payment_intent
+    : session.payment_intent?.id || null
+
+  // Create transaction record
+  const { error: transactionError } = await supabaseAdmin
+    .from('transactions')
+    .insert({
+      booking_id,
+      stripe_checkout_session_id: session.id,
+      stripe_payment_intent_id: paymentIntentId,
+      mentee_id,
+      mentor_id,
+      gross_amount: parseFloat(gross_amount || '0'),
+      platform_fee: parseFloat(platform_fee || '0'),
+      net_amount: parseFloat(net_amount || '0'),
+      currency: session.currency || 'usd',
+      status: 'succeeded',
+      payment_method: session.payment_method_types?.[0] || 'card',
+      paid_at: new Date().toISOString(),
+    })
+
+  if (transactionError) {
+    console.error(`[Stripe Webhook] Failed to create transaction for session ${session.id}:`, transactionError)
+    throw transactionError
+  }
+
+  console.log(`[Stripe Webhook] Transaction created for session ${session.id}`)
+
+  // Update booking status to 'confirmed'
+  const { error: bookingError } = await supabaseAdmin
+    .from('bookings')
+    .update({
+      status: 'confirmed',
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', booking_id)
+
+  if (bookingError) {
+    console.error(`[Stripe Webhook] Failed to update booking ${booking_id}:`, bookingError)
+    throw bookingError
+  }
+
+  console.log(`[Stripe Webhook] Booking ${booking_id} confirmed`)
 }

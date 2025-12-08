@@ -105,6 +105,50 @@ export interface PayoutsPageParams {
 }
 
 // ==========================================
+// Transaction Types (MYM-24)
+// ==========================================
+
+export type Transaction = Database['public']['Tables']['transactions']['Row']
+export type TransactionInsert = Database['public']['Tables']['transactions']['Insert']
+export type TransactionUpdate = Database['public']['Tables']['transactions']['Update']
+
+export type TransactionStatus = 'pending' | 'succeeded' | 'failed' | 'refunded'
+
+// ==========================================
+// Checkout API Types (MYM-24)
+// ==========================================
+
+/**
+ * Request to create a Stripe Checkout Session
+ * POST /api/checkout/session
+ */
+export interface CreateCheckoutSessionRequest {
+  booking_id: string
+}
+
+/**
+ * Response from checkout session creation
+ */
+export interface CreateCheckoutSessionResponse {
+  checkout_url: string
+  session_id: string
+}
+
+/**
+ * Query parameters for checkout success page
+ */
+export interface CheckoutSuccessParams {
+  session_id?: string
+}
+
+/**
+ * Query parameters for checkout cancel page
+ */
+export interface CheckoutCancelParams {
+  booking_id?: string
+}
+
+// ==========================================
 // UI Display Messages
 // ==========================================
 
@@ -135,5 +179,29 @@ export const STRIPE_CONNECT_MESSAGES = {
   refresh: {
     title: 'Session Expired',
     message: 'Your onboarding session expired. Please try again.',
+  },
+} as const
+
+/**
+ * MYM-24: Checkout page messages
+ */
+export const CHECKOUT_MESSAGES = {
+  loading: 'Loading booking details...',
+  redirecting: 'Redirecting to secure checkout...',
+  success: {
+    title: 'Payment Successful!',
+    message: 'Your session has been confirmed. Check your email for details.',
+  },
+  cancel: {
+    title: 'Payment Cancelled',
+    message: 'Your payment was not completed. Your booking is held for 15 minutes.',
+  },
+  error: {
+    booking_not_found: 'Booking not found. Please try again.',
+    booking_expired: 'This booking has expired. Please create a new one.',
+    booking_not_pending: 'This booking is not awaiting payment.',
+    mentor_not_connected: 'This mentor cannot receive payments yet. Please contact support.',
+    payment_failed: 'Payment failed. Please try again or use a different card.',
+    generic: 'Something went wrong. Please try again.',
   },
 } as const

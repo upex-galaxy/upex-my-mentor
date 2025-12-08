@@ -221,6 +221,83 @@ export type Database = {
           },
         ]
       }
+      // MYM-24: Payment transaction records
+      transactions: {
+        Row: {
+          id: string
+          booking_id: string
+          stripe_payment_intent_id: string | null
+          stripe_checkout_session_id: string | null
+          mentee_id: string
+          mentor_id: string
+          gross_amount: number
+          platform_fee: number
+          net_amount: number
+          currency: string
+          status: string
+          payment_method: string | null
+          paid_at: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          booking_id: string
+          stripe_payment_intent_id?: string | null
+          stripe_checkout_session_id?: string | null
+          mentee_id: string
+          mentor_id: string
+          gross_amount: number
+          platform_fee: number
+          net_amount: number
+          currency?: string
+          status?: string
+          payment_method?: string | null
+          paid_at?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          booking_id?: string
+          stripe_payment_intent_id?: string | null
+          stripe_checkout_session_id?: string | null
+          mentee_id?: string
+          mentor_id?: string
+          gross_amount?: number
+          platform_fee?: number
+          net_amount?: number
+          currency?: string
+          status?: string
+          payment_method?: string | null
+          paid_at?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_mentee_id_fkey"
+            columns: ["mentee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
