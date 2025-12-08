@@ -18,6 +18,9 @@ guidelines/
 │   ├── context-loading.md         # Qué leer en cada fase
 │   └── mcp-usage-tips.md          # Cuándo usar cada MCP
 │
+├── 🎨 Project-Specific Guidelines
+│   └── data-testid-standards.md   # Estándares de data-testid (proyecto)
+│
 └── 🧪 Test Automation Guidelines
     └── tae/                        # Test Automation Engineering
         ├── README.md
@@ -30,6 +33,11 @@ guidelines/
         ├── component-catalog.md
         └── atc-registry.md
 ```
+
+> **Nota:** Para workflows específicos (Git, Deployment, Testing), consulta los prompts en `.prompts/`:
+> - Git Flow: `.prompts/git-flow.md`
+> - Git Conflicts: `.prompts/git-conflict-fix.md`
+> - Testing Strategy: `.prompts/fase-11-test-automation/test-strategy.md`
 
 ---
 
@@ -171,6 +179,6 @@ Antes de implementar cualquier feature:
 
 ---
 
-**Última actualización**: 2025-10-29
+**Última actualización**: 2025-12-05
 **Tipo**: Reference material (pre-poblado)
 **Fases**: 6-7-8 (Implementation, Code Review, Test Automation)

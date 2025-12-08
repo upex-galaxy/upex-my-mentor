@@ -69,7 +69,7 @@
   "editor.detectIndentation": true, // Detecta indentación del archivo automáticamente
   "editor.tabSize": 2, // Tab size por defecto (puede ser sobreescrito por lenguaje)
   "editor.insertSpaces": true, // Usa espacios en lugar de tabs
-  "editor.wordWrap": "on", // Ajusta líneas largas (mejora lectura)
+  "editor.wordWrap": "off", // Ajusta líneas largas (mejora lectura)
   "editor.wordWrapColumn": 120, // Límite de columna para wrap
   "editor.wrappingIndent": "indent", // Mantiene indentación en líneas wrapped
   // =====================
