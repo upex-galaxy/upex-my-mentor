@@ -12,10 +12,10 @@
 |---------|----------|
 | Total de Stories en repo | 31 |
 | Stories con Shift-Left aplicado (Jira) | 22 |
-| Implementation plans creados | 14 |
-| Implementation plans completados | 16 |
-| Implementation plans pendientes | 6 |
-| PRs abiertos relacionados | 4 |
+| Implementation plans creados | 15 |
+| Implementation plans completados | 17 |
+| Implementation plans pendientes | 5 |
+| PRs abiertos relacionados | 5 |
 
 ---
 
@@ -40,6 +40,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-17** | View Mentor Profile Detail | Ready For QA | ✅ Completado | [#40](../../pulls/40) MERGED |
 | **MYM-20** | Timezone Conversion | Ready For QA | ❌ Pendiente | - |
 | **MYM-22** | Email Calendar Invite | In Review | ✅ Completado | [#44](../../pulls/44) OPEN |
+| **MYM-24** | Session Checkout | In Review | ✅ Completado | [#47](../../pulls/47) OPEN |
 | **MYM-25** | Stripe Connect | Ready For QA | ✅ Completado | [#46](../../pulls/46) MERGED |
 | **MYM-27** | Automated Payouts | In Progress | ❌ Pendiente | [#8](../../pulls/8) OPEN |
 | **MYM-29** | Session Dashboard | Ready For QA | ❌ Pendiente | - |
@@ -58,21 +59,20 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 
 ---
 
-## Implementation Plans Pendientes (6)
+## Implementation Plans Pendientes (5)
 
 Estas US ya tienen Shift-Left y están listas para crear su `implementation-plan.md`:
 
 ### Prioridad Alta (Ready For Dev / In Progress)
-1. **MYM-24** - Session Checkout (EPIC-MYM-23) ← **SIGUIENTE**
-2. **MYM-27** - Automated Payouts (EPIC-MYM-23)
-3. **MYM-29** - Session Dashboard (EPIC-MYM-28)
-4. **MYM-30** - Join Video Call (EPIC-MYM-28)
-5. **MYM-31** - Cancel Session (EPIC-MYM-28)
-6. **MYM-56** - Send Message to Mentor (EPIC-MYM-55)
+1. **MYM-27** - Automated Payouts (EPIC-MYM-23) ← **SIGUIENTE**
+2. **MYM-29** - Session Dashboard (EPIC-MYM-28)
+3. **MYM-30** - Join Video Call (EPIC-MYM-28)
+4. **MYM-31** - Cancel Session (EPIC-MYM-28)
+5. **MYM-56** - Send Message to Mentor (EPIC-MYM-55)
 
 ### Prioridad Media (Shift-Left QA)
-7. **MYM-20** - Timezone Conversion (EPIC-MYM-18)
-8. **MYM-58** - Message Notifications (EPIC-MYM-55)
+6. **MYM-20** - Timezone Conversion (EPIC-MYM-18)
+7. **MYM-58** - Message Notifications (EPIC-MYM-55)
 
 ---
 
@@ -80,6 +80,7 @@ Estas US ya tienen Shift-Left y están listas para crear su `implementation-plan
 
 | PR | Branch | Story | Estado | Descripción |
 |----|--------|-------|--------|-------------|
+| #47 | feat/MYM-24/stripe-checkout | MYM-24 | OPEN | Stripe Checkout for session payments |
 | #44 | feat/MYM-22/email-calendar-invite | MYM-22 | OPEN | Email confirmation + calendar invite |
 | #39 | ale-mym-70 | MYM-70 | OPEN | Theme switching implementation |
 | #12 | MYM-56-... | MYM-56 | OPEN | Messaging implementation |
