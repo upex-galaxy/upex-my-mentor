@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -12,31 +12,42 @@ interface MentorFiltersProps {
   allSkills: string[];
 }
 
+const MAX_KEYWORD_LENGTH = 100;
+const DEBOUNCE_MS = 300;
+
 export function MentorFilters({ allSkills }: MentorFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [query, setQuery] = useState(searchParams.get("q") || "");
+  // MYM-15: Changed from 'q' to 'keyword' param
+  const [keyword, setKeyword] = useState(searchParams.get("keyword") || "");
   const [selectedSkills, setSelectedSkills] = useState<string[]>(
     searchParams.getAll("skill")
   );
 
-  const [debouncedQuery] = useDebounce(query, 500);
+  // MYM-15: Changed debounce from 500ms to 300ms per story requirements
+  const [debouncedKeyword] = useDebounce(keyword, DEBOUNCE_MS);
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
-    if (debouncedQuery) {
-      params.set("q", debouncedQuery);
+
+    // MYM-15: Update keyword param (renamed from 'q')
+    if (debouncedKeyword.trim()) {
+      params.set("keyword", debouncedKeyword.trim());
     } else {
-      params.delete("q");
+      params.delete("keyword");
     }
+
+    // Reset page when filters change
+    params.delete("page");
+    params.delete("cursor");
 
     params.delete("skill");
     selectedSkills.forEach((skill) => params.append("skill", skill));
 
     router.replace(`${pathname}?${params.toString()}`);
-  }, [debouncedQuery, selectedSkills, pathname, router, searchParams]);
+  }, [debouncedKeyword, selectedSkills, pathname, router, searchParams]);
 
   const toggleSkill = (skill: string) => {
     setSelectedSkills((prev) =>
@@ -47,26 +58,43 @@ export function MentorFilters({ allSkills }: MentorFiltersProps) {
   };
 
   const clearFilters = () => {
-    setQuery("");
+    setKeyword("");
     setSelectedSkills([]);
   };
 
-  const hasActiveFilters = query || selectedSkills.length > 0;
+  // MYM-15: Clear only the keyword search
+  const clearKeyword = () => {
+    setKeyword("");
+  };
+
+  const hasActiveFilters = keyword.trim() || selectedSkills.length > 0;
 
   return (
     <div data-testid="mentorFilters" className="sticky top-20 space-y-6">
-      {/* Search */}
+      {/* Search - MYM-15: Enhanced keyword search */}
       <div>
         <label data-testid="search_label" className="text-sm font-medium mb-2 block">Buscar</label>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            data-testid="search_input"
-            placeholder="Buscar por nombre, skill..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="pl-9"
+            data-testid="keyword_search_input"
+            placeholder="Buscar por nombre, bio, specialty..."
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            maxLength={MAX_KEYWORD_LENGTH}
+            className="pl-9 pr-9"
           />
+          {/* MYM-15: Clear keyword button */}
+          {keyword && (
+            <button
+              data-testid="clear_keyword_button"
+              onClick={clearKeyword}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              aria-label="Limpiar búsqueda"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
         </div>
       </div>
 

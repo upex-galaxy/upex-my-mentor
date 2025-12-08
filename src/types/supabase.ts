@@ -183,6 +183,11 @@ export type Database = {
     Functions: {
       get_all_unique_skills: { Args: never; Returns: string[] }
       is_admin: { Args: never; Returns: boolean }
+      // MYM-15: Search mentors by keyword across name, bio, and specialties
+      search_mentors_by_keyword: {
+        Args: { search_keyword: string }
+        Returns: Database['public']['Tables']['profiles']['Row'][]
+      }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
     }
