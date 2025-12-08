@@ -12,10 +12,10 @@
 |---------|----------|
 | Total de Stories en repo | 31 |
 | Stories con Shift-Left aplicado (Jira) | 22 |
-| Implementation plans creados | 10 |
-| Implementation plans completados | 10 |
-| Implementation plans pendientes | 11 |
-| PRs abiertos relacionados | 4 |
+| Implementation plans creados | 11 |
+| Implementation plans completados | 11 |
+| Implementation plans pendientes | 10 |
+| PRs abiertos relacionados | 5 |
 
 ---
 
@@ -45,7 +45,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-29** | Session Dashboard | Ready For QA | ❌ Pendiente | - |
 | **MYM-30** | Join Video Call | Estimation | ❌ Pendiente | - |
 | **MYM-34** | Mentor Review Mentee | Shift-Left QA | ❌ Pendiente | - |
-| **MYM-35** | View Profile Reviews | In Progress | ❌ Pendiente | [#3](../../pulls/3) MERGED |
+| **MYM-35** | View Profile Reviews | In Progress | ✅ Completado | PR pendiente de merge |
 | **MYM-58** | Message Notifications | Shift-Left QA | ❌ Pendiente | - |
 | **MYM-19** | Set Mentor Availability | In Progress | ❌ Pendiente | [#10](../../pulls/10) OPEN |
 | **MYM-31** | Cancel Session | Ready For QA | ❌ Pendiente | - |
@@ -58,25 +58,24 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 
 ---
 
-## Implementation Plans Pendientes (12)
+## Implementation Plans Pendientes (10)
 
 Estas US ya tienen Shift-Left y están listas para crear su `implementation-plan.md`:
 
 ### Prioridad Alta (Ready For Dev / In Progress)
 1. **MYM-19** - Set Mentor Availability (EPIC-MYM-18)
-4. **MYM-22** - Email Calendar Invite (EPIC-MYM-18)
-5. **MYM-25** - Stripe Connect (EPIC-MYM-23)
-6. **MYM-27** - Automated Payouts (EPIC-MYM-23)
-7. **MYM-29** - Session Dashboard (EPIC-MYM-28)
-8. **MYM-31** - Cancel Session (EPIC-MYM-28)
-9. **MYM-35** - View Profile Reviews (EPIC-MYM-32)
-10. **MYM-56** - Send Message to Mentor (EPIC-MYM-55)
+2. **MYM-22** - Email Calendar Invite (EPIC-MYM-18)
+3. **MYM-25** - Stripe Connect (EPIC-MYM-23)
+4. **MYM-27** - Automated Payouts (EPIC-MYM-23)
+5. **MYM-29** - Session Dashboard (EPIC-MYM-28)
+6. **MYM-31** - Cancel Session (EPIC-MYM-28)
+7. **MYM-56** - Send Message to Mentor (EPIC-MYM-55)
 
 ### Prioridad Media (Estimation / Shift-Left QA)
-11. **MYM-20** - Timezone Conversion (EPIC-MYM-18)
-12. **MYM-30** - Join Video Call (EPIC-MYM-28)
-13. **MYM-34** - Mentor Review Mentee (EPIC-MYM-32)
-14. **MYM-58** - Message Notifications (EPIC-MYM-55)
+8. **MYM-20** - Timezone Conversion (EPIC-MYM-18)
+9. **MYM-30** - Join Video Call (EPIC-MYM-28)
+10. **MYM-34** - Mentor Review Mentee (EPIC-MYM-32)
+11. **MYM-58** - Message Notifications (EPIC-MYM-55)
 
 ---
 
@@ -205,7 +204,7 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 |----|---------|------------|-------------|
 | MYM-33 | Leave Review After Session | ❌ Pendiente | - |
 | MYM-34 | Mentor Review Mentee | ✅ Listo | Shift-Left QA |
-| MYM-35 | View Profile Reviews | ✅ Listo | In Progress |
+| MYM-35 | View Profile Reviews | ✅ Completado | In Progress |
 
 #### || EPIC-MYM-55 (Messaging - Paralelo)
 | US | Summary | Shift-Left | Status Jira |
@@ -225,8 +224,8 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 4. **Completar Shift-Left faltante** - Para US sin análisis en cada épica antes de implementar
 5. **Mergear branches pendientes** - MYM-7 tiene plan listo en branch
 
-> **Última US completada:** MYM-15 (Search Mentors by Keyword) - [PR #41](../../pulls/41) MERGED 2025-12-07
-> **Siguiente US:** MYM-16 (Filter Mentors - EPIC-MYM-13) - requiere Shift-Left primero
+> **Última US completada:** MYM-35 (View Profile Reviews) - PR pendiente de merge 2025-12-07
+> **Siguiente US:** MYM-34 (Mentor Review Mentee - EPIC-MYM-32) - tiene Shift-Left listo
 
 ---
 
