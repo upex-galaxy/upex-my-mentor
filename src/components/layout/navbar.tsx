@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
-import { User, LogOut, Menu, Settings, Shield } from "lucide-react";
+import { User, LogOut, Menu, Settings, Shield, Wallet } from "lucide-react";
 import { useState } from "react";
 
 export function Navbar() {
@@ -51,6 +51,16 @@ export function Navbar() {
                   >
                     <Shield className="h-4 w-4" />
                     Admin
+                  </Link>
+                )}
+                {user.role === "mentor" && (
+                  <Link
+                    href="/dashboard/payouts"
+                    data-testid="payouts_link"
+                    className="flex items-center gap-1 text-sm font-medium hover:text-primary transition-colors"
+                  >
+                    <Wallet className="h-4 w-4" />
+                    Pagos
                   </Link>
                 )}
                 <Link
@@ -139,6 +149,17 @@ export function Navbar() {
                   >
                     <Shield className="h-4 w-4" />
                     Admin Panel
+                  </Link>
+                )}
+                {user.role === "mentor" && (
+                  <Link
+                    href="/dashboard/payouts"
+                    data-testid="mobile_payouts_link"
+                    className="flex items-center gap-2 py-2 text-sm font-medium hover:text-primary"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Wallet className="h-4 w-4" />
+                    Pagos
                   </Link>
                 )}
                 <Link

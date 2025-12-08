@@ -13,9 +13,9 @@
 | Total de Stories en repo | 31 |
 | Stories con Shift-Left aplicado (Jira) | 22 |
 | Implementation plans creados | 14 |
-| Implementation plans completados | 15 |
-| Implementation plans pendientes | 7 |
-| PRs abiertos relacionados | 5 |
+| Implementation plans completados | 16 |
+| Implementation plans pendientes | 6 |
+| PRs abiertos relacionados | 4 |
 
 ---
 
@@ -40,7 +40,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-17** | View Mentor Profile Detail | Ready For QA | ✅ Completado | [#40](../../pulls/40) MERGED |
 | **MYM-20** | Timezone Conversion | Ready For QA | ❌ Pendiente | - |
 | **MYM-22** | Email Calendar Invite | In Review | ✅ Completado | [#44](../../pulls/44) OPEN |
-| **MYM-25** | Stripe Connect | Ready For Dev | ❌ Pendiente | - |
+| **MYM-25** | Stripe Connect | Ready For QA | ✅ Completado | [#46](../../pulls/46) MERGED |
 | **MYM-27** | Automated Payouts | In Progress | ❌ Pendiente | [#8](../../pulls/8) OPEN |
 | **MYM-29** | Session Dashboard | Ready For QA | ❌ Pendiente | - |
 | **MYM-30** | Join Video Call | Ready For Dev | ❌ Pendiente | - |
@@ -58,12 +58,12 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 
 ---
 
-## Implementation Plans Pendientes (7)
+## Implementation Plans Pendientes (6)
 
 Estas US ya tienen Shift-Left y están listas para crear su `implementation-plan.md`:
 
 ### Prioridad Alta (Ready For Dev / In Progress)
-1. **MYM-25** - Stripe Connect (EPIC-MYM-23) ← **SIGUIENTE**
+1. **MYM-24** - Session Checkout (EPIC-MYM-23) ← **SIGUIENTE**
 2. **MYM-27** - Automated Payouts (EPIC-MYM-23)
 3. **MYM-29** - Session Dashboard (EPIC-MYM-28)
 4. **MYM-30** - Join Video Call (EPIC-MYM-28)
@@ -181,11 +181,11 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 | MYM-21 | Book a Session | ❌ Pendiente | - |
 | MYM-22 | Email Calendar Invite | ✅ Completado | In Review | [#44](../../pulls/44)
 
-#### 4. EPIC-MYM-23 (Payments & Payouts)
+#### 4. EPIC-MYM-23 (Payments & Payouts) - 25% COMPLETADO
 | US | Summary | Shift-Left | Status Jira |
 |----|---------|------------|-------------|
 | MYM-24 | Session Payment | ❌ Pendiente | - |
-| MYM-25 | Stripe Connect | ✅ Listo | Ready For Dev |
+| MYM-25 | Stripe Connect | ✅ Completado | Ready For QA | [#46](../../pulls/46) MERGED
 | MYM-26 | Platform Fee | ❌ Pendiente | - |
 | MYM-27 | Automated Payouts | ✅ Listo | In Progress |
 
@@ -215,14 +215,14 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 
 ## Próximos Pasos Recomendados
 
-1. **✅ COMPLETADO: MYM-22** - Email Calendar Invite (EPIC-MYM-18) - [PR #44](../../pulls/44) pendiente merge
-2. **Implementar MYM-25** - Stripe Connect (EPIC-MYM-23) - inicia Payments ← **SIGUIENTE**
+1. **✅ COMPLETADO: MYM-25** - Stripe Connect (EPIC-MYM-23) - [PR #46](../../pulls/46) MERGED
+2. **Implementar MYM-24** - Session Checkout (EPIC-MYM-23) - continúa Payments ← **SIGUIENTE**
 3. **Implementar MYM-30** - Join Video Call (EPIC-MYM-28) - inicia Sessions
 4. **Implementar MYM-56** - Send Message to Mentor (EPIC-MYM-55) - paralelo Messaging
 5. **Completar Shift-Left faltante** - MYM-33 (Reviews), MYM-21 (Booking), etc.
 
-> **Última US completada:** MYM-22 (Email Calendar Invite) - [PR #44](../../pulls/44) pendiente merge
-> **Siguiente US:** MYM-25 (Stripe Connect - EPIC-MYM-23)
+> **Última US completada:** MYM-25 (Stripe Connect) - [PR #46](../../pulls/46) MERGED
+> **Siguiente US:** MYM-24 (Session Checkout - EPIC-MYM-23)
 
 ---
 

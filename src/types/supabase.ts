@@ -179,6 +179,48 @@ export type Database = {
           },
         ]
       }
+      // MYM-25: Stripe Connect accounts for mentor payouts
+      stripe_accounts: {
+        Row: {
+          charges_enabled: boolean | null
+          created_at: string | null
+          id: string
+          mentor_id: string
+          onboarding_complete: boolean | null
+          payouts_enabled: boolean | null
+          stripe_account_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          charges_enabled?: boolean | null
+          created_at?: string | null
+          id?: string
+          mentor_id: string
+          onboarding_complete?: boolean | null
+          payouts_enabled?: boolean | null
+          stripe_account_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          charges_enabled?: boolean | null
+          created_at?: string | null
+          id?: string
+          mentor_id?: string
+          onboarding_complete?: boolean | null
+          payouts_enabled?: boolean | null
+          stripe_account_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stripe_accounts_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
