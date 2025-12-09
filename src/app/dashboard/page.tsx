@@ -153,11 +153,18 @@ export default async function DashboardPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Upcoming Sessions */}
             <Card data-testid="upcoming_sessions_card">
-              <CardHeader>
-                <CardTitle>Sesiones Próximas</CardTitle>
-                <CardDescription>
-                  Tus sesiones programadas aparecerán aquí
-                </CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Sesiones Próximas</CardTitle>
+                  <CardDescription>
+                    Tus sesiones programadas aparecerán aquí
+                  </CardDescription>
+                </div>
+                <Link href="/dashboard/sessions">
+                  <Button variant="ghost" size="sm" data-testid="view_all_sessions_button">
+                    Ver todas
+                  </Button>
+                </Link>
               </CardHeader>
               <CardContent>
                 {upcomingSessions.length === 0 ? (
