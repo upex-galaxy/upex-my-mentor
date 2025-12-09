@@ -12,10 +12,10 @@
 |---------|----------|
 | Total de Stories en repo | 31 |
 | Stories con Shift-Left aplicado (Jira) | 22 |
-| Implementation plans creados | 16 |
-| Implementation plans completados | 18 |
+| Implementation plans creados | 17 |
+| Implementation plans completados | 19 |
 | Implementation plans pendientes | 4 |
-| PRs abiertos relacionados | 6 |
+| PRs abiertos relacionados | 5 |
 
 ---
 
@@ -40,9 +40,9 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-17** | View Mentor Profile Detail | Ready For QA | ✅ Completado | [#40](../../pulls/40) MERGED |
 | **MYM-20** | Timezone Conversion | Ready For QA | ❌ Pendiente | - |
 | **MYM-22** | Email Calendar Invite | In Review | ✅ Completado | [#44](../../pulls/44) OPEN |
-| **MYM-24** | Session Checkout | In Review | ✅ Completado | [#47](../../pulls/47) OPEN |
+| **MYM-24** | Session Checkout | Ready For QA | ✅ Completado | [#47](../../pulls/47) MERGED |
 | **MYM-25** | Stripe Connect | Ready For QA | ✅ Completado | [#46](../../pulls/46) MERGED |
-| **MYM-27** | Automated Payouts | In Progress | ❌ Pendiente | [#8](../../pulls/8) OPEN |
+| **MYM-27** | Automated Payouts | Ready For QA | ✅ Completado | [#50](../../pulls/50) MERGED |
 | **MYM-29** | Session Dashboard | Ready For QA | ✅ Completado | [#49](../../pulls/49) MERGED |
 | **MYM-30** | Join Video Call | ⏸️ DEPRIORITIZED | ⏸️ En pausa | [#48](../../pulls/48) NO MERGE - Pendiente decisión equipo: ¿Daily.co vs link propio del mentor? |
 | **MYM-34** | Mentor Review Mentee | Ready For QA | ✅ Completado | [#43](../../pulls/43) MERGED |
@@ -80,14 +80,13 @@ Estas US ya tienen Shift-Left y están listas para crear su `implementation-plan
 
 | PR | Branch | Story | Estado | Descripción |
 |----|--------|-------|--------|-------------|
-| #47 | feat/MYM-24/stripe-checkout | MYM-24 | OPEN | Stripe Checkout for session payments |
 | #44 | feat/MYM-22/email-calendar-invite | MYM-22 | OPEN | Email confirmation + calendar invite |
 | #39 | ale-mym-70 | MYM-70 | OPEN | Theme switching implementation |
 | #12 | MYM-56-... | MYM-56 | OPEN | Messaging implementation |
 | #8 | test/MYM-27/... | MYM-27 | OPEN | Automated payouts test cases |
 | #4 | feature-SLT-MYM7 | MYM-7 | OPEN | Password reset shift-left docs |
 
-**Nota:** PRs #43 (MYM-34), #35 (MYM-12), #42 (MYM-35), #10 (MYM-19) fueron mergeados recientemente.
+**Nota:** PRs #50 (MYM-27), #47 (MYM-24), #49 (MYM-29), #46 (MYM-25) fueron mergeados recientemente.
 
 ---
 
@@ -217,13 +216,14 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 ## Próximos Pasos Recomendados
 
 1. **✅ COMPLETADO: MYM-25** - Stripe Connect (EPIC-MYM-23) - [PR #46](../../pulls/46) MERGED
-2. **Implementar MYM-24** - Session Checkout (EPIC-MYM-23) - continúa Payments ← **SIGUIENTE**
-3. **Implementar MYM-30** - Join Video Call (EPIC-MYM-28) - inicia Sessions
-4. **Implementar MYM-56** - Send Message to Mentor (EPIC-MYM-55) - paralelo Messaging
-5. **Completar Shift-Left faltante** - MYM-33 (Reviews), MYM-21 (Booking), etc.
+2. **✅ COMPLETADO: MYM-24** - Session Checkout (EPIC-MYM-23) - [PR #47](../../pulls/47) MERGED
+3. **✅ COMPLETADO: MYM-27** - Automated Payouts (EPIC-MYM-23) - [PR #50](../../pulls/50) MERGED
+4. **Implementar MYM-31** - Cancel Session (EPIC-MYM-28) ← **SIGUIENTE**
+5. **Implementar MYM-56** - Send Message to Mentor (EPIC-MYM-55) - paralelo Messaging
+6. **Completar Shift-Left faltante** - MYM-33 (Reviews), MYM-21 (Booking), etc.
 
-> **Última US completada:** MYM-25 (Stripe Connect) - [PR #46](../../pulls/46) MERGED
-> **Siguiente US:** MYM-24 (Session Checkout - EPIC-MYM-23)
+> **Última US completada:** MYM-27 (Automated Payouts) - [PR #50](../../pulls/50) MERGED
+> **Siguiente US:** MYM-31 (Cancel Session - EPIC-MYM-28)
 
 ---
 
