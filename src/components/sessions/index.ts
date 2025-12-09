@@ -8,3 +8,5 @@ export { JoinCallButton } from './join-call-button'
 export type { JoinCallButtonProps } from './join-call-button'
 
 export { SessionCard } from './session-card'
+
+export { SessionEmptyState } from './session-empty-state'

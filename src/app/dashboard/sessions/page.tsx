@@ -1,0 +1,104 @@
+/**
+ * MYM-29: Session Dashboard Page
+ *
+ * Server component that displays user's upcoming and past mentoring sessions.
+ * Fetches all bookings where the user is either mentor or student.
+ */
+
+import { redirect } from "next/navigation"
+import { createServer } from "@/lib/supabase/server"
+import { Navbar } from "@/components/layout/navbar"
+import { Footer } from "@/components/layout/footer"
+import { SessionsTabs } from "./_components/sessions-tabs"
+import type { BookingWithParticipants } from "@/types/sessions"
+
+export default async function SessionDashboardPage() {
+  const supabase = await createServer()
+
+  // Get authenticated user
+  const { data: { user: authUser }, error: authError } = await supabase.auth.getUser()
+
+  if (authError || !authUser) {
+    redirect("/login")
+  }
+
+  // Fetch user profile to determine role
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("id, role")
+    .eq("id", authUser.id)
+    .single()
+
+  if (!profile) {
+    redirect("/login")
+  }
+
+  // Fetch all bookings where user is mentor or student
+  // Only show confirmed, completed, and cancelled sessions
+  const { data: bookings, error: bookingsError } = await supabase
+    .from("bookings")
+    .select(`
+      *,
+      mentor:profiles!bookings_mentor_id_fkey(id, name, email, photo_url),
+      student:profiles!bookings_student_id_fkey(id, name, email, photo_url)
+    `)
+    .or(`mentor_id.eq.${authUser.id},student_id.eq.${authUser.id}`)
+    .in("status", ["confirmed", "completed", "cancelled"])
+    .order("session_date", { ascending: false })
+
+  if (bookingsError) {
+    console.error("Error fetching bookings:", bookingsError)
+  }
+
+  // Partition sessions into upcoming and past
+  const now = new Date()
+  const allSessions = (bookings || []) as BookingWithParticipants[]
+
+  const upcomingSessions = allSessions
+    .filter((booking) => {
+      const sessionDate = new Date(booking.session_date)
+      return sessionDate > now && booking.status === "confirmed"
+    })
+    .sort((a, b) => new Date(a.session_date).getTime() - new Date(b.session_date).getTime())
+
+  const pastSessions = allSessions
+    .filter((booking) => {
+      const sessionDate = new Date(booking.session_date)
+      return (
+        sessionDate <= now ||
+        booking.status === "completed" ||
+        booking.status === "cancelled"
+      )
+    })
+    .sort((a, b) => new Date(b.session_date).getTime() - new Date(a.session_date).getTime())
+
+  const userRole = profile.role as 'student' | 'mentor'
+
+  return (
+    <div data-testid="sessionDashboardPage" className="min-h-screen flex flex-col">
+      <Navbar />
+      <main className="flex-1 bg-muted/30">
+        {/* Header */}
+        <div className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 py-12">
+          <div className="container mx-auto px-4">
+            <h1 className="text-3xl font-bold mb-2">Mis Sesiones</h1>
+            <p className="text-muted-foreground">
+              Gestiona tus sesiones de mentoría
+            </p>
+          </div>
+        </div>
+
+        {/* Sessions Content */}
+        <div className="container mx-auto px-4 py-8">
+          <SessionsTabs
+            upcomingSessions={upcomingSessions}
+            pastSessions={pastSessions}
+            currentUserId={authUser.id}
+            currentUserRole={userRole}
+          />
+        </div>
+      </main>
+      <Footer />
+    </div>
+  )
+}
