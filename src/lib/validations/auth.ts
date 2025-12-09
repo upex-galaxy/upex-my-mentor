@@ -7,7 +7,8 @@ export const PASSWORD_MAX_LENGTH = 128
 // Password policy regex patterns
 const hasUppercase = /[A-Z]/
 const hasNumber = /[0-9]/
-const hasSpecialChar = /[^A-Za-z0-9]/
+// Only allow symbols that Supabase Auth accepts: !@#$%^&*()_+-=[]{};'\:"|<>?,./`~
+const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|<>?,./`~]/
 
 // Base password schema with policy validation
 const passwordSchema = z

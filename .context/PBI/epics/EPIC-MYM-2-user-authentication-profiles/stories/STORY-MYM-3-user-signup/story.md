@@ -73,4 +73,6 @@ The user must be able to create a new account on the platform using their email 
 * **Epic:** `.context/PBI/epics/EPIC-MYM-2-user-authentication-profiles/epic.md`
 * **Test Cases:** `.context/PBI/epics/EPIC-MYM-2-user-authentication-profiles/stories/STORY-MYM-3-user-signup/test-cases.md`
 * **Implementation Plan:** `.context/PBI/epics/EPIC-MYM-2-user-authentication-profiles/stories/STORY-MYM-3-user-signup/implementation-plan.md`
-* **Jira:** https://upexgalaxy61.atlassian.net/browse/MYM-3
+* **Bugfix MYM-75:** `.context/PBI/epics/EPIC-MYM-2-user-authentication-profiles/stories/STORY-MYM-3-user-signup/bugfix-MYM-75.md`
+* **Jira Story:** https://upexgalaxy61.atlassian.net/browse/MYM-3
+* **Jira Bug:** https://upexgalaxy61.atlassian.net/browse/MYM-75
