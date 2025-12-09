@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       bookings: {
         Row: {
+          completed_at: string | null  // MYM-27: Session completion timestamp for 24h payout grace period
           confirmation_sent_at: string | null  // MYM-22: Email confirmation timestamp
           created_at: string | null
           duration_minutes: number
@@ -30,6 +31,7 @@ export type Database = {
           videocall_url: string | null
         }
         Insert: {
+          completed_at?: string | null  // MYM-27: Session completion timestamp
           confirmation_sent_at?: string | null  // MYM-22: Email confirmation timestamp
           created_at?: string | null
           duration_minutes?: number
@@ -44,6 +46,7 @@ export type Database = {
           videocall_url?: string | null
         }
         Update: {
+          completed_at?: string | null  // MYM-27: Session completion timestamp
           confirmation_sent_at?: string | null  // MYM-22: Email confirmation timestamp
           created_at?: string | null
           duration_minutes?: number
@@ -294,6 +297,150 @@ export type Database = {
             columns: ["mentor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      // MYM-27: Payout records for mentor earnings
+      payouts: {
+        Row: {
+          id: string
+          mentor_id: string
+          stripe_transfer_id: string | null
+          amount: number
+          currency: string
+          status: string
+          failure_reason: string | null
+          scheduled_for: string | null
+          processed_at: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          mentor_id: string
+          stripe_transfer_id?: string | null
+          amount: number
+          currency?: string
+          status?: string
+          failure_reason?: string | null
+          scheduled_for?: string | null
+          processed_at?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          mentor_id?: string
+          stripe_transfer_id?: string | null
+          amount?: number
+          currency?: string
+          status?: string
+          failure_reason?: string | null
+          scheduled_for?: string | null
+          processed_at?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payouts_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      // MYM-27: Links payouts to transactions (prevents duplicate payouts)
+      payout_items: {
+        Row: {
+          id: string
+          payout_id: string
+          transaction_id: string
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          payout_id: string
+          transaction_id: string
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          payout_id?: string
+          transaction_id?: string
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payout_items_payout_id_fkey"
+            columns: ["payout_id"]
+            isOneToOne: false
+            referencedRelation: "payouts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payout_items_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: true
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      // MYM-27: Failed payout attempts for admin reconciliation
+      failed_payouts: {
+        Row: {
+          id: string
+          booking_id: string
+          transaction_id: string | null
+          mentor_id: string
+          reason: string
+          error_details: Json | null
+          resolved_at: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          booking_id: string
+          transaction_id?: string | null
+          mentor_id: string
+          reason: string
+          error_details?: Json | null
+          resolved_at?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          booking_id?: string
+          transaction_id?: string | null
+          mentor_id?: string
+          reason?: string
+          error_details?: Json | null
+          resolved_at?: string | null
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "failed_payouts_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "failed_payouts_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "failed_payouts_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
             referencedColumns: ["id"]
           },
         ]

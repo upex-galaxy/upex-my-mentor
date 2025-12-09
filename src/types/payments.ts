@@ -205,3 +205,87 @@ export const CHECKOUT_MESSAGES = {
     generic: 'Something went wrong. Please try again.',
   },
 } as const
+
+// ==========================================
+// Payout Types (MYM-27)
+// ==========================================
+
+export type Payout = Database['public']['Tables']['payouts']['Row']
+export type PayoutInsert = Database['public']['Tables']['payouts']['Insert']
+export type PayoutUpdate = Database['public']['Tables']['payouts']['Update']
+
+export type PayoutItem = Database['public']['Tables']['payout_items']['Row']
+export type PayoutItemInsert = Database['public']['Tables']['payout_items']['Insert']
+
+export type FailedPayout = Database['public']['Tables']['failed_payouts']['Row']
+export type FailedPayoutInsert = Database['public']['Tables']['failed_payouts']['Insert']
+
+export type PayoutStatus = 'pending' | 'in_transit' | 'paid' | 'failed' | 'cancelled'
+
+export type PayoutFailureReason =
+  | 'MENTOR_ACCOUNT_RESTRICTED'
+  | 'MENTOR_ACCOUNT_NOT_FOUND'
+  | 'STRIPE_API_ERROR'
+  | 'INSUFFICIENT_BALANCE'
+  | 'ZERO_AMOUNT'
+
+// ==========================================
+// Payout Processing Types
+// ==========================================
+
+/**
+ * Eligible session for payout processing
+ * Returned by the findEligiblePayouts query
+ */
+export interface EligiblePayout {
+  booking_id: string
+  transaction_id: string
+  mentor_id: string
+  net_amount: number
+  stripe_account_id: string
+  payouts_enabled: boolean
+}
+
+/**
+ * Result of processing a single payout
+ */
+export interface PayoutProcessResult {
+  booking_id: string
+  success: boolean
+  payout_id?: string
+  stripe_transfer_id?: string
+  error?: PayoutFailureReason
+  error_details?: string
+}
+
+/**
+ * Summary of payout job execution
+ */
+export interface PayoutJobSummary {
+  started_at: string
+  completed_at: string
+  eligible_count: number
+  processed_count: number
+  success_count: number
+  failed_count: number
+  skipped_count: number
+  results: PayoutProcessResult[]
+}
+
+/**
+ * MYM-27: Payout notification messages
+ */
+export const PAYOUT_MESSAGES = {
+  success: {
+    title: 'Payout Sent!',
+    message: 'Your payout has been sent! Funds arrive in 2-7 business days.',
+  },
+  failed: {
+    title: 'Payout Failed',
+    message: 'Your payout could not be processed. Please check your Stripe account settings.',
+  },
+  pending: {
+    title: 'Payout Pending',
+    message: 'Your payout is being processed.',
+  },
+} as const
