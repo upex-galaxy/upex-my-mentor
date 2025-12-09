@@ -16,31 +16,33 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 
 ### Leer SIEMPRE al inicio de sesion
 
-| Archivo | Proposito |
-|---------|-----------|
-| `.context/PRD/shift-left-status-report.md` | Lista de US con Shift-Left listas para implementar |
-| `.prompts/us-dev-workflow.md` | **Este archivo** - Estrategia de workflow |
-| `CLAUDE.md` / `GEMINI.md` / `AGENTS.md` | Instrucciones del proyecto y configuracion (según AI tool) |
+| Archivo                                    | Proposito                                                  |
+| ------------------------------------------ | ---------------------------------------------------------- |
+| `.context/PRD/shift-left-status-report.md` | Lista de US con Shift-Left listas para implementar         |
+| `.prompts/us-dev-workflow.md`              | **Este archivo** - Estrategia de workflow                  |
+| `CLAUDE.md` / `GEMINI.md` / `AGENTS.md`    | Instrucciones del proyecto y configuracion (según AI tool) |
 
 ### Leer segun la US en trabajo
 
-| Archivo | Cuando leer |
-|---------|-------------|
-| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/feature-test-plan.md` | Paso 0: Verificar precondiciones |
-| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/feature-implementation-plan.md` | Paso 0: Verificar precondiciones |
-| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/stories/STORY-{PROJECT_KEY}-{N}-{name}/story.md` | Antes de planificar |
-| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/stories/STORY-{PROJECT_KEY}-{N}-{name}/test-cases.md` | Durante planificacion |
-| `.context/design-system.md` | Durante implementacion UI |
-| `.context/guidelines/code-standards.md` | Durante code review |
+| Archivo                                                                                                 | Cuando leer                         |
+| ------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/feature-test-plan.md`                                 | Paso 0: Verificar precondiciones    |
+| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/feature-implementation-plan.md`                       | Paso 0: Verificar precondiciones    |
+| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/stories/STORY-{PROJECT_KEY}-{N}-{name}/story.md`      | Antes de planificar                 |
+| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/stories/STORY-{PROJECT_KEY}-{N}-{name}/test-cases.md` | Durante planificacion               |
+| `.context/backend-setup.md`                                                                             | Durante implementacion con DB/Auth  |
+| `.context/api-documentation.md`                                                                         | Durante implementacion de API calls |
+| `.context/design-system.md`                                                                             | Durante implementacion UI           |
+| `.context/guidelines/code-standards.md`                                                                 | Durante code review                 |
 
 ### Prompts a ejecutar (leer UNO a la vez, cuando toque)
 
-| Fase | Prompt | Cuando ejecutar |
-|------|--------|-----------------|
-| 6 | `.prompts/fase-6-planning/story-implementation-plan.md` | Paso 2: Crear plan |
-| 7 | `.prompts/fase-7-implementation/implement-story.md` | Paso 3: Implementar |
-| Git | `.prompts/git-flow.md` | Paso 4: Git flow y PR |
-| 8 | `.prompts/fase-8-code-review/review-pr.md` | Paso 6: Code review |
+| Fase | Prompt                                                  | Cuando ejecutar       |
+| ---- | ------------------------------------------------------- | --------------------- |
+| 6    | `.prompts/fase-6-planning/story-implementation-plan.md` | Paso 2: Crear plan    |
+| 7    | `.prompts/fase-7-implementation/implement-story.md`     | Paso 3: Implementar   |
+| Git  | `.prompts/git-flow.md`                                  | Paso 4: Git flow y PR |
+| 8    | `.prompts/fase-8-code-review/review-pr.md`              | Paso 6: Code review   |
 
 ---
 
@@ -121,7 +123,9 @@ El Epic {EPIC-{PROJECT_KEY}-N} no tiene los siguientes artefactos:
 1. Leer el prompt `.prompts/fase-7-implementation/implement-story.md`
 2. Seguir los steps del `implementation-plan.md` creado
 3. Implementar codigo respetando:
-   - Design system (`.context/design-system.md`)
+   - Frontend Design System (`.context/design-system.md`)
+   - Backend Setup (`.context/backend-setup.md`)
+   - API Documentation (`.context/api-documentation.md`)
    - Code standards (`.context/guidelines/code-standards.md`)
    - Types del backend (`src/lib/types.ts`)
 4. Verificar que pasa linting y build: `bun run lint && bun run build`
@@ -322,20 +326,20 @@ Usar este template al inicio de cada sesion para identificar donde quedamos:
 ```markdown
 ## US en Trabajo: {PROJECT_KEY}-{N}
 
-| Paso | Estado | Notas |
-|------|--------|-------|
-| 0. Precondiciones Epic | [Pendiente/Completado/Omitido] | feature-test-plan.md, feature-implementation-plan.md |
-| 1. Jira In Progress | [Pendiente/Completado] | |
-| 2. Implementation Plan | [Pendiente/Completado] | Branch: feat/{PROJECT_KEY}-{N}/... |
-| 3. Implementacion | [Pendiente/En progreso/Completado] | |
-| 4. PR Creado | [Pendiente/Completado] | PR #... |
-| 5. Jira In Review | [Pendiente/Completado/Manual requerido] | |
-| 6. Code Review | [Pendiente/Completado] | |
-| 7. Docs Actualizados | [Pendiente/Completado] | En rama de la US |
-| 8. Merge PR | [Pendiente/Completado] | |
-| 9. Jira Ready For QA | [Pendiente/Completado/Manual requerido] | |
-| 10. Comentario Jira | [Pendiente/Completado] | |
-| 11. Preparar Siguiente US | [Pendiente/Completado] | Rama: feat/{PROJECT_KEY}-{next}/... |
+| Paso                      | Estado                                  | Notas                                                |
+| ------------------------- | --------------------------------------- | ---------------------------------------------------- |
+| 0. Precondiciones Epic    | [Pendiente/Completado/Omitido]          | feature-test-plan.md, feature-implementation-plan.md |
+| 1. Jira In Progress       | [Pendiente/Completado]                  |                                                      |
+| 2. Implementation Plan    | [Pendiente/Completado]                  | Branch: feat/{PROJECT_KEY}-{N}/...                   |
+| 3. Implementacion         | [Pendiente/En progreso/Completado]      |                                                      |
+| 4. PR Creado              | [Pendiente/Completado]                  | PR #...                                              |
+| 5. Jira In Review         | [Pendiente/Completado/Manual requerido] |                                                      |
+| 6. Code Review            | [Pendiente/Completado]                  |                                                      |
+| 7. Docs Actualizados      | [Pendiente/Completado]                  | En rama de la US                                     |
+| 8. Merge PR               | [Pendiente/Completado]                  |                                                      |
+| 9. Jira Ready For QA      | [Pendiente/Completado/Manual requerido] |                                                      |
+| 10. Comentario Jira       | [Pendiente/Completado]                  |                                                      |
+| 11. Preparar Siguiente US | [Pendiente/Completado]                  | Rama: feat/{PROJECT_KEY}-{next}/...                  |
 
 **Siguiente paso:** [Numero y descripcion del paso pendiente]
 **Blocker actual:** [Si hay alguno]

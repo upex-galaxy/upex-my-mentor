@@ -8,6 +8,18 @@ Continuar la implementación de **STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}** que
 
 ---
 
+## ⚠️ VERIFICACIÓN DE MCPs
+
+**Antes de continuar, verifica MCPs disponibles:**
+
+1. **Context7 MCP** - Úsalo si necesitas consultar documentación de librerías
+2. **Supabase MCP** - Úsalo si la story requiere cambios de DB
+3. **shadcn MCP** - Úsalo si necesitas componentes UI (y el proyecto usa shadcn)
+
+**Nota:** Ver `.prompts/fase-7-implementation/implement-story.md` (sección "Verificación de Herramientas") para más detalles sobre cada MCP.
+
+---
+
 ## 📚 CONTEXTO A LEER
 
 ```

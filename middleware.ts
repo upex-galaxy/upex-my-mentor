@@ -18,7 +18,7 @@ export async function middleware(req: NextRequest) {
           return req.cookies.getAll()
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => req.cookies.set(name, value))
+          cookiesToSet.forEach(({ name, value }) => req.cookies.set(name, value))
           supabaseResponse = NextResponse.next({
             request: req,
           })
@@ -30,9 +30,12 @@ export async function middleware(req: NextRequest) {
     }
   )
 
+  // IMPORTANT: Use getUser() instead of getSession() for security
+  // getSession() reads from cookies which can be spoofed
+  // getUser() validates the JWT with Supabase Auth server
   const {
-    data: { session },
-  } = await supabase.auth.getSession()
+    data: { user },
+  } = await supabase.auth.getUser()
 
   // Define public routes that don't require authentication
   const publicRoutes = ['/', '/login', '/signup']
@@ -42,31 +45,44 @@ export async function middleware(req: NextRequest) {
   const isAdminRoute = req.nextUrl.pathname.startsWith('/admin')
 
   // if user is not signed in and the current path is not a public route, redirect the user to /login
-  if (!session && !isPublicRoute && !isMentorsRoute && !isPasswordResetRoute) {
+  if (!user && !isPublicRoute && !isMentorsRoute && !isPasswordResetRoute) {
     const redirectUrl = new URL('/login', req.url)
     // Preserve the original URL so user can be redirected back after login
     redirectUrl.searchParams.set('redirectTo', req.nextUrl.pathname)
-    return NextResponse.redirect(redirectUrl)
+    // IMPORTANT: Copy cookies to the redirect response
+    const redirectResponse = NextResponse.redirect(redirectUrl)
+    supabaseResponse.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie.name, cookie.value, cookie)
+    })
+    return redirectResponse
   }
 
   // For admin routes, verify user has admin role
-  if (isAdminRoute && session) {
+  if (isAdminRoute && user) {
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')
-      .eq('id', session.user.id)
+      .eq('id', user.id)
       .single()
 
     if (profile?.role !== 'admin') {
       // Non-admin users are redirected to dashboard
-      return NextResponse.redirect(new URL('/dashboard', req.url))
+      const redirectResponse = NextResponse.redirect(new URL('/dashboard', req.url))
+      supabaseResponse.cookies.getAll().forEach((cookie) => {
+        redirectResponse.cookies.set(cookie.name, cookie.value, cookie)
+      })
+      return redirectResponse
     }
   }
 
   // if user is signed in and the current path is /login or /signup, redirect the user to /dashboard
-  if (session && (req.nextUrl.pathname === '/login' || req.nextUrl.pathname === '/signup')) {
-    const redirectUrl = new URL('/dashboard', req.url)
-    return NextResponse.redirect(redirectUrl)
+  if (user && (req.nextUrl.pathname === '/login' || req.nextUrl.pathname === '/signup')) {
+    const redirectResponse = NextResponse.redirect(new URL('/dashboard', req.url))
+    // IMPORTANT: Copy cookies to the redirect response
+    supabaseResponse.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie.name, cookie.value, cookie)
+    })
+    return redirectResponse
   }
 
   return supabaseResponse
