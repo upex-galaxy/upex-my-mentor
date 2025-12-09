@@ -47,6 +47,22 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 - Proporcionar SQL manual para que ejecute
 - O instruir cómo conectar Supabase MCP
 
+### shadcn/ui MCP (Si proyecto usa shadcn)
+**¿Está disponible?** [Verificar si puedes acceder a `mcp__shadcn__*`]
+
+**¿Cuándo usarlo?**
+- Al crear nuevos componentes de UI
+- Para buscar componentes de shadcn disponibles
+- Para confirmar props y API de componentes shadcn
+
+**Beneficios:**
+- Búsqueda semántica de componentes shadcn
+- Acceso a documentación actualizada de componentes
+- Implementación correcta según best practices de shadcn
+
+**Si NO está disponible:**
+- Puedo continuar usando conocimiento interno de shadcn (puede estar desactualizado)
+
 ---
 
 ## 📚 CONTEXTO REQUERIDO
@@ -125,10 +141,17 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
    - Identifica edge cases a considerar
    - (NO implementes tests ahora - eso es Fase 8)
 
-4. **Consulta docs con Context7 MCP**
-   - Si usas biblioteca nueva: consulta su documentación
-   - Si hay duda técnica: consulta best practices
-   - Ejemplo: `mcp__context7__get-library-docs` para Next.js, React, etc.
+4. **Consulta docs con Context7 MCP (CRÍTICO)**
+   - ⚠️ **MCP MÁS IMPORTANTE**: Úsalo siempre que trabajes con librerías externas
+   - Si usas biblioteca nueva: consulta su documentación oficial actualizada
+   - Si hay duda técnica sobre una API: verifica con Context7
+   - Antes de implementar: confirma que la API/método existe en la versión actual
+   - Ejemplo: `mcp__context7__get-library-docs` para Next.js, React, Supabase, etc.
+
+5. **Consulta shadcn MCP (si proyecto usa shadcn)**
+   - Si necesitas componentes UI: busca componentes shadcn disponibles
+   - Si tienes dudas sobre props de componentes: consulta la API
+   - Ejemplo: buscar "dialog", "form", "table" para encontrar componentes apropiados
 
 **Output de este paso:**
 ```markdown

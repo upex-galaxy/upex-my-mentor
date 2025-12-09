@@ -26,6 +26,17 @@ Implementar funcionalidad de [descripción breve].
 
 ## Technical Approach
 
+**⚠️ IMPORTANTE - Verificación con Context7 MCP:**
+Antes de definir el enfoque técnico, si usas librerías externas (React, Next.js, Supabase, etc.):
+- 🔍 **Usa Context7 MCP** para verificar capacidades actuales de las APIs
+- ✅ Confirma que los métodos/hooks que planeas usar existen en la versión del proyecto
+- 📖 Obtén best practices actualizadas de la documentación oficial
+
+**Ejemplo:**
+- Necesitas autenticación → Consulta Context7 para Supabase Auth API actual
+- Necesitas data fetching → Consulta Context7 para React Query o SWR API actual
+- Necesitas routing → Consulta Context7 para Next.js App Router API actual
+
 **Chosen approach:** [Descripción del enfoque técnico]
 
 **Alternatives considered:**
@@ -46,6 +57,17 @@ Implementar funcionalidad de [descripción breve].
 **Design System disponible:** `.context/design-system.md`
 
 ### Componentes del Design System a usar:
+
+**⚠️ IMPORTANTE - Uso de MCP shadcn/ui:**
+Si el proyecto usa shadcn/ui como design system, DEBES usar el MCP de shadcn para:
+- 🔍 Buscar semánticamente componentes disponibles antes de crear nuevos
+- ✅ Confirmar props y API de componentes shadcn
+- 📖 Obtener ejemplos de uso actualizados
+
+**Ejemplo de búsqueda:**
+- Necesitas un diálogo → Busca "dialog" o "modal" en MCP shadcn
+- Necesitas un formulario → Busca "form" en MCP shadcn
+- Necesitas una tabla → Busca "table" o "data-table" en MCP shadcn
 
 **Componentes base (ya existen):**
 - ✅ Button → `variant`: [primary | secondary | outline | ghost | danger]
@@ -232,7 +254,11 @@ Textos que reflejan el contexto específico del proyecto, usando vocabulario del
 - [Detalle 2]
 - [Detalle 3]
 
-**⚠️ IMPORTANTE (si aplica DB):** NO incluir SQL estático. Descripción de cambios necesarios + usar Supabase MCP para ejecutar.
+**⚠️ IMPORTANTE (si aplica DB):** 
+- NO incluir SQL estático en el plan
+- Describir cambios necesarios de schema/tablas
+- **Usar Supabase MCP** durante implementación para ejecutar migrations
+- Si Supabase MCP no está disponible: proporcionar SQL para ejecución manual
 
 **Testing:**
 - [Tipo de test]: [Qué verificar]
