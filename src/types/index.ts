@@ -193,6 +193,24 @@ export type {
 
 export { getConnectState, STRIPE_CONNECT_MESSAGES } from './payments'
 
+// MYM-30: Session Management types
+export type {
+  BookingRow,
+  BookingInsert,
+  BookingUpdate,
+  ParticipantInfo,
+  BookingWithParticipants,
+  SessionTab,
+  SessionFilters,
+  VideoLinkErrorCode,
+  VideoLinkSuccessResponse,
+  VideoLinkErrorResponse,
+  VideoLinkResponse,
+  SessionDisplayStatus,
+} from './sessions'
+
+export { getSessionDisplayStatus } from './sessions'
+
 export type ReviewEligibilityReason =
   | 'not_authenticated'
   | 'booking_not_found'
