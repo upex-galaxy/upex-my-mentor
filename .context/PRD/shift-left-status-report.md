@@ -44,7 +44,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-25** | Stripe Connect | Ready For QA | ✅ Completado | [#46](../../pulls/46) MERGED |
 | **MYM-27** | Automated Payouts | In Progress | ❌ Pendiente | [#8](../../pulls/8) OPEN |
 | **MYM-29** | Session Dashboard | Ready For QA | ❌ Pendiente | - |
-| **MYM-30** | Join Video Call | Ready For Dev | ❌ Pendiente | - |
+| **MYM-30** | Join Video Call | In Review | ✅ Completado | [#48](../../pulls/48) OPEN |
 | **MYM-34** | Mentor Review Mentee | Ready For QA | ✅ Completado | [#43](../../pulls/43) MERGED |
 | **MYM-35** | View Profile Reviews | Ready For QA | ✅ Completado | [#42](../../pulls/42) MERGED |
 | **MYM-58** | Message Notifications | Shift-Left QA | ❌ Pendiente | - |
