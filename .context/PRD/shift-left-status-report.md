@@ -12,10 +12,10 @@
 |---------|----------|
 | Total de Stories en repo | 31 |
 | Stories con Shift-Left aplicado (Jira) | 22 |
-| Implementation plans creados | 15 |
-| Implementation plans completados | 17 |
-| Implementation plans pendientes | 5 |
-| PRs abiertos relacionados | 5 |
+| Implementation plans creados | 16 |
+| Implementation plans completados | 18 |
+| Implementation plans pendientes | 4 |
+| PRs abiertos relacionados | 6 |
 
 ---
 
@@ -43,7 +43,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-24** | Session Checkout | In Review | ✅ Completado | [#47](../../pulls/47) OPEN |
 | **MYM-25** | Stripe Connect | Ready For QA | ✅ Completado | [#46](../../pulls/46) MERGED |
 | **MYM-27** | Automated Payouts | In Progress | ❌ Pendiente | [#8](../../pulls/8) OPEN |
-| **MYM-29** | Session Dashboard | Ready For QA | ❌ Pendiente | - |
+| **MYM-29** | Session Dashboard | Ready For QA | ✅ Completado | [#49](../../pulls/49) MERGED |
 | **MYM-30** | Join Video Call | In Review | ✅ Completado | [#48](../../pulls/48) OPEN |
 | **MYM-34** | Mentor Review Mentee | Ready For QA | ✅ Completado | [#43](../../pulls/43) MERGED |
 | **MYM-35** | View Profile Reviews | Ready For QA | ✅ Completado | [#42](../../pulls/42) MERGED |
