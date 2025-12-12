@@ -81,9 +81,13 @@ async function main() {
     });
   }
   if (fs.existsSync(".context/guidelines")) {
-    fs.cpSync(".context/guidelines", path.join(backupDir, ".context/guidelines"), {
-      recursive: true,
-    });
+    fs.cpSync(
+      ".context/guidelines",
+      path.join(backupDir, ".context/guidelines"),
+      {
+        recursive: true,
+      }
+    );
   }
 
   log(`✅ Backup guardado en: ${backupDir}`, "green");
@@ -159,7 +163,12 @@ async function main() {
     );
     fs.mkdirSync("scripts", { recursive: true });
 
-    const scriptFiles = ["update-prompts.js", "update-prompts.md"];
+    const scriptFiles = [
+      "update-prompts.js",
+      "update-prompts.md",
+      "mcp-builder.js",
+      "email-checker.js",
+    ];
     scriptFiles.forEach((file) => {
       const srcFile = path.join(scriptsPath, file);
       if (fs.existsSync(srcFile)) {
@@ -219,7 +228,9 @@ async function main() {
   console.log("");
   log("📋 Archivos actualizados:", "green");
   console.log("  • .prompts/ (todos los prompts)");
-  console.log("  • .context/guidelines/ (excepto archivos proyecto-específicos)");
+  console.log(
+    "  • .context/guidelines/ (excepto archivos proyecto-específicos)"
+  );
   console.log("  • context-engineering.md");
   console.log("  • docs/ (solo archivos del template)");
   console.log("  • scripts/update-prompts.js y .md");
