@@ -47,6 +47,8 @@ bun.lockb
 # MCP auto-generated config files (read by AI tools)
 .mcpservers.json
 .mcp.json
+opencode.json
+
 # add more mcp assets
 
 # Sentry Config File
