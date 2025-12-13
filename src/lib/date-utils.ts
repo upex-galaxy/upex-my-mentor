@@ -15,6 +15,7 @@ import {
   isAfter,
   parseISO
 } from 'date-fns'
+import { formatInTimeZone } from 'date-fns-tz'
 import { es } from 'date-fns/locale'
 
 // Constants for session timing
@@ -177,4 +178,58 @@ export function getHoursUntilSession(sessionDate: Date | string): number {
   const session = typeof sessionDate === 'string' ? parseISO(sessionDate) : sessionDate
 
   return differenceInMinutes(session, now) / 60
+}
+
+// =============================================================================
+// MYM-20: Timezone-aware formatting functions
+// =============================================================================
+
+/**
+ * Formats a session date for display in a specific timezone.
+ * Example: "Viernes, 15 de noviembre de 2025 a las 10:00"
+ *
+ * @param date - The date to format (assumed UTC)
+ * @param timezone - IANA timezone string (e.g., "America/New_York")
+ * @returns Formatted date string in the specified timezone
+ */
+export function formatSessionDateInTimezone(
+  date: Date | string,
+  timezone: string
+): string {
+  const sessionDate = typeof date === 'string' ? parseISO(date) : date
+
+  try {
+    return formatInTimeZone(
+      sessionDate,
+      timezone,
+      "EEEE, d 'de' MMMM 'de' yyyy 'a las' HH:mm",
+      { locale: es }
+    )
+  } catch {
+    // Fallback to regular format if timezone is invalid
+    return format(sessionDate, "EEEE, d 'de' MMMM 'de' yyyy 'a las' HH:mm", {
+      locale: es
+    })
+  }
+}
+
+/**
+ * Formats a session date in a short format with timezone.
+ * Example: "15 nov, 10:00"
+ *
+ * @param date - The date to format (assumed UTC)
+ * @param timezone - IANA timezone string
+ * @returns Short formatted date string in the specified timezone
+ */
+export function formatSessionDateShortInTimezone(
+  date: Date | string,
+  timezone: string
+): string {
+  const sessionDate = typeof date === 'string' ? parseISO(date) : date
+
+  try {
+    return formatInTimeZone(sessionDate, timezone, 'd MMM, HH:mm', { locale: es })
+  } catch {
+    return format(sessionDate, 'd MMM, HH:mm', { locale: es })
+  }
 }
