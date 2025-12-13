@@ -92,3 +92,49 @@ export interface BookingConfirmationResponse {
   mentorEmail?: EmailSendResult
   error?: string
 }
+
+// =============================================================================
+// MYM-20: Timezone Conversion Types
+// =============================================================================
+
+/**
+ * Information about a timezone
+ */
+export interface TimezoneInfo {
+  timezone: string        // IANA timezone (e.g., "America/New_York")
+  abbreviation: string    // e.g., "EST", "PST"
+  offset: string          // e.g., "UTC-5", "UTC+0"
+  displayName: string     // e.g., "Eastern Standard Time"
+}
+
+/**
+ * Time display with timezone information
+ */
+export interface TimeDisplay {
+  utcTime: Date              // Original UTC time
+  localTime: string          // Formatted in user's timezone
+  timezone: string           // User's timezone
+  mentorTime?: string        // Formatted in mentor's timezone (optional)
+  mentorTimezone?: string    // Mentor's timezone (optional)
+}
+
+/**
+ * Props for the TimezoneIndicator component
+ */
+export interface TimezoneIndicatorProps {
+  userTimezone: string
+  mentorTimezone?: string
+  showBothTimezones?: boolean
+  className?: string
+}
+
+/**
+ * Return type for useTimezone hook
+ */
+export interface UseTimezoneReturn {
+  timezone: string
+  abbreviation: string
+  offset: string
+  isLoading: boolean
+  setTimezone: (tz: string) => void
+}
