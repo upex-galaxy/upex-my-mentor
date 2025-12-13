@@ -3,10 +3,17 @@
 /**
  * BookingSummaryCard
  * MYM-24: Displays booking details before checkout
+ * MYM-20: Updated with timezone conversion
  */
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Calendar, Clock, DollarSign, User } from 'lucide-react'
+import { useTimezone } from '@/hooks/use-timezone'
+import { formatInTimezone } from '@/lib/timezone'
+import {
+  TimezoneIndicator,
+  TimezoneIndicatorSkeleton,
+} from '@/components/scheduling/timezone-indicator'
 
 interface BookingSummaryCardProps {
   mentorName: string
@@ -14,6 +21,7 @@ interface BookingSummaryCardProps {
   durationMinutes: number
   totalCost: number
   platformFee: number
+  mentorTimezone?: string
 }
 
 export function BookingSummaryCard({
@@ -22,19 +30,18 @@ export function BookingSummaryCard({
   durationMinutes,
   totalCost,
   platformFee,
+  mentorTimezone,
 }: BookingSummaryCardProps) {
-  // Format date
+  const { timezone, isLoading } = useTimezone()
+
+  // Format date in user's timezone (MYM-20)
   const date = new Date(sessionDate)
-  const dateFormatted = date.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-  const timeFormatted = date.toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+  const dateFormatted = timezone
+    ? formatInTimezone(date, timezone, "EEEE, d 'de' MMMM, yyyy")
+    : ''
+  const timeFormatted = timezone
+    ? formatInTimezone(date, timezone, 'h:mm a')
+    : ''
 
   return (
     <Card data-testid="bookingSummaryCard" className="w-full max-w-md">
@@ -45,15 +52,30 @@ export function BookingSummaryCard({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Timezone indicator - MYM-20 */}
+        {isLoading ? (
+          <TimezoneIndicatorSkeleton />
+        ) : (
+          <TimezoneIndicator
+            userTimezone={timezone}
+            mentorTimezone={mentorTimezone}
+            showBothTimezones={!!mentorTimezone}
+          />
+        )}
+
         {/* Session details */}
         <div className="space-y-3">
           <div className="flex items-center gap-3 text-muted-foreground">
             <Calendar className="h-4 w-4" />
-            <span data-testid="session_date">{dateFormatted}</span>
+            <span data-testid="session_date">
+              {isLoading ? 'Cargando...' : dateFormatted}
+            </span>
           </div>
           <div className="flex items-center gap-3 text-muted-foreground">
             <Clock className="h-4 w-4" />
-            <span data-testid="session_time">{timeFormatted} ({durationMinutes} minutes)</span>
+            <span data-testid="session_time">
+              {isLoading ? 'Cargando...' : `${timeFormatted} (${durationMinutes} minutos)`}
+            </span>
           </div>
         </div>
 

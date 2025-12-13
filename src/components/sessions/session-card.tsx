@@ -2,6 +2,7 @@
 
 /**
  * MYM-29/MYM-30: Session Card Component
+ * MYM-20: Updated with timezone conversion
  *
  * Displays a session booking with participant info, date/time,
  * and action buttons (Join Call, Cancel).
@@ -14,11 +15,15 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { JoinCallButton } from './join-call-button'
 import {
-  formatSessionDate,
-  formatSessionDateShort,
+  formatSessionDateShortInTimezone,
   getRelativeSessionTime,
 } from '@/lib/date-utils'
 import { cn } from '@/lib/utils'
+import { useTimezone } from '@/hooks/use-timezone'
+import {
+  TimezoneIndicator,
+  TimezoneIndicatorSkeleton,
+} from '@/components/scheduling/timezone-indicator'
 import type { BookingWithParticipants, SessionDisplayStatus } from '@/types/sessions'
 import { getSessionDisplayStatus } from '@/types/sessions'
 
@@ -45,6 +50,9 @@ export function SessionCard({
   currentUserId,
   className,
 }: SessionCardProps) {
+  // MYM-20: Timezone handling
+  const { timezone, isLoading: timezoneLoading } = useTimezone()
+
   // Determine which participant to show (the "other" person)
   const isMentor = booking.mentor_id === currentUserId
   const otherParticipant = isMentor ? booking.student : booking.mentor
@@ -60,6 +68,11 @@ export function SessionCard({
   const statusInfo = statusConfig[displayStatus]
   const isActive = displayStatus === 'joinable' || displayStatus === 'in_progress'
   const isPast = displayStatus === 'completed' || displayStatus === 'cancelled'
+
+  // Format date in user's timezone (MYM-20)
+  const formattedDate = timezone
+    ? formatSessionDateShortInTimezone(booking.session_date, timezone)
+    : ''
 
   return (
     <Card
@@ -114,13 +127,20 @@ export function SessionCard({
       </CardHeader>
 
       <CardContent className="space-y-4">
+        {/* Timezone indicator - MYM-20 */}
+        {timezoneLoading ? (
+          <TimezoneIndicatorSkeleton className="mb-2" />
+        ) : (
+          <TimezoneIndicator userTimezone={timezone} className="mb-2" />
+        )}
+
         {/* Session details */}
         <div className="space-y-2">
           {/* Date and time */}
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Calendar className="h-4 w-4" />
             <span data-testid="session_date">
-              {formatSessionDateShort(booking.session_date)}
+              {timezoneLoading ? 'Cargando...' : formattedDate}
             </span>
             <span className="text-muted-foreground/50">•</span>
             <span data-testid="session_relative_time">
