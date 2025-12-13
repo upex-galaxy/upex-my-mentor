@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       bookings: {
         Row: {
+          communication_channels: Json | null  // MYM-30: Agreed communication channels for the session
           completed_at: string | null  // MYM-27: Session completion timestamp for 24h payout grace period
           confirmation_sent_at: string | null  // MYM-22: Email confirmation timestamp
           created_at: string | null
@@ -24,6 +25,7 @@ export type Database = {
           mentor_id: string
           notes: string | null
           session_date: string
+          session_meeting_link: string | null  // MYM-30: Mentor-provided meeting link for the session
           status: string
           student_id: string
           total_cost: number
@@ -31,6 +33,7 @@ export type Database = {
           videocall_url: string | null
         }
         Insert: {
+          communication_channels?: Json | null  // MYM-30: Agreed communication channels
           completed_at?: string | null  // MYM-27: Session completion timestamp
           confirmation_sent_at?: string | null  // MYM-22: Email confirmation timestamp
           created_at?: string | null
@@ -39,6 +42,7 @@ export type Database = {
           mentor_id: string
           notes?: string | null
           session_date: string
+          session_meeting_link?: string | null  // MYM-30: Mentor-provided meeting link
           status?: string
           student_id: string
           total_cost: number
@@ -46,6 +50,7 @@ export type Database = {
           videocall_url?: string | null
         }
         Update: {
+          communication_channels?: Json | null  // MYM-30: Agreed communication channels
           completed_at?: string | null  // MYM-27: Session completion timestamp
           confirmation_sent_at?: string | null  // MYM-22: Email confirmation timestamp
           created_at?: string | null
@@ -54,6 +59,7 @@ export type Database = {
           mentor_id?: string
           notes?: string | null
           session_date?: string
+          session_meeting_link?: string | null  // MYM-30: Mentor-provided meeting link
           status?: string
           student_id?: string
           total_cost?: number
@@ -71,6 +77,45 @@ export type Database = {
           {
             foreignKeyName: "bookings_student_id_fkey"
             columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      // MYM-30: Communication channel preferences for mentors
+      communication_channels: {
+        Row: {
+          channel_type: string
+          created_at: string | null
+          handle: string | null
+          id: string
+          is_active: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          channel_type: string
+          created_at?: string | null
+          handle?: string | null
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          channel_type?: string
+          created_at?: string | null
+          handle?: string | null
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "communication_channels_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]

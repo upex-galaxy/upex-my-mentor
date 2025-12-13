@@ -3,16 +3,18 @@
 /**
  * MYM-29/MYM-30: Session Card Component
  * MYM-20: Updated with timezone conversion
+ * MYM-30: Added communication channel display
  *
  * Displays a session booking with participant info, date/time,
- * and action buttons (Join Call, Cancel).
+ * communication channel, and action buttons (Join Call, Cancel).
  */
 
 import Image from 'next/image'
-import { Calendar, Clock, User } from 'lucide-react'
+import { Calendar, Clock, User, MessageCircle, Link as LinkIcon, ExternalLink } from 'lucide-react'
 
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { JoinCallButton } from './join-call-button'
 import {
   formatSessionDateShortInTimezone,
@@ -26,12 +28,15 @@ import {
 } from '@/components/scheduling/timezone-indicator'
 import type { BookingWithParticipants, SessionDisplayStatus } from '@/types/sessions'
 import { getSessionDisplayStatus } from '@/types/sessions'
+import { CHANNEL_CONFIG, type CommunicationChannelType } from '@/types/communication'
 
 interface SessionCardProps {
   /** Booking data with participant info */
   booking: BookingWithParticipants
   /** Current user's ID to determine which participant to display */
   currentUserId: string
+  /** Callback when mentor wants to add meeting link (MYM-30) */
+  onAddMeetingLink?: (bookingId: string) => void
   /** Additional CSS classes */
   className?: string
 }
@@ -48,6 +53,7 @@ const statusConfig: Record<SessionDisplayStatus, { label: string; variant: 'defa
 export function SessionCard({
   booking,
   currentUserId,
+  onAddMeetingLink,
   className,
 }: SessionCardProps) {
   // MYM-20: Timezone handling
@@ -155,6 +161,49 @@ export function SessionCard({
               {booking.duration_minutes} minutos
             </span>
           </div>
+
+          {/* MYM-30: Communication Channel */}
+          {booking.communication_channels && Array.isArray(booking.communication_channels) && booking.communication_channels.length > 0 && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <MessageCircle className="h-4 w-4" />
+              <span data-testid="session_channel">
+                {(() => {
+                  const channelData = booking.communication_channels[0] as { type: CommunicationChannelType }
+                  const channelType = channelData?.type
+                  const config = channelType ? CHANNEL_CONFIG[channelType] : null
+                  return config ? config.label : 'Canal de comunicación'
+                })()}
+              </span>
+            </div>
+          )}
+
+          {/* MYM-30: Meeting Link (if set) or Add Link button (for mentor) */}
+          {booking.session_meeting_link ? (
+            <div className="flex items-center gap-2 text-sm">
+              <LinkIcon className="h-4 w-4 text-primary" />
+              <a
+                href={booking.session_meeting_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline flex items-center gap-1"
+                data-testid="session_meeting_link"
+              >
+                Link de la sesión
+                <ExternalLink className="h-3 w-3" />
+              </a>
+            </div>
+          ) : isMentor && !isPast && onAddMeetingLink ? (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onAddMeetingLink(booking.id)}
+              className="w-fit"
+              data-testid="add_meeting_link_button"
+            >
+              <LinkIcon className="h-4 w-4 mr-2" />
+              Agregar link de sesión
+            </Button>
+          ) : null}
         </div>
 
         {/* Actions */}

@@ -1,6 +1,6 @@
-# Implementation Plan: STORY-MYM-30 - Join Video Call
+# Implementation Plan: STORY-MYM-30 - Communication Channel Agreement
 
-**Fecha:** 2025-12-08
+**Fecha:** 2025-12-13
 **Developer:** AI-Generated
 **Story Jira Key:** MYM-30
 **Epic:** EPIC-MYM-28 - Session Management
@@ -10,488 +10,478 @@
 
 ## Overview
 
-Implementar la funcionalidad de "Join Video Call" que permite a usuarios (mentores y mentees) unirse a la videollamada de su sesión programada mediante un botón que aparece 15 minutos antes del inicio.
+Implement the "Communication Channel Agreement" feature that allows mentors to configure their preferred communication channels and mentees to select their preference during booking. This replaces the previous video call integration approach (Daily.co) with a user-defined communication system.
 
-**Acceptance Criteria a cumplir:**
-- Usuario puede ver botón "Unirse a la Llamada" 15 minutos antes de la sesión
-- Al hacer click, se abre nueva pestaña con el enlace de Daily.co
-- API valida que el usuario es participante de la sesión
-- API valida que el tiempo está dentro de la ventana permitida (15 min antes - 1h después)
-- Manejo de errores cuando el enlace no está disponible
+**Acceptance Criteria to fulfill:**
+- Mentors can configure available communication channels in profile settings
+- Mentees can see and select from mentor's channels during booking
+- Session dashboard displays agreed communication channel(s)
+- Mentors can add session-specific meeting links
+- Both parties can access communication details from the dashboard
 
 ---
 
 ## Technical Approach
 
-**Chosen approach:** Componente cliente `JoinCallButton` con validación híbrida (frontend + backend)
+**Chosen approach:** Multi-channel configuration with booking-time selection
 
 **Alternatives considered:**
-- **Solo validación frontend:** Inseguro, usuarios podrían manipular el reloj
-- **Solo validación backend:** Mala UX, botón siempre visible pero falla al hacer click
-- **Server Component con refresh:** Requiere reload constante, mala UX
+- **Fixed platform integration (Daily.co):** More control but costly, vendor lock-in, complex
+- **Single channel per mentor:** Too restrictive, doesn't match user preferences
+- **Free-text communication field:** No structure, hard to display consistently
 
 **Why this approach:**
-- ✅ UX fluida: botón aparece/desaparece según tiempo local
-- ✅ Seguridad: backend es autoridad final
-- ✅ Resiliente a clocks desincronizados
-- ❌ Trade-off: Doble lógica de tiempo (frontend y backend)
+- Flexibility for users to choose familiar tools
+- No external dependencies or costs
+- Clear UX with structured channel options
+- Scalable without per-minute video costs
+
+---
+
+## Database Schema
+
+### Step 1: Create `communication_channels` Table
+
+```sql
+-- Migration: create_communication_channels_table
+CREATE TABLE communication_channels (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  channel_type TEXT NOT NULL CHECK (channel_type IN (
+    'whatsapp', 'slack', 'email', 'google_meet',
+    'zoom', 'discord', 'teams', 'skype', 'telegram'
+  )),
+  handle TEXT, -- Optional: phone, username, meeting link, etc.
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(user_id, channel_type)
+);
+
+-- RLS Policies
+ALTER TABLE communication_channels ENABLE ROW LEVEL SECURITY;
+
+-- Anyone can view active channels (needed for booking flow)
+CREATE POLICY "Anyone can view active channels"
+  ON communication_channels FOR SELECT
+  USING (is_active = true);
+
+-- Users can manage their own channels
+CREATE POLICY "Users can manage own channels"
+  ON communication_channels FOR ALL
+  USING (auth.uid() = user_id);
+
+-- Index for faster lookups
+CREATE INDEX idx_communication_channels_user_id ON communication_channels(user_id);
+CREATE INDEX idx_communication_channels_active ON communication_channels(user_id, is_active) WHERE is_active = true;
+```
+
+### Step 2: Extend `bookings` Table
+
+```sql
+-- Migration: add_communication_to_bookings
+ALTER TABLE bookings
+  ADD COLUMN communication_channels JSONB DEFAULT '[]',
+  ADD COLUMN session_meeting_link TEXT;
+
+-- Example communication_channels value:
+-- [{"type": "google_meet", "handle": "mentor@gmail.com"}, {"type": "slack"}]
+
+COMMENT ON COLUMN bookings.communication_channels IS 'JSON array of agreed communication channels for the session';
+COMMENT ON COLUMN bookings.session_meeting_link IS 'Mentor-provided meeting link for the specific session';
+```
 
 ---
 
 ## UI/UX Design
 
-**Design System:** `.context/design-system.md`
-**Estilo Visual:** Moderno/Bold (Purple palette)
+### Communication Preferences Page (Mentor Settings)
 
-### Componentes del Design System a usar:
-
-**Componentes base (ya existen):**
-- ✅ `Button` → `variant: "default"` para Join Call activo
-- ✅ `Button` → `variant: "outline"` + `disabled` para estado temprano
-- ✅ `Card` → Contenedor de SessionCard (del Epic)
-- ✅ `Badge` → Status indicator
-
-### Componentes custom a crear:
-
-**1. JoinCallButton**
-- **Propósito:** Botón con lógica temporal para unirse a videollamada
-- **Props:**
-  ```typescript
-  interface JoinCallButtonProps {
-    bookingId: string
-    sessionDate: Date
-    videocallUrl: string | null
-    className?: string
-  }
-  ```
-- **Diseño:**
-  - Estado activo: `bg-primary` con icono Video, pulso sutil
-  - Estado temprano: `outline` disabled con tooltip
-  - Estado expirado: Hidden o "Sesión Finalizada"
-- **Ubicación:** `src/components/sessions/join-call-button.tsx`
-
-### Estados de UI:
-
-| Estado | Condición | Apariencia |
-|--------|-----------|------------|
-| **Too Early** | `now < session - 15min` | Button outline disabled + tooltip "Disponible 15 min antes" |
-| **Available** | `session - 15min <= now <= session + duration + 1h` | Button primary + icono Video + texto "Unirse a la Llamada" |
-| **Expired** | `now > session + duration + 1h` | Hidden o Badge "Sesión Finalizada" |
-| **No Link** | `videocall_url === null` | Button disabled + "Enlace no disponible" |
-| **Loading** | Durante API call | Button con spinner |
-| **Error** | API rechaza request | Toast con mensaje de error |
-
-### Wireframe del botón en contexto:
+**Location:** `/dashboard/settings/communication` or `/settings/communication`
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│  SessionCard                                            │
-│  ┌──────┐                                               │
-│  │Avatar│  Carlos Rodriguez                             │
-│  └──────┘  Senior Full-Stack Architect                  │
-│                                                         │
-│  📅 Viernes, 15 Nov 2025 • 10:00 AM (tu hora local)    │
-│  ⏱️  60 minutos                                         │
-│                                                         │
-│  ┌──────────────────────┐  ┌─────────────────────┐     │
-│  │ 📹 Unirse a Llamada  │  │  Cancelar Sesión    │     │
-│  └──────────────────────┘  └─────────────────────┘     │
-│        ↑ primary             ↑ destructive outline      │
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│  Communication Preferences                                   │
+│                                                             │
+│  Select how you'd like to communicate with your mentees.    │
+│  You can enable multiple channels.                          │
+│                                                             │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ [✓] 📹 Google Meet                                   │   │
+│  │     Personal meeting link (optional):                │   │
+│  │     [https://meet.google.com/xxx-xxxx-xxx_________]  │   │
+│  └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ [✓] 📹 Zoom                                          │   │
+│  │     Personal meeting ID (optional):                  │   │
+│  │     [https://zoom.us/j/1234567890________________]   │   │
+│  └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ [ ] 💬 Slack                                         │   │
+│  └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ [✓] 💬 WhatsApp                                      │   │
+│  │     Phone number (optional):                         │   │
+│  │     [+1 234 567 8900_____________________________]   │   │
+│  └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│  ... (more channels)                                        │
+│                                                             │
+│  ⚠️ Select at least one channel to receive bookings.        │
+│                                                             │
+│  [Save Preferences]                                         │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### Personalidad UI/UX (Bold/Moderno):
+### Channel Selection (Booking Flow Step)
 
-- ✅ Sombras pronunciadas en hover: `hover:shadow-lg`
-- ✅ Bordes redondeados: `rounded-lg`
-- ✅ Transiciones suaves: `transition-all duration-200`
-- ✅ Efecto pulse cuando está disponible: `animate-pulse` sutil en borde
-- ✅ Icono Video: `<Video className="h-4 w-4 mr-2" />`
+**Location:** Step in `/mentors/[id]/book` flow
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  How would you like to communicate?                         │
+│                                                             │
+│  Carlos is available on:                                    │
+│                                                             │
+│  ┌───────────────────────────────────────────────────────┐ │
+│  │ [ ] 📹 Google Meet                                     │ │
+│  │     Carlos will share the meeting link before session  │ │
+│  └───────────────────────────────────────────────────────┘ │
+│                                                             │
+│  ┌───────────────────────────────────────────────────────┐ │
+│  │ [✓] 📹 Zoom                                            │ │
+│  │     Carlos will share the meeting link before session  │ │
+│  └───────────────────────────────────────────────────────┘ │
+│                                                             │
+│  ┌───────────────────────────────────────────────────────┐ │
+│  │ [ ] 💬 WhatsApp                                        │ │
+│  │     You'll receive Carlos's contact after booking      │ │
+│  └───────────────────────────────────────────────────────┘ │
+│                                                             │
+│  💡 Select one or more options. You can use multiple       │
+│     channels (e.g., Slack for chat + Zoom for video).      │
+│                                                             │
+│  [← Back]                           [Continue to Payment →] │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Session Card (Dashboard)
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Upcoming Session                                           │
+│                                                             │
+│  ┌──────┐  Carlos Rodriguez                                 │
+│  │ 👤   │  Senior Full-Stack Architect                      │
+│  └──────┘                                                   │
+│                                                             │
+│  📅 Friday, Dec 20, 2025 at 10:00 AM (your time)           │
+│  ⏱️  60 minutes                                             │
+│                                                             │
+│  ────────────────────────────────────────────────────────── │
+│  📹 Communication: Zoom                                     │
+│  [Join via Zoom] ← if link provided                         │
+│  or "Waiting for mentor to share link"                      │
+│  ────────────────────────────────────────────────────────── │
+│                                                             │
+│  [Cancel Session]                                           │
+└─────────────────────────────────────────────────────────────┘
+```
 
 ---
 
 ## Types & Type Safety
 
-**Tipos a usar/crear:**
-
 ```typescript
-// src/lib/types/booking.ts (o agregar a types.ts existente)
+// src/types/communication.ts
 
-import type { Database } from './database.types'
+export type CommunicationChannelType =
+  | 'whatsapp'
+  | 'slack'
+  | 'email'
+  | 'google_meet'
+  | 'zoom'
+  | 'discord'
+  | 'teams'
+  | 'skype'
+  | 'telegram'
 
-export type Booking = Database['public']['Tables']['bookings']['Row']
+export interface CommunicationChannel {
+  id: string
+  userId: string
+  channelType: CommunicationChannelType
+  handle: string | null
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
 
-export type BookingWithParticipants = Booking & {
-  mentor: {
-    id: string
-    name: string
-    photo_url: string | null
-    email: string
+export interface BookingCommunication {
+  type: CommunicationChannelType
+  handle?: string
+}
+
+// Channel metadata for UI
+export const CHANNEL_CONFIG: Record<CommunicationChannelType, {
+  label: string
+  icon: string // Lucide icon name
+  handleLabel: string
+  handlePlaceholder: string
+  requiresLink: boolean // If true, mentor should provide link
+}> = {
+  whatsapp: {
+    label: 'WhatsApp',
+    icon: 'MessageCircle',
+    handleLabel: 'Phone number',
+    handlePlaceholder: '+1 234 567 8900',
+    requiresLink: false
+  },
+  slack: {
+    label: 'Slack',
+    icon: 'Hash',
+    handleLabel: 'Workspace/Channel',
+    handlePlaceholder: 'team.slack.com or #channel',
+    requiresLink: false
+  },
+  email: {
+    label: 'Email',
+    icon: 'Mail',
+    handleLabel: 'Email address',
+    handlePlaceholder: 'Provided from profile',
+    requiresLink: false
+  },
+  google_meet: {
+    label: 'Google Meet',
+    icon: 'Video',
+    handleLabel: 'Personal meeting link',
+    handlePlaceholder: 'https://meet.google.com/xxx-xxxx-xxx',
+    requiresLink: true
+  },
+  zoom: {
+    label: 'Zoom',
+    icon: 'Video',
+    handleLabel: 'Personal meeting ID/link',
+    handlePlaceholder: 'https://zoom.us/j/1234567890',
+    requiresLink: true
+  },
+  discord: {
+    label: 'Discord',
+    icon: 'Headphones',
+    handleLabel: 'Server/Username',
+    handlePlaceholder: 'username#1234 or server invite',
+    requiresLink: false
+  },
+  teams: {
+    label: 'Microsoft Teams',
+    icon: 'Users',
+    handleLabel: 'Meeting link',
+    handlePlaceholder: 'https://teams.microsoft.com/...',
+    requiresLink: true
+  },
+  skype: {
+    label: 'Skype',
+    icon: 'Phone',
+    handleLabel: 'Skype username',
+    handlePlaceholder: 'username',
+    requiresLink: false
+  },
+  telegram: {
+    label: 'Telegram',
+    icon: 'Send',
+    handleLabel: 'Username',
+    handlePlaceholder: '@username',
+    requiresLink: false
   }
-  student: {
-    id: string
-    name: string
-    photo_url: string | null
-    email: string
-  }
 }
-
-// Para el API response
-export interface VideoLinkResponse {
-  success: true
-  url: string
-}
-
-export interface VideoLinkError {
-  success: false
-  error: 'TOO_EARLY_TO_JOIN' | 'SESSION_EXPIRED' | 'NOT_A_PARTICIPANT' | 'LINK_NOT_AVAILABLE'
-  message: string
-}
-
-export type VideoLinkResult = VideoLinkResponse | VideoLinkError
 ```
-
----
-
-## Content Writing
-
-**Vocabulario del dominio:**
-- "Sesión" (no meeting/reunión)
-- "Unirse a la Llamada" (no Join Call)
-- "Mentor" / "Mentee"
-
-**Textos específicos:**
-
-| Ubicación | Texto |
-|-----------|-------|
-| Button activo | "Unirse a la Llamada" |
-| Tooltip temprano | "Disponible 15 minutos antes de la sesión" |
-| Error no participant | "No tienes acceso a esta sesión" |
-| Error too early | "Aún es muy temprano para unirse" |
-| Error expired | "Esta sesión ya finalizó" |
-| Error no link | "El enlace de video no está disponible. Contacta a soporte." |
-| Loading | "Conectando..." |
 
 ---
 
 ## Implementation Steps
 
-### **Step 1: Crear utilidades de fecha para lógica temporal**
+### **Step 1: Database Migrations**
 
-**Task:** Crear funciones helper para cálculos de tiempo de sesión
+**Task:** Create migration for communication_channels table and bookings extension
 
-**File:** `src/lib/date-utils.ts`
-
-**Functions to create:**
-```typescript
-// Verifica si estamos en ventana de join (15 min antes hasta 1h después del fin)
-export function isWithinJoinWindow(sessionDate: Date, durationMinutes: number): boolean
-
-// Calcula tiempo restante hasta que se pueda unir
-export function getTimeUntilJoinable(sessionDate: Date): string | null
-
-// Verifica si la sesión ya expiró (1h después del fin)
-export function isSessionExpired(sessionDate: Date, durationMinutes: number): boolean
-
-// Formatea fecha para mostrar en UI
-export function formatSessionDate(date: Date): string
-```
-
-**Details:**
-- Usar `date-fns` para manipulación de fechas
-- Todas las comparaciones en UTC
-- Considerar duration_minutes del booking
-
-**Testing:**
-- Unit tests con diferentes escenarios de tiempo
-- Edge cases: exactamente 15 min antes, exactamente al finalizar
+**File:** `supabase/migrations/YYYYMMDDHHMMSS_add_communication_channels.sql`
 
 **Estimated time:** 30 min
 
 ---
 
-### **Step 2: Crear API Route para obtener video link**
+### **Step 2: Create Types and Constants**
 
-**Task:** Crear endpoint que valida permisos y tiempo, retorna URL
+**Task:** Add TypeScript types for communication channels
 
-**File:** `src/app/api/bookings/[id]/video-link/route.ts`
+**File:** `src/types/communication.ts`
 
-**Logic:**
-1. Obtener user de sesión (auth)
-2. Fetch booking por ID con Supabase
-3. Validar: usuario es mentor_id o student_id
-4. Validar: tiempo dentro de ventana (15 min antes - 1h después fin)
-5. Validar: videocall_url existe
-6. Retornar URL o error apropiado
+**Details:**
+- Define CommunicationChannelType enum
+- Create CHANNEL_CONFIG with UI metadata
+- Add BookingCommunication interface
 
-**Response codes:**
-- `200 OK`: `{ success: true, url: string }`
-- `403 Forbidden`: NOT_A_PARTICIPANT, TOO_EARLY_TO_JOIN
-- `404 Not Found`: Booking no existe
-- `410 Gone`: SESSION_EXPIRED
-- `503 Service Unavailable`: LINK_NOT_AVAILABLE (videocall_url null)
+**Estimated time:** 20 min
 
-**Edge cases handled:**
-- Usuario no autenticado → 401
-- Booking no existe → 404
-- Usuario no es participante → 403
-- Muy temprano → 403 con código específico
-- Sesión expirada → 410
-- URL null → 503
+---
 
-**Testing:**
-- Test con usuario participante en ventana válida
-- Test con usuario no participante
-- Test antes de ventana
-- Test después de expiración
+### **Step 3: Create Communication Preferences API**
+
+**Task:** API routes for mentor channel configuration
+
+**Files:**
+- `src/app/api/users/[id]/communication-channels/route.ts` (GET)
+- `src/app/api/users/me/communication-channels/route.ts` (PUT)
+
+**Details:**
+```typescript
+// GET /api/users/:id/communication-channels
+// Returns active channels for a user (public for booking flow)
+
+// PUT /api/users/me/communication-channels
+// Updates authenticated user's channel configuration
+// Body: { channels: [{ type: 'zoom', handle: '...', isActive: true }] }
+```
 
 **Estimated time:** 45 min
 
 ---
 
-### **Step 3: Crear componente JoinCallButton**
+### **Step 4: Create Communication Preferences UI**
 
-**Task:** Crear componente cliente con lógica de UI y llamada a API
+**Task:** Settings page for mentors to configure channels
 
-**File:** `src/components/sessions/join-call-button.tsx`
+**Files:**
+- `src/app/(dashboard)/settings/communication/page.tsx`
+- `src/components/settings/communication-preferences.tsx`
+- `src/components/settings/channel-checkbox.tsx`
 
-**Structure:**
-```typescript
-"use client"
+**Details:**
+- Fetch current channels on mount
+- Checkbox + optional handle input for each channel
+- Validation: at least one channel required
+- Save button with loading state
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Video, Loader2 } from 'lucide-react'
-import { isWithinJoinWindow, isSessionExpired, getTimeUntilJoinable } from '@/lib/date-utils'
-import { toast } from 'sonner' // o el toast system del proyecto
+**Estimated time:** 1.5 hours
 
-interface JoinCallButtonProps {
-  bookingId: string
-  sessionDate: Date
-  durationMinutes: number
-  videocallUrl: string | null
-  className?: string
-}
+---
 
-export function JoinCallButton({ ... }: JoinCallButtonProps) {
-  const [isLoading, setIsLoading] = useState(false)
-  const [currentTime, setCurrentTime] = useState(new Date())
+### **Step 5: Create Channel Selector for Booking Flow**
 
-  // Update time every minute for UI reactivity
-  useEffect(() => {
-    const interval = setInterval(() => setCurrentTime(new Date()), 60000)
-    return () => clearInterval(interval)
-  }, [])
+**Task:** Multi-select component for mentee to choose channels
 
-  // Determine button state based on time
-  const canJoin = isWithinJoinWindow(sessionDate, durationMinutes)
-  const isExpired = isSessionExpired(sessionDate, durationMinutes)
-  const timeUntilJoin = getTimeUntilJoinable(sessionDate)
+**Files:**
+- `src/components/booking/channel-selector.tsx`
 
-  // Handle click - validate via API and open in new tab
-  async function handleJoinClick() {
-    setIsLoading(true)
-    try {
-      const response = await fetch(`/api/bookings/${bookingId}/video-link`)
-      const data = await response.json()
-
-      if (data.success) {
-        window.open(data.url, '_blank', 'noopener,noreferrer')
-      } else {
-        toast.error(data.message)
-      }
-    } catch (error) {
-      toast.error('Error al conectar. Intenta de nuevo.')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  // Render based on state
-  if (isExpired) return null // or Badge "Sesión Finalizada"
-
-  if (!canJoin) {
-    return (
-      <Button variant="outline" disabled title={`Disponible ${timeUntilJoin}`}>
-        <Video className="h-4 w-4 mr-2" />
-        Unirse a la Llamada
-      </Button>
-    )
-  }
-
-  return (
-    <Button onClick={handleJoinClick} disabled={isLoading || !videocallUrl}>
-      {isLoading ? (
-        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-      ) : (
-        <Video className="h-4 w-4 mr-2" />
-      )}
-      {isLoading ? 'Conectando...' : 'Unirse a la Llamada'}
-    </Button>
-  )
-}
-```
-
-**States:**
-- Disabled (too early): outline + tooltip
-- Enabled: primary + Video icon
-- Loading: spinner + "Conectando..."
-- No URL: disabled + different message
-
-**Testing:**
-- Render tests para cada estado
-- Click handler mock
+**Details:**
+- Receive mentor's active channels as props
+- Multi-select checkboxes
+- At least one required to proceed
+- Pass selected channels to booking creation
 
 **Estimated time:** 1 hour
 
 ---
 
-### **Step 4: Integrar en SessionCard (preparación para MYM-29)**
+### **Step 6: Update Booking Creation**
 
-**Task:** Crear/actualizar SessionCard para incluir JoinCallButton
+**Task:** Store communication_channels when creating booking
 
-**Note:** MYM-29 (Session Dashboard) creará el SessionCard completo. Esta story solo prepara la integración del botón.
+**File:** `src/app/api/bookings/route.ts` (update POST)
 
-**File:** `src/components/sessions/session-card.tsx` (crear si no existe)
+**Details:**
+- Accept `communicationChannels` in request body
+- Validate channels exist in mentor's active channels
+- Store as JSONB in bookings table
 
-**Minimal structure for this story:**
+**Estimated time:** 30 min
+
+---
+
+### **Step 7: Create Meeting Link API**
+
+**Task:** API for mentor to add session-specific meeting link
+
+**File:** `src/app/api/bookings/[id]/meeting-link/route.ts`
+
+**Details:**
 ```typescript
-import { JoinCallButton } from './join-call-button'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import type { BookingWithParticipants } from '@/lib/types'
-
-interface SessionCardProps {
-  booking: BookingWithParticipants
-  currentUserId: string
-}
-
-export function SessionCard({ booking, currentUserId }: SessionCardProps) {
-  const otherParticipant = booking.mentor_id === currentUserId
-    ? booking.student
-    : booking.mentor
-
-  return (
-    <Card className="hover:shadow-lg transition-shadow">
-      <CardHeader>
-        {/* Avatar + Name - minimal for now */}
-        <div className="flex items-center gap-3">
-          {/* Avatar placeholder */}
-          <div className="font-semibold">{otherParticipant.name}</div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        {/* Date/time display */}
-        <p className="text-muted-foreground mb-4">
-          {formatSessionDate(new Date(booking.session_date))}
-        </p>
-
-        {/* Actions */}
-        <div className="flex gap-2">
-          <JoinCallButton
-            bookingId={booking.id}
-            sessionDate={new Date(booking.session_date)}
-            durationMinutes={booking.duration_minutes}
-            videocallUrl={booking.videocall_url}
-          />
-          {/* Cancel button will be added by MYM-31 */}
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
+// PATCH /api/bookings/:id/meeting-link
+// Only mentor can update
+// Body: { meetingLink: 'https://...' }
+// Triggers notification to mentee
 ```
 
 **Estimated time:** 30 min
 
 ---
 
-### **Step 5: Testing E2E**
+### **Step 8: Update Session Dashboard**
 
-**Task:** Crear test E2E para flujo de Join Call
+**Task:** Display communication details in session cards
 
-**File:** `tests/e2e/join-video-call.spec.ts` (o ubicación según proyecto)
+**File:** Update `src/components/sessions/session-card.tsx`
 
-**Test scenarios:**
-1. Usuario ve botón disabled cuando falta >15 min
-2. Usuario ve botón enabled cuando está en ventana
-3. Click en botón abre nueva pestaña con URL correcta
-4. Usuario no participante recibe error
-
-**Note:** Para E2E, necesitamos seedear un booking en la DB con una session_date cercana. Puede requerir mock de tiempo o booking con fecha específica.
+**Details:**
+- Show channel icon and label
+- If `session_meeting_link` exists, show clickable button
+- If no link and channel requires one, show "Waiting for mentor..."
+- For mentor view: show "Add Meeting Link" button if not set
 
 **Estimated time:** 1 hour
 
 ---
 
-### **Step 6: Documentation and Cleanup**
+### **Step 9: Create Add Meeting Link Modal**
 
-**Task:** Actualizar documentación y limpiar código
+**Task:** Modal for mentor to add meeting link
+
+**File:** `src/components/sessions/add-meeting-link-modal.tsx`
 
 **Details:**
-- Agregar JSDoc a funciones de date-utils
-- Agregar comentarios en API route para lógica de validación
-- Verificar imports y exports
-- Run linting y fix issues
+- Text input for URL
+- Optional URL format validation (warning only)
+- Save button calls PATCH API
+- Success refreshes session card
 
-**Estimated time:** 15 min
-
----
-
-## Technical Decisions (Story-specific)
-
-### Decision 1: Polling vs Real-time para actualización de botón
-
-**Chosen:** Polling simple (setInterval cada 60s)
-
-**Reasoning:**
-- ✅ Simple de implementar
-- ✅ No requiere WebSocket/Supabase Realtime
-- ✅ Suficiente precisión (1 min es aceptable)
-- ❌ Trade-off: Pequeño delay en cambio de estado (max 60s)
-
-### Decision 2: Abrir en nueva pestaña vs modal/embed
-
-**Chosen:** Nueva pestaña (`window.open`)
-
-**Reasoning:**
-- ✅ Experiencia de video completa (pantalla dedicada)
-- ✅ No requiere integración de SDK de Daily.co
-- ✅ Funciona en todos los browsers
-- ❌ Trade-off: Usuario sale de la plataforma temporalmente
+**Estimated time:** 45 min
 
 ---
 
-## Dependencies
+### **Step 10: Testing**
 
-**Pre-requisitos técnicos:**
-- [x] Tabla `bookings` con columna `videocall_url` (ya existe en DB)
-- [x] Auth context funcionando (ya existe)
-- [x] Design system components (Button, Card) (ya existen)
-- [ ] `date-fns` instalado (verificar, probablemente ya está)
-- [ ] Toast system configurado (sonner o similar)
+**Task:** Unit, integration, and E2E tests
 
-**Dependencias con otras stories:**
-- MYM-29 (Session Dashboard): Proveerá la página donde se muestra el botón
-- Este botón puede desarrollarse independientemente y luego integrarse
+**Files:**
+- `tests/unit/communication-channels.test.ts`
+- `tests/integration/booking-with-channels.test.ts`
+- `tests/e2e/communication-preferences.spec.ts`
+
+**Estimated time:** 2 hours
+
+---
+
+## API Endpoints Summary
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| GET | `/api/users/:id/communication-channels` | Get user's active channels | Public |
+| PUT | `/api/users/me/communication-channels` | Update user's channels | Required |
+| GET | `/api/bookings/:id/communication` | Get booking's communication details | Participant only |
+| PATCH | `/api/bookings/:id/meeting-link` | Add/update session meeting link | Mentor only |
 
 ---
 
 ## Risks & Mitigations
 
-**Risk 1:** Clock drift entre cliente y servidor
-- **Impact:** Medium - Botón aparece en momento incorrecto
-- **Mitigation:** Backend es autoridad final; UI es solo UX hint
-
-**Risk 2:** videocall_url es null (Daily.co falló al crear room)
-- **Impact:** High - Usuario no puede unirse a sesión pagada
-- **Mitigation:**
-  - UI muestra mensaje claro de error
-  - Botón "Contactar Soporte" visible
-  - Logging para alertar al equipo
-
-**Risk 3:** Usuario abre múltiples pestañas
-- **Impact:** Low - Múltiples conexiones a la misma sala
-- **Mitigation:** Daily.co maneja esto naturalmente; no es blocker
+| Risk | Impact | Mitigation |
+|------|--------|------------|
+| Mentor doesn't provide link in time | High | Reminder email 24h before; in-platform messaging |
+| Invalid/broken meeting links | Medium | URL format warning; trust-based system |
+| User confusion about multiple channels | Low | Clear UI labels; help text |
+| Migration affects existing bookings | Low | Add columns as nullable; no breaking changes |
 
 ---
 
@@ -499,57 +489,44 @@ export function SessionCard({ booking, currentUserId }: SessionCardProps) {
 
 | Step | Time |
 |------|------|
-| 1. Date utilities | 30 min |
-| 2. API Route | 45 min |
-| 3. JoinCallButton component | 1 hour |
-| 4. SessionCard integration | 30 min |
-| 5. E2E Testing | 1 hour |
-| 6. Documentation | 15 min |
-| **Total** | **4 hours** |
+| 1. Database migrations | 30 min |
+| 2. Types and constants | 20 min |
+| 3. Communication Preferences API | 45 min |
+| 4. Communication Preferences UI | 1.5 hours |
+| 5. Channel Selector component | 1 hour |
+| 6. Update Booking creation | 30 min |
+| 7. Meeting Link API | 30 min |
+| 8. Update Session Dashboard | 1 hour |
+| 9. Add Meeting Link Modal | 45 min |
+| 10. Testing | 2 hours |
+| **Total** | **~9 hours** |
 
-**Story points:** 3 (Medium complexity, clear scope)
+**Story points:** 5 (Medium-High complexity, multiple components)
 
 ---
 
 ## Definition of Done Checklist
 
-- [ ] Código implementado según este plan
-- [ ] Todos los Acceptance Criteria pasando
-- [ ] **Tipos del backend usados correctamente**
-  - [ ] `BookingWithParticipants` type creado/usado
-  - [ ] Props de JoinCallButton tipadas
-  - [ ] API response types definidos
-  - [ ] Zero type errors
-- [ ] **Personalidad UI/UX aplicada (Bold/Moderno)**
-  - [ ] `rounded-lg` en botones
-  - [ ] `hover:shadow-lg` en cards
-  - [ ] Transiciones suaves (`transition-all`)
-  - [ ] Icono Video de Lucide usado
-- [ ] **Content Writing contextual**
-  - [ ] "Unirse a la Llamada" (no "Join Call")
-  - [ ] Mensajes de error en español y claros
-  - [ ] Tooltip informativo
-- [ ] Tests unitarios escritos
-  - [ ] date-utils functions (>90% coverage)
-  - [ ] JoinCallButton render states
-- [ ] Tests de integración
-  - [ ] API route con diferentes scenarios
-- [ ] Tests E2E (referencia: test-cases.md)
-  - [ ] TC-001: Join button visible in window
-  - [ ] TC-002: Click opens correct URL
-  - [ ] TC-003: Button disabled before window
-  - [ ] TC-007: Non-participant rejected
-- [ ] Code review aprobado
-- [ ] Sin errores de linting/TypeScript
-  - [ ] `bun run lint` passes
-  - [ ] `bun run build` passes
+- [ ] Database migration applied successfully
+- [ ] All API endpoints implemented and tested
+- [ ] Communication Preferences page functional
+- [ ] Channel Selector integrated in booking flow
+- [ ] Session Dashboard shows communication details
+- [ ] Mentor can add meeting links
+- [ ] All Acceptance Criteria passing
+- [ ] Unit tests >80% coverage
+- [ ] E2E tests cover critical flows
+- [ ] Code review approved
+- [ ] `bun run lint` passes
+- [ ] `bun run build` passes
 - [ ] Deployed to staging
-- [ ] Manual smoke test en staging
-  - [ ] Botón visible en momento correcto
-  - [ ] Click abre Daily.co en nueva pestaña
-  - [ ] UI responsive en mobile
+- [ ] Manual smoke test passed
 
 ---
 
-*Generado automáticamente - Claude Code*
-*Última actualización: 2025-12-08*
+## Change Log
+
+| Date | Author | Change |
+|------|--------|--------|
+| 2025-12-13 | PO | Complete rewrite: From Daily.co video integration to user-defined communication channels |
+| 2025-12-08 | AI | Original implementation plan for video call integration |

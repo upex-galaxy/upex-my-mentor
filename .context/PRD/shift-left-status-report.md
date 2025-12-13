@@ -45,7 +45,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-25** | Stripe Connect | Ready For QA | ✅ Completado | [#46](../../pulls/46) MERGED |
 | **MYM-27** | Automated Payouts | Ready For QA | ✅ Completado | [#50](../../pulls/50) MERGED |
 | **MYM-29** | Session Dashboard | Ready For QA | ✅ Completado | [#49](../../pulls/49) MERGED |
-| **MYM-30** | Join Video Call | ⏸️ DEPRIORITIZED | ⏸️ En pausa | [#48](../../pulls/48) NO MERGE - Pendiente decisión equipo: ¿Daily.co vs link propio del mentor? |
+| **MYM-30** | Communication Channel Agreement | Ready For Dev | ✅ Refactorizado (2025-12-13) | PR #48 OBSOLETO - Nueva implementación requerida |
 | **MYM-34** | Mentor Review Mentee | Ready For QA | ✅ Completado | [#43](../../pulls/43) MERGED |
 | **MYM-35** | View Profile Reviews | Ready For QA | ✅ Completado | [#42](../../pulls/42) MERGED |
 | **MYM-58** | Message Notifications | Shift-Left QA | ❌ Pendiente | - |
@@ -77,8 +77,11 @@ Estas US ya tienen Shift-Left y están listas para crear su `implementation-plan
 4. **MYM-58** - Message Notifications (EPIC-MYM-55)
 5. **MYM-59** - Mentor Dashboard Messages (EPIC-MYM-55) ← Asignado: Ely
 
-### En Pausa
-- **MYM-30** - Join Video Call (EPIC-MYM-28) ⏸️ DEPRIORITIZED
+### Refactorizado (Listo para Desarrollo)
+- **MYM-30** - Communication Channel Agreement (EPIC-MYM-28) ✅ Refactorizado 2025-12-13
+  - Cambio: De "Join Video Call" (Daily.co) a canales de comunicación definidos por usuario
+  - Nuevo enfoque: Mentor configura canales, Mentee selecciona durante booking
+  - Canales: WhatsApp, Slack, Email, Google Meet, Zoom, Discord, Teams, Skype, Telegram
 
 ---
 
@@ -198,7 +201,7 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 | US | Summary | Shift-Left | Status Jira |
 |----|---------|------------|-------------|
 | MYM-29 | Session Dashboard | ✅ Listo | Ready For QA |
-| MYM-30 | Join Video Call | ✅ Listo | Ready For Dev |
+| MYM-30 | Communication Channel Agreement | ✅ Refactorizado 2025-12-13 | Ready For Dev |
 | MYM-31 | Cancel Session | ✅ Listo | Ready For Dev |
 
 #### 6. EPIC-MYM-32 (Reviews & Reputation) - 67% COMPLETADO
@@ -224,18 +227,20 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 
 | # | US | Epic | Summary | Assignee |
 |---|-----|------|---------|----------|
-| 1 | **MYM-31** | Sessions | Cancel Session | - |
-| 2 | **MYM-56** | Messaging | Send Message to Mentor | - |
-| 3 | **MYM-57** | Messaging | View Conversation History | Yudelkis |
-| 4 | **MYM-58** | Messaging | Message Notifications | - |
-| 5 | **MYM-59** | Messaging | Mentor Dashboard Messages | Ely |
+| 1 | **MYM-30** | Sessions | Communication Channel Agreement | - |
+| 2 | **MYM-31** | Sessions | Cancel Session | - |
+| 3 | **MYM-56** | Messaging | Send Message to Mentor | - |
+| 4 | **MYM-57** | Messaging | View Conversation History | Yudelkis |
+| 5 | **MYM-58** | Messaging | Message Notifications | - |
+| 6 | **MYM-59** | Messaging | Mentor Dashboard Messages | Ely |
 
 ### US Pendientes de Shift-Left
 
 - **MYM-33** - Leave Review (🔄 Isidro en progreso)
 
 > **Última US completada:** MYM-21 (Book a Session) - [PR #56](../../pulls/56) OPEN
-> **Siguiente sugerida:** MYM-31 (Cancel Session) o MYM-57 (Conversation History)
+> **US Refactorizada:** MYM-30 (Communication Channel Agreement) - 2025-12-13
+> **Siguiente sugerida:** MYM-30 (Communication Channel Agreement) - Prioridad alta, nuevo enfoque listo
 
 ---
 
@@ -257,3 +262,4 @@ TOTAL:                            26/31 con Shift-Left (84%)
 ---
 
 *Generado automáticamente - Claude Code*
+*Última actualización: 2025-12-13 - MYM-30 refactorizado (Communication Channel Agreement)*
