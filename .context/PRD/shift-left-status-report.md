@@ -12,9 +12,9 @@
 |---------|----------|
 | Total de Stories en repo | 31 |
 | Stories con Shift-Left aplicado (Jira) | 26 |
-| Implementation plans creados | 18 |
-| Implementation plans completados | 20 |
-| Implementation plans pendientes | 6 |
+| Implementation plans creados | 19 |
+| Implementation plans completados | 21 |
+| Implementation plans pendientes | 5 |
 | PRs abiertos relacionados | 6 |
 
 ---
@@ -39,7 +39,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-15** | Search Mentors by Keyword | Ready For QA | ✅ Completado | [#41](../../pulls/41) MERGED |
 | **MYM-16** | Filter Mentors by Skills | In Review | ✅ Completado | [#54](../../pulls/54) OPEN |
 | **MYM-17** | View Mentor Profile Detail | Ready For QA | ✅ Completado | [#40](../../pulls/40) MERGED |
-| **MYM-20** | Timezone Conversion | Ready For QA | ❌ Pendiente | - |
+| **MYM-20** | Timezone Conversion | Ready For QA | ✅ Completado | [#55](../../pulls/55) MERGED |
 | **MYM-22** | Email Calendar Invite | In Review | ✅ Completado | [#44](../../pulls/44) OPEN |
 | **MYM-24** | Session Checkout | Ready For QA | ✅ Completado | [#47](../../pulls/47) MERGED |
 | **MYM-25** | Stripe Connect | Ready For QA | ✅ Completado | [#46](../../pulls/46) MERGED |
@@ -66,18 +66,17 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 
 ---
 
-## Implementation Plans Pendientes (7)
+## Implementation Plans Pendientes (6)
 
 Estas US ya tienen Shift-Left y están listas para crear su `implementation-plan.md`:
 
 ### Prioridad Alta (Ready For Dev)
-1. **MYM-20** - Timezone Conversion (EPIC-MYM-18)
-2. **MYM-21** - Book a Session (EPIC-MYM-18) ← Asignado: Ely
-3. **MYM-31** - Cancel Session (EPIC-MYM-28)
-4. **MYM-56** - Send Message to Mentor (EPIC-MYM-55) - [#12](../../pulls/12) OPEN
-5. **MYM-57** - View Conversation History (EPIC-MYM-55) ← Asignado: Yudelkis
-6. **MYM-58** - Message Notifications (EPIC-MYM-55)
-7. **MYM-59** - Mentor Dashboard Messages (EPIC-MYM-55) ← Asignado: Ely
+1. **MYM-21** - Book a Session (EPIC-MYM-18) ← Asignado: Ely
+2. **MYM-31** - Cancel Session (EPIC-MYM-28)
+3. **MYM-56** - Send Message to Mentor (EPIC-MYM-55) - [#12](../../pulls/12) OPEN
+4. **MYM-57** - View Conversation History (EPIC-MYM-55) ← Asignado: Yudelkis
+5. **MYM-58** - Message Notifications (EPIC-MYM-55)
+6. **MYM-59** - Mentor Dashboard Messages (EPIC-MYM-55) ← Asignado: Ely
 
 ### En Pausa
 - **MYM-30** - Join Video Call (EPIC-MYM-28) ⏸️ DEPRIORITIZED
@@ -183,7 +182,7 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 | US | Summary | Shift-Left | Status Jira |
 |----|---------|------------|-------------|
 | MYM-19 | Set Mentor Availability | ✅ Completado | Ready For QA |
-| MYM-20 | Timezone Conversion | ✅ Listo | Ready For QA |
+| MYM-20 | Timezone Conversion | ✅ Completado | In Review | [#55](../../pulls/55)
 | MYM-21 | Book a Session | ✅ Listo | Ready For Dev |
 | MYM-22 | Email Calendar Invite | ✅ Completado | In Review | [#44](../../pulls/44)
 
@@ -225,20 +224,19 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 
 | # | US | Epic | Summary | Assignee |
 |---|-----|------|---------|----------|
-| 1 | **MYM-20** | Scheduling | Timezone Conversion | - |
-| 2 | **MYM-21** | Scheduling | Book a Session | Ely |
-| 3 | **MYM-31** | Sessions | Cancel Session | - |
-| 4 | **MYM-56** | Messaging | Send Message to Mentor | - |
-| 5 | **MYM-57** | Messaging | View Conversation History | Yudelkis |
-| 6 | **MYM-58** | Messaging | Message Notifications | - |
-| 7 | **MYM-59** | Messaging | Mentor Dashboard Messages | Ely |
+| 1 | **MYM-21** | Scheduling | Book a Session | Ely |
+| 2 | **MYM-31** | Sessions | Cancel Session | - |
+| 3 | **MYM-56** | Messaging | Send Message to Mentor | - |
+| 4 | **MYM-57** | Messaging | View Conversation History | Yudelkis |
+| 5 | **MYM-58** | Messaging | Message Notifications | - |
+| 6 | **MYM-59** | Messaging | Mentor Dashboard Messages | Ely |
 
 ### US Pendientes de Shift-Left
 
 - **MYM-33** - Leave Review (🔄 Isidro en progreso)
 
-> **Última US completada:** MYM-16 (Filter Mentors by Skills) - [PR #54](../../pulls/54) MERGED
-> **Siguiente sugerida:** MYM-20 (Timezone) o MYM-21 (Book Session)
+> **Última US completada:** MYM-20 (Timezone Conversion) - [PR #55](../../pulls/55) OPEN
+> **Siguiente sugerida:** MYM-21 (Book Session)
 
 ---
 
