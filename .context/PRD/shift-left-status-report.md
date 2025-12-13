@@ -11,11 +11,11 @@
 | Métrica | Cantidad |
 |---------|----------|
 | Total de Stories en repo | 31 |
-| Stories con Shift-Left aplicado (Jira) | 22 |
-| Implementation plans creados | 17 |
-| Implementation plans completados | 19 |
-| Implementation plans pendientes | 4 |
-| PRs abiertos relacionados | 5 |
+| Stories con Shift-Left aplicado (Jira) | 23 |
+| Implementation plans creados | 18 |
+| Implementation plans completados | 20 |
+| Implementation plans pendientes | 3 |
+| PRs abiertos relacionados | 6 |
 
 ---
 
@@ -37,6 +37,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-12** | Email Notification Status | Ready For QA | ✅ Completado | [#35](../../pulls/35) MERGED |
 | **MYM-14** | View All Mentors | Ready For QA | ✅ Completado | [#38](../../pulls/38) MERGED |
 | **MYM-15** | Search Mentors by Keyword | Ready For QA | ✅ Completado | [#41](../../pulls/41) MERGED |
+| **MYM-16** | Filter Mentors by Skills | In Review | ✅ Completado | [#54](../../pulls/54) OPEN |
 | **MYM-17** | View Mentor Profile Detail | Ready For QA | ✅ Completado | [#40](../../pulls/40) MERGED |
 | **MYM-20** | Timezone Conversion | Ready For QA | ❌ Pendiente | - |
 | **MYM-22** | Email Calendar Invite | In Review | ✅ Completado | [#44](../../pulls/44) OPEN |
@@ -80,6 +81,7 @@ Estas US ya tienen Shift-Left y están listas para crear su `implementation-plan
 
 | PR | Branch | Story | Estado | Descripción |
 |----|--------|-------|--------|-------------|
+| #54 | feat/MYM-16/filter-mentors-skills | MYM-16 | OPEN | Filter mentors by skills - Shift-Left + docs |
 | #44 | feat/MYM-22/email-calendar-invite | MYM-22 | OPEN | Email confirmation + calendar invite |
 | #39 | ale-mym-70 | MYM-70 | OPEN | Theme switching implementation |
 | #12 | MYM-56-... | MYM-56 | OPEN | Messaging implementation |
@@ -102,7 +104,7 @@ Los siguientes implementation plans están en branches feature, no en main:
 
 ---
 
-## Stories SIN Shift-Left (9)
+## Stories SIN Shift-Left (8)
 
 Las siguientes US del repo local NO tienen análisis Shift-Left en Jira:
 
@@ -110,7 +112,6 @@ Las siguientes US del repo local NO tienen análisis Shift-Left en Jira:
 |------|------------------------|
 | EPIC-MYM-2 | MYM-5 |
 | EPIC-MYM-8 | MYM-10 |
-| EPIC-MYM-13 | MYM-16 |
 | EPIC-MYM-18 | MYM-21 |
 | EPIC-MYM-23 | MYM-24, MYM-26 |
 | EPIC-MYM-32 | MYM-33 |
@@ -144,7 +145,7 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 |---|-------|--------|--------------|------------|----------------------------|
 | ✅ | EPIC-MYM-2 | Auth & Profiles | Ninguna | 80% (4/5) | ✅ MYM-3, MYM-4, MYM-6, MYM-7 completados |
 | ✅ | EPIC-MYM-8 | Mentor Vetting | Auth ✅ | 100% (4/4) | ✅ MYM-9, MYM-10, MYM-11, MYM-12 completados |
-| ✅ | EPIC-MYM-13 | Mentor Discovery | Vetting ✅ | 75% (3/4) | ✅ MYM-14, MYM-15, MYM-17 completados |
+| ✅ | EPIC-MYM-13 | Mentor Discovery | Vetting ✅ | 100% (4/4) | ✅ MYM-14, MYM-15, MYM-16, MYM-17 completados |
 | **🚧** | EPIC-MYM-18 | Scheduling & Booking | Discovery ✅ | 75% (3/4) | MYM-19 ✅, MYM-22 ✅, MYM-20 |
 | **4** | EPIC-MYM-23 | Payments & Payouts | Scheduling | 50% (2/4) | MYM-25, MYM-27 |
 | **5** | EPIC-MYM-28 | Session Management | Scheduling + Payments | 100% (3/3) | MYM-29, MYM-30, MYM-31 |
@@ -165,12 +166,12 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 | MYM-11 | Approve/Reject Application | ✅ Completado | Ready For QA |
 | MYM-12 | Email Notification Status | ✅ Completado | Ready For QA |
 
-#### 2. EPIC-MYM-13 (Mentor Discovery) - 75% COMPLETADO
+#### 2. EPIC-MYM-13 (Mentor Discovery) - ✅ 100% COMPLETADO
 | US | Summary | Shift-Left | Status Jira |
 |----|---------|------------|-------------|
 | MYM-14 | View All Mentors | ✅ Completado | Ready For QA |
 | MYM-15 | Search Mentors by Keyword | ✅ Completado | Ready For QA |
-| MYM-16 | Filter Mentors | ❌ Pendiente | - |
+| MYM-16 | Filter Mentors by Skills | ✅ Completado | In Review | [#54](../../pulls/54)
 | MYM-17 | View Mentor Profile Detail | ✅ Completado | Ready For QA |
 
 #### 3. EPIC-MYM-18 (Scheduling & Booking) - 50% COMPLETADO
@@ -232,14 +233,14 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 ```
 EPIC-MYM-2  (Auth & Profiles):     4/5  con Shift-Left (80%)
 EPIC-MYM-8  (Mentor Vetting):      4/4  con Shift-Left (100%) ✅ COMPLETADO
-EPIC-MYM-13 (Mentor Discovery):    3/4  con Shift-Left (75%)  ← +MYM-15, MYM-17
+EPIC-MYM-13 (Mentor Discovery):    4/4  con Shift-Left (100%) ✅ COMPLETADO
 EPIC-MYM-18 (Scheduling):          3/4  con Shift-Left (75%)  ← +MYM-19
 EPIC-MYM-23 (Payments):            2/4  con Shift-Left (50%)
 EPIC-MYM-28 (Session Management):  3/3  con Shift-Left (100%) ← +MYM-31
 EPIC-MYM-32 (Reviews):             2/3  con Shift-Left (67%)
 EPIC-MYM-55 (Messaging):           2/4  con Shift-Left (50%)  ← +MYM-56
 ─────────────────────────────────────────────────────────
-TOTAL:                            22/31 con Shift-Left (71%)
+TOTAL:                            23/31 con Shift-Left (74%)
 ```
 
 ---
