@@ -138,3 +138,104 @@ export interface UseTimezoneReturn {
   isLoading: boolean
   setTimezone: (tz: string) => void
 }
+
+// =============================================================================
+// MYM-21: Book a Session Types
+// =============================================================================
+
+/**
+ * Mentor's weekly availability slot
+ * Represents a recurring time block on a specific day of the week
+ */
+export interface MentorAvailability {
+  id: string
+  mentor_id: string
+  day_of_week: number  // 0-6 (Sunday-Saturday)
+  start_time: string   // HH:MM format (e.g., "09:00")
+  end_time: string     // HH:MM format (e.g., "17:00")
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+/**
+ * A specific bookable time slot
+ */
+export interface TimeSlot {
+  datetime: Date        // UTC datetime
+  displayTime: string   // Formatted in user's timezone (e.g., "10:00 AM")
+  mentorTime: string    // Formatted in mentor's timezone
+  isAvailable: boolean
+  isSelected?: boolean
+}
+
+/**
+ * Data required to create a booking
+ */
+export interface BookingFormData {
+  mentorId: string
+  sessionDate: Date     // UTC
+  durationMinutes: number
+  totalCost: number
+}
+
+/**
+ * Result of a booking creation attempt
+ */
+export interface CreateBookingResult {
+  success: boolean
+  bookingId?: string
+  checkoutUrl?: string
+  error?: string
+  errorCode?: 'SLOT_TAKEN' | 'UNAUTHORIZED' | 'STRIPE_ERROR' | 'UNKNOWN'
+}
+
+/**
+ * Props for the BookingCalendar component
+ */
+export interface BookingCalendarProps {
+  mentorId: string
+  mentorName: string
+  mentorTimezone: string
+  hourlyRate: number
+  mentorPhotoUrl?: string
+}
+
+/**
+ * Props for the BookingSummary component
+ */
+export interface BookingSummaryProps {
+  mentor: {
+    id: string
+    name: string
+    photoUrl?: string
+  }
+  selectedSlot: TimeSlot
+  totalCost: number
+  isSubmitting: boolean
+  onConfirm: () => void
+  onCancel: () => void
+}
+
+/**
+ * Props for the TimeSlotPicker component
+ */
+export interface TimeSlotPickerProps {
+  slots: TimeSlot[]
+  selectedSlot: TimeSlot | null
+  onSelect: (slot: TimeSlot) => void
+  isLoading?: boolean
+}
+
+/**
+ * Mentor data for booking page
+ */
+export interface MentorForBooking {
+  id: string
+  name: string
+  email: string
+  photoUrl?: string
+  hourlyRate: number
+  timezone: string
+  isVerified: boolean
+}

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { createServer } from "@/lib/supabase/server";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
@@ -200,13 +201,12 @@ export default async function MentorProfilePage({
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <Button data-testid="book_button" className="w-full" size="lg" disabled>
-                    <Calendar className="mr-2 h-5 w-5" />
-                    Agendar Sesión
+                  <Button data-testid="book_button" className="w-full" size="lg" asChild>
+                    <Link href={`/mentors/${mentor.id}/book`}>
+                      <Calendar className="mr-2 h-5 w-5" />
+                      Reservar Sesión
+                    </Link>
                   </Button>
-                  <p data-testid="unavailable_note" className="text-xs text-center text-muted-foreground">
-                    El sistema de booking estará disponible próximamente
-                  </p>
 
                   <div className="pt-4 border-t space-y-3 text-sm">
                     <div data-testid="session_duration" className="flex items-center text-muted-foreground">
