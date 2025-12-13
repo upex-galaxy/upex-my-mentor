@@ -77,6 +77,11 @@ export async function createBooking(
   }
 
   // 4. Create booking with status 'pending_payment'
+  // MYM-30: Include communication_channels as JSONB array
+  const communicationChannels = data.communicationChannel
+    ? [{ type: data.communicationChannel, selectedByMentee: true }]
+    : null
+
   const { data: booking, error: bookingError } = await supabase
     .from('bookings')
     .insert({
@@ -86,6 +91,7 @@ export async function createBooking(
       duration_minutes: data.durationMinutes,
       total_cost: data.totalCost,
       status: 'pending_payment',
+      communication_channels: communicationChannels,
     })
     .select('id')
     .single()

@@ -1,3 +1,5 @@
+import type { CommunicationChannelType } from './communication'
+
 // MYM-22: Email Confirmation and Calendar Invite Types
 
 /**
@@ -177,6 +179,7 @@ export interface BookingFormData {
   sessionDate: Date     // UTC
   durationMinutes: number
   totalCost: number
+  communicationChannel?: CommunicationChannelType  // MYM-30: Selected communication channel
 }
 
 /**

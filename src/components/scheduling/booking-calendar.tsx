@@ -1,11 +1,12 @@
 'use client'
 
 /**
- * BookingCalendar Component - MYM-21
+ * BookingCalendar Component - MYM-21, MYM-30
  *
  * Main booking interface that combines:
  * - Month calendar for date selection
  * - Time slots for the selected day
+ * - Communication channel selection (MYM-30)
  * - Booking summary for confirmation
  */
 
@@ -16,6 +17,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { TimezoneIndicator } from '@/components/scheduling/timezone-indicator'
 import { TimeSlotPicker, TimeSlotPickerSkeleton } from '@/components/scheduling/time-slot-picker'
 import { BookingSummary } from '@/components/scheduling/booking-summary'
+import { ChannelSelector } from '@/components/booking/channel-selector'
 import { toast } from 'sonner'
 import { detectUserTimezone, formatInTimezone } from '@/lib/timezone'
 import { createBooking } from '@/app/mentors/[id]/book/actions'
@@ -33,6 +35,7 @@ import type {
   TimeSlot,
   MentorAvailability,
 } from '@/types/scheduling'
+import type { CommunicationChannelType } from '@/types/communication'
 
 // Default mentor timezone (will be replaced with actual mentor timezone from profile)
 const DEFAULT_TIMEZONE = 'America/New_York'
@@ -62,6 +65,7 @@ export function BookingCalendar({
   // State
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null)
+  const [selectedChannel, setSelectedChannel] = useState<CommunicationChannelType | null>(null)
   const [availability, setAvailability] = useState<MentorAvailability[]>([])
   const [existingBookings, setExistingBookings] = useState<Date[]>([])
   const [slots, setSlots] = useState<TimeSlot[]>([])
@@ -177,7 +181,7 @@ export function BookingCalendar({
 
   // Handle booking confirmation
   const handleConfirm = async () => {
-    if (!selectedSlot) return
+    if (!selectedSlot || !selectedChannel) return
 
     setIsSubmitting(true)
 
@@ -187,6 +191,7 @@ export function BookingCalendar({
         sessionDate: selectedSlot.datetime,
         durationMinutes: 60,
         totalCost: hourlyRate,
+        communicationChannel: selectedChannel,
       })
 
       if (result.success && result.checkoutUrl) {
@@ -315,8 +320,17 @@ export function BookingCalendar({
           </CardContent>
         </Card>
 
-        {/* Booking Summary - appears when slot is selected */}
+        {/* MYM-30: Channel Selector - appears when slot is selected */}
         {selectedSlot && (
+          <ChannelSelector
+            mentorId={mentorId}
+            selectedChannel={selectedChannel}
+            onChannelSelect={setSelectedChannel}
+          />
+        )}
+
+        {/* Booking Summary - appears when slot AND channel are selected */}
+        {selectedSlot && selectedChannel && (
           <BookingSummary
             mentor={{
               id: mentorId,

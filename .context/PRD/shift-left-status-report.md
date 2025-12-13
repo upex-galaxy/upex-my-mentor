@@ -12,10 +12,10 @@
 |---------|----------|
 | Total de Stories en repo | 31 |
 | Stories con Shift-Left aplicado (Jira) | 26 |
-| Implementation plans creados | 20 |
-| Implementation plans completados | 22 |
-| Implementation plans pendientes | 4 |
-| PRs abiertos relacionados | 7 |
+| Implementation plans creados | 21 |
+| Implementation plans completados | 23 |
+| Implementation plans pendientes | 3 |
+| PRs abiertos relacionados | 8 |
 
 ---
 
@@ -45,7 +45,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-25** | Stripe Connect | Ready For QA | ✅ Completado | [#46](../../pulls/46) MERGED |
 | **MYM-27** | Automated Payouts | Ready For QA | ✅ Completado | [#50](../../pulls/50) MERGED |
 | **MYM-29** | Session Dashboard | Ready For QA | ✅ Completado | [#49](../../pulls/49) MERGED |
-| **MYM-30** | Join Video Call | ⏸️ DEPRIORITIZED | ⏸️ En pausa | [#48](../../pulls/48) NO MERGE - Pendiente decisión equipo: ¿Daily.co vs link propio del mentor? |
+| **MYM-30** | Communication Channel Agreement | Ready For QA | ✅ Completado | [#57](../../pulls/57) OPEN |
 | **MYM-34** | Mentor Review Mentee | Ready For QA | ✅ Completado | [#43](../../pulls/43) MERGED |
 | **MYM-35** | View Profile Reviews | Ready For QA | ✅ Completado | [#42](../../pulls/42) MERGED |
 | **MYM-58** | Message Notifications | Shift-Left QA | ❌ Pendiente | - |
@@ -66,7 +66,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 
 ---
 
-## Implementation Plans Pendientes (5)
+## Implementation Plans Pendientes (4)
 
 Estas US ya tienen Shift-Left y están listas para crear su `implementation-plan.md`:
 
@@ -77,8 +77,10 @@ Estas US ya tienen Shift-Left y están listas para crear su `implementation-plan
 4. **MYM-58** - Message Notifications (EPIC-MYM-55)
 5. **MYM-59** - Mentor Dashboard Messages (EPIC-MYM-55) ← Asignado: Ely
 
-### En Pausa
-- **MYM-30** - Join Video Call (EPIC-MYM-28) ⏸️ DEPRIORITIZED
+### Recientemente Completado
+- **MYM-30** - Communication Channel Agreement (EPIC-MYM-28) ✅ Implementado 2025-12-13
+  - PR: [#57](../../pulls/57)
+  - Canales soportados: WhatsApp, Slack, Email, Google Meet, Zoom, Discord, Teams, Skype, Telegram
 
 ---
 
@@ -86,6 +88,7 @@ Estas US ya tienen Shift-Left y están listas para crear su `implementation-plan
 
 | PR | Branch | Story | Estado | Descripción |
 |----|--------|-------|--------|-------------|
+| #57 | feat/MYM-30/communication-channels | MYM-30 | OPEN | Communication channel agreement - flexible channels |
 | #56 | feat/MYM-21/book-session | MYM-21 | OPEN | Booking calendar and session scheduling |
 | #54 | feat/MYM-16/filter-mentors-skills | MYM-16 | OPEN | Filter mentors by skills - Shift-Left + docs |
 | #44 | feat/MYM-22/email-calendar-invite | MYM-22 | OPEN | Email confirmation + calendar invite |
@@ -194,11 +197,11 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 | MYM-26 | Platform Fee | ❌ Pendiente | - |
 | MYM-27 | Automated Payouts | ✅ Listo | In Progress |
 
-#### 5. EPIC-MYM-28 (Session Management)
+#### 5. EPIC-MYM-28 (Session Management) - 67% COMPLETADO
 | US | Summary | Shift-Left | Status Jira |
 |----|---------|------------|-------------|
-| MYM-29 | Session Dashboard | ✅ Listo | Ready For QA |
-| MYM-30 | Join Video Call | ✅ Listo | Ready For Dev |
+| MYM-29 | Session Dashboard | ✅ Completado | Ready For QA |
+| MYM-30 | Communication Channel Agreement | ✅ Completado | Ready For QA | [#57](../../pulls/57)
 | MYM-31 | Cancel Session | ✅ Listo | Ready For Dev |
 
 #### 6. EPIC-MYM-32 (Reviews & Reputation) - 67% COMPLETADO
@@ -234,8 +237,8 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 
 - **MYM-33** - Leave Review (🔄 Isidro en progreso)
 
-> **Última US completada:** MYM-21 (Book a Session) - [PR #56](../../pulls/56) OPEN
-> **Siguiente sugerida:** MYM-31 (Cancel Session) o MYM-57 (Conversation History)
+> **Última US completada:** MYM-30 (Communication Channel Agreement) - [PR #57](../../pulls/57) OPEN
+> **Siguiente sugerida:** MYM-31 (Cancel Session) - Completa EPIC-MYM-28
 
 ---
 
@@ -257,3 +260,4 @@ TOTAL:                            26/31 con Shift-Left (84%)
 ---
 
 *Generado automáticamente - Claude Code*
+*Última actualización: 2025-12-13 - MYM-30 implementado (Communication Channel Agreement) - PR #57*

@@ -27,14 +27,21 @@ Both mentees and mentors need a centralized dashboard to easily see their upcomi
 * **When:** They navigate to their "My Sessions" dashboard.
 * **Then:** They see two distinct lists: "Upcoming Sessions" and "Past Sessions".
 * **And:** Each item in the lists shows the other participant's name, the date, and the time of the session.
+* **And:** For upcoming sessions, the agreed communication channel(s) and meeting link (if provided) are displayed.
 
 ---
 
 ## Technical Notes
 
-* Create a new page for the user dashboard.
+* Create a new page for the user dashboard at `/dashboard/sessions`.
 * The backend will provide an endpoint that fetches all sessions where the `mentee_id` or `mentor_id` matches the authenticated user's ID.
 * The endpoint should return the data partitioned into upcoming and past sessions based on the current time.
+* Each session card must display:
+  - Participant info (name, photo)
+  - Date/time in user's timezone
+  - **Communication channel(s)** agreed for the session (from `bookings.communication_channels`)
+  - **Meeting link** if the mentor has provided one (from `bookings.session_meeting_link`)
+* Note: The communication channel configuration is handled by MYM-30. This story focuses on displaying the information.
 
 ---
 
