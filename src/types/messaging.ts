@@ -128,3 +128,45 @@ export interface MessageBubbleProps {
 export interface EmptyConversationsProps {
   userRole: 'student' | 'mentor' | 'admin'
 }
+
+// ============================================
+// MYM-58: Notification Types
+// ============================================
+
+/**
+ * Context value for notification state management
+ */
+export interface NotificationContextValue {
+  unreadCount: number
+  activeConversationId: string | null
+  setActiveConversation: (id: string | null) => void
+  refreshUnreadCount: () => Promise<void>
+}
+
+/**
+ * Payload from Supabase Realtime for new messages
+ */
+export interface NewMessagePayload {
+  id: string
+  conversation_id: string
+  sender_id: string
+  content: string
+  created_at: string
+  is_read: boolean
+}
+
+/**
+ * Extended payload with sender info for toast display
+ */
+export interface NewMessageWithSenderPayload extends NewMessagePayload {
+  sender_name: string
+  sender_avatar: string | null
+}
+
+/**
+ * Props for NotificationBadge component
+ */
+export interface NotificationBadgeProps {
+  count: number
+  maxDisplay?: number // Default 99
+}

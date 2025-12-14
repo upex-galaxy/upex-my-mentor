@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageBubble } from './message-bubble';
 import { markConversationAsRead } from '@/lib/actions/messaging';
+import { useNotification } from '@/contexts/notification-context';
 import type { ConversationThreadProps } from '@/types';
 
 /**
@@ -22,11 +23,23 @@ export function ConversationThread({
   otherParticipant,
 }: ConversationThreadProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { setActiveConversation, refreshUnreadCount } = useNotification();
 
-  // Mark conversation as read when mounting
+  // MYM-58: Set active conversation to suppress toast notifications
   useEffect(() => {
-    markConversationAsRead(conversationId);
-  }, [conversationId]);
+    setActiveConversation(conversationId);
+    return () => setActiveConversation(null);
+  }, [conversationId, setActiveConversation]);
+
+  // Mark conversation as read when mounting and refresh unread count
+  useEffect(() => {
+    const markAsRead = async () => {
+      await markConversationAsRead(conversationId);
+      // MYM-58: Update badge count after marking as read
+      await refreshUnreadCount();
+    };
+    markAsRead();
+  }, [conversationId, refreshUnreadCount]);
 
   // Scroll to bottom on initial load
   useEffect(() => {

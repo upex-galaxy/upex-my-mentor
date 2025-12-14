@@ -261,3 +261,11 @@ export type {
 } from './messaging'
 
 export { MIN_MESSAGE_LENGTH, MAX_MESSAGE_LENGTH } from './messaging'
+
+// MYM-58: Notification types
+export type {
+  NotificationContextValue,
+  NewMessagePayload,
+  NewMessageWithSenderPayload,
+  NotificationBadgeProps,
+} from './messaging'
