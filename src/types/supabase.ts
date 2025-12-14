@@ -16,6 +16,9 @@ export type Database = {
     Tables: {
       bookings: {
         Row: {
+          cancellation_reason: string | null  // MYM-31: Optional reason for cancellation
+          cancelled_at: string | null  // MYM-31: Timestamp when cancelled
+          cancelled_by: string | null  // MYM-31: User who initiated cancellation
           communication_channels: Json | null  // MYM-30: Agreed communication channels for the session
           completed_at: string | null  // MYM-27: Session completion timestamp for 24h payout grace period
           confirmation_sent_at: string | null  // MYM-22: Email confirmation timestamp
@@ -33,6 +36,9 @@ export type Database = {
           videocall_url: string | null
         }
         Insert: {
+          cancellation_reason?: string | null  // MYM-31: Optional reason for cancellation
+          cancelled_at?: string | null  // MYM-31: Timestamp when cancelled
+          cancelled_by?: string | null  // MYM-31: User who initiated cancellation
           communication_channels?: Json | null  // MYM-30: Agreed communication channels
           completed_at?: string | null  // MYM-27: Session completion timestamp
           confirmation_sent_at?: string | null  // MYM-22: Email confirmation timestamp
@@ -50,6 +56,9 @@ export type Database = {
           videocall_url?: string | null
         }
         Update: {
+          cancellation_reason?: string | null  // MYM-31: Optional reason for cancellation
+          cancelled_at?: string | null  // MYM-31: Timestamp when cancelled
+          cancelled_by?: string | null  // MYM-31: User who initiated cancellation
           communication_channels?: Json | null  // MYM-30: Agreed communication channels
           completed_at?: string | null  // MYM-27: Session completion timestamp
           confirmation_sent_at?: string | null  // MYM-22: Email confirmation timestamp

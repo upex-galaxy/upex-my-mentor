@@ -1,12 +1,14 @@
 'use client'
 
 /**
- * MYM-29: Sessions Tabs Component
+ * MYM-29/MYM-31: Sessions Tabs Component
  *
  * Client component for interactive tabs switching between
  * upcoming and past sessions.
+ * MYM-31: Added refresh support after session cancellation.
  */
 
+import { useRouter } from 'next/navigation'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { SessionCard } from "@/components/sessions/session-card"
 import { SessionEmptyState } from "@/components/sessions/session-empty-state"
@@ -28,6 +30,13 @@ export function SessionsTabs({
   currentUserRole,
   reviewStatus = {},
 }: SessionsTabsProps) {
+  const router = useRouter()
+
+  // MYM-31: Refresh page data after session cancellation
+  function handleSessionCancelled() {
+    router.refresh()
+  }
+
   return (
     <Tabs defaultValue="upcoming" className="w-full">
       <TabsList className="grid w-full max-w-md grid-cols-2">
@@ -49,6 +58,7 @@ export function SessionsTabs({
                 key={session.id}
                 booking={session}
                 currentUserId={currentUserId}
+                onSessionCancelled={handleSessionCancelled}
               />
             ))}
           </div>
@@ -65,6 +75,7 @@ export function SessionsTabs({
                 key={session.id}
                 booking={session}
                 currentUserId={currentUserId}
+                onSessionCancelled={handleSessionCancelled}
                 hasReviewed={reviewStatus[session.id] ?? false}
               />
             ))}

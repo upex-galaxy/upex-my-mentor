@@ -60,6 +60,35 @@ export interface VideoLinkErrorResponse {
 
 export type VideoLinkResponse = VideoLinkSuccessResponse | VideoLinkErrorResponse
 
+// =============================================================================
+// MYM-31: Cancellation API Types
+// =============================================================================
+
+export type CancelErrorCode =
+  | 'UNAUTHORIZED'
+  | 'BOOKING_NOT_FOUND'
+  | 'NOT_A_PARTICIPANT'
+  | 'CANCELLATION_WINDOW_CLOSED'
+  | 'SESSION_ALREADY_CANCELLED'
+  | 'SESSION_NOT_CONFIRMED'
+  | 'REFUND_FAILED'
+  | 'INTERNAL_ERROR'
+
+export interface CancelSuccessResponse {
+  success: true
+  message: string
+  refundId?: string
+}
+
+export interface CancelErrorResponse {
+  success: false
+  error: CancelErrorCode
+  message: string
+}
+
+export type CancelSessionResponse = CancelSuccessResponse | CancelErrorResponse
+
+// =============================================================================
 // Session status for display
 export type SessionDisplayStatus =
   | 'upcoming'      // Future session, confirmed

@@ -17,6 +17,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { JoinCallButton } from './join-call-button'
+import { CancelSessionButton } from './cancel-session-button'
 import {
   formatSessionDateShortInTimezone,
   getRelativeSessionTime,
@@ -38,6 +39,8 @@ interface SessionCardProps {
   currentUserId: string
   /** Callback when mentor wants to add meeting link (MYM-30) */
   onAddMeetingLink?: (bookingId: string) => void
+  /** Callback when session is cancelled (MYM-31) - triggers list refresh */
+  onSessionCancelled?: () => void
   /** MYM-33: Whether the current user has already reviewed this session */
   hasReviewed?: boolean
   /** Additional CSS classes */
@@ -57,6 +60,7 @@ export function SessionCard({
   booking,
   currentUserId,
   onAddMeetingLink,
+  onSessionCancelled,
   hasReviewed = false,
   className,
 }: SessionCardProps) {
@@ -219,7 +223,13 @@ export function SessionCard({
               durationMinutes={booking.duration_minutes}
               videocallUrl={booking.videocall_url}
             />
-            {/* Cancel button will be added by MYM-31 */}
+            {/* MYM-31: Cancel Session Button */}
+            <CancelSessionButton
+              bookingId={booking.id}
+              sessionDate={booking.session_date}
+              participantName={otherParticipant.name || 'Usuario'}
+              onCancelSuccess={onSessionCancelled}
+            />
           </div>
         )}
 
