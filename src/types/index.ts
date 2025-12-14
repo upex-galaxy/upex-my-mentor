@@ -269,3 +269,9 @@ export type {
   NewMessageWithSenderPayload,
   NotificationBadgeProps,
 } from './messaging'
+
+// MYM-59: Recent Messages Widget types
+export type {
+  RecentMessagesWidgetProps,
+  QuickReplyModalProps,
+} from './messaging'

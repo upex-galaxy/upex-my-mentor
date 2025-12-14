@@ -398,3 +398,94 @@ export async function markConversationAsRead(
     console.error('Error marking messages as read:', error);
   }
 }
+
+/**
+ * MYM-59: Send a reply to an existing conversation
+ * Used for quick reply from dashboard widget
+ */
+export async function sendReplyToConversation(
+  conversationId: string,
+  content: string
+): Promise<SendMessageResponse> {
+  const supabase = await createServer();
+
+  // Check authentication
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: 'Debes iniciar sesión para enviar mensajes' };
+  }
+
+  // Validate message content
+  const trimmedContent = content.trim();
+
+  if (trimmedContent.length < MIN_MESSAGE_LENGTH) {
+    return {
+      success: false,
+      error: `El mensaje debe tener al menos ${MIN_MESSAGE_LENGTH} caracteres`,
+    };
+  }
+
+  if (trimmedContent.length > MAX_MESSAGE_LENGTH) {
+    return {
+      success: false,
+      error: `El mensaje no puede exceder ${MAX_MESSAGE_LENGTH} caracteres`,
+    };
+  }
+
+  // Verify user is a participant in this conversation
+  const { data: conversation, error: convError } = await supabase
+    .from('conversations')
+    .select('id, participant_1_id, participant_2_id')
+    .eq('id', conversationId)
+    .single();
+
+  if (convError || !conversation) {
+    return { success: false, error: 'Conversación no encontrada' };
+  }
+
+  if (
+    conversation.participant_1_id !== user.id &&
+    conversation.participant_2_id !== user.id
+  ) {
+    return { success: false, error: 'No tienes acceso a esta conversación' };
+  }
+
+  // Insert the message
+  const { data: message, error: messageError } = await supabase
+    .from('messages')
+    .insert({
+      conversation_id: conversationId,
+      sender_id: user.id,
+      content: trimmedContent,
+    })
+    .select('id')
+    .single();
+
+  if (messageError) {
+    console.error('Error creating message:', messageError);
+
+    if (messageError.code === '23514') {
+      return {
+        success: false,
+        error: `El mensaje debe tener al menos ${MIN_MESSAGE_LENGTH} caracteres`,
+      };
+    }
+
+    return { success: false, error: 'Error al enviar el mensaje' };
+  }
+
+  // Update conversation's updated_at
+  await supabase
+    .from('conversations')
+    .update({ updated_at: new Date().toISOString() })
+    .eq('id', conversationId);
+
+  return {
+    success: true,
+    conversationId,
+    messageId: message.id,
+  };
+}
