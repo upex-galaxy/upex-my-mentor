@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
-import { User, LogOut, Menu, Settings, Shield, Wallet } from "lucide-react";
+import { User, LogOut, Menu, Settings, Shield, Wallet, MessageCircle } from "lucide-react";
 import { useState } from "react";
+import { MessagesNavIcon } from "@/components/messaging/messages-nav-icon";
 
 export function Navbar() {
   const { user, logout } = useAuth();
@@ -70,6 +71,8 @@ export function Navbar() {
                 >
                   Dashboard
                 </Link>
+                {/* MYM-58: Messages icon with notification badge */}
+                <MessagesNavIcon />
                 <div data-testid="user_info" className="flex items-center space-x-2">
                   <div className="flex items-center space-x-2 px-3 py-2 rounded-md bg-muted">
                     <User className="h-4 w-4" />
@@ -169,6 +172,16 @@ export function Navbar() {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Dashboard
+                </Link>
+                {/* MYM-58: Messages link for mobile */}
+                <Link
+                  href="/dashboard/messages"
+                  data-testid="mobile_messages_link"
+                  className="flex items-center gap-2 py-2 text-sm font-medium hover:text-primary"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  Mensajes
                 </Link>
                 <div className="pt-2 space-y-2">
                   <div className="flex items-center space-x-2 px-3 py-2 rounded-md bg-muted">
