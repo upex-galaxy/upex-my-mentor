@@ -5,6 +5,9 @@ import type {
   SendMessageRequest,
   SendMessageResponse,
   ConversationCheck,
+  ConversationWithDetails,
+  MessageWithSender,
+  ConversationParticipant,
 } from '@/types';
 import { MIN_MESSAGE_LENGTH, MAX_MESSAGE_LENGTH } from '@/types';
 
@@ -190,4 +193,208 @@ export async function getCurrentUserForMessaging(): Promise<{
     name: profile.name,
     role: profile.role ?? 'student',
   };
+}
+
+/**
+ * MYM-57: Get all conversations for the current user
+ * Returns conversations with the other participant's info and last message
+ */
+export async function getConversations(): Promise<ConversationWithDetails[]> {
+  const supabase = await createServer();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return [];
+  }
+
+  // Get all conversations where user is a participant
+  const { data: conversations, error } = await supabase
+    .from('conversations')
+    .select(`
+      *,
+      participant_1:profiles!conversations_participant_1_id_fkey(id, name, photo_url, role),
+      participant_2:profiles!conversations_participant_2_id_fkey(id, name, photo_url, role)
+    `)
+    .or(`participant_1_id.eq.${user.id},participant_2_id.eq.${user.id}`)
+    .order('updated_at', { ascending: false });
+
+  if (error || !conversations) {
+    console.error('Error fetching conversations:', error);
+    return [];
+  }
+
+  // Process each conversation to add other participant, last message, and unread count
+  const conversationsWithDetails: ConversationWithDetails[] = await Promise.all(
+    conversations.map(async (conv) => {
+      // Determine the other participant
+      const isParticipant1 = conv.participant_1_id === user.id;
+      const otherParticipantData = isParticipant1 ? conv.participant_2 : conv.participant_1;
+
+      const other_participant: ConversationParticipant = {
+        id: otherParticipantData?.id || '',
+        name: otherParticipantData?.name || 'Usuario eliminado',
+        photo_url: otherParticipantData?.photo_url || null,
+        role: otherParticipantData?.role || 'student',
+      };
+
+      // Get the last message
+      const { data: lastMessageData } = await supabase
+        .from('messages')
+        .select('content, created_at, is_read, sender_id')
+        .eq('conversation_id', conv.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      // Count unread messages (not sent by current user and not read)
+      const { count: unreadCount } = await supabase
+        .from('messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('conversation_id', conv.id)
+        .neq('sender_id', user.id)
+        .eq('is_read', false);
+
+      return {
+        id: conv.id,
+        participant_1_id: conv.participant_1_id,
+        participant_2_id: conv.participant_2_id,
+        created_at: conv.created_at,
+        updated_at: conv.updated_at,
+        other_participant,
+        last_message: lastMessageData || undefined,
+        unread_count: unreadCount || 0,
+      };
+    })
+  );
+
+  return conversationsWithDetails;
+}
+
+/**
+ * MYM-57: Get messages for a specific conversation
+ * Also returns the other participant's info
+ */
+export async function getConversationMessages(
+  conversationId: string
+): Promise<{
+  messages: MessageWithSender[];
+  otherParticipant: ConversationParticipant;
+  currentUserId: string;
+} | null> {
+  const supabase = await createServer();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return null;
+  }
+
+  // Get conversation to verify user is a participant
+  const { data: conversation, error: convError } = await supabase
+    .from('conversations')
+    .select(`
+      *,
+      participant_1:profiles!conversations_participant_1_id_fkey(id, name, photo_url, role),
+      participant_2:profiles!conversations_participant_2_id_fkey(id, name, photo_url, role)
+    `)
+    .eq('id', conversationId)
+    .single();
+
+  if (convError || !conversation) {
+    console.error('Conversation not found:', convError);
+    return null;
+  }
+
+  // Verify user is a participant
+  if (
+    conversation.participant_1_id !== user.id &&
+    conversation.participant_2_id !== user.id
+  ) {
+    console.error('User is not a participant');
+    return null;
+  }
+
+  // Determine the other participant
+  const isParticipant1 = conversation.participant_1_id === user.id;
+  const otherParticipantData = isParticipant1
+    ? conversation.participant_2
+    : conversation.participant_1;
+
+  const otherParticipant: ConversationParticipant = {
+    id: otherParticipantData?.id || '',
+    name: otherParticipantData?.name || 'Usuario eliminado',
+    photo_url: otherParticipantData?.photo_url || null,
+    role: otherParticipantData?.role || 'student',
+  };
+
+  // Get all messages with sender info
+  const { data: messages, error: msgError } = await supabase
+    .from('messages')
+    .select(`
+      *,
+      sender:profiles!messages_sender_id_fkey(id, name, photo_url)
+    `)
+    .eq('conversation_id', conversationId)
+    .order('created_at', { ascending: true });
+
+  if (msgError) {
+    console.error('Error fetching messages:', msgError);
+    return null;
+  }
+
+  // Transform to MessageWithSender type
+  const messagesWithSender: MessageWithSender[] = (messages || []).map((msg) => ({
+    id: msg.id,
+    conversation_id: msg.conversation_id,
+    sender_id: msg.sender_id,
+    content: msg.content,
+    is_read: msg.is_read,
+    created_at: msg.created_at,
+    sender: {
+      id: msg.sender?.id || msg.sender_id,
+      name: msg.sender?.name || 'Usuario',
+      photo_url: msg.sender?.photo_url || null,
+    },
+  }));
+
+  return {
+    messages: messagesWithSender,
+    otherParticipant,
+    currentUserId: user.id,
+  };
+}
+
+/**
+ * MYM-57: Mark all messages in a conversation as read
+ * Only marks messages not sent by the current user
+ */
+export async function markConversationAsRead(
+  conversationId: string
+): Promise<void> {
+  const supabase = await createServer();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return;
+  }
+
+  // Update all unread messages not sent by current user
+  const { error } = await supabase
+    .from('messages')
+    .update({ is_read: true })
+    .eq('conversation_id', conversationId)
+    .neq('sender_id', user.id)
+    .eq('is_read', false);
+
+  if (error) {
+    console.error('Error marking messages as read:', error);
+  }
 }
