@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ReviewsSection } from "@/components/reviews";
+import { SendMessageButton } from "@/components/messaging";
 import {
   Star,
   Briefcase,
@@ -207,6 +208,12 @@ export default async function MentorProfilePage({
                       Reservar Sesión
                     </Link>
                   </Button>
+
+                  {/* MYM-56: Send Message Button */}
+                  <SendMessageButton
+                    mentorId={mentor.id}
+                    mentorName={mentor.name}
+                  />
 
                   <div className="pt-4 border-t space-y-3 text-sm">
                     <div data-testid="session_duration" className="flex items-center text-muted-foreground">

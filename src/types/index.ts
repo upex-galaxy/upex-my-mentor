@@ -235,3 +235,43 @@ export interface BookingForReview {
   duration_minutes: number;
   status: string;
 }
+
+// MYM-56: Messaging types
+export type {
+  ConversationRow,
+  ConversationInsert,
+  ConversationUpdate,
+  MessageRow,
+  MessageInsert,
+  MessageUpdate,
+  ConversationParticipant,
+  ConversationWithDetails,
+  MessageWithSender,
+  SendMessageRequest,
+  SendMessageResponse,
+  ConversationCheck,
+  SendMessageButtonProps,
+  MessageComposerModalProps,
+  // MYM-57: Component props for conversation history
+  ConversationListProps,
+  ConversationListItemProps,
+  ConversationThreadProps,
+  MessageBubbleProps,
+  EmptyConversationsProps,
+} from './messaging'
+
+export { MIN_MESSAGE_LENGTH, MAX_MESSAGE_LENGTH } from './messaging'
+
+// MYM-58: Notification types
+export type {
+  NotificationContextValue,
+  NewMessagePayload,
+  NewMessageWithSenderPayload,
+  NotificationBadgeProps,
+} from './messaging'
+
+// MYM-59: Recent Messages Widget types
+export type {
+  RecentMessagesWidgetProps,
+  QuickReplyModalProps,
+} from './messaging'

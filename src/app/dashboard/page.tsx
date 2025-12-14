@@ -8,6 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, User, BookOpen, Star, Clock } from "lucide-react";
+import { RecentMessagesWidget } from "@/components/messaging";
+import { getConversations } from "@/lib/actions/messaging";
 
 export default async function DashboardPage() {
   const supabase = await createServer();
@@ -54,6 +56,9 @@ export default async function DashboardPage() {
   // Check profile completion for mentors
   const hasSpecialties = profile.specialties && profile.specialties.length > 0;
   const hasRate = profile.hourly_rate && profile.hourly_rate > 0;
+
+  // MYM-59: Fetch conversations for the messages widget
+  const conversations = await getConversations();
 
   return (
     <div data-testid="dashboardPage" className="min-h-screen flex flex-col">
@@ -258,6 +263,15 @@ export default async function DashboardPage() {
                 </div>
               </CardContent>
             </Card>
+          </div>
+
+          {/* MYM-59: Recent Messages Widget */}
+          <div className="mt-6">
+            <RecentMessagesWidget
+              userId={authUser.id}
+              userRole={profile.role as 'student' | 'mentor' | 'admin'}
+              initialConversations={conversations}
+            />
           </div>
 
           {/* CTA Section */}

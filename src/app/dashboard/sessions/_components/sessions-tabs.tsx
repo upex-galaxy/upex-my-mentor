@@ -19,6 +19,8 @@ interface SessionsTabsProps {
   pastSessions: BookingWithParticipants[]
   currentUserId: string
   currentUserRole: 'student' | 'mentor'
+  /** MYM-33: Map of bookingId -> hasReviewed status for completed sessions */
+  reviewStatus?: Record<string, boolean>
 }
 
 export function SessionsTabs({
@@ -26,6 +28,7 @@ export function SessionsTabs({
   pastSessions,
   currentUserId,
   currentUserRole,
+  reviewStatus = {},
 }: SessionsTabsProps) {
   const router = useRouter()
 
@@ -73,6 +76,7 @@ export function SessionsTabs({
                 booking={session}
                 currentUserId={currentUserId}
                 onSessionCancelled={handleSessionCancelled}
+                hasReviewed={reviewStatus[session.id] ?? false}
               />
             ))}
           </div>

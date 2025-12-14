@@ -10,7 +10,8 @@
  */
 
 import Image from 'next/image'
-import { Calendar, Clock, User, MessageCircle, Link as LinkIcon, ExternalLink } from 'lucide-react'
+import Link from 'next/link'
+import { Calendar, Clock, User, MessageCircle, Link as LinkIcon, ExternalLink, Star, CheckCircle2 } from 'lucide-react'
 
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -40,6 +41,8 @@ interface SessionCardProps {
   onAddMeetingLink?: (bookingId: string) => void
   /** Callback when session is cancelled (MYM-31) - triggers list refresh */
   onSessionCancelled?: () => void
+  /** MYM-33: Whether the current user has already reviewed this session */
+  hasReviewed?: boolean
   /** Additional CSS classes */
   className?: string
 }
@@ -58,6 +61,7 @@ export function SessionCard({
   currentUserId,
   onAddMeetingLink,
   onSessionCancelled,
+  hasReviewed = false,
   className,
 }: SessionCardProps) {
   // MYM-20: Timezone handling
@@ -226,6 +230,34 @@ export function SessionCard({
               participantName={otherParticipant.name || 'Usuario'}
               onCancelSuccess={onSessionCancelled}
             />
+          </div>
+        )}
+
+        {/* MYM-33: Leave Review action for completed sessions */}
+        {displayStatus === 'completed' && (
+          <div className="flex items-center gap-2 pt-2">
+            {hasReviewed ? (
+              <Badge
+                variant="secondary"
+                className="flex items-center gap-1"
+                data-testid="review_submitted_badge"
+              >
+                <CheckCircle2 className="h-3 w-3" />
+                Valoración enviada
+              </Badge>
+            ) : (
+              <Button
+                asChild
+                variant="outline"
+                size="sm"
+                data-testid="leave_review_button"
+              >
+                <Link href={`/review/submit?booking=${booking.id}`}>
+                  <Star className="h-4 w-4 mr-2" />
+                  Dejar valoración
+                </Link>
+              </Button>
+            )}
           </div>
         )}
 
