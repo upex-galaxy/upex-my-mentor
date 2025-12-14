@@ -170,3 +170,28 @@ export interface NotificationBadgeProps {
   count: number
   maxDisplay?: number // Default 99
 }
+
+// ============================================
+// MYM-59: Recent Messages Widget Types
+// ============================================
+
+/**
+ * Props for RecentMessagesWidget on dashboard
+ */
+export interface RecentMessagesWidgetProps {
+  userId: string
+  userRole: 'student' | 'mentor' | 'admin'
+  initialConversations: ConversationWithDetails[]
+}
+
+/**
+ * Props for QuickReplyModal - opens conversation in overlay
+ */
+export interface QuickReplyModalProps {
+  conversationId: string
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  otherParticipant: ConversationParticipant
+  currentUserId: string
+  onMessageSent?: () => void
+}
