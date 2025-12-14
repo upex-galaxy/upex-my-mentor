@@ -7,7 +7,7 @@ import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, User, BookOpen, Star, Clock } from "lucide-react";
+import { Calendar, User, BookOpen, Star, Clock, MessageSquare } from "lucide-react";
 
 export default async function DashboardPage() {
   const supabase = await createServer();
@@ -259,6 +259,28 @@ export default async function DashboardPage() {
               </CardContent>
             </Card>
           </div>
+
+          {/* Messages Quick Link */}
+          <Card data-testid="messages_card" className="mt-6">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-primary/10 rounded-lg">
+                  <MessageSquare className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <CardTitle className="text-lg">Mensajes</CardTitle>
+                  <CardDescription>
+                    Tus conversaciones con {profile.role === "mentor" ? "estudiantes" : "mentores"}
+                  </CardDescription>
+                </div>
+              </div>
+              <Link href="/dashboard/messages">
+                <Button variant="outline" data-testid="view_messages_button">
+                  Ver mensajes
+                </Button>
+              </Link>
+            </CardHeader>
+          </Card>
 
           {/* CTA Section */}
           {profile.role === "student" && (
