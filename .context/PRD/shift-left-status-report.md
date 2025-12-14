@@ -47,7 +47,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-29** | Session Dashboard | Ready For QA | ✅ Completado | [#49](../../pulls/49) MERGED |
 | **MYM-30** | Communication Channel Agreement | Ready For QA | ✅ Completado | [#57](../../pulls/57) OPEN |
 | **MYM-34** | Mentor Review Mentee | Ready For QA | ✅ Completado | [#43](../../pulls/43) MERGED |
-| **MYM-33** | Leave Review After Session | Ready For Dev | ✅ Completado | - |
+| **MYM-33** | Leave Review After Session | In Review | ✅ Completado | [#60](../../pulls/60) OPEN |
 | **MYM-35** | View Profile Reviews | Ready For QA | ✅ Completado | [#42](../../pulls/42) MERGED |
 | **MYM-58** | Message Notifications | Shift-Left QA | ❌ Pendiente | - |
 | **MYM-19** | Set Mentor Availability | Ready For QA | ✅ Completado | [#10](../../pulls/10) MERGED |
@@ -240,9 +240,9 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 
 *Todas las US de épicas críticas tienen Shift-Left completado*
 
-> **Última US completada:** MYM-33 (Leave Review) - Shift-Left 2025-12-13
+> **Última US completada:** MYM-33 (Leave Review) - Implementación 2025-12-13
 > **EPIC-MYM-32 (Reviews & Reputation):** ✅ 100% COMPLETADO
-> **Siguiente sugerida:** MYM-33 (Leave Review) - Implementación pendiente
+> **Siguiente sugerida:** MYM-56 (Send Message) - Implementación pendiente
 
 ---
 
@@ -264,4 +264,4 @@ TOTAL:                            27/31 con Shift-Left (87%)
 ---
 
 *Generado automáticamente - Claude Code*
-*Última actualización: 2025-12-13 - MYM-33 Shift-Left completado (Leave Review) - EPIC-MYM-32 100% Shift-Left*
+*Última actualización: 2025-12-13 - MYM-33 implementado (Leave Review) - PR #60*
