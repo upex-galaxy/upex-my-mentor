@@ -11,7 +11,7 @@
 | Métrica | Cantidad |
 |---------|----------|
 | Total de Stories en repo | 31 |
-| Stories con Shift-Left aplicado (Jira) | 26 |
+| Stories con Shift-Left aplicado (Jira) | 27 |
 | Implementation plans creados | 22 |
 | Implementation plans completados | 24 |
 | Implementation plans pendientes | 2 |
@@ -47,6 +47,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-29** | Session Dashboard | Ready For QA | ✅ Completado | [#49](../../pulls/49) MERGED |
 | **MYM-30** | Communication Channel Agreement | Ready For QA | ✅ Completado | [#57](../../pulls/57) OPEN |
 | **MYM-34** | Mentor Review Mentee | Ready For QA | ✅ Completado | [#43](../../pulls/43) MERGED |
+| **MYM-33** | Leave Review After Session | Ready For Dev | ✅ Completado | - |
 | **MYM-35** | View Profile Reviews | Ready For QA | ✅ Completado | [#42](../../pulls/42) MERGED |
 | **MYM-58** | Message Notifications | Shift-Left QA | ❌ Pendiente | - |
 | **MYM-19** | Set Mentor Availability | Ready For QA | ✅ Completado | [#10](../../pulls/10) MERGED |
@@ -116,7 +117,7 @@ Los siguientes implementation plans están en branches feature, no en main:
 
 ---
 
-## Stories SIN Shift-Left (5)
+## Stories SIN Shift-Left (4)
 
 Las siguientes US del repo local NO tienen análisis Shift-Left completado en Jira:
 
@@ -125,9 +126,9 @@ Las siguientes US del repo local NO tienen análisis Shift-Left completado en Ji
 | EPIC-MYM-2 | MYM-5 | Pendiente |
 | EPIC-MYM-8 | MYM-10 | Pendiente |
 | EPIC-MYM-23 | MYM-24, MYM-26 | Pendiente |
-| EPIC-MYM-32 | MYM-33 | 🔄 En progreso (Isidro) |
 
 **Nota:** MYM-21, MYM-57, MYM-59 fueron re-clasificados como "con Shift-Left" tras verificar que tienen label `shift-left-reviewed` y QA Refinements en descripción.
+**MYM-33** completado 2025-12-13 - 35 test cases documentados.
 
 ---
 
@@ -159,7 +160,7 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 | **🚧** | EPIC-MYM-18 | Scheduling & Booking | Discovery ✅ | 100% (4/4) | MYM-19 ✅, MYM-20, MYM-21, MYM-22 ✅ |
 | **4** | EPIC-MYM-23 | Payments & Payouts | Scheduling | 50% (2/4) | MYM-25, MYM-27 |
 | **5** | EPIC-MYM-28 | Session Management | Scheduling + Payments | 100% (3/3) | MYM-29, MYM-30, MYM-31 |
-| ✅ | EPIC-MYM-32 | Reviews & Reputation | Sessions | 67% (2/3) | ✅ MYM-34, MYM-35 completados |
+| ✅ | EPIC-MYM-32 | Reviews & Reputation | Sessions | 100% (3/3) | ✅ MYM-33, MYM-34, MYM-35 completados |
 | **||** | EPIC-MYM-55 | Messaging (paralelo) | Discovery ✅ | 100% (4/4) | MYM-56, MYM-57, MYM-58, MYM-59 |
 
 > **Leyenda:**
@@ -207,10 +208,10 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 | MYM-30 | Communication Channel Agreement | ✅ Completado | Ready For QA | [#57](../../pulls/57)
 | MYM-31 | Cancel Session | ✅ Completado | Ready For QA | [#58](../../pulls/58)
 
-#### 6. EPIC-MYM-32 (Reviews & Reputation) - 67% COMPLETADO
+#### 6. EPIC-MYM-32 (Reviews & Reputation) - ✅ 100% COMPLETADO
 | US | Summary | Shift-Left | Status Jira |
 |----|---------|------------|-------------|
-| MYM-33 | Leave Review After Session | ❌ Pendiente | - |
+| MYM-33 | Leave Review After Session | ✅ Completado | Ready For Dev |
 | MYM-34 | Mentor Review Mentee | ✅ Completado | Ready For QA |
 | MYM-35 | View Profile Reviews | ✅ Completado | Ready For QA |
 
@@ -237,11 +238,11 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 
 ### US Pendientes de Shift-Left
 
-- **MYM-33** - Leave Review (🔄 Isidro en progreso)
+*Todas las US de épicas críticas tienen Shift-Left completado*
 
-> **Última US completada:** MYM-31 (Cancel Session) - [PR #58](../../pulls/58) OPEN
-> **EPIC-MYM-28 (Session Management):** ✅ 100% COMPLETADO
-> **Siguiente sugerida:** MYM-56 (Send Message to Mentor) - Inicia EPIC-MYM-55
+> **Última US completada:** MYM-33 (Leave Review) - Shift-Left 2025-12-13
+> **EPIC-MYM-32 (Reviews & Reputation):** ✅ 100% COMPLETADO
+> **Siguiente sugerida:** MYM-33 (Leave Review) - Implementación pendiente
 
 ---
 
@@ -254,13 +255,13 @@ EPIC-MYM-13 (Mentor Discovery):    4/4  con Shift-Left (100%) ✅ COMPLETADO
 EPIC-MYM-18 (Scheduling):          4/4  con Shift-Left (100%) ✅ COMPLETADO
 EPIC-MYM-23 (Payments):            2/4  con Shift-Left (50%)
 EPIC-MYM-28 (Session Management):  3/3  con Shift-Left (100%) ✅ COMPLETADO
-EPIC-MYM-32 (Reviews):             2/3  con Shift-Left (67%)  ← MYM-33 en progreso
+EPIC-MYM-32 (Reviews):             3/3  con Shift-Left (100%) ✅ COMPLETADO
 EPIC-MYM-55 (Messaging):           4/4  con Shift-Left (100%) ✅ COMPLETADO
 ─────────────────────────────────────────────────────────
-TOTAL:                            26/31 con Shift-Left (84%)
+TOTAL:                            27/31 con Shift-Left (87%)
 ```
 
 ---
 
 *Generado automáticamente - Claude Code*
-*Última actualización: 2025-12-13 - MYM-31 implementado (Cancel Session) - PR #58 - EPIC-MYM-28 completado*
+*Última actualización: 2025-12-13 - MYM-33 Shift-Left completado (Leave Review) - EPIC-MYM-32 100% Shift-Left*
