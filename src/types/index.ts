@@ -235,3 +235,23 @@ export interface BookingForReview {
   duration_minutes: number;
   status: string;
 }
+
+// MYM-56: Messaging types
+export type {
+  ConversationRow,
+  ConversationInsert,
+  ConversationUpdate,
+  MessageRow,
+  MessageInsert,
+  MessageUpdate,
+  ConversationParticipant,
+  ConversationWithDetails,
+  MessageWithSender,
+  SendMessageRequest,
+  SendMessageResponse,
+  ConversationCheck,
+  SendMessageButtonProps,
+  MessageComposerModalProps,
+} from './messaging'
+
+export { MIN_MESSAGE_LENGTH, MAX_MESSAGE_LENGTH } from './messaging'
