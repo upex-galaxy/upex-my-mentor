@@ -54,7 +54,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-21** | Book a Session | In Progress | ✅ Completado | [#56](../../pulls/56) OPEN |
 | **MYM-31** | Cancel Session | Ready For QA | ✅ Completado | [#58](../../pulls/58) OPEN |
 | **MYM-56** | Send Message to Mentor | In Review | ✅ Completado | [#61](../../pulls/61) OPEN |
-| **MYM-57** | View Conversation History | Ready For Dev | ❌ Pendiente | - |
+| **MYM-57** | View Conversation History | In Review | ✅ Completado | [#62](../../pulls/62) OPEN |
 | **MYM-59** | Mentor Dashboard Messages | Ready For Dev | ❌ Pendiente | - |
 
 > **Nota:** US con Shift-Left documentado via label `shift-left-reviewed` o texto en descripción:
