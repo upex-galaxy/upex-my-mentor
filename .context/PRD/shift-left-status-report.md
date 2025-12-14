@@ -1,6 +1,6 @@
 # Shift-Left Testing Status Report
 
-> **Fecha:** 2025-12-13
+> **Fecha:** 2025-12-14
 > **Proyecto:** Upex My Mentor (MYM)
 > **Propósito:** Panorama de User Stories refinadas por Shift-Left Testing
 
@@ -12,10 +12,10 @@
 |---------|----------|
 | Total de Stories en repo | 31 |
 | Stories con Shift-Left aplicado (Jira) | 27 |
-| Implementation plans creados | 22 |
-| Implementation plans completados | 25 |
+| Implementation plans creados | 24 |
+| Implementation plans completados | 27 |
 | Implementation plans pendientes | 1 |
-| PRs abiertos relacionados | 9 |
+| PRs abiertos relacionados | 12 |
 
 ---
 
@@ -49,7 +49,7 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 | **MYM-34** | Mentor Review Mentee | Ready For QA | ✅ Completado | [#43](../../pulls/43) MERGED |
 | **MYM-33** | Leave Review After Session | In Review | ✅ Completado | [#60](../../pulls/60) OPEN |
 | **MYM-35** | View Profile Reviews | Ready For QA | ✅ Completado | [#42](../../pulls/42) MERGED |
-| **MYM-58** | Message Notifications | Shift-Left QA | ❌ Pendiente | - |
+| **MYM-58** | Message Notifications | In Review | ✅ Completado | [#63](../../pulls/63) OPEN |
 | **MYM-19** | Set Mentor Availability | Ready For QA | ✅ Completado | [#10](../../pulls/10) MERGED |
 | **MYM-21** | Book a Session | In Progress | ✅ Completado | [#56](../../pulls/56) OPEN |
 | **MYM-31** | Cancel Session | Ready For QA | ✅ Completado | [#58](../../pulls/58) OPEN |
@@ -67,25 +67,26 @@ Las siguientes 20 US tienen análisis Shift-Left documentado en Jira:
 
 ---
 
-## Implementation Plans Pendientes (3)
+## Implementation Plans Pendientes (1)
 
 Estas US ya tienen Shift-Left y están listas para crear su `implementation-plan.md`:
 
 ### Prioridad Alta (Ready For Dev)
-1. **MYM-57** - View Conversation History (EPIC-MYM-55) ← Asignado: Yudelkis
-2. **MYM-58** - Message Notifications (EPIC-MYM-55)
-3. **MYM-59** - Mentor Dashboard Messages (EPIC-MYM-55) ← Asignado: Ely
+1. **MYM-59** - Mentor Dashboard Messages (EPIC-MYM-55) ← Asignado: Ely
 
 ### Recientemente Completado
+- **MYM-58** - Message Notifications (EPIC-MYM-55) ✅ Implementado 2025-12-14
+  - PR: [#63](../../pulls/63)
+  - NotificationBadge, NotificationContext con Supabase Realtime, Toast notifications con Sonner
+- **MYM-57** - View Conversation History (EPIC-MYM-55) ✅ Implementado 2025-12-14
+  - PR: [#62](../../pulls/62)
+  - ConversationThread, MessageBubble, mark as read functionality
 - **MYM-56** - Send Message to Mentor (EPIC-MYM-55) ✅ Implementado 2025-12-13
   - PR: [#61](../../pulls/61)
   - SendMessageButton + Modal, conversations/messages tables, RLS policies
 - **MYM-31** - Cancel Session (EPIC-MYM-28) ✅ Implementado 2025-12-13
   - PR: [#58](../../pulls/58)
   - 24h cancellation rule, Stripe refunds, email notifications
-- **MYM-30** - Communication Channel Agreement (EPIC-MYM-28) ✅ Implementado 2025-12-13
-  - PR: [#57](../../pulls/57)
-  - Canales soportados: WhatsApp, Slack, Email, Google Meet, Zoom, Discord, Teams, Skype, Telegram
 
 ---
 
@@ -93,13 +94,16 @@ Estas US ya tienen Shift-Left y están listas para crear su `implementation-plan
 
 | PR | Branch | Story | Estado | Descripción |
 |----|--------|-------|--------|-------------|
+| #63 | feat/MYM-58/message-notifications | MYM-58 | OPEN | Message notifications with Realtime + Toast |
+| #62 | feat/MYM-57/view-conversation-history | MYM-57 | OPEN | View conversation history + message thread |
+| #61 | feat/MYM-56/send-message | MYM-56 | OPEN | Send Message to Mentor (conversations + messages) |
+| #60 | feat/MYM-33/leave-review | MYM-33 | OPEN | Leave review after session |
 | #58 | feat/MYM-31/cancel-session | MYM-31 | OPEN | Cancel session with 24h rule + refunds |
 | #57 | feat/MYM-30/communication-channels | MYM-30 | OPEN | Communication channel agreement - flexible channels |
 | #56 | feat/MYM-21/book-session | MYM-21 | OPEN | Booking calendar and session scheduling |
 | #54 | feat/MYM-16/filter-mentors-skills | MYM-16 | OPEN | Filter mentors by skills - Shift-Left + docs |
 | #44 | feat/MYM-22/email-calendar-invite | MYM-22 | OPEN | Email confirmation + calendar invite |
 | #39 | ale-mym-70 | MYM-70 | OPEN | Theme switching implementation |
-| #61 | feat/MYM-56/send-message | MYM-56 | OPEN | Send Message to Mentor (conversations + messages) |
 | #8 | test/MYM-27/... | MYM-27 | OPEN | Automated payouts test cases |
 | #4 | feature-SLT-MYM7 | MYM-7 | OPEN | Password reset shift-left docs |
 
@@ -217,12 +221,12 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 | MYM-34 | Mentor Review Mentee | ✅ Completado | Ready For QA |
 | MYM-35 | View Profile Reviews | ✅ Completado | Ready For QA |
 
-#### || EPIC-MYM-55 (Messaging - Paralelo) - ✅ 100% Shift-Left
+#### || EPIC-MYM-55 (Messaging - Paralelo) - ✅ 75% Implementado
 | US | Summary | Shift-Left | Status Jira |
 |----|---------|------------|-------------|
 | MYM-56 | Send Message to Mentor | ✅ Completado | In Review | [#61](../../pulls/61)
-| MYM-57 | View Conversation History | ✅ Listo | Ready For Dev |
-| MYM-58 | Message Notifications | ✅ Listo | Shift-Left QA |
+| MYM-57 | View Conversation History | ✅ Completado | In Review | [#62](../../pulls/62)
+| MYM-58 | Message Notifications | ✅ Completado | In Review | [#63](../../pulls/63)
 | MYM-59 | Mentor Dashboard Messages | ✅ Listo | Ready For Dev |
 
 ---
@@ -233,17 +237,15 @@ EPIC-MYM-2 (Auth) ✅ COMPLETADO
 
 | # | US | Epic | Summary | Assignee |
 |---|-----|------|---------|----------|
-| 1 | **MYM-57** | Messaging | View Conversation History | Yudelkis |
-| 2 | **MYM-58** | Messaging | Message Notifications | - |
-| 3 | **MYM-59** | Messaging | Mentor Dashboard Messages | Ely |
+| 1 | **MYM-59** | Messaging | Mentor Dashboard Messages | Ely |
 
 ### US Pendientes de Shift-Left
 
 *Todas las US de épicas críticas tienen Shift-Left completado*
 
-> **Última US completada:** MYM-56 (Send Message) - Implementación 2025-12-13
-> **EPIC-MYM-55 (Messaging):** 25% completado (1/4 stories)
-> **Siguiente sugerida:** MYM-57 (View Conversation History) - Asignado: Yudelkis
+> **Última US completada:** MYM-58 (Message Notifications) - Implementación 2025-12-14
+> **EPIC-MYM-55 (Messaging):** 75% completado (3/4 stories)
+> **Siguiente sugerida:** MYM-59 (Mentor Dashboard Messages) - Asignado: Ely
 
 ---
 
@@ -265,4 +267,4 @@ TOTAL:                            27/31 con Shift-Left (87%)
 ---
 
 *Generado automáticamente - Claude Code*
-*Última actualización: 2025-12-13 - MYM-56 implementado (Send Message to Mentor) - PR #61*
+*Última actualización: 2025-12-14 - MYM-58 implementado (Message Notifications) - PR #63*
