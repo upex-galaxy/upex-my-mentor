@@ -203,3 +203,47 @@ export async function getUserRoleInBooking(
 
   return null;
 }
+
+/**
+ * MYM-33: Get review status for multiple bookings
+ * Returns a Map of bookingId -> hasReviewed
+ * Used to show "Leave Review" or "Review Submitted" in SessionCard
+ */
+export async function getReviewStatusForBookings(
+  bookingIds: string[]
+): Promise<Map<string, boolean>> {
+  const result = new Map<string, boolean>();
+
+  if (bookingIds.length === 0) {
+    return result;
+  }
+
+  const supabase = await createServer();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    // Not authenticated - all reviews are "not submitted"
+    bookingIds.forEach((id) => result.set(id, false));
+    return result;
+  }
+
+  // Fetch all reviews by this user for the given bookings
+  const { data: reviews } = await supabase
+    .from('reviews')
+    .select('booking_id')
+    .eq('reviewer_id', user.id)
+    .in('booking_id', bookingIds);
+
+  // Create a set of reviewed booking IDs for fast lookup
+  const reviewedBookingIds = new Set(reviews?.map((r) => r.booking_id) || []);
+
+  // Map each booking to its review status
+  bookingIds.forEach((id) => {
+    result.set(id, reviewedBookingIds.has(id));
+  });
+
+  return result;
+}

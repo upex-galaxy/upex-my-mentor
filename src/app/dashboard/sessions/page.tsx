@@ -10,6 +10,7 @@ import { createServer } from "@/lib/supabase/server"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
 import { SessionsTabs } from "./_components/sessions-tabs"
+import { getReviewStatusForBookings } from "@/lib/actions/reviews"
 import type { BookingWithParticipants } from "@/types/sessions"
 
 export default async function SessionDashboardPage() {
@@ -72,6 +73,18 @@ export default async function SessionDashboardPage() {
     })
     .sort((a, b) => new Date(b.session_date).getTime() - new Date(a.session_date).getTime())
 
+  // MYM-33: Get review status for completed past sessions
+  const completedSessionIds = pastSessions
+    .filter((s) => s.status === "completed")
+    .map((s) => s.id)
+
+  const reviewStatusMap = await getReviewStatusForBookings(completedSessionIds)
+  // Convert Map to plain object for serialization
+  const reviewStatus: Record<string, boolean> = {}
+  reviewStatusMap.forEach((value, key) => {
+    reviewStatus[key] = value
+  })
+
   const userRole = profile.role as 'student' | 'mentor'
 
   return (
@@ -95,6 +108,7 @@ export default async function SessionDashboardPage() {
             pastSessions={pastSessions}
             currentUserId={authUser.id}
             currentUserRole={userRole}
+            reviewStatus={reviewStatus}
           />
         </div>
       </main>
