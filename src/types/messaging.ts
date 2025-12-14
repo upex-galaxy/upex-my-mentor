@@ -99,3 +99,32 @@ export interface MessageComposerModalProps {
 
 export const MIN_MESSAGE_LENGTH = 10
 export const MAX_MESSAGE_LENGTH = 5000
+
+// ============================================
+// MYM-57: Component Props Types
+// ============================================
+
+export interface ConversationListProps {
+  conversations: ConversationWithDetails[]
+}
+
+export interface ConversationListItemProps {
+  conversation: ConversationWithDetails
+  isActive?: boolean
+}
+
+export interface ConversationThreadProps {
+  conversationId: string
+  initialMessages: MessageWithSender[]
+  currentUserId: string
+  otherParticipant: ConversationParticipant
+}
+
+export interface MessageBubbleProps {
+  message: MessageWithSender
+  isOwn: boolean
+}
+
+export interface EmptyConversationsProps {
+  userRole: 'student' | 'mentor' | 'admin'
+}

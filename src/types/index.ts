@@ -252,6 +252,12 @@ export type {
   ConversationCheck,
   SendMessageButtonProps,
   MessageComposerModalProps,
+  // MYM-57: Component props for conversation history
+  ConversationListProps,
+  ConversationListItemProps,
+  ConversationThreadProps,
+  MessageBubbleProps,
+  EmptyConversationsProps,
 } from './messaging'
 
 export { MIN_MESSAGE_LENGTH, MAX_MESSAGE_LENGTH } from './messaging'
