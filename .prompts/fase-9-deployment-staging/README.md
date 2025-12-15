@@ -800,9 +800,9 @@ Si OK → Fase 11 (Test Automation)
 - `.context/SRS/architecture-specs.md` - Arquitectura del proyecto
 - `.context/infrastructure-setup.md` - URLs y credenciales
 
-**Guidelines:**
-- `.context/guidelines/git-flow.md` - Git workflow strategy
-- `.context/guidelines/testing-strategy.md` - Testing strategy completa
+**Git & Testing:**
+- `.prompts/git-flow.md` - Git workflow strategy
+- `.prompts/fase-11-test-automation/test-strategy.md` - Testing strategy
 
 **Documentación externa:**
 - [GitHub Actions Docs](https://docs.github.com/en/actions)

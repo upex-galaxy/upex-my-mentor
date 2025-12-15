@@ -4,6 +4,43 @@ Este directorio contiene prompts optimizados para generar documentación de proy
 
 ---
 
+## 🚀 PROMPT DE SESIÓN (Inicio Rápido)
+
+### `us-dev-workflow.md` - Workflow Completo de Desarrollo
+
+**Uso:** Copiar y pegar al inicio de cada sesión de desarrollo de User Stories.
+
+**Qué hace:**
+1. Diagnostica automáticamente el estado actual de la US
+2. Identifica si falta Shift-Left Testing, Feature Plan, o Story Plan
+3. Ejecuta los 11 pasos del workflow completo
+4. Soporta reanudación con Resumen de Progreso
+5. Incluye referencias rápidas (MCPs, Jira, Supabase)
+
+**Cómo usar:**
+```markdown
+# En tu chat con la IA, pega:
+
+@.prompts/us-dev-workflow.md
+
+# Y reemplaza los placeholders:
+- EPIC-MYM-{N} → EPIC-MYM-8 (por ejemplo)
+- MYM-{N} → MYM-10 (por ejemplo)
+```
+
+**Estructura del workflow:**
+
+| Fase | Contenido |
+|------|-----------|
+| **1. Diagnóstico** | Verifica prerequisites (Shift-Left, Plans) |
+| **2. Los 11 Pasos** | Jira → Rama → Implementar → PR → Review → Merge → QA |
+| **3. Reanudación** | Verificar y continuar sesiones anteriores |
+| **4. Resumen** | Template para guardar progreso |
+
+**Regla crítica:** El workflow indica cuándo leer otros prompts (ej: `implement-story.md`). La IA debe leer esos prompts completos antes de ejecutar.
+
+---
+
 ## 📋 ÍNDICE DE PROMPTS
 
 ### **🔹 FASES SINCRÓNICAS** (una sola vez, setup inicial)

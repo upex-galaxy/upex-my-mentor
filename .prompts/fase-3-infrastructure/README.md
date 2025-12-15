@@ -453,8 +453,7 @@ git add . && git commit -m "feat: design system + frontend integration"
 ## 📚 Referencias
 
 - Validated prompts pattern: `.prompts/fase-2-architecture/prd-executive-summary.md`
-- Git Flow strategy: `.context/guidelines/git-flow.md`
-- Testing strategy: `.context/guidelines/testing-strategy.md`
+- Git Flow strategy: `.prompts/git-flow.md`
 - Architecture decisions: `.context/SRS/architecture-specs.md`
 
 ---

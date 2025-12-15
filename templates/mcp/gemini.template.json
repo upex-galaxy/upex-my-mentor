@@ -21,9 +21,25 @@
         "chrome-devtools-mcp"
       ]
     },
+    "mailtrap": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-mailtrap"
+      ],
+      "env": {
+        "MAILTRAP_API_TOKEN": "your_mailtrap_api_token",
+        "DEFAULT_FROM_EMAIL": "your_sender@example.com",
+        "MAILTRAP_ACCOUNT_ID": "your_account_id",
+        "MAILTRAP_TEST_INBOX_ID": "your_test_inbox_id"
+      }
+    },
     "shadcn": {
       "command": "npx",
-      "args": ["shadcn@latest", "mcp"]
+      "args": [
+        "shadcn@latest",
+        "mcp"
+      ]
     },
     "supabase": {
       "command": "npx",
@@ -66,7 +82,15 @@
       "httpUrl": "https://mcp.notion.com/mcp"
     },
     "atlassian": {
-      "url": "https://mcp.atlassian.com/v1/sse"
+      "command": "uvx",
+      "args": [
+        "mcp-atlassian"
+      ],
+      "env": {
+        "JIRA_URL": "https://tu-servidor.atlassian.net",
+        "JIRA_USERNAME": "tu.email@servidor.com",
+        "JIRA_API_TOKEN": "${JIRA_API_TOKEN}"
+      }
     },
     "github": {
       "httpUrl": "https://api.githubcopilot.com/mcp",

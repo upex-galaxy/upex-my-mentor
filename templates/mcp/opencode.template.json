@@ -1,0 +1,132 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "playwright": {
+      "type": "local",
+      "command": [
+        "npx",
+        "@playwright/mcp@latest",
+        "--caps",
+        "vision,pdf",
+        "--timeout-action",
+        "10000",
+        "--timeout-navigation",
+        "30000",
+        "--ignore-https-errors",
+        "--isolated"
+      ],
+      "enabled": true
+    },
+    "devtools": {
+      "type": "local",
+      "command": ["npx", "-y", "chrome-devtools-mcp"],
+      "enabled": true
+    },
+    "mailtrap": {
+      "type": "local",
+      "command": ["npx", "-y", "mcp-mailtrap"],
+      "environment": {
+        "MAILTRAP_API_TOKEN": "{env:MAILTRAP_API_TOKEN}",
+        "DEFAULT_FROM_EMAIL": "{env:DEFAULT_FROM_EMAIL}",
+        "MAILTRAP_ACCOUNT_ID": "{env:MAILTRAP_ACCOUNT_ID}",
+        "MAILTRAP_TEST_INBOX_ID": "{env:MAILTRAP_TEST_INBOX_ID}"
+      },
+      "enabled": true
+    },
+    "supabase": {
+      "type": "local",
+      "command": ["npx", "-y", "@supabase/mcp-server-supabase@latest"],
+      "environment": {
+        "SUPABASE_ACCESS_TOKEN": "{env:SUPABASE_ACCESS_TOKEN}"
+      },
+      "enabled": true
+    },
+    "shadcn": {
+      "type": "local",
+      "command": ["npx", "shadcn@latest", "mcp"],
+      "enabled": true
+    },
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "enabled": true
+    },
+    "tavily": {
+      "type": "remote",
+      "url": "https://mcp.tavily.com/mcp",
+      "oauth": false,
+      "headers": {
+        "Authorization": "Bearer {env:TAVILY_API_KEY}"
+      },
+      "enabled": true
+    },
+    "postman": {
+      "type": "remote",
+      "url": "https://mcp.postman.com/mcp",
+      "oauth": false,
+      "headers": {
+        "Authorization": "Bearer {env:POSTMAN_API_KEY}"
+      },
+      "enabled": true
+    },
+    "sentry": {
+      "type": "remote",
+      "url": "https://mcp.sentry.dev/mcp/{env:SENTRY_PROJECT_NAME}/{env:SENTRY_PROJECT_LANGUAGE}",
+      "enabled": true
+    },
+    "vercel": {
+      "type": "remote",
+      "url": "https://mcp.vercel.com/",
+      "enabled": true
+    },
+    "notion": {
+      "type": "remote",
+      "url": "https://mcp.notion.com/mcp",
+      "enabled": true
+    },
+    "atlassian": {
+      "type": "local",
+      "command": ["uvx", "mcp-atlassian"],
+      "environment": {
+        "JIRA_URL": "{env:JIRA_URL}",
+        "JIRA_USERNAME": "{env:JIRA_USERNAME}",
+        "JIRA_API_TOKEN": "{env:JIRA_API_TOKEN}"
+      },
+      "enabled": true
+    },
+    "github": {
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp",
+      "oauth": false,
+      "headers": {
+        "Authorization": "Bearer {env:GITHUB_TOKEN}"
+      },
+      "enabled": true
+    },
+    "slack": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "slack-mcp-server@latest",
+        "--transport",
+        "stdio"
+      ],
+      "environment": {
+        "SLACK_MCP_XOXP_TOKEN": "{env:SLACK_MCP_XOXP_TOKEN}",
+        "SLACK_MCP_ADD_MESSAGE_TOOL": "true",
+        "SLACK_MCP_USERS_CACHE": "{env:SLACK_MCP_USERS_CACHE}",
+        "SLACK_MCP_CHANNELS_CACHE": "{env:SLACK_MCP_CHANNELS_CACHE}"
+      },
+      "enabled": true
+    },
+    "memory": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-memory"],
+      "environment": {
+        "MEMORY_FILE_PATH": "{env:MEMORY_FILE_PATH}"
+      },
+      "enabled": true
+    }
+  }
+}

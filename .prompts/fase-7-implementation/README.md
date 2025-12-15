@@ -219,7 +219,6 @@ npm run dev
 - `.context/guidelines/code-standards.md` - Estándares de código
 - `.context/guidelines/error-handling.md` - Manejo de errores
 - `.context/guidelines/mcp-usage-tips.md` - Tips de MCP tools
-- `.context/guidelines/testing-strategy.md` - Estrategia de testing completa
 
 **Specs técnicas:**
 - `.context/SRS/architecture-specs.md` - Arquitectura del proyecto

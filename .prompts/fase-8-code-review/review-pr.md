@@ -332,7 +332,45 @@ import { Button } from '@/components/ui/button'
 
 ---
 
-### 8. 📝 **Code Quality General**
+### 8. 🧪 **Data-TestID para E2E Testing**
+
+**Revisar según `.context/guidelines/data-testid-standards.md`:**
+
+- [ ] **Componentes de dominio** (MentorCard, LoginForm, etc.) tienen `data-testid` en su **definición**
+- [ ] **Componentes UI base** (Button, Card, Input de shadcn) reciben `data-testid` donde se **usan**, NO en su definición
+- [ ] **Nomenclatura correcta:**
+  - Root del componente: `camelCase` (`data-testid="mentorCard"`)
+  - Elementos internos: `snake_case` (`data-testid="submit_button"`)
+- [ ] **NO hay IDs dinámicos:** ❌ `data-testid={`card-${id}`}`
+
+**Ejemplo de violación:**
+```tsx
+// ❌ MAL - ID dinámico (impredecible para tests)
+<Card data-testid={`mentor-${mentor.id}`}>
+
+// ❌ MAL - data-testid en definición de componente UI base
+// components/ui/button.tsx
+export function Button({ children }) {
+  return <button data-testid="button">{children}</button>  // NO
+}
+
+// ✅ BIEN - Componente de dominio con data-testid en definición
+export function MentorCard({ mentor }) {
+  return (
+    <Card data-testid="mentorCard">
+      <h3 data-testid="mentor_name">{mentor.name}</h3>
+      <Button data-testid="book_session_button">Agendar</Button>
+    </Card>
+  )
+}
+```
+
+**Si falta data-testid en componentes UI críticos:**
+- ⚠️ **MEDIUM** - Bloquea futura automatización E2E (Fase 11)
+
+---
+
+### 9. 📝 **Code Quality General**
 
 **Revisar:**
 - [ ] Funciones pequeñas (< 50 líneas idealmente)

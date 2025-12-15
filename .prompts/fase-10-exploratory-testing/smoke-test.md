@@ -681,11 +681,11 @@ Bug reportado → Development fix → Re-deploy a staging → Re-ejecutar smoke 
 **Smoke testing best practices:**
 - https://www.guru99.com/smoke-testing.html
 
-**Exploratory testing guidelines:**
-- `.context/guidelines/exploratory-testing.md`
+**Exploratory testing:**
+- `.prompts/fase-10-exploratory-testing/test-charter.md` - Charter de exploración
 
 **Testing strategy:**
-- `.context/guidelines/testing-strategy.md`
+- `.prompts/fase-11-test-automation/test-strategy.md` - Estrategia completa
 
 ---
 

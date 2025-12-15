@@ -28,10 +28,10 @@ Actúa como QA Engineer experto en Shift-Left Testing, Test Case Design y Critic
 **Uso del path:**
 
 - Leer story.md local para obtener Jira Key real
-- Leer la story actual de Jira con MCP (FASE 5a)
-- Actualizar la story en Jira con refinamientos (FASE 5a)
-- Agregar comentario con test cases (FASE 5b)
-- Generar archivo test-cases.md en esa carpeta (FASE 5c)
+- Leer la story actual de Jira con MCP (Paso 5)
+- Actualizar la story en Jira con refinamientos (Paso 5)
+- Agregar comentario con test cases (Paso 6)
+- Generar archivo test-cases.md en esa carpeta (Paso 7)
 
 ---
 
@@ -100,44 +100,96 @@ Actúa como QA Engineer experto en Shift-Left Testing, Test Case Design y Critic
 
 ### Para Usuario:
 
-1. **Reporte:** Resumen ejecutivo con critical questions y next steps (FASE 5d)
+1. **Reporte:** Resumen ejecutivo con critical questions y next steps (Paso 8)
+
+### En Git (Branch Naming Convention):
+
+**Formato de rama:** `test/{JIRA_ISSUE_KEY}/{short-description}`
+
+**Ejemplos:**
+- `test/UPEX-45/user-login-flow`
+- `test/UPEX-123/profile-update`
+- `test/UPEX-78/checkout-validation`
+
+**Reglas:**
+1. Prefijo `test/` obligatorio (indica trabajo de QA/testing)
+2. Jira Issue Key en mayúsculas (ej: UPEX-45) - extraído del campo `**Jira Key:**` del story.md
+3. Descripción corta en kebab-case (máx 3-4 palabras) - derivada del nombre de la story
+4. Base branch: siempre `staging` (nunca `main`)
+
+**⚠️ IMPORTANTE:**
+- Esta rama SOLO debe contener cambios en archivos de documentación de la story (test-cases.md)
+- NO incluir código de producción, configuración de testing frameworks, ni implementación
+- El nombre de la rama debe derivarse del contexto de la story analizada
 
 ---
 
 ## 🎯 FLUJO DE TRABAJO
 
-Este prompt trabaja en 5 fases para entregar test cases completos con análisis crítico previo, siguiendo el principio **JIRA-FIRST → LOCAL MIRROR**:
+Este prompt trabaja en **10 pasos** (Paso 0-9) organizados en 3 partes, siguiendo el principio **JIRA-FIRST → LOCAL MIRROR**:
 
-### FASE 1: Critical Analysis
+---
+
+### 🌿 PARTE 0: PREPARACIÓN GIT
+
+#### Paso 0: Crear rama de trabajo
+
+- Checkout desde `staging` y pull de cambios
+- Crear rama con formato `test/{JIRA_KEY}/{short-description}`
+- El Jira Key se extrae del story.md, la descripción del título de la story
+
+---
+
+### 📊 PARTE 1: ANÁLISIS Y DISEÑO
+
+#### Paso 1: Critical Analysis
 
 - Analizar la story desde perspectiva de negocio
 - Identificar ambigüedades en acceptance criteria
 - Identificar qué falta en la story
 
-### FASE 2: Story Refinement & Gap Identification
+#### Paso 2: Story Refinement & Gap Identification
 
 - Refinar acceptance criteria con datos específicos
 - Identificar edge cases NO mencionados en story original
 - Validar que TODO sea testeable
 
-### FASE 3: Test Strategy Planning
+#### Paso 3: Test Strategy Planning
 
 - Determinar cuántos test cases se necesitan realmente
 - Identificar oportunidades para parametrización
 - Planear integration/API tests si aplican
 
-### FASE 4: Test Design
+#### Paso 4: Test Design
 
 - Generar test cases (positive, negative, boundary)
 - Diseñar parametrized tests cuando aplique
 - Diseñar integration/API tests basados en arquitectura
 
-### FASE 5: Jira Integration & Local Mirroring
+---
 
-- **FASE 5a:** Update Story in Jira (refinar description y acceptance criteria)
-- **FASE 5b:** Add Test Cases as Comment in Jira (con tags al equipo)
-- **FASE 5c:** Generate Local test-cases.md (mirroring de Jira)
-- **FASE 5d:** Final QA Feedback Report (resumen para usuario)
+### 🔄 PARTE 2: INTEGRACIÓN Y OUTPUT
+
+#### Paso 5: Update Story in Jira
+
+- Refinar description y acceptance criteria en Jira
+
+#### Paso 6: Add Test Cases as Comment in Jira
+
+- Agregar test cases completos como comentario con tags al equipo
+
+#### Paso 7: Generate Local test-cases.md
+
+- Crear mirror local del comentario de Jira
+
+#### Paso 8: Final QA Feedback Report
+
+- Generar resumen ejecutivo para el usuario
+
+#### Paso 9: Commit del archivo test-cases.md
+
+- Hacer commit del archivo `test-cases.md` en la rama de trabajo
+- Mensaje de commit: `test({JIRA_KEY}): add shift-left test cases for {story-title}`
 
 ---
 
@@ -151,7 +203,7 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
 
 ---
 
-## 📋 FASE 1: Critical Analysis
+## 📋 Paso 1: Critical Analysis
 
 ### Business Context of This Story
 
@@ -284,7 +336,7 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
 
 ---
 
-## 🚨 FASE 2: Story Quality Analysis
+## 🚨 Paso 2: Story Quality Analysis
 
 ### Ambiguities Identified
 
@@ -370,7 +422,7 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
 
 ---
 
-## ✅ FASE 3: Refined Acceptance Criteria
+## ✅ Paso 3: Refined Acceptance Criteria
 
 [Tomar acceptance criteria del story.md y refinarlos con datos específicos + agregar edge cases identificados]
 
@@ -436,7 +488,7 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
 
 **Type:** Edge Case
 **Priority:** Medium
-**Source:** Identified during critical analysis (FASE 2)
+**Source:** Identified during critical analysis (Paso 2)
 
 - **Given:**
   - [Estado inicial del edge case]
@@ -454,7 +506,7 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
 
 ---
 
-## 🧪 FASE 4: Test Design
+## 🧪 Paso 4: Test Design
 
 ### Test Coverage Analysis
 
@@ -658,7 +710,7 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
 
 ## 🔗 Integration Test Cases (If Applicable)
 
-[Si la story involucra integration points identificados en FASE 1]
+[Si la story involucra integration points identificados en Paso 1]
 
 ### Integration Test 1: [Descripción - ej: Frontend ↔ Backend API]
 
@@ -763,15 +815,15 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
 
 ---
 
-## 📝 FASE 5: Jira Integration & Local Mirroring
+## 📝 PARTE 2: Integración y Output
 
-**⚠️ IMPORTANTE:** Esta fase implementa el flujo **JIRA-FIRST → LOCAL MIRROR** para mantener consistencia con el proceso de gestión de stories.
+**⚠️ IMPORTANTE:** Esta parte implementa el flujo **JIRA-FIRST → LOCAL MIRROR** para mantener consistencia con el proceso de gestión de stories.
 
 ---
 
-### FASE 5a: Update Story in Jira
+### Paso 5: Update Story in Jira
 
-**Objetivo:** Refinar la story en Jira CON los refinamientos identificados en FASE 2, ANTES de generar test cases.
+**Objetivo:** Refinar la story en Jira CON los refinamientos identificados en Paso 2, ANTES de generar test cases.
 
 **Herramienta:** MCP de Atlassian
 
@@ -785,11 +837,11 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
 
 2. **Preparar contenido refinado:**
 
-   Basado en análisis de FASE 2, preparar:
+   Basado en análisis de Paso 2, preparar:
 
-   - **Refined Acceptance Criteria** (de FASE 3)
-   - **Edge Cases Identificados** (de FASE 2)
-   - **Clarified Business Rules** (de FASE 2)
+   - **Refined Acceptance Criteria** (de Paso 3)
+   - **Edge Cases Identificados** (de Paso 2)
+   - **Clarified Business Rules** (de Paso 2)
 
 3. **Actualizar story en Jira:**
    - Usar MCP de Atlassian para editar la issue
@@ -802,13 +854,13 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
    **Status:** Refined by QA
 
    ### Refined Acceptance Criteria
-   [Pegar refined scenarios de FASE 3]
+   [Pegar refined scenarios de Paso 3]
 
    ### Edge Cases Identified
-   [Listar edge cases de FASE 2]
+   [Listar edge cases de Paso 2]
 
    ### Clarified Business Rules
-   [Agregar clarificaciones de FASE 2]
+   [Agregar clarificaciones de Paso 2]
 
    ---
 
@@ -822,7 +874,7 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
 
 ---
 
-### FASE 5b: Add Test Cases Comment in Jira
+### Paso 6: Add Test Cases Comment in Jira
 
 **Objetivo:** Agregar TODOS los test cases como comentario en la story de Jira para máxima visibilidad del equipo.
 
@@ -846,13 +898,13 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
 
 **@[Product Owner]:**
 
-- [ ] Review and answer Critical Questions (see FASE 5d below)
+- [ ] Review and answer Critical Questions (see Paso 8 below)
 - [ ] Validate suggested story improvements
 - [ ] Confirm expected behavior for identified edge cases
 
 **@[Dev Lead]:**
 
-- [ ] Review Technical Questions (see FASE 5d below)
+- [ ] Review Technical Questions (see Paso 8 below)
 - [ ] Validate integration points and test approach
 - [ ] Confirm test data strategy
 
@@ -891,13 +943,13 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
 
 ---
 
-### FASE 5c: Generate Local test-cases.md (Mirroring)
+### Paso 7: Generate Local test-cases.md (Mirroring)
 
 **Objetivo:** Crear archivo local `.md` como MIRROR del comentario en Jira para version control y documentación offline.
 
 **Path:** `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/test-cases.md`
 
-**Contenido:** IDÉNTICO al contenido generado en FASE 5b (desde línea 64 hasta línea 783 de este prompt)
+**Contenido:** IDÉNTICO al contenido generado en Paso 6 (todo el template de Test Cases)
 
 **Output esperado:**
 
@@ -907,7 +959,7 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
 
 ---
 
-### FASE 5d: Final QA Feedback Report
+### Paso 8: Final QA Feedback Report
 
 **Objetivo:** Reportar al USUARIO el resumen ejecutivo y acciones pendientes.
 
@@ -970,7 +1022,7 @@ Este prompt trabaja en 5 fases para entregar test cases completos con análisis 
 
 ### 💡 Suggested Story Improvements
 
-[Sugerencias para mejorar la story ANTES de implementar - basadas en análisis de FASE 2]
+[Sugerencias para mejorar la story ANTES de implementar - basadas en análisis de Paso 2]
 
 **Improvement 1:** [Sugerencia específica]
 
@@ -1157,6 +1209,26 @@ Estos son los datos reales. Nota: El número de issue (45, 13) es el mismo en la
 
 ## 📋 Flujo de Ejecución (Para la IA)
 
+### Paso 0: Crear rama de trabajo
+
+**Objetivo:** Crear una rama específica para el trabajo de Shift-Left Testing antes de generar los test cases.
+
+**Pasos a ejecutar:**
+1. Checkout desde `staging`: `git checkout staging && git pull`
+2. Crear rama usando el formato: `test/{JIRA_KEY}/{short-description}`
+3. El `{JIRA_KEY}` se extrae del campo `**Jira Key:**` del story.md
+4. El `{short-description}` se deriva del nombre/título de la story en kebab-case (máx 3-4 palabras)
+
+**Ejemplo:**
+```bash
+git checkout staging && git pull
+git checkout -b test/UPEX-45/user-login-flow
+```
+
+**⚠️ IMPORTANTE:** Esta rama solo contendrá el archivo `test-cases.md` generado. NO incluir otros cambios.
+
+---
+
 ### Input requerido del usuario:
 
 ```
@@ -1172,32 +1244,43 @@ Story Path: .context/PBI/epics/EPIC-UPEX-13-nombre/stories/STORY-UPEX-45-nombre/
 
 ### Orden de ejecución:
 
-**Pre-requisito: Extraer Jira Keys**
+**Paso 0: Crear rama de trabajo**
 1. Leer `{STORY_PATH}/story.md` proporcionado por usuario
 2. Extraer campo `**Jira Key:**` de story (ej: UPEX-45)
-3. Extraer campo `**Epic:**` para obtener epic path
-4. Leer epic.md y extraer Epic Jira Key (ej: UPEX-13)
-5. Guardar ambos Jira Keys reales para FASE 5a y 5b
+3. Derivar `{short-description}` del título de la story en kebab-case
+4. Ejecutar: `git checkout staging && git pull`
+5. Crear rama: `git checkout -b test/{JIRA_KEY}/{short-description}`
+
+**Pre-requisito: Extraer Jira Keys**
+6. Extraer campo `**Epic:**` para obtener epic path
+7. Leer epic.md y extraer Epic Jira Key (ej: UPEX-13)
+8. Guardar ambos Jira Keys reales para Pasos 5 y 6
 
 **Leer Contexto Completo:**
-6. Leer todos los archivos de contexto (PRD, SRS, epic.md local, feature-test-plan.md, story.md)
-7. Leer story actual de Jira con MCP (usando Story Jira Key real)
-8. Leer epic de Jira con MCP (usando Epic Jira Key real)
-9. **Leer comentarios del epic en Jira** - especialmente "Feature Test Plan"
+9. Leer todos los archivos de contexto (PRD, SRS, epic.md local, feature-test-plan.md, story.md)
+10. Leer story actual de Jira con MCP (usando Story Jira Key real)
+11. Leer epic de Jira con MCP (usando Epic Jira Key real)
+12. **Leer comentarios del epic en Jira** - especialmente "Feature Test Plan"
 
-**Análisis y Diseño:**
-10. **FASE 1:** Critical Analysis (incluye Epic-Level Context de comentarios)
-11. **FASE 2:** Story Quality Analysis
-12. **FASE 3:** Refined Acceptance Criteria
-13. **FASE 4:** Test Design
+**PARTE 1 - Análisis y Diseño:**
+13. **Paso 1:** Critical Analysis (incluye Epic-Level Context de comentarios)
+14. **Paso 2:** Story Quality Analysis
+15. **Paso 3:** Refined Acceptance Criteria
+16. **Paso 4:** Test Design
 
-**Jira Integration:**
-14. **FASE 5a:** Actualizar story en Jira con refinamientos (MCP + Story Jira Key real)
-15. **FASE 5b:** Crear comentario en Jira con test cases completos (MCP + Story Jira Key real)
-16. **FASE 5c:** Generar archivo local `test-cases.md` en {STORY_PATH}/ (Write tool)
-17. **FASE 5d:** Reportar resumen al usuario (Output)
+**PARTE 2 - Integración y Output:**
+17. **Paso 5:** Actualizar story en Jira con refinamientos (MCP + Story Jira Key real)
+18. **Paso 6:** Crear comentario en Jira con test cases completos (MCP + Story Jira Key real)
+19. **Paso 7:** Generar archivo local `test-cases.md` en {STORY_PATH}/ (Write tool)
+20. **Paso 8:** Reportar resumen al usuario (Output)
+21. **Paso 9:** Commit del archivo `test-cases.md` en la rama de trabajo
 
 ### Herramientas a usar:
+
+**Git (Bash):**
+- Para checkout de `staging` y pull de cambios recientes
+- Para crear rama de trabajo con formato `test/{JIRA_KEY}/{short-description}`
+- Para commit del archivo `test-cases.md` generado
 
 **MCP de Atlassian:**
 - Para leer story de Jira
@@ -1248,13 +1331,13 @@ Story Path: .context/PBI/epics/EPIC-UPEX-13-nombre/stories/STORY-UPEX-45-nombre/
 
 1. **PO debe:**
    - Revisar comentario en Jira con test cases
-   - Responder "Critical Questions for PO" en FASE 5d
+   - Responder "Critical Questions for PO" en Paso 8
    - Validar "Suggested Story Improvements"
    - Confirmar expected behavior de edge cases identificados
 
 2. **Dev debe:**
    - Revisar comentario en Jira con test cases
-   - Responder "Technical Questions for Dev" en FASE 5d
+   - Responder "Technical Questions for Dev" en Paso 8
    - Validar integration points y test approach
    - **NO empezar implementación** hasta resolver preguntas críticas
 
@@ -1357,20 +1440,23 @@ Test Scripts (Playwright/Cypress - opcional)
 
 ---
 
-**Versión:** 3.1 - Jira-First + Epic Context Integration + MCP Atlassian
-**Última actualización:** 2025-01-05
+**Versión:** 3.2 - Git Branch Naming Convention + Paso 0
+**Última actualización:** 2025-12-06
 **Cambios principales:**
 
-- ✅ Agregado flujo Jira-First (FASE 5a, 5b, 5c, 5d)
+- ✅ Agregado flujo Jira-First (Pasos 5-8)
 - ✅ Integración con MCP de Atlassian
 - ✅ Test cases en comentarios (no subtareas)
 - ✅ Refinamiento automático de story en Jira
 - ✅ Filosofía CATA integrada
 - ✅ **Lectura de comentarios del epic en Jira** para contexto actualizado
-- ✅ **Nueva sub-sección "Epic-Level Context"** en FASE 1 que extrae:
+- ✅ **Nueva sub-sección "Epic-Level Context"** en Paso 1 que extrae:
   - Riesgos críticos identificados a nivel epic
   - Integration points del epic analysis
   - Preguntas críticas ya hechas y respondidas
   - Test strategy del epic
   - Updates y clarificaciones del refinement
   - Cómo la story encaja en el epic
+- ✅ **Branch Naming Convention para Git** - formato `test/{JIRA_KEY}/{short-description}`
+- ✅ **Paso 0: Crear rama de trabajo** - checkout desde `staging` antes de generar test cases
+- ✅ **Paso 9: Commit del archivo** - commit del `test-cases.md` en la rama de trabajo

@@ -33,6 +33,30 @@ Esta feature implementa [descripción high-level de la feature].
 
 ## Technical Decisions
 
+**⚠️ IMPORTANTE - MCPs para Decisión Técnica:**
+
+Antes de tomar decisiones técnicas críticas a nivel feature, DEBES:
+
+1. **Context7 MCP (MCP MÁS IMPORTANTE)**
+   - 🔍 Consultar documentación oficial de las librerías que consideras usar
+   - ✅ Verificar APIs y capacidades actuales de las librerías
+   - 📖 Obtener últimas actualizaciones y best practices
+   - **Ejemplo:** Si consideras React Query vs SWR → consulta ambos con Context7
+
+2. **Supabase MCP (si feature requiere backend/DB)**
+   - 🔍 Verificar capacidades de Supabase para tu use case
+   - ✅ Confirmar APIs disponibles (Auth, Database, Storage, etc.)
+   - 📖 Revisar patrones recomendados para tu arquitectura
+
+3. **shadcn MCP (si feature requiere componentes UI)**
+   - 🔍 Buscar componentes shadcn que puedan resolver tus necesidades
+   - ✅ Evaluar si shadcn tiene componentes complejos (data-table, forms, etc.)
+   - 📖 Evitar crear componentes custom si shadcn ya los provee
+
+**Beneficio:** Decisiones basadas en documentación oficial actualizada, no en conocimiento desactualizado.
+
+---
+
 ### Decision 1: [Nombre de la decisión]
 
 **Options considered:**
@@ -124,6 +148,19 @@ export type MentorUpdate = Database['public']['Tables']['mentors']['Update']
 **Design System disponible:** `.context/design-system.md`
 
 ### Componentes compartidos por stories:
+
+**⚠️ IMPORTANTE - Uso de MCP shadcn/ui a nivel feature:**
+
+Si el proyecto usa shadcn/ui, **ANTES** de planificar componentes custom:
+- 🔍 **Usa MCP shadcn** para buscar componentes disponibles
+- ✅ Identifica componentes complejos que shadcn ya provee (data-table, form, command, etc.)
+- 🚫 Evita crear componentes custom si shadcn tiene una solución
+- 📖 Planifica integración de componentes shadcn en las stories
+
+**Ejemplo de búsqueda a nivel feature:**
+- Feature necesita múltiples diálogos → Busca "dialog" en shadcn MCP
+- Feature necesita manejo de formularios complejos → Busca "form" en shadcn MCP
+- Feature necesita mostrar data en tablas → Busca "data-table" en shadcn MCP
 
 **Componentes del Design System a usar:**
 - ✅ [Componente 1]: [Cómo se usa en esta feature]
