@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Github, Linkedin, Twitter } from "lucide-react";
 
 export function Footer() {
@@ -9,11 +10,15 @@ export function Footer() {
           {/* Brand */}
           <div data-testid="brand_section" className="space-y-4">
             <div data-testid="logo_link" className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                <span className="text-white font-bold text-lg">U</span>
-              </div>
-              <span className="font-bold text-lg bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                Upex My Mentor
+              <Image
+                src="/web-app-manifest-192x192.png"
+                alt="MyMentor Logo"
+                width={32}
+                height={32}
+                className="h-8 w-8 object-contain"
+              />
+              <span className="font-[family-name:var(--font-poppins)] font-bold text-lg bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent tracking-tight">
+                MyMentor
               </span>
             </div>
             <p className="text-sm text-muted-foreground">
@@ -154,7 +159,7 @@ export function Footer() {
         </div>
 
         <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} Upex My Mentor. Todos los derechos reservados.</p>
+          <p>© {new Date().getFullYear()} MyMentor. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>

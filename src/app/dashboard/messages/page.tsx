@@ -7,7 +7,7 @@ import { ConversationList } from '@/components/messaging/conversation-list';
 import { getConversations } from '@/lib/actions/messaging';
 
 export const metadata = {
-  title: 'Mensajes | My Mentor',
+  title: 'Mensajes | MyMentor',
   description: 'Tu bandeja de mensajes con mentores y estudiantes',
 };
 

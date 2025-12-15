@@ -2,8 +2,8 @@ import { Navbar } from "@/components/layout/navbar"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Admin Panel - Upex My Mentor",
-  description: "Administration panel for Upex My Mentor platform",
+  title: "Admin Panel - MyMentor",
+  description: "Administration panel for MyMentor platform",
 }
 
 interface AdminLayoutProps {

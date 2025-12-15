@@ -42,7 +42,7 @@ function calculateDuration(start: Date, end: Date): { hours: number; minutes: nu
  *   start: new Date('2025-01-15T14:00:00Z'),
  *   end: new Date('2025-01-15T15:00:00Z'),
  *   location: 'https://meet.google.com/xyz',
- *   organizer: { name: 'Upex My Mentor', email: 'confirmations@upexmymentor.com' },
+ *   organizer: { name: 'MyMentor', email: 'confirmations@mymentor.com' },
  *   attendees: [
  *     { name: 'John Doe', email: 'john@example.com' },
  *     { name: 'Jane Smith', email: 'jane@example.com' }
@@ -73,7 +73,7 @@ export function generateCalendarInvite(data: CalendarEventData): string {
     })),
     status: 'CONFIRMED' as const,
     busyStatus: 'BUSY' as const,
-    productId: 'upex-my-mentor/ics',
+    productId: 'mymentor/ics',
     classification: 'PUBLIC' as const,
   }
 
@@ -116,7 +116,7 @@ export function createBookingCalendarEvent(params: {
     videocallUrl ? `Join the call: ${videocallUrl}` : 'Video call link will be provided separately',
     '',
     '---',
-    'Upex My Mentor - Connecting mentors with mentees',
+    'MyMentor - Connecting mentors with mentees',
   ].join('\n')
 
   return {
@@ -126,8 +126,8 @@ export function createBookingCalendarEvent(params: {
     end: endDate,
     location: videocallUrl ?? undefined,
     organizer: {
-      name: 'Upex My Mentor',
-      email: 'confirmations@upexmymentor.com',
+      name: 'MyMentor',
+      email: 'confirmations@mymentor.com',
     },
     attendees: [
       { name: mentorName, email: 'mentor@placeholder.com' },

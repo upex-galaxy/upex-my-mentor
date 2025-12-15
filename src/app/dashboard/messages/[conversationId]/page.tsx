@@ -67,12 +67,12 @@ export async function generateMetadata({ params }: ConversationPageProps) {
 
   if (!conversationData) {
     return {
-      title: 'Conversación no encontrada | My Mentor',
+      title: 'Conversación no encontrada | MyMentor',
     };
   }
 
   return {
-    title: `Conversación con ${conversationData.otherParticipant.name || 'Usuario'} | My Mentor`,
+    title: `Conversación con ${conversationData.otherParticipant.name || 'Usuario'} | MyMentor`,
     description: 'Tu historial de mensajes',
   };
 }

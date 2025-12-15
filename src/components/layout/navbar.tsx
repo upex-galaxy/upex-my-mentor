@@ -1,16 +1,69 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
-import { User, LogOut, Menu, Settings, Shield, Wallet, MessageCircle } from "lucide-react";
+import { User, LogOut, Menu, Settings, Shield, Wallet, MessageCircle, GraduationCap, BookOpen } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useState } from "react";
 import { MessagesNavIcon } from "@/components/messaging/messages-nav-icon";
 
+/**
+ * Role badge component - shows mentor/student indicator
+ */
+function RoleBadge({ role }: { role: string }) {
+  const config = {
+    mentor: {
+      label: "mentor",
+      icon: BookOpen,
+      className: "bg-primary/10 text-primary border-primary/20",
+    },
+    student: {
+      label: "estudiante",
+      icon: GraduationCap,
+      className: "bg-accent/10 text-accent border-accent/20",
+    },
+    admin: {
+      label: "admin",
+      icon: Shield,
+      className: "bg-destructive/10 text-destructive border-destructive/20",
+    },
+  }[role] || {
+    label: role,
+    icon: User,
+    className: "bg-muted text-muted-foreground",
+  };
+
+  const Icon = config.icon;
+
+  return (
+    <span
+      className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full border ${config.className}`}
+      title={`Rol: ${config.label}`}
+    >
+      <Icon className="h-3 w-3" />
+      {config.label}
+    </span>
+  );
+}
+
+/**
+ * Get display name with fallback
+ */
+function getDisplayName(user: { name?: string | null; email: string }): string {
+  if (user.name && user.name.trim() !== "") {
+    return user.name;
+  }
+  // Fallback to email username part
+  return user.email.split("@")[0];
+}
+
 export function Navbar() {
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const displayName = user ? getDisplayName(user) : "";
 
   return (
     <nav data-testid="navbar" className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
@@ -18,16 +71,22 @@ export function Navbar() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" data-testid="logo_link" className="flex items-center space-x-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <span className="text-white font-bold text-lg">U</span>
-            </div>
-            <span className="font-bold text-xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Upex My Mentor
+            <Image
+              src="/web-app-manifest-192x192.png"
+              alt="MyMentor Logo"
+              width={40}
+              height={40}
+              className="h-10 w-10 object-contain"
+              priority
+            />
+            <span className="font-[family-name:var(--font-poppins)] font-bold text-xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent tracking-tight">
+              MyMentor
             </span>
           </Link>
 
           {/* Desktop Navigation */}
           <div data-testid="desktop_nav" className="hidden md:flex items-center space-x-6">
+            {/* Public navigation links */}
             <Link
               href="/mentors"
               data-testid="explore_mentors_link"
@@ -43,21 +102,24 @@ export function Navbar() {
               Cómo Funciona
             </Link>
 
-            {/* MYM-70: Theme toggle - always visible */}
-            <ThemeToggle />
+            {/* Spacer */}
+            <div className="flex-1" />
 
             {user ? (
               <>
-                {user.role === "admin" && (
-                  <Link
-                    href="/admin/applications"
-                    data-testid="admin_link"
-                    className="flex items-center gap-1 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
-                  >
-                    <Shield className="h-4 w-4" />
-                    Admin
-                  </Link>
-                )}
+                {/* Primary action: Dashboard */}
+                <Link
+                  href="/dashboard"
+                  data-testid="dashboard_link"
+                  className="text-sm font-medium hover:text-primary transition-colors"
+                >
+                  Dashboard
+                </Link>
+
+                {/* Messages */}
+                <MessagesNavIcon />
+
+                {/* Role-specific links */}
                 {user.role === "mentor" && (
                   <Link
                     href="/dashboard/payouts"
@@ -68,19 +130,23 @@ export function Navbar() {
                     Pagos
                   </Link>
                 )}
-                <Link
-                  href="/dashboard"
-                  data-testid="dashboard_link"
-                  className="text-sm font-medium hover:text-primary transition-colors"
-                >
-                  Dashboard
-                </Link>
-                {/* MYM-58: Messages icon with notification badge */}
-                <MessagesNavIcon />
-                <div data-testid="user_info" className="flex items-center space-x-2">
-                  <div className="flex items-center space-x-2 px-3 py-2 rounded-md bg-muted">
-                    <User className="h-4 w-4" />
-                    <span className="text-sm font-medium">{user.name}</span>
+
+                {user.role === "admin" && (
+                  <Link
+                    href="/admin/applications"
+                    data-testid="admin_link"
+                    className="flex items-center gap-1 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                  >
+                    <Shield className="h-4 w-4" />
+                    Admin
+                  </Link>
+                )}
+
+                {/* User info section */}
+                <div data-testid="user_info" className="flex items-center space-x-2 pl-2 border-l border-border">
+                  <div className="flex flex-col items-end gap-0.5">
+                    <span className="text-sm font-medium leading-none">{displayName}</span>
+                    <RoleBadge role={user.role} />
                   </div>
                   <Link href="/profile/edit">
                     <Button
@@ -113,21 +179,43 @@ export function Navbar() {
                 </Link>
               </>
             )}
+
+            {/* Theme toggle - always at the end */}
+            <ThemeToggle />
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            data-testid="mobile_menu_button"
-            className="md:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            <Menu className="h-6 w-6" />
-          </button>
+          <div className="flex items-center gap-2 md:hidden">
+            <ThemeToggle />
+            <button
+              data-testid="mobile_menu_button"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Abrir menú"
+            >
+              <Menu className="h-6 w-6" />
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div data-testid="mobile_menu" className="md:hidden py-4 space-y-3">
+          <div data-testid="mobile_menu" className="md:hidden py-4 space-y-3 border-t">
+            {/* User info at top for logged in users */}
+            {user && (
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-border">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
+                    <User className="h-5 w-5" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium">{displayName}</span>
+                    <RoleBadge role={user.role} />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Navigation links */}
             <Link
               href="/mentors"
               data-testid="mobile_explore_mentors_link"
@@ -145,59 +233,53 @@ export function Navbar() {
               Cómo Funciona
             </Link>
 
-            {/* MYM-70: Theme toggle for mobile */}
-            <div className="flex items-center justify-between py-2">
-              <span className="text-sm font-medium">Cambiar tema</span>
-              <ThemeToggle />
-            </div>
-
             {user ? (
               <>
-                {user.role === "admin" && (
+                <div className="border-t border-border pt-3 mt-3">
                   <Link
-                    href="/admin/applications"
-                    data-testid="mobile_admin_link"
-                    className="flex items-center gap-2 py-2 text-sm font-medium text-primary hover:text-primary/80"
+                    href="/dashboard"
+                    data-testid="mobile_dashboard_link"
+                    className="block py-2 text-sm font-medium hover:text-primary"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <Shield className="h-4 w-4" />
-                    Admin Panel
+                    Dashboard
                   </Link>
-                )}
-                {user.role === "mentor" && (
                   <Link
-                    href="/dashboard/payouts"
-                    data-testid="mobile_payouts_link"
+                    href="/dashboard/messages"
+                    data-testid="mobile_messages_link"
                     className="flex items-center gap-2 py-2 text-sm font-medium hover:text-primary"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <Wallet className="h-4 w-4" />
-                    Pagos
+                    <MessageCircle className="h-4 w-4" />
+                    Mensajes
                   </Link>
-                )}
-                <Link
-                  href="/dashboard"
-                  data-testid="mobile_dashboard_link"
-                  className="block py-2 text-sm font-medium hover:text-primary"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Dashboard
-                </Link>
-                {/* MYM-58: Messages link for mobile */}
-                <Link
-                  href="/dashboard/messages"
-                  data-testid="mobile_messages_link"
-                  className="flex items-center gap-2 py-2 text-sm font-medium hover:text-primary"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <MessageCircle className="h-4 w-4" />
-                  Mensajes
-                </Link>
-                <div className="pt-2 space-y-2">
-                  <div className="flex items-center space-x-2 px-3 py-2 rounded-md bg-muted">
-                    <User className="h-4 w-4" />
-                    <span className="text-sm font-medium">{user.name}</span>
-                  </div>
+
+                  {user.role === "mentor" && (
+                    <Link
+                      href="/dashboard/payouts"
+                      data-testid="mobile_payouts_link"
+                      className="flex items-center gap-2 py-2 text-sm font-medium hover:text-primary"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <Wallet className="h-4 w-4" />
+                      Pagos
+                    </Link>
+                  )}
+
+                  {user.role === "admin" && (
+                    <Link
+                      href="/admin/applications"
+                      data-testid="mobile_admin_link"
+                      className="flex items-center gap-2 py-2 text-sm font-medium text-primary hover:text-primary/80"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <Shield className="h-4 w-4" />
+                      Admin Panel
+                    </Link>
+                  )}
+                </div>
+
+                <div className="border-t border-border pt-3 mt-3 space-y-2">
                   <Link href="/profile/edit" onClick={() => setMobileMenuOpen(false)}>
                     <Button data-testid="mobile_settings_button" variant="outline" className="w-full">
                       <Settings className="h-4 w-4 mr-2" />
@@ -219,7 +301,7 @@ export function Navbar() {
                 </div>
               </>
             ) : (
-              <div className="space-y-2 pt-2">
+              <div className="space-y-2 pt-3 border-t border-border">
                 <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
                   <Button data-testid="mobile_login_button" variant="ghost" className="w-full">
                     Iniciar Sesión

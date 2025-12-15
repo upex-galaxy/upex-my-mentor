@@ -29,12 +29,12 @@ export const EMAIL_CONFIG = {
    * Sender email address (must be verified in Resend)
    * Using Resend's test domain for development
    */
-  FROM_EMAIL: process.env.EMAIL_FROM_ADDRESS || 'Upex My Mentor <onboarding@resend.dev>',
+  FROM_EMAIL: process.env.EMAIL_FROM_ADDRESS || 'MyMentor <onboarding@resend.dev>',
 
   /**
    * Production sender email (requires domain verification)
    */
-  PRODUCTION_FROM_EMAIL: 'Upex My Mentor <confirmations@upexmymentor.com>',
+  PRODUCTION_FROM_EMAIL: 'MyMentor <confirmations@mymentor.com>',
 
   /**
    * Whether to use dry-run mode (log instead of send)

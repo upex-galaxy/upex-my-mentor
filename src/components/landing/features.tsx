@@ -34,7 +34,7 @@ export function Features() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 data-testid="section_title" className="text-3xl font-bold mb-4 sm:text-4xl">
-            ¿Por qué Upex My Mentor?
+            ¿Por qué MyMentor?
           </h2>
           <p data-testid="section_description" className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Una plataforma diseñada para garantizar confianza, calidad y

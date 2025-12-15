@@ -39,6 +39,6 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
 }
 
 export const metadata = {
-  title: 'Crear Cuenta | Upex My Mentor',
+  title: 'Crear Cuenta | MyMentor',
   description: 'Únete a la comunidad de mentoría tech. Registrate como mentor o estudiante.',
 }

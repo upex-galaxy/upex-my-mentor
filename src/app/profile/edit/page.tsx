@@ -5,7 +5,7 @@ import { MentorProfileForm } from '@/components/profile/mentor-profile-form'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Editar Perfil | Upex My Mentor',
+  title: 'Editar Perfil | MyMentor',
   description: 'Construye tu perfil profesional de mentor',
 }
 

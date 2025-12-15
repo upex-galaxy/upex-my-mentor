@@ -193,7 +193,7 @@ export async function POST(
         await resend.emails.send({
           from: EMAIL_CONFIG.FROM_EMAIL,
           to: student.email,
-          subject: 'Tu sesión ha sido cancelada - Upex My Mentor',
+          subject: 'Tu sesión ha sido cancelada - MyMentor',
           html: `
             <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
               <h2 style="color: #7c3aed;">Sesión Cancelada</h2>
@@ -223,7 +223,7 @@ export async function POST(
         await resend.emails.send({
           from: EMAIL_CONFIG.FROM_EMAIL,
           to: mentor.email,
-          subject: 'Una sesión ha sido cancelada - Upex My Mentor',
+          subject: 'Una sesión ha sido cancelada - MyMentor',
           html: `
             <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
               <h2 style="color: #7c3aed;">Sesión Cancelada</h2>
