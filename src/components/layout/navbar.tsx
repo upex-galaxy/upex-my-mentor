@@ -10,24 +10,24 @@ import { useState } from "react";
 import { MessagesNavIcon } from "@/components/messaging/messages-nav-icon";
 
 /**
- * Role badge component - shows mentor/student indicator
+ * Role badge component - shows mentor/student indicator as floating label
  */
-function RoleBadge({ role }: { role: string }) {
+function RoleBadge({ role, floating = false }: { role: string; floating?: boolean }) {
   const config = {
     mentor: {
       label: "mentor",
       icon: BookOpen,
-      className: "bg-primary/10 text-primary border-primary/20",
+      className: "bg-primary text-primary-foreground",
     },
     student: {
       label: "estudiante",
       icon: GraduationCap,
-      className: "bg-accent/10 text-accent border-accent/20",
+      className: "bg-accent text-accent-foreground",
     },
     admin: {
       label: "admin",
       icon: Shield,
-      className: "bg-destructive/10 text-destructive border-destructive/20",
+      className: "bg-destructive text-destructive-foreground",
     },
   }[role] || {
     label: role,
@@ -37,12 +37,17 @@ function RoleBadge({ role }: { role: string }) {
 
   const Icon = config.icon;
 
+  const baseClasses = "inline-flex items-center gap-0.5 text-[10px] font-semibold rounded-full shadow-sm";
+  const floatingClasses = floating
+    ? "absolute -top-2 -right-2 px-1.5 py-0.5"
+    : "px-2 py-0.5";
+
   return (
     <span
-      className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full border ${config.className}`}
+      className={`${baseClasses} ${floatingClasses} ${config.className}`}
       title={`Rol: ${config.label}`}
     >
-      <Icon className="h-3 w-3" />
+      <Icon className="h-2.5 w-2.5" />
       {config.label}
     </span>
   );
@@ -144,9 +149,9 @@ export function Navbar() {
 
                 {/* User info section */}
                 <div data-testid="user_info" className="flex items-center space-x-2 pl-2 border-l border-border">
-                  <div className="flex flex-col items-end gap-0.5">
-                    <span className="text-sm font-medium leading-none">{displayName}</span>
-                    <RoleBadge role={user.role} />
+                  <div className="relative">
+                    <span className="text-sm font-medium">{displayName}</span>
+                    <RoleBadge role={user.role} floating />
                   </div>
                   <Link href="/profile/edit">
                     <Button
