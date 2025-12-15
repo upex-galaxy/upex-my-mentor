@@ -39,7 +39,7 @@ function RoleBadge({ role, floating = false }: { role: string; floating?: boolea
 
   const baseClasses = "inline-flex items-center gap-0.5 text-[10px] font-semibold rounded-full shadow-sm";
   const floatingClasses = floating
-    ? "absolute -top-2 -right-2 px-1.5 py-0.5"
+    ? "absolute -top-3.5 -right-3 px-1.5 py-0.5"
     : "px-2 py-0.5";
 
   return (
