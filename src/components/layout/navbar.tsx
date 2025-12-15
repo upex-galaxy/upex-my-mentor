@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { User, LogOut, Menu, Settings, Shield, Wallet, MessageCircle } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useState } from "react";
 import { MessagesNavIcon } from "@/components/messaging/messages-nav-icon";
 
@@ -41,6 +42,9 @@ export function Navbar() {
             >
               Cómo Funciona
             </Link>
+
+            {/* MYM-70: Theme toggle - always visible */}
+            <ThemeToggle />
 
             {user ? (
               <>
@@ -140,6 +144,12 @@ export function Navbar() {
             >
               Cómo Funciona
             </Link>
+
+            {/* MYM-70: Theme toggle for mobile */}
+            <div className="flex items-center justify-between py-2">
+              <span className="text-sm font-medium">Cambiar tema</span>
+              <ThemeToggle />
+            </div>
 
             {user ? (
               <>
