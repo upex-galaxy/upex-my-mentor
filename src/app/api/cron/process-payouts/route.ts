@@ -3,7 +3,7 @@
  * MYM-27: Automated payout processing endpoint
  *
  * This endpoint is triggered by Vercel Cron to process mentor payouts.
- * It runs hourly and processes sessions completed more than 24 hours ago.
+ * It runs daily at midnight UTC and processes sessions completed more than 24 hours ago.
  *
  * Security: Requires CRON_SECRET authorization header
  */
@@ -14,7 +14,7 @@ import { processPayouts } from '@/lib/payments/payout-service'
 /**
  * POST /api/cron/process-payouts
  *
- * Triggered by Vercel Cron scheduler (hourly)
+ * Triggered by Vercel Cron scheduler (daily at midnight UTC)
  * Can also be triggered manually for testing (with CRON_SECRET)
  */
 export async function POST(request: NextRequest) {
@@ -92,7 +92,7 @@ export async function GET() {
   return NextResponse.json({
     status: 'ok',
     job: 'process-payouts',
-    schedule: '0 * * * *', // Every hour
+    schedule: '0 0 * * *', // Daily at midnight UTC
     description: 'Processes mentor payouts for completed sessions (24h+ ago)',
   })
 }

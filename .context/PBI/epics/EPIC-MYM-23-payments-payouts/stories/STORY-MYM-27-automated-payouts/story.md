@@ -42,10 +42,19 @@ This is a backend-only story. The system needs an automated process to find comp
 
 ## Technical Notes
 
-* This will be implemented as a scheduled Supabase Function (cron job) that runs once a day.
-* The function will query the `sessions` table for all records where `status = 'confirmed'`, `payout_status != 'paid_out'`, and `session_end_time < NOW() - INTERVAL '24 hours'`.
-* For each eligible session, it will use the Stripe API to create a `Transfer` to the mentor's Stripe Connect account ID.
+* **Implementation:** Vercel Cron Job triggering a Next.js API route (`/api/cron/process-payouts`).
+* **Schedule:** Daily at midnight UTC (`0 0 * * *`).
+* The function queries the `bookings` table for completed sessions where `completed_at < NOW() - 24 hours` and transaction not yet in `payout_items`.
+* For each eligible session, it uses the Stripe API to create a `Transfer` to the mentor's Stripe Connect account ID.
 * Robust error handling and logging are critical.
+
+### Constraints
+
+* **Vercel Hobby Plan Limitation:** Cron jobs are limited to daily frequency minimum. Hourly schedules (`0 * * * *`) are not allowed on the Hobby plan - requires Pro plan ($20/month) for more frequent execution.
+* If more frequent payout processing is needed in the future, options are:
+  1. Upgrade to Vercel Pro
+  2. Migrate to Supabase pg_cron
+  3. Use an external scheduler service
 
 ---
 
