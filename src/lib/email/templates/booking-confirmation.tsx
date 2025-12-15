@@ -122,7 +122,7 @@ export function BookingConfirmationEmail({
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
-            <Text style={headerText}>Upex My Mentor</Text>
+            <Text style={headerText}>MyMentor</Text>
           </Section>
 
           <Section style={content}>
@@ -170,7 +170,7 @@ export function BookingConfirmationEmail({
             <Text style={footer}>
               See you there!
               <br />
-              The Upex My Mentor Team
+              The MyMentor Team
             </Text>
           </Section>
         </Container>

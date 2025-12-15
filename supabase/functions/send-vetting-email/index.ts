@@ -38,7 +38,7 @@ Deno.serve(async (req: Request) => {
     // Send email via Resend
     // Using Resend's test domain for MVP - change to verified domain in production
     const { data, error } = await resend.emails.send({
-      from: "Upex My Mentor <onboarding@resend.dev>",
+      from: "MyMentor <onboarding@resend.dev>",
       to: payload.mentor_email,
       subject: subject,
       html: html,
@@ -112,7 +112,7 @@ function getApprovalEmailTemplate(name: string): string {
           <h1>Congratulations, ${name}!</h1>
         </div>
         <div class="content">
-          <p>Great news! Your mentor application on <strong>Upex My Mentor</strong> has been approved.</p>
+          <p>Great news! Your mentor application on <strong>MyMentor</strong> has been approved.</p>
           <p>You're now part of our community of verified mentors. Students can now discover your profile and book mentorship sessions with you.</p>
           <h3>What's Next?</h3>
           <ul>
@@ -124,7 +124,7 @@ function getApprovalEmailTemplate(name: string): string {
           <a href="https://my-mentor.upexgalaxy.com/dashboard" class="button">Go to Dashboard</a>
         </div>
         <div class="footer">
-          <p>Upex My Mentor - Connecting Students with Expert Mentors</p>
+          <p>MyMentor - Connecting Students with Expert Mentors</p>
         </div>
       </div>
     </body>
@@ -164,7 +164,7 @@ function getRejectionEmailTemplate(
         </div>
         <div class="content">
           <p>Hi ${name},</p>
-          <p>Thank you for your interest in becoming a mentor on <strong>Upex My Mentor</strong>.</p>
+          <p>Thank you for your interest in becoming a mentor on <strong>MyMentor</strong>.</p>
           <p>After careful review, we regret to inform you that we are unable to approve your application at this time.</p>
           ${reasonSection}
           <p>We encourage you to:</p>
@@ -174,10 +174,10 @@ function getRejectionEmailTemplate(
             <li>Consider reapplying in the future with an enhanced profile</li>
           </ul>
           <p>If you have questions or believe this decision was made in error, please reach out to our support team.</p>
-          <p>Best regards,<br>The Upex My Mentor Team</p>
+          <p>Best regards,<br>The MyMentor Team</p>
         </div>
         <div class="footer">
-          <p>Upex My Mentor - Connecting Students with Expert Mentors</p>
+          <p>MyMentor - Connecting Students with Expert Mentors</p>
         </div>
       </div>
     </body>

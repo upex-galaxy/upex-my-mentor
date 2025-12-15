@@ -12,9 +12,9 @@ import {
 import { ForgotPasswordForm } from '@/components/auth/forgot-password-form'
 
 export const metadata: Metadata = {
-  title: 'Recuperar Contraseña | Upex My Mentor',
+  title: 'Recuperar Contraseña | MyMentor',
   description:
-    'Recupera el acceso a tu cuenta de Upex My Mentor. Te enviaremos un enlace para crear una nueva contraseña.',
+    'Recupera el acceso a tu cuenta de MyMentor. Te enviaremos un enlace para crear una nueva contraseña.',
 }
 
 export default function PasswordResetPage() {

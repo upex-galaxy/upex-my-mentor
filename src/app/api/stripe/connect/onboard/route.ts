@@ -86,7 +86,7 @@ export async function POST(): Promise<NextResponse<StripeConnectOnboardResponse 
         },
         metadata: {
           mentor_id: user.id,
-          platform: 'upex-my-mentor',
+          platform: 'mymentor',
         },
       })
 
