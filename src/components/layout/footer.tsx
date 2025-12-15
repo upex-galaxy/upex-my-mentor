@@ -3,12 +3,12 @@ import { Github, Linkedin, Twitter } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="border-t bg-muted/50">
+    <footer data-testid="footer" className="border-t bg-muted/50">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
+          <div data-testid="brand_section" className="space-y-4">
+            <div data-testid="logo_link" className="flex items-center space-x-2">
               <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
                 <span className="text-white font-bold text-lg">U</span>
               </div>
@@ -23,7 +23,7 @@ export function Footer() {
           </div>
 
           {/* Platform */}
-          <div>
+          <div data-testid="platform_section">
             <h3 className="font-semibold mb-4">Plataforma</h3>
             <ul className="space-y-2 text-sm">
               <li>
@@ -62,7 +62,7 @@ export function Footer() {
           </div>
 
           {/* Company */}
-          <div>
+          <div data-testid="company_section">
             <h3 className="font-semibold mb-4">Compañía</h3>
             <ul className="space-y-2 text-sm">
               <li>
@@ -101,7 +101,7 @@ export function Footer() {
           </div>
 
           {/* Legal & Social */}
-          <div>
+          <div data-testid="legal_section">
             <h3 className="font-semibold mb-4">Legal</h3>
             <ul className="space-y-2 text-sm mb-6">
               <li>
@@ -121,9 +121,10 @@ export function Footer() {
                 </Link>
               </li>
             </ul>
-            <div className="flex space-x-4">
+            <div data-testid="social_links" className="flex space-x-4">
               <a
                 href="https://twitter.com"
+                data-testid="twitter_link"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground transition-colors"
@@ -132,6 +133,7 @@ export function Footer() {
               </a>
               <a
                 href="https://linkedin.com"
+                data-testid="linkedin_link"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground transition-colors"
@@ -140,6 +142,7 @@ export function Footer() {
               </a>
               <a
                 href="https://github.com"
+                data-testid="github_link"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground transition-colors"

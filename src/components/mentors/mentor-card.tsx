@@ -14,12 +14,12 @@ export function MentorCard({ mentor }: MentorCardProps) {
   const { profile } = mentor;
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+    <Card data-testid="mentorCard" className="overflow-hidden hover:shadow-lg transition-shadow">
       <CardContent className="p-6">
         {/* Header with Avatar */}
         <div className="flex items-start space-x-4 mb-4">
           {mentor.photoUrl ? (
-            <div className="relative h-16 w-16 rounded-full overflow-hidden bg-muted">
+            <div data-testid="avatar_image" className="relative h-16 w-16 rounded-full overflow-hidden bg-muted">
               <Image
                 src={mentor.photoUrl}
                 alt={mentor.name}
@@ -28,47 +28,47 @@ export function MentorCard({ mentor }: MentorCardProps) {
               />
             </div>
           ) : (
-            <div className="h-16 w-16 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-2xl font-bold">
+            <div data-testid="avatar_image" className="h-16 w-16 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-2xl font-bold">
               {mentor.name.charAt(0)}
             </div>
           )}
 
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-lg truncate">{mentor.name}</h3>
-            <div className="flex items-center mt-1 text-sm text-muted-foreground">
+            <h3 data-testid="name_text" className="font-semibold text-lg truncate">{mentor.name}</h3>
+            <div data-testid="rating_display" className="flex items-center mt-1 text-sm text-muted-foreground">
               <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
               <span className="font-medium">{profile.averageRating}</span>
               <span className="mx-1">•</span>
-              <span>{profile.totalReviews} reviews</span>
+              <span data-testid="reviews_count">{profile.totalReviews} reviews</span>
             </div>
           </div>
         </div>
 
         {/* Description */}
-        <p className="text-sm text-muted-foreground line-clamp-3 mb-4">
+        <p data-testid="description_text" className="text-sm text-muted-foreground line-clamp-3 mb-4">
           {mentor.description}
         </p>
 
         {/* Skills */}
-        <div className="flex flex-wrap gap-2 mb-4">
+        <div data-testid="skills_container" className="flex flex-wrap gap-2 mb-4">
           {profile.specialties.slice(0, 3).map((skill) => (
-            <Badge key={skill} variant="secondary">
+            <Badge key={skill} variant="secondary" data-testid="skill_badge">
               {skill}
             </Badge>
           ))}
           {profile.specialties.length > 3 && (
-            <Badge variant="outline">+{profile.specialties.length - 3}</Badge>
+            <Badge variant="outline" data-testid="skill_badge">+{profile.specialties.length - 3}</Badge>
           )}
         </div>
 
         {/* Experience & Price */}
         <div className="flex items-center justify-between text-sm">
           {profile.yearsOfExperience && (
-            <span className="text-muted-foreground">
+            <span data-testid="experience_text" className="text-muted-foreground">
               {profile.yearsOfExperience} años exp.
             </span>
           )}
-          <span className="font-bold text-lg text-primary">
+          <span data-testid="hourly_rate_text" className="font-bold text-lg text-primary">
             ${profile.hourlyRate}/hr
           </span>
         </div>
@@ -76,7 +76,7 @@ export function MentorCard({ mentor }: MentorCardProps) {
 
       <CardFooter className="p-6 pt-0">
         <Link href={`/mentors/${mentor.id}`} className="w-full">
-          <Button className="w-full">Ver Perfil</Button>
+          <Button data-testid="view_profile_button" className="w-full">Ver Perfil</Button>
         </Link>
       </CardFooter>
     </Card>

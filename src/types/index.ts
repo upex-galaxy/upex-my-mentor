@@ -1,5 +1,24 @@
 // User Types
-export type UserRole = "student" | "mentor";
+export type UserRole = "student" | "mentor" | "admin";
+
+// Admin Types (for MYM-9: View Pending Applications)
+export interface PendingApplication {
+  id: string
+  name: string | null
+  email: string
+  created_at: string
+  specialties: string[] | null
+  linkedin_url: string | null
+  github_url: string | null
+}
+
+export interface PaginatedResponse<T> {
+  data: T[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
 
 export interface User {
   id: string;

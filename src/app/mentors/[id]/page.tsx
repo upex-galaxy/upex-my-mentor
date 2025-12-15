@@ -104,17 +104,17 @@ export default async function MentorProfilePage({
   const { profile } = mentor;
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div data-testid="mentorDetailPage" className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
         {/* Hero Section */}
-        <div className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 py-12">
+        <div data-testid="profile_hero" className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 py-12">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row gap-8 items-start">
               {/* Avatar */}
               <div className="flex-shrink-0">
                 {mentor.photoUrl ? (
-                  <div className="relative h-32 w-32 rounded-full overflow-hidden ring-4 ring-background">
+                  <div data-testid="avatar_image" className="relative h-32 w-32 rounded-full overflow-hidden ring-4 ring-background">
                     <Image
                       src={mentor.photoUrl}
                       alt={mentor.name}
@@ -123,7 +123,7 @@ export default async function MentorProfilePage({
                     />
                   </div>
                 ) : (
-                  <div className="h-32 w-32 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-4xl font-bold ring-4 ring-background">
+                  <div data-testid="avatar_image" className="h-32 w-32 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-4xl font-bold ring-4 ring-background">
                     {mentor.name.charAt(0)}
                   </div>
                 )}
@@ -131,39 +131,39 @@ export default async function MentorProfilePage({
 
               {/* Info */}
               <div className="flex-1">
-                <h1 className="text-4xl font-bold mb-2">{mentor.name}</h1>
+                <h1 data-testid="name_text" className="text-4xl font-bold mb-2">{mentor.name}</h1>
 
                 <div className="flex flex-wrap items-center gap-4 mb-4">
-                  <div className="flex items-center text-lg">
+                  <div data-testid="rating_display" className="flex items-center text-lg">
                     <Star className="h-5 w-5 fill-yellow-400 text-yellow-400 mr-1" />
                     <span className="font-bold mr-1">
                       {profile.averageRating}
                     </span>
-                    <span className="text-muted-foreground">
+                    <span data-testid="reviews_count" className="text-muted-foreground">
                       ({profile.totalReviews} reviews)
                     </span>
                   </div>
 
                   {profile.yearsOfExperience && (
-                    <div className="flex items-center text-muted-foreground">
+                    <div data-testid="experience_text" className="flex items-center text-muted-foreground">
                       <Briefcase className="h-4 w-4 mr-1" />
                       <span>{profile.yearsOfExperience} años de experiencia</span>
                     </div>
                   )}
 
                   {profile.isVerified && (
-                    <Badge className="bg-green-600">✓ Verificado</Badge>
+                    <Badge data-testid="verified_badge" className="bg-green-600">✓ Verificado</Badge>
                   )}
                 </div>
 
-                <p className="text-lg text-muted-foreground mb-6 max-w-3xl">
+                <p data-testid="description_text" className="text-lg text-muted-foreground mb-6 max-w-3xl">
                   {mentor.description}
                 </p>
 
                 {/* Skills */}
-                <div className="flex flex-wrap gap-2 mb-6">
+                <div data-testid="skills_container" className="flex flex-wrap gap-2 mb-6">
                   {profile.specialties.map((skill) => (
-                    <Badge key={skill} variant="secondary">
+                    <Badge key={skill} data-testid="skill_badge" variant="secondary">
                       {skill}
                     </Badge>
                   ))}
@@ -173,6 +173,7 @@ export default async function MentorProfilePage({
                 <div className="flex flex-wrap gap-3">
                   {profile.linkedinUrl && (
                     <a
+                      data-testid="linkedin_link"
                       href={profile.linkedinUrl}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -184,6 +185,7 @@ export default async function MentorProfilePage({
                   )}
                   {profile.githubUrl && (
                     <a
+                      data-testid="github_link"
                       href={profile.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -197,9 +199,9 @@ export default async function MentorProfilePage({
               </div>
 
               {/* Booking Card */}
-              <Card className="w-full md:w-80 flex-shrink-0">
+              <Card data-testid="booking_card" className="w-full md:w-80 flex-shrink-0">
                 <CardHeader>
-                  <CardTitle className="text-3xl">
+                  <CardTitle data-testid="hourly_rate" className="text-3xl">
                     ${profile.hourlyRate}
                     <span className="text-base font-normal text-muted-foreground">
                       /hora
@@ -207,20 +209,20 @@ export default async function MentorProfilePage({
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <Button className="w-full" size="lg" disabled>
+                  <Button data-testid="book_button" className="w-full" size="lg" disabled>
                     <Calendar className="mr-2 h-5 w-5" />
                     Agendar Sesión
                   </Button>
-                  <p className="text-xs text-center text-muted-foreground">
+                  <p data-testid="unavailable_note" className="text-xs text-center text-muted-foreground">
                     El sistema de booking estará disponible próximamente
                   </p>
 
                   <div className="pt-4 border-t space-y-3 text-sm">
-                    <div className="flex items-center text-muted-foreground">
+                    <div data-testid="session_duration" className="flex items-center text-muted-foreground">
                       <Clock className="h-4 w-4 mr-2" />
                       Sesiones de 1 hora
                     </div>
-                    <div className="flex items-center text-muted-foreground">
+                    <div data-testid="cancellation_policy" className="flex items-center text-muted-foreground">
                       <Calendar className="h-4 w-4 mr-2" />
                       Cancela hasta 24h antes
                     </div>
@@ -232,15 +234,15 @@ export default async function MentorProfilePage({
         </div>
 
         {/* Reviews Section */}
-        <div className="container mx-auto px-4 py-12">
-          <h2 className="text-2xl font-bold mb-6">
+        <div data-testid="reviews_section" className="container mx-auto px-4 py-12">
+          <h2 data-testid="reviews_title" className="text-2xl font-bold mb-6">
             Reviews ({profile.totalReviews})
           </h2>
 
           {reviews.length > 0 ? (
-            <div className="space-y-6">
+            <div data-testid="reviews_list" className="space-y-6">
               {reviews.map((review) => (
-                <Card key={review.id}>
+                <Card key={review.id} data-testid="review_item">
                   <CardContent className="pt-6">
                     <div className="flex items-start justify-between mb-3">
                       <div>
@@ -270,7 +272,7 @@ export default async function MentorProfilePage({
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
+            <div data-testid="reviews_empty_state" className="text-center py-12">
               <p className="text-muted-foreground">
                 Este mentor aún no tiene reviews.
               </p>
