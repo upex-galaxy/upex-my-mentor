@@ -24,15 +24,15 @@ KATA (Komponent Action Test Architecture) is a testing framework that solves com
 
 ### Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| **Language** | TypeScript (strict mode) |
-| **Runtime** | Node.js (Next.js 15 compatible) |
-| **Test Runner** | Playwright Test (for both API and UI) |
-| **Assertions** | Playwright expect + custom matchers |
-| **TMS** | Xray Cloud (Jira) OR Jira Direct (custom fields) |
-| **CI/CD** | GitHub Actions |
-| **Reporting** | Playwright HTML Report + Allure (optional) |
+| Layer           | Technology                                                    |
+| --------------- | ------------------------------------------------------------- |
+| **Language**    | TypeScript (relaxed mode - no experimentalDecorators)         |
+| **Runtime**     | Bun (native TC39 Stage 3 decorators)                          |
+| **Test Runner** | Playwright Test (for both API and UI)                         |
+| **Assertions**  | Playwright expect + custom matchers                           |
+| **TMS**         | Xray Cloud (Jira) OR Jira Direct (custom fields)              |
+| **CI/CD**       | GitHub Actions                                                |
+| **Reporting**   | KataReporter (terminal) + Playwright HTML + Allure (optional) |
 
 ### Test ID Format
 
@@ -54,7 +54,7 @@ KATA (Komponent Action Test Architecture) is a testing framework that solves com
 │                  Test Files Layer                   │
 │    (test_user_journey.e2e.ts, test_api.test.ts)    │
 └────────────────────┬────────────────────────────────┘
-                     │ imports fixture
+                     │ imports fixture + preconditions
                      ▼
 ┌─────────────────────────────────────────────────────┐
 │               Fixture Layer (DI)                    │
@@ -65,9 +65,16 @@ KATA (Komponent Action Test Architecture) is a testing framework that solves com
          │ instantiates components
          ▼
 ┌─────────────────────────────────────────────────────┐
+│        Preconditions Layer (Optional)               │
+│   (AuthFlows, CheckoutFlows) - Reusable ATC chains  │
+│         ← Orchestrates ATCs, NOT an ATC itself      │
+└────────┬────────────────────────────────────────────┘
+         │ uses
+         ▼
+┌─────────────────────────────────────────────────────┐
 │           Specific Components Layer                 │
 │    (UsersApi, ProductsApi, LoginPage, CartPage)     │
-│            ← ATCs live here                         │
+│            ← ATCs live here (atomic)                │
 └────────┬────────────────────────────────────────────┘
          │ inherits from
          ▼
@@ -85,59 +92,95 @@ KATA (Komponent Action Test Architecture) is a testing framework that solves com
 
 ### Layer Descriptions
 
-| Layer | Responsibility | Examples |
-|-------|---------------|----------|
-| **Test Context** | Global utilities (config, logger, faker, HTTP client) | `TestContext.ts` |
-| **Base Components** | Helpers for API or UI (HTTP methods, Playwright wrappers) | `ApiBase.ts`, `UiBase.ts` |
-| **Specific Components** | Business-specific logic, contains ATCs | `UsersApi.ts`, `LoginPage.ts` |
-| **Fixtures** | Dependency Injection entry point | `ApiFixture.ts`, `UiFixture.ts`, `TestFixture.ts` |
-| **Test Files** | Orchestrate ATCs to validate flows | `test_checkout_flow.e2e.ts` |
+| Layer                   | Responsibility                                            | Examples                                          |
+| ----------------------- | --------------------------------------------------------- | ------------------------------------------------- |
+| **Test Context**        | Global utilities (config, logger, faker, HTTP client)     | `TestContext.ts`                                  |
+| **Base Components**     | Helpers for API or UI (HTTP methods, Playwright wrappers) | `ApiBase.ts`, `UiBase.ts`                         |
+| **Specific Components** | Business-specific logic, contains ATCs                    | `UsersApi.ts`, `LoginPage.ts`                     |
+| **Preconditions**       | Reusable ATC chains for test setup (optional)             | `AuthFlows.ts`, `CheckoutFlows.ts`                |
+| **Fixtures**            | Dependency Injection entry point                          | `ApiFixture.ts`, `UiFixture.ts`, `TestFixture.ts` |
+| **Test Files**          | Orchestrate ATCs to validate flows                        | `test_checkout_flow.e2e.ts`                       |
 
 ---
 
 ## 4. Directory Structure
 
 ```
+/config                              # Configuration at project root
+│   └── variables.ts                 # SINGLE SOURCE OF TRUTH for env vars & URLs
+│
 /tests
 ├── /components                       # All KATA components
-│   ├── testcontext.ts               # Layer 1: Global utilities
+│   ├── TestContext.ts               # Layer 1: Global utilities
 │   │
-│   ├── api_fixture.ts               # Layer 4: API Fixture (DI)
-│   ├── ui_fixture.ts                # Layer 4: UI Fixture (DI)
-│   ├── test_fixture.ts              # Layer 4: Unified Fixture (recommended)
+│   ├── ApiFixture.ts                # Layer 4: API Fixture (DI)
+│   ├── UiFixture.ts                 # Layer 4: UI Fixture (DI)
+│   ├── TestFixture.ts               # Layer 4: Unified Fixture (recommended)
 │   │
 │   ├── /api                         # Layers 2 & 3: API Components
-│   │   ├── api_base.ts             # Layer 2: REST helpers
-│   │   ├── users_api.ts            # Layer 3: UsersApi with ATCs
-│   │   ├── products_api.ts         # Layer 3: ProductsApi with ATCs
-│   │   └── orders_api.ts           # Layer 3: OrdersApi with ATCs
+│   │   ├── ApiBase.ts              # Layer 2: REST helpers (type-safe generics)
+│   │   └── AuthApi.ts              # Layer 3: AuthApi with ATCs
 │   │
-│   └── /ui                          # Layers 2 & 3: UI Components
-│       ├── ui_base.ts              # Layer 2: Playwright helpers
-│       ├── login_page.ts           # Layer 3: LoginPage with ATCs
-│       ├── dashboard_page.ts       # Layer 3: DashboardPage with ATCs
-│       └── checkout_page.ts        # Layer 3: CheckoutPage with ATCs
+│   ├── /ui                          # Layers 2 & 3: UI Components
+│   │   ├── UiBase.ts               # Layer 2: Minimal base (direct Playwright)
+│   │   └── SignupPage.ts           # Layer 3: SignupPage with ATCs
+│   │
+│   └── /preconditions               # Layer 3.5: Reusable ATC chains (optional)
+│       └── AuthFlows.ts            # Combines ATCs for test setup
+│
+├── /data                            # Test data files
+│   ├── /fixtures                   # JSON, CSV for parameterization
+│   ├── /uploads                    # Files for upload tests
+│   └── /downloads                  # Download destination (gitignore)
 │
 ├── /integration                     # Integration tests (API only)
-│   ├── test_users_integration.ts
-│   ├── test_orders_integration.ts
-│   └── ...
+│   └── auth.test.ts
 │
 ├── /e2e                             # E2E tests (UI + API)
-│   ├── test_checkout_flow.e2e.ts
-│   ├── test_user_registration.e2e.ts
-│   └── ...
+│   └── /auth
+│       └── signUp.test.ts
 │
 ├── /utils                           # Helper utilities
-│   ├── decorators.ts               # @atc decorator + reporting
-│   ├── data_generators.ts          # Test data factories
-│   └── tms_sync.ts                 # TMS integration
+│   ├── decorators.ts               # @atc decorator (TC39 Stage 3 format)
+│   ├── KataReporter.ts             # Custom terminal reporter
+│   └── tmsSync.ts                  # TMS integration
 │
-├── /fixtures                        # Test data fixtures
-│   └── sample_data.json
+├── globalSetup.ts                   # Global setup
+└── globalTeardown.ts                # Global teardown
 │
-├── playwright.config.ts             # Playwright configuration
-└── global-setup.ts                  # Global setup/teardown
+/test-results                        # Playwright artifacts (gitignore)
+├── /screenshots
+├── /videos
+└── /traces
+│
+/playwright.config.ts                # Playwright configuration (uses @config/variables)
+```
+
+### Import Aliases (Mandatory)
+
+All imports MUST use aliases. No relative imports allowed.
+
+```typescript
+// ✅ CORRECT
+import { config, env } from '@config/variables';
+import { ApiBase } from '@components/api/ApiBase';
+import { atc } from '@utils/decorators';
+
+// ❌ WRONG - No relative imports
+import { config } from '../../../config/variables';
+```
+
+Configure in `tsconfig.json`:
+```json
+{
+  "compilerOptions": {
+    "paths": {
+      "@config/*": ["./config/*"],
+      "@components/*": ["./tests/components/*"],
+      "@utils/*": ["./tests/utils/*"]
+    }
+  }
+}
 ```
 
 ---
@@ -146,32 +189,53 @@ KATA (Komponent Action Test Architecture) is a testing framework that solves com
 
 ### 5.1 ATC (Acceptance Test Case)
 
-An **ATC** is an automated acceptance test case that represents a **functional unit** of the system.
+An **ATC** is an automated acceptance test case that represents a **complete test case** (mini-flow), NOT a single interaction.
 
 **Characteristics:**
 - Maps 1:1 with a test case in Jira/Xray (via `@atc('PROJECT-XXX')`)
-- Contains fixed assertions that validate the action succeeded
-- Is reusable across multiple tests
-- Returns data for chaining with other ATCs
+- Contains fixed assertions that validate the complete flow worked
+- Is a **complete test case** - navigate, act, assert
+- Returns data for chaining with other ATCs (API) or void (UI)
 
-**Example:**
+**Critical Rules:**
+
+1. **Equivalence Partitioning**: Each ATC must have a **unique expected output**. If two ATCs have the same output, merge them into ONE parameterized ATC.
+
+2. **Locators Inline**: All locators go directly inside the ATC. No separate locator objects or helper methods for single Playwright actions.
+
+3. **No Unnecessary Helpers**: If Playwright does it in one line, don't abstract it.
+
+4. **ATCs Don't Call ATCs**: ATCs are atomic. They should NOT call other ATCs. Use the **Preconditions** module for reusable ATC chains (see `automation-standards.md` section 1.7).
+
+**Example (API):**
 
 ```typescript
 @atc('UPEX-123')
-async createUserSuccessfully(name: string, email: string, password: string): Promise<User> {
-  // ARRANGE
-  const payload = { name, email, password };
+async createUserSuccessfully(userData: UserPayload): Promise<[APIResponse, User, UserPayload]> {
+  const [response, body, payload] = await this.apiPOST<User, UserPayload>('/users', userData);
 
-  // ACT
-  const response = await this._post('/api/users', { data: payload });
-
-  // ASSERT (Fixed Assertions)
+  // Fixed Assertions
   expect(response.status()).toBe(201);
-  const user = await response.json();
-  expect(user).toHaveProperty('id');
-  expect(user.email).toBe(email);
+  expect(body.id).toBeDefined();
 
-  return user; // Return for chaining
+  return [response, body, payload];
+}
+```
+
+**Example (UI) - Locators Inline:**
+
+```typescript
+@atc('UPEX-456')
+async signupWithValidCredentials(data: SignUpData) {
+  await this.page.goto('/signup');
+
+  // Locators defined inline - NOT in separate helper methods
+  await this.page.locator('#email').fill(data.email);
+  await this.page.locator('#password').fill(data.password);
+  await this.page.locator('button[type="submit"]').click();
+
+  // Fixed Assertions
+  await expect(this.page).toHaveURL(/.*dashboard.*/);
 }
 ```
 
@@ -246,35 +310,43 @@ test('complete purchase flow', async ({ page }) => {
 
 ### Components
 
-| Type | Format | Example |
-|------|--------|---------|
-| **API Component** | `{Resource}Api` | `UsersApi`, `ProductsApi`, `OrdersApi` |
-| **UI Component** | `{Page}Page` | `LoginPage`, `DashboardPage`, `CheckoutPage` |
-| **File Name** | `snake_case.ts` | `users_api.ts`, `login_page.ts` |
+| Type               | Format          | File Name                         |
+| ------------------ | --------------- | --------------------------------- |
+| **API Component**  | `{Resource}Api` | `AuthApi.ts`, `UsersApi.ts`       |
+| **UI Component**   | `{Page}Page`    | `SignupPage.ts`, `LoginPage.ts`   |
+| **Base Component** | `{Type}Base`    | `ApiBase.ts`, `UiBase.ts`         |
+| **Fixture**        | `{Type}Fixture` | `TestFixture.ts`, `ApiFixture.ts` |
+| **Context**        | `TestContext`   | `TestContext.ts`                  |
+
+**File Naming**: PascalCase (matches class name exactly)
 
 ### ATCs
 
-**Format**: `{verb}_{resource}_{scenario}_{condition}`
+**Format**: `{verb}{Resource}{Scenario}`
 
 **Examples:**
-- ✅ `createUserSuccessfully(data)`
-- ✅ `deleteOrderWithInvalidId(id)`
-- ✅ `loginWithExpiredCredentials(email, password)`
-- ✅ `updateProductPartially(id, fields)`
+- ✅ `signInWithValidCredentials(credentials)` - Complete login flow
+- ✅ `signInWithInvalidCredentials(credentials)` - Complete error flow
+- ✅ `signupWithValidCredentials(data)` - Complete signup flow
+- ✅ `addProductToCartSuccessfully(productId)` - Complete add-to-cart flow
+- ❌ `fillEmailSuccessfully(email)` - WRONG: Single interaction, not a test case
+- ❌ `submitFormSuccessfully()` - WRONG: Single interaction, not a test case
+- ❌ `clickLoginButton()` - WRONG: Single interaction, not a test case
 
 **Rules:**
 - Always camelCase
 - Always English
-- Indicate success: `Successfully` suffix
-- Indicate failure: `WithInvalidX`, `WithExpiredY`
+- **Must be complete test cases (mini-flows), NOT single interactions**
+- Success scenarios: `Successfully` or `WithValidCredentials` suffix
+- Error scenarios: `WithInvalid{X}`, `WithExpired{Y}`, `WithNonExistent{Z}`
 
 ### Test Files
 
-| Type | Pattern | Example |
-|------|---------|---------|
-| **Unit Test** | `*.test.ts` | `utils.test.ts` |
-| **Integration Test** | `test_*.ts` | `test_users_integration.ts` |
-| **E2E Test** | `test_*.e2e.ts` | `test_checkout_flow.e2e.ts` |
+| Type                 | Pattern              | Example                              |
+| -------------------- | -------------------- | ------------------------------------ |
+| **E2E Test**         | `{feature}.test.ts`  | `signUp.test.ts`, `checkout.test.ts` |
+| **Integration Test** | `{resource}.test.ts` | `auth.test.ts`, `users.test.ts`      |
+| **Utility Test**     | `{util}.test.ts`     | `decorators.test.ts`                 |
 
 ---
 
@@ -282,12 +354,32 @@ test('complete purchase flow', async ({ page }) => {
 
 ### @atc Decorator
 
-The `@atc` decorator connects code with Jira/Xray:
+The `@atc` decorator connects code with Jira/Xray using **TC39 Stage 3 decorators** (Bun native):
 
 ```typescript
-@atc('UPEX-123') // Maps to Jira issue UPEX-123
-async createUserSuccessfully(data: UserData): Promise<User> {
-  // Implementation
+// TC39 Stage 3 format - NOT legacy TypeScript decorators
+@atc('PROJ-API-001')
+async signInSuccessfully(payload: SignInPayload): Promise<[APIResponse, AuthResponse, SignInPayload]> {
+  const [response, body, sentPayload] = await this.apiPOST<AuthResponse, SignInPayload>(
+    '/auth/signin',
+    payload,
+  );
+
+  // Fixed assertions
+  expect(response.status()).toBe(200);
+  expect(body.session.access_token).toBeDefined();
+
+  return [response, body, sentPayload];
+}
+```
+
+**Decorator Signature (TC39 format):**
+```typescript
+export function atc(testId: string, options: AtcOptions = {}) {
+  return function <T extends (...args: unknown[]) => Promise<unknown>>(
+    originalMethod: T,
+    context: ClassMethodDecoratorContext,  // TC39 format - NOT (target, key, descriptor)
+  ): T { ... }
 }
 ```
 
@@ -295,6 +387,7 @@ async createUserSuccessfully(data: UserData): Promise<User> {
 - Automatic traceability to Jira test cases
 - Granular reporting (which ATCs passed/failed)
 - Synchronization with TMS (Xray or Jira Direct)
+- Console output: `[ATC-PASS] PROJ-API-001 | signInSuccessfully`
 
 ### Test Results Synchronization
 

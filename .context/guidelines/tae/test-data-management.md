@@ -23,7 +23,7 @@ Use **@faker-js/faker** for generating realistic random data.
 
 **Installation:**
 ```bash
-npm install --save-dev @faker-js/faker
+bun add -d @faker-js/faker
 ```
 
 **Common Use Cases:**
@@ -452,9 +452,7 @@ export class TestContext {
   private config = this.loadConfig(this.env);
 
   private loadConfig(env: string) {
-    const configPath = `./config/${env}.env`;
-    require('dotenv').config({ path: configPath });
-
+    // Bun auto-loads .env - no dotenv needed!
     return {
       apiBaseUrl: process.env.API_BASE_URL!,
       supabaseUrl: process.env.SUPABASE_URL!,
@@ -466,12 +464,12 @@ export class TestContext {
 
 ### 6.2 Data Requirements by Environment
 
-| Environment | Data Strategy | Cleanup |
-|-------------|--------------|---------|
-| **Local** | Generate on-the-fly | Manual or afterEach |
+| Environment             | Data Strategy                 | Cleanup               |
+| ----------------------- | ----------------------------- | --------------------- |
+| **Local**               | Generate on-the-fly           | Manual or afterEach   |
 | **CI (GitHub Actions)** | Generate on-the-fly + seeding | Automatic in teardown |
-| **Staging** | Mix of generated + seed data | Nightly cleanup job |
-| **Production** | NO TESTS RUN | N/A |
+| **Staging**             | Mix of generated + seed data  | Nightly cleanup job   |
+| **Production**          | NO TESTS RUN                  | N/A                   |
 
 ---
 
@@ -528,12 +526,13 @@ const simpleUser = {
 
 ## 9. Tools & Libraries
 
-| Tool | Purpose | Installation |
-|------|---------|-------------|
-| **@faker-js/faker** | Generate realistic random data | `npm install --save-dev @faker-js/faker` |
-| **@supabase/supabase-js** | Interact with Supabase DB | `npm install @supabase/supabase-js` |
-| **dotenv** | Load environment variables | `npm install dotenv` |
-| **uuid** | Generate UUIDs (optional, Faker has it) | `npm install uuid` |
+| Tool                      | Purpose                                 | Installation                    |
+| ------------------------- | --------------------------------------- | ------------------------------- |
+| **@faker-js/faker**       | Generate realistic random data          | `bun add -d @faker-js/faker`    |
+| **@supabase/supabase-js** | Interact with Supabase DB               | `bun add @supabase/supabase-js` |
+| **uuid**                  | Generate UUIDs (optional, Faker has it) | `bun add uuid`                  |
+
+> **Note:** Bun auto-loads `.env` files - no `dotenv` package needed!
 
 ---
 
