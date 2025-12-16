@@ -1,30 +1,44 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Mentor } from "@/types";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, MapPin } from "lucide-react";
+import { Star } from "lucide-react";
 
 interface MentorCardProps {
   mentor: Mentor;
 }
 
+// Helper to check if URL is an SVG (requires unoptimized for Next.js Image)
+function isSvgUrl(url: string): boolean {
+  return url.includes('.svg') || url.includes('/svg') || url.includes('dicebear.com');
+}
+
 export function MentorCard({ mentor }: MentorCardProps) {
   const { profile } = mentor;
+  const [imageError, setImageError] = useState(false);
+
+  // Show fallback if no photo URL or if image failed to load
+  const showFallback = !mentor.photoUrl || imageError;
 
   return (
     <Card data-testid="mentorCard" className="overflow-hidden hover:shadow-lg transition-shadow">
       <CardContent className="p-6">
         {/* Header with Avatar */}
         <div className="flex items-start space-x-4 mb-4">
-          {mentor.photoUrl ? (
+          {!showFallback ? (
             <div data-testid="avatar_image" className="relative h-16 w-16 rounded-full overflow-hidden bg-muted">
               <Image
-                src={mentor.photoUrl}
+                src={mentor.photoUrl!}
                 alt={mentor.name}
                 fill
                 className="object-cover"
+                unoptimized={isSvgUrl(mentor.photoUrl!)}
+                onError={() => setImageError(true)}
               />
             </div>
           ) : (
