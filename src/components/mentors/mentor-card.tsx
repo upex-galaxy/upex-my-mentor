@@ -13,6 +13,11 @@ interface MentorCardProps {
   mentor: Mentor;
 }
 
+// Helper to check if URL is an SVG (requires unoptimized for Next.js Image)
+function isSvgUrl(url: string): boolean {
+  return url.includes('.svg') || url.includes('/svg') || url.includes('dicebear.com');
+}
+
 export function MentorCard({ mentor }: MentorCardProps) {
   const { profile } = mentor;
   const [imageError, setImageError] = useState(false);
@@ -29,6 +34,7 @@ export function MentorCard({ mentor }: MentorCardProps) {
                 alt={mentor.name}
                 fill
                 className="object-cover"
+                unoptimized={isSvgUrl(mentor.photoUrl)}
                 onError={() => setImageError(true)}
               />
             </div>
