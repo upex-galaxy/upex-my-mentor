@@ -16,13 +16,13 @@ Complete guide for integrating KATA tests with GitHub Actions for continuous tes
 
 ### CI/CD Strategy
 
-| Trigger | Tests to Run | Duration | Purpose |
-|---------|-------------|----------|---------|
-| **On Commit** (local) | Unit tests only | < 30s | Quick feedback while coding |
-| **On Pull Request** | Unit + Integration | 2-5 min | Verify PR doesn't break functionality |
-| **On Push to Main** | Unit + Integration + E2E (critical) | 5-10 min | Ensure main branch is stable |
-| **Nightly** | Full E2E suite | 20-60 min | Comprehensive regression testing |
-| **On Release** | Smoke tests | 2-3 min | Verify deployment succeeded |
+| Trigger               | Tests to Run                        | Duration  | Purpose                               |
+| --------------------- | ----------------------------------- | --------- | ------------------------------------- |
+| **On Commit** (local) | Unit tests only                     | < 30s     | Quick feedback while coding           |
+| **On Pull Request**   | Unit + Integration                  | 2-5 min   | Verify PR doesn't break functionality |
+| **On Push to Main**   | Unit + Integration + E2E (critical) | 5-10 min  | Ensure main branch is stable          |
+| **Nightly**           | Full E2E suite                      | 20-60 min | Comprehensive regression testing      |
+| **On Release**        | Smoke tests                         | 2-3 min   | Verify deployment succeeded           |
 
 ---
 
@@ -72,22 +72,19 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: bun install
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+        run: bunx playwright install --with-deps chromium
 
       - name: Run linting
-        run: npm run lint
+        run: bun run lint
 
       - name: Run type checking
-        run: npm run type-check
-
-      - name: Run unit tests
-        run: npm run test:unit
+        run: bun run type-check
 
       - name: Run integration tests
-        run: npm run test:integration
+        run: bun run test:integration
         env:
           SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.TEST_SUPABASE_KEY }}
@@ -137,15 +134,13 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: bun install
 
       - name: Install Playwright
-        run: npx playwright install --with-deps
+        run: bunx playwright install --with-deps
 
-      - name: Run unit + integration tests
-        run: |
-          npm run test:unit
-          npm run test:integration
+      - name: Run integration tests
+        run: bun run test:integration
         env:
           SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.TEST_SUPABASE_KEY }}
@@ -180,13 +175,13 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: bun install
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps ${{ matrix.browser }}
+        run: bunx playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run critical E2E tests
-        run: npm run test:e2e:critical
+        run: bun run test:e2e:critical
         env:
           SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.TEST_SUPABASE_KEY }}
@@ -225,7 +220,7 @@ jobs:
           node-version: '20'
 
       - name: Sync to TMS
-        run: npm run test:sync
+        run: bun run test:sync
         env:
           AUTO_SYNC: true
           XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
@@ -267,13 +262,13 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: bun install
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps ${{ matrix.browser }}
+        run: bunx playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run full E2E suite (shard ${{ matrix.shard }})
-        run: npm run test:e2e -- --shard=${{ matrix.shard }}
+        run: bun run test:e2e -- --shard=${{ matrix.shard }}
         env:
           SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.TEST_SUPABASE_KEY }}
@@ -303,7 +298,7 @@ jobs:
           path: all-reports/
 
       - name: Merge Playwright reports
-        run: npx playwright merge-reports all-reports/
+        run: bunx playwright merge-reports all-reports/
 
       - name: Publish report
         uses: actions/upload-artifact@v4
@@ -396,7 +391,7 @@ export default defineConfig({
 
 ---
 
-## 4. NPM Scripts
+## 4. Bun Scripts
 
 Add to `package.json`:
 
@@ -404,14 +399,13 @@ Add to `package.json`:
 {
   "scripts": {
     "test": "playwright test",
-    "test:unit": "vitest run tests/unit",
     "test:integration": "playwright test tests/integration",
     "test:e2e": "playwright test tests/e2e",
     "test:e2e:critical": "playwright test tests/e2e --grep @critical",
-    "test:sync": "ts-node tests/utils/tms_sync.ts",
+    "test:sync": "bun run tests/utils/tmsSync.ts",
     "test:ui": "playwright test --ui",
     "test:debug": "playwright test --debug",
-    "lint": "eslint . --ext .ts,.tsx",
+    "lint": "eslint .",
     "type-check": "tsc --noEmit"
   }
 }
@@ -423,13 +417,13 @@ Add to `package.json`:
 
 Go to **Repository Settings → Secrets → Actions** and add:
 
-| Secret Name | Description | Example |
-|-------------|-------------|---------|
-| `TEST_SUPABASE_URL` | Supabase URL for test environment | `https://test-project.supabase.co` |
-| `TEST_SUPABASE_KEY` | Supabase anon key for tests | `eyJhb...` |
-| `XRAY_CLIENT_ID` | Xray Cloud Client ID | `abc123...` |
-| `XRAY_CLIENT_SECRET` | Xray Cloud Client Secret | `xyz789...` |
-| `SLACK_WEBHOOK_URL` | Slack webhook for notifications | `https://hooks.slack.com/...` |
+| Secret Name          | Description                       | Example                            |
+| -------------------- | --------------------------------- | ---------------------------------- |
+| `TEST_SUPABASE_URL`  | Supabase URL for test environment | `https://test-project.supabase.co` |
+| `TEST_SUPABASE_KEY`  | Supabase anon key for tests       | `eyJhb...`                         |
+| `XRAY_CLIENT_ID`     | Xray Cloud Client ID              | `abc123...`                        |
+| `XRAY_CLIENT_SECRET` | Xray Cloud Client Secret          | `xyz789...`                        |
+| `SLACK_WEBHOOK_URL`  | Slack webhook for notifications   | `https://hooks.slack.com/...`      |
 
 ---
 
@@ -445,7 +439,7 @@ strategy:
     shard: [1/4, 2/4, 3/4, 4/4]
 
 steps:
-  - run: npx playwright test --shard=${{ matrix.shard }}
+  - run: bunx playwright test --shard=${{ matrix.shard }}
 ```
 
 **Benefits:**
@@ -461,12 +455,13 @@ Cache `node_modules` and Playwright browsers:
 - uses: actions/setup-node@v4
   with:
     node-version: '20'
-    cache: 'npm'
+
+- uses: oven-sh/setup-bun@v2
 
 - uses: actions/cache@v4
   with:
     path: ~/.cache/ms-playwright
-    key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+    key: playwright-${{ runner.os }}-${{ hashFiles('bun.lockb') }}
 ```
 
 **Savings**: ~2-3 minutes per run
@@ -513,7 +508,7 @@ Fail build if coverage drops:
 
 ```yaml
 - name: Check coverage
-  run: npm run test:coverage
+  run: bun run test:coverage
   # Fails if < 80% coverage
 ```
 
@@ -581,7 +576,7 @@ Use **GitHub Actions Dashboard** or **Allure Reports** for trends:
 **Solution**:
 ```yaml
 - name: Install Playwright with deps
-  run: npx playwright install --with-deps chromium
+  run: bunx playwright install --with-deps chromium
 ```
 
 ### Issue: "Out of memory in CI"

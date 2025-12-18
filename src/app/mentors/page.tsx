@@ -9,7 +9,7 @@ import { ClearSearchButton } from "@/components/mentors/clear-search-button";
 import { Mentor } from "@/types";
 import { Database } from "@/types/supabase";
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 20;
 
 
 
@@ -162,9 +162,19 @@ export default async function MentorsPage({
 
     if (cursor) {
       const [cursorRating, cursorId] = cursor.split(":");
-      searchQuery = searchQuery.or(
-        `average_rating.lt.${cursorRating},and(average_rating.eq.${cursorRating},id.gt.${cursorId})`
-      );
+      const ratingNum = parseFloat(cursorRating);
+
+      if (ratingNum === 0 || isNaN(ratingNum)) {
+        // Cursor is from NULL rating - only get NULLs with higher id
+        searchQuery = searchQuery
+          .is("average_rating", null)
+          .gt("id", cursorId);
+      } else {
+        // Non-NULL rating - get lower ratings, same rating with higher id, or all NULLs
+        searchQuery = searchQuery.or(
+          `average_rating.lt.${cursorRating},and(average_rating.eq.${cursorRating},id.gt.${cursorId}),average_rating.is.null`
+        );
+      }
     }
 
     mentorsResult = await searchQuery;
@@ -188,9 +198,19 @@ export default async function MentorsPage({
 
     if (cursor) {
       const [cursorRating, cursorId] = cursor.split(":");
-      mentorQuery = mentorQuery.or(
-        `average_rating.lt.${cursorRating},and(average_rating.eq.${cursorRating},id.gt.${cursorId})`
-      );
+      const ratingNum = parseFloat(cursorRating);
+
+      if (ratingNum === 0 || isNaN(ratingNum)) {
+        // Cursor is from NULL rating - only get NULLs with higher id
+        mentorQuery = mentorQuery
+          .is("average_rating", null)
+          .gt("id", cursorId);
+      } else {
+        // Non-NULL rating - get lower ratings, same rating with higher id, or all NULLs
+        mentorQuery = mentorQuery.or(
+          `average_rating.lt.${cursorRating},and(average_rating.eq.${cursorRating},id.gt.${cursorId}),average_rating.is.null`
+        );
+      }
     }
 
     mentorsResult = await mentorQuery;

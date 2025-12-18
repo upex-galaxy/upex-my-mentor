@@ -74,7 +74,7 @@ XRAY_PROJECT_KEY=UPEX
 **Step 3: Install Dependencies**
 
 ```bash
-npm install --save-dev axios
+bun add -d axios
 ```
 
 ### 2.3 Implementation
@@ -399,15 +399,15 @@ export async function syncToJiraDirect() {
 
 ## 4. Choosing the Right Approach
 
-| Feature | Xray Cloud | Jira Direct |
-|---------|-----------|-------------|
-| **Cost** | ~$10-50/month | Free |
-| **Setup Complexity** | Medium | Low |
-| **Reporting** | Advanced (test plans, dashboards, metrics) | Basic (custom field + comments) |
-| **Traceability** | Excellent (bi-directional linking) | Good (manual linking) |
-| **Test Execution History** | Full history with trends | Limited (via comments) |
-| **Automation Support** | Native API | Generic Jira API |
-| **Best For** | Teams with QA budget, need advanced reporting | Small teams, tight budget |
+| Feature                    | Xray Cloud                                    | Jira Direct                     |
+| -------------------------- | --------------------------------------------- | ------------------------------- |
+| **Cost**                   | ~$10-50/month                                 | Free                            |
+| **Setup Complexity**       | Medium                                        | Low                             |
+| **Reporting**              | Advanced (test plans, dashboards, metrics)    | Basic (custom field + comments) |
+| **Traceability**           | Excellent (bi-directional linking)            | Good (manual linking)           |
+| **Test Execution History** | Full history with trends                      | Limited (via comments)          |
+| **Automation Support**     | Native API                                    | Generic Jira API                |
+| **Best For**               | Teams with QA budget, need advanced reporting | Small teams, tight budget       |
 
 **Recommendation:**
 - **Start with Jira Direct** for MVP/early stage
@@ -523,7 +523,7 @@ In GitHub Actions, enable sync only on `main` branch:
 ```yaml
 # .github/workflows/test.yml
 - name: Run tests
-  run: npm run test
+  run: bun run test
 
 - name: Sync results to Jira
   if: github.ref == 'refs/heads/main'
@@ -532,7 +532,7 @@ In GitHub Actions, enable sync only on `main` branch:
     XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
     XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
     BUILD_ID: ${{ github.run_id }}
-  run: npm run test:sync
+  run: bun run test:sync
 ```
 
 ---

@@ -1,114 +1,70 @@
 # Test Automation Engineering (TAE)
 
-**Fase 7**: Arquitectura de testing automatizado basada en **KATA Framework**
+**KATA Framework** - Komponent Action Test Architecture
 
 ---
 
-## 📂 Contenido de este Directorio
+## AI Entry Point
 
-Este directorio contiene la **estrategia completa de testing automatizado** del proyecto, incluyendo:
-- Estrategia general de testing
-- Plan de implementación KATA
-- Estándares de código para tests
-- Documentación de arquitectura KATA
-- Plantillas para catalogar componentes y ATCs
-- Guías de integración con TMS y CI/CD
+**For AI agents**: Start here → **`KATA-AI-GUIDE.md`**
+
+Quick orientation, critical rules, and task-based navigation.
+
+**For implementing ATCs**: See **`.prompts/fase-11-test-automation/kata-workflow.md`**
 
 ---
 
-## 📋 Archivos
+## Directory Contents
 
-### 🤖 Archivos Estratégicos (Generados con Prompts)
+### Reference Documentation
 
-Estos archivos se generan usando los prompts de `.prompts/07-tae.md`:
+| File                          | Purpose                                            |
+| ----------------------------- | -------------------------------------------------- |
+| `KATA-AI-GUIDE.md`            | **AI Entry Point** - Quick reference for AI agents |
+| `kata-architecture.md`        | Architecture layers (TypeScript implementation)    |
+| `automation-standards.md`     | Code standards, naming, anti-patterns              |
+| `kata-implementation-plan.md` | Step-by-step component creation                    |
+| `api-setup-guide.md`          | OpenAPI integration and MCP setup                  |
+| `test-data-management.md`     | Test data strategies                               |
+| `tms-integration.md`          | Jira/Xray integration                              |
+| `ci-cd-integration.md`        | GitHub Actions pipelines                           |
 
-| Archivo | Descripción | Generado con |
-|---------|-------------|--------------|
-| `test-strategy.md` | Estrategia general de testing del proyecto | Prompt 1 |
-| `kata-implementation-plan.md` | Plan específico de implementación KATA | Prompt 2 |
-| `automation-standards.md` | Estándares de código para tests | Prompt 3 |
+### Conceptual Documentation
 
-### 📚 Archivos de Reference (Contenido Completo Estático)
+| File                        | Purpose                      |
+| --------------------------- | ---------------------------- |
+| `docs/kata-fundamentals.md` | KATA philosophy and concepts |
 
-Estos archivos contienen documentación de referencia completa:
+### Auto-Generated
 
-| Archivo | Descripción |
-|---------|-------------|
-| `kata-architecture.md` | Arquitectura KATA adaptada al proyecto |
-| `test-data-management.md` | Estrategias de gestión de datos de prueba |
-| `tms-integration.md` | Integración con Xray/TestRail |
-| `ci-cd-integration.md` | Integración con GitHub Actions |
+| File                        | Purpose                   |
+| --------------------------- | ------------------------- |
+| `kata-manifest.json` (root) | Component and ATC catalog |
 
-### 📋 Archivos Plantilla (Para llenar manualmente)
-
-Estos archivos son plantillas que el QA llena conforme implementa:
-
-| Archivo | Descripción |
-|---------|-------------|
-| `component-catalog.md` | Catálogo de componentes implementados |
-| `atc-registry.md` | Registro de ATCs con trazabilidad a Jira |
+Generate with: `bun run kata:manifest`
 
 ---
 
-## 🔄 Workflow de Uso
+## Quick Reference
 
-### 1. Generar Documentación Estratégica
+### For AI Agents
+1. Read `KATA-AI-GUIDE.md` for orientation
+2. Follow `.prompts/fase-11-test-automation/kata-workflow.md` for implementation
+3. Run `bun run kata:manifest` to see existing components
 
-**Para Greenfield:**
-```
-1. Leer: .prompts/07-tae.md → Sección GREENFIELD
-2. Ejecutar: Prompt 1 (test-strategy.md)
-3. Ejecutar: Prompt 2 (kata-implementation-plan.md)
-4. Ejecutar: Prompt 3 (automation-standards.md)
-5. Outputs generados en .context/tae/
-```
-
-**Para Legacy:**
-```
-1. Leer: .prompts/07-tae.md → Sección LEGACY
-2. Ejecutar: Fase 0 (evaluación de suite existente)
-3. Generar: legacy-test-assessment.md
-4. Ejecutar: Prompts 1-3 (versiones adaptadas para legacy)
-5. Outputs generados en .context/tae/
-```
-
-### 2. Completar Archivos de Reference
-
-Copiar contenido de docs/kata-test-architecture.md adaptado al proyecto específico.
-
-### 3. Usar Durante Implementación
-
-Cuando el equipo QA implementa la suite KATA:
-- Consultar `test-strategy.md` para decisiones de cobertura
-- Seguir `kata-implementation-plan.md` para orden de componentes
-- Aplicar `automation-standards.md` en code reviews
-- Actualizar `component-catalog.md` conforme se crean componentes
-- Registrar ATCs en `atc-registry.md` con IDs de Jira
+### For QA Engineers
+1. Read `kata-architecture.md` to understand KATA
+2. Read `automation-standards.md` for coding rules
+3. Follow `kata-implementation-plan.md` to create components
+4. Reference `tms-integration.md` for Jira setup
+5. Reference `ci-cd-integration.md` for CI/CD
 
 ---
 
-## 🎯 Para QA / Test Engineers
+## References
 
-**Antes de empezar a codear tests:**
-1. ✅ Leer `test-strategy.md` completo
-2. ✅ Leer `kata-architecture.md` para entender KATA
-3. ✅ Leer `kata-implementation-plan.md` para saber qué componentes crear
-4. ✅ Leer `automation-standards.md` para conocer naming conventions
-
-**Durante implementación:**
-- Referenciar `automation-standards.md` en cada PR
-- Actualizar `component-catalog.md` al crear componentes nuevos
-- Agregar ATCs a `atc-registry.md` con sus test IDs de Jira
-
-**Al configurar TMS y CI/CD:**
-- Seguir `tms-integration.md` para Xray setup
-- Seguir `ci-cd-integration.md` para GitHub Actions
-
----
-
-## 📚 Referencias
-
-- **Blueprint completo**: `/docs/ai-driven-software-project-blueprint.md`
-- **KATA Documentation**: `/docs/kata-test-architecture.md`
-- **Prompts generadores**: `.prompts/07-tae.md`
-- **PBI (para mapeo de componentes)**: `.context/pbi/epic-tree.md`
+- **AI Guide**: `KATA-AI-GUIDE.md`
+- **AI Workflow**: `.prompts/fase-11-test-automation/kata-workflow.md`
+- **Project Setup**: `PROJECT-SETUP.md` (root)
+- **Fundamentals**: `docs/kata-fundamentals.md`
+- **Component Catalog**: `kata-manifest.json` (run `bun run kata:manifest`)
