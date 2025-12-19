@@ -65,7 +65,7 @@ function getDisplayName(user: { name?: string | null; email: string }): string {
 }
 
 export function Navbar() {
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const displayName = user ? getDisplayName(user) : "";
@@ -110,7 +110,13 @@ export function Navbar() {
             {/* Spacer */}
             <div className="flex-1" />
 
-            {user ? (
+            {/* Auth state: Show skeleton while loading to prevent hydration mismatch */}
+            {isLoading ? (
+              <div className="flex items-center space-x-2">
+                <div className="h-9 w-24 bg-muted animate-pulse rounded-md" />
+                <div className="h-9 w-24 bg-muted animate-pulse rounded-md" />
+              </div>
+            ) : user ? (
               <>
                 {/* Primary action: Dashboard */}
                 <Link
@@ -206,7 +212,7 @@ export function Navbar() {
         {mobileMenuOpen && (
           <div data-testid="mobile_menu" className="md:hidden py-4 space-y-3 border-t">
             {/* User info at top for logged in users */}
-            {user && (
+            {!isLoading && user && (
               <div className="flex items-center justify-between pb-3 mb-3 border-b border-border">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
@@ -238,7 +244,12 @@ export function Navbar() {
               Cómo Funciona
             </Link>
 
-            {user ? (
+            {isLoading ? (
+              <div className="space-y-2 pt-3 border-t border-border">
+                <div className="h-10 bg-muted animate-pulse rounded-md" />
+                <div className="h-10 bg-muted animate-pulse rounded-md" />
+              </div>
+            ) : user ? (
               <>
                 <div className="border-t border-border pt-3 mt-3">
                   <Link
