@@ -74,7 +74,6 @@
 **None - No bugs detected**
 
 **Previous Issues Resolved:**
-- ❌ MYM-84 was false positive - DELETED
 - ❌ "MESSAGING-TABLES-MISSING" was incorrect diagnosis
 - ❌ "BLOCKED BY INFRASTRUCTURE" was outdated information
 
