@@ -4,7 +4,8 @@ const path = require('path');
 const { spawn } = require('child_process');
 
 // =========== CARGA VARIABLES DE ENTORNO ============
-process.loadEnvFile() // default as '.env' in cwd
+// Cargar variables de entorno (compatible con Node.js)
+require('dotenv').config()
 // Actualizar Node.js si es necesario para usar loadEnvFile()
 const { MCP_CATALOG_FILE, MCP_FILE, AI_COMMAND_PATH } = process.env;
 // Validar variables de entorno críticas (AI_COMMAND_PATH es opcional)

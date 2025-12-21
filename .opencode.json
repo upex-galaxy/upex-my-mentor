@@ -1,14 +1,21 @@
 {
   "mcpServers": {
-    "supabase": {
+    "atlassian": {
+      "url": "https://mcp.atlassian.com/v1/sse"
+    },
+    "playwright": {
       "command": "npx",
       "args": [
-        "-y",
-        "@supabase/mcp-server-supabase@latest"
-      ],
-      "env": {
-        "SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}"
-      }
+        "@playwright/mcp@latest",
+        "--caps",
+        "vision,pdf",
+        "--timeout-action",
+        "10000",
+        "--timeout-navigation",
+        "30000",
+        "--ignore-https-errors",
+        "--isolated"
+      ]
     },
     "database": {
       "command": "npx",

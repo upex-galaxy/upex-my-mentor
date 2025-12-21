@@ -31,7 +31,25 @@ Execute manual exploratory testing to validate functionality and discover defect
 ---
 
 ## Execution Flow
+```
+US Status: Ready For QA
+        ↓
+[1] Smoke Test (5-10 min)
+    └── FAILED? → Report blocker, STOP
+        ↓
+[2] Exploratory Test (30-60 min)
+    └── Uses Playwright MCP for UI exploration
+    └── Documents findings as session notes
+        ↓
+[3] Bug Report (if issues found)
+    └── Retest to confirm
+    └── Report to Jira (with human confirmation)
+        ↓
+Decision: PASSED or FAILED?
+    └── PASSED → Transition US to "QA Approved" → "Done"
+    └── FAILED → Wait for fixes, re-test
 
+✅ SUCCESS EXAMPLE: MYM-57 - Fully functional, all ACs working
 ```
 US Status: Ready For QA
         ↓
