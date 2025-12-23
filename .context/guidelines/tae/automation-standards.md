@@ -34,11 +34,13 @@ async signInWithInvalidCredentials(payload: SignInPayload) {
 ```
 
 **When to create multiple ATCs:**
+
 - Different HTTP status codes (200 vs 401 vs 404)
 - Different UI states (success redirect vs error message vs field validation)
 - Different business outcomes (order created vs order rejected)
 
 **When to use ONE parameterized ATC:**
+
 - Same output with different input variations
 - Same error message for different invalid inputs
 - Same redirect for different valid data
@@ -63,7 +65,7 @@ class SignupPage extends UiBase {
 
   @atc('PROJ-001')
   async signupSuccessfully(data: SignUpData) {
-    await this.fillEmail(data.email);  // Why abstract a one-liner?
+    await this.fillEmail(data.email); // Why abstract a one-liner?
   }
 }
 
@@ -88,6 +90,7 @@ class SignupPage extends UiBase {
 If a locator is used in **more than one ATC**, you may extract it to a constructor property. This is a **recommendation**, not a rule.
 
 **Option 1: data-testid string (Preferred)**
+
 ```typescript
 class CheckoutPage extends UiBase {
   // Store just the testid string - simple and clear
@@ -101,6 +104,7 @@ class CheckoutPage extends UiBase {
 ```
 
 **Option 2: Arrow function returning Locator**
+
 ```typescript
 class CheckoutPage extends UiBase {
   // Arrow function for complex locators or dynamic selectors
@@ -116,11 +120,13 @@ class CheckoutPage extends UiBase {
 ```
 
 **When NOT to extract:**
+
 - HTML roles that rarely change (e.g., `role="dialog"`, `role="alert"`)
 - Standard form elements (`button[type="submit"]`)
 - Locators used only once
 
 **When to extract to UiBase:**
+
 - If a locator is used across **multiple components** (rare), put it in `UiBase`
 
 ### 1.3 No Unnecessary Helpers
@@ -128,6 +134,7 @@ class CheckoutPage extends UiBase {
 **If Playwright already does it in one line, don't create a helper method.**
 
 ATCs should be self-contained. The only justification for a helper is:
+
 1. The logic doesn't exist in Playwright
 2. It's reused across MANY ATCs (5+)
 3. It involves complex setup (not just a locator + action)
@@ -160,6 +167,7 @@ private async waitForLoadingComplete() {
 **ATCs must NOT call other ATCs.** ATCs are atomic mini-flows.
 
 Think of ATCs like Gherkin scenarios:
+
 - **Given**: Preconditions (data passed as arguments)
 - **When**: The action being tested
 - **Then**: Expected outcome (fixed assertions)
@@ -182,6 +190,7 @@ test('checkout with new user', async ({ ui, api }) => {
 ```
 
 **Why this matters:**
+
 - ATCs remain atomic and reusable
 - Traceability is maintained (each ATC = one Jira test case)
 - Failures are easier to diagnose
@@ -263,11 +272,12 @@ KATA prioritizes **deterministic tests** over retry mechanisms.
 ```typescript
 // playwright.config.ts
 export default defineConfig({
-  retries: 0,  // KATA recommendation: investigate failures, don't mask them
+  retries: 0, // KATA recommendation: investigate failures, don't mask them
 });
 ```
 
 **Why no retries?**
+
 - If a test fails, investigate immediately
 - Retries can mask real issues (environment, test code bugs, race conditions)
 - Passing on retry is a red flag, not a success
@@ -373,6 +383,7 @@ test('checkout flow', async ({ ui }) => {
 ```
 
 **Key points:**
+
 - Preconditions are NOT ATCs (no `@atc` decorator)
 - They orchestrate ATCs, not replace them
 - Changes to flow = edit one file, not 10 test files
@@ -589,10 +600,10 @@ async verifyOptionalField() {
 
 | Use Case               | Soft Fail |
 | ---------------------- | --------- |
-| Optional form fields   | ✅ Yes     |
-| Exploratory tests      | ✅ Yes     |
-| Critical functionality | ❌ No      |
-| Blocking validation    | ❌ No      |
+| Optional form fields   | ✅ Yes    |
+| Exploratory tests      | ✅ Yes    |
+| Critical functionality | ❌ No     |
+| Blocking validation    | ❌ No     |
 
 ---
 
@@ -792,6 +803,7 @@ export default defineConfig({
 ```
 
 **Directory structure:**
+
 ```
 /test-results           # Playwright artifacts (gitignore)
 ├── /screenshots
@@ -809,6 +821,6 @@ export default defineConfig({
 ## References
 
 - **KATA Architecture**: `kata-architecture.md`
-- **Component Catalog**: `component-catalog.md`
-- **ATC Registry**: `atc-registry.md`
-- **Implementation Plan**: `kata-implementation-plan.md`
+- **Framework Setup**: `.prompts/kata-framework-setup.md`
+- **E2E Automation**: `.prompts/fase-12-test-automation/automation-e2e-test.md`
+- **API Automation**: `.prompts/fase-12-test-automation/automation-integration-test.md`

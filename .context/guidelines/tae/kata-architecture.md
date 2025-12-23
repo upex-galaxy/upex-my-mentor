@@ -2,7 +2,7 @@
 
 **Komponent Action Test Architecture**
 
-> *"Como un kata en artes marciales, donde cada movimiento se practica repetidamente hasta la perfección, KATA framework convierte las acciones del sistema en bloques reutilizables y precisos."*
+> _"Como un kata en artes marciales, donde cada movimiento se practica repetidamente hasta la perfección, KATA framework convierte las acciones del sistema en bloques reutilizables y precisos."_
 
 **Full Documentation**: See `/docs/kata-test-architecture.md` for complete KATA framework documentation.
 
@@ -171,6 +171,7 @@ import { config } from '../../../config/variables';
 ```
 
 Configure in `tsconfig.json`:
+
 ```json
 {
   "compilerOptions": {
@@ -192,6 +193,7 @@ Configure in `tsconfig.json`:
 An **ATC** is an automated acceptance test case that represents a **complete test case** (mini-flow), NOT a single interaction.
 
 **Characteristics:**
+
 - Maps 1:1 with a test case in Jira/Xray (via `@atc('PROJECT-XXX')`)
 - Contains fixed assertions that validate the complete flow worked
 - Is a **complete test case** - navigate, act, assert
@@ -244,10 +246,12 @@ async signupWithValidCredentials(data: SignUpData) {
 A **Component** encapsulates related functionality of the system under test.
 
 **Types:**
+
 - **API Components**: Group related endpoints (e.g., `UsersApi`, `OrdersApi`)
 - **UI Components**: Group elements of a page (e.g., `LoginPage`, `CartPage`)
 
 **Rules:**
+
 - One component per file
 - ATCs are public methods with `@atc` decorator
 - Inherits from `ApiBase` or `UiBase`
@@ -279,7 +283,11 @@ test('complete purchase flow', async ({ page }) => {
   const fixture = new TestFixture(page);
 
   // Use API for fast setup
-  const user = await fixture.api.users.createUserSuccessfully('John', 'john@example.com', 'pass123');
+  const user = await fixture.api.users.createUserSuccessfully(
+    'John',
+    'john@example.com',
+    'pass123'
+  );
 
   // Use UI for the flow to validate
   await fixture.ui.login.loginSuccessfully(user.email, 'pass123');
@@ -295,11 +303,13 @@ test('complete purchase flow', async ({ page }) => {
 ### 5.4 Fixed Assertions vs Test-Level Assertions
 
 **Fixed Assertions** (inside ATCs):
+
 - Validate that the ATC itself worked correctly
 - Always execute when the ATC is called
 - Examples: status code 201, required fields present, data types correct
 
 **Test-Level Assertions** (in test files):
+
 - Validate the result of combining multiple ATCs
 - Verify final system state after a flow
 - Examples: balance updated after payment, order contains correct items
@@ -325,6 +335,7 @@ test('complete purchase flow', async ({ page }) => {
 **Format**: `{verb}{Resource}{Scenario}`
 
 **Examples:**
+
 - ✅ `signInWithValidCredentials(credentials)` - Complete login flow
 - ✅ `signInWithInvalidCredentials(credentials)` - Complete error flow
 - ✅ `signupWithValidCredentials(data)` - Complete signup flow
@@ -334,6 +345,7 @@ test('complete purchase flow', async ({ page }) => {
 - ❌ `clickLoginButton()` - WRONG: Single interaction, not a test case
 
 **Rules:**
+
 - Always camelCase
 - Always English
 - **Must be complete test cases (mini-flows), NOT single interactions**
@@ -374,6 +386,7 @@ async signInSuccessfully(payload: SignInPayload): Promise<[APIResponse, AuthResp
 ```
 
 **Decorator Signature (TC39 format):**
+
 ```typescript
 export function atc(testId: string, options: AtcOptions = {}) {
   return function <T extends (...args: unknown[]) => Promise<unknown>>(
@@ -384,6 +397,7 @@ export function atc(testId: string, options: AtcOptions = {}) {
 ```
 
 **Benefits:**
+
 - Automatic traceability to Jira test cases
 - Granular reporting (which ATCs passed/failed)
 - Synchronization with TMS (Xray or Jira Direct)
@@ -412,6 +426,7 @@ Update Jira Test Cases (PASSED/FAILED)
 ### When to Use Fixed Assertions
 
 ✅ **Use inside ATCs for:**
+
 - Validating HTTP status codes (200, 201, 400, etc.)
 - Verifying required fields exist (`user.id`, `user.email`)
 - Checking data types are correct
@@ -420,6 +435,7 @@ Update Jira Test Cases (PASSED/FAILED)
 ### When to Use Test-Level Assertions
 
 ✅ **Use in test files for:**
+
 - Validating results from combining multiple ATCs
 - Verifying final system state after a flow
 - Checking relationships between data from different ATCs
@@ -427,22 +443,26 @@ Update Jira Test Cases (PASSED/FAILED)
 ### When to Use Soft Fail
 
 ✅ **Use `soft_fail=true` when:**
+
 - Validating optional form fields
 - Running exploratory tests where you want to see all failures
 - Testing non-critical features that shouldn't block the flow
 
 ❌ **Don't use soft fail when:**
+
 - Testing critical functionality
 - Failure means subsequent ATCs don't make sense
 
 ### API vs UI Separation
 
 ✅ **Keep API and UI completely isolated:**
+
 - Integration tests (API only) run without browser (faster)
 - E2E tests can combine both strategically
 - Clear autocomplete: `fixture.api.` shows endpoints, `fixture.ui.` shows pages
 
 ✅ **In E2E tests:**
+
 - Use API for fast setup (create test data)
 - Use UI for the flow you want to validate
 - Use API for reliable verification (check final state)
@@ -452,6 +472,7 @@ Update Jira Test Cases (PASSED/FAILED)
 ## 9. Component Catalog
 
 For a complete list of implemented components and their ATCs, see:
+
 - **`component-catalog.md`** - All components with descriptions
 - **`atc-registry.md`** - All ATCs mapped to Jira test cases
 
@@ -459,9 +480,8 @@ For a complete list of implemented components and their ATCs, see:
 
 ## 10. References
 
-- **Full KATA Documentation**: `/docs/kata-test-architecture.md`
-- **Test Strategy**: `.context/guidelines/tae/test-strategy.md`
-- **Implementation Plan**: `.context/guidelines/tae/kata-implementation-plan.md`
-- **Automation Standards**: `.context/guidelines/tae/automation-standards.md`
-- **TMS Integration**: `.context/guidelines/tae/tms-integration.md`
-- **CI/CD Integration**: `.context/guidelines/tae/ci-cd-integration.md`
+- **Full KATA Documentation**: `/docs/kata-fundamentals.md`
+- **Automation Standards**: `.context/guidelines/TAE/automation-standards.md`
+- **TMS Integration**: `.context/guidelines/TAE/tms-integration.md`
+- **CI/CD Integration**: `.context/guidelines/TAE/ci-cd-integration.md`
+- **Framework Setup**: `.prompts/kata-framework-setup.md`

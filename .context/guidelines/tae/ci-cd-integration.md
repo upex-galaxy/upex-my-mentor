@@ -380,12 +380,14 @@ export default defineConfig({
   ],
 
   // Web server for E2E tests
-  webServer: isCI ? undefined : {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !isCI,
-    timeout: 120 * 1000,
-  },
+  webServer: isCI
+    ? undefined
+    : {
+        command: 'npm run dev',
+        url: 'http://localhost:3000',
+        reuseExistingServer: !isCI,
+        timeout: 120 * 1000,
+      },
 });
 ```
 
@@ -443,6 +445,7 @@ steps:
 ```
 
 **Benefits:**
+
 - 4x faster execution (4 shards)
 - Each shard runs 1/4 of tests
 - Results merged at the end
@@ -574,6 +577,7 @@ Use **GitHub Actions Dashboard** or **Allure Reports** for trends:
 ### Issue: "Playwright browser installation failed"
 
 **Solution**:
+
 ```yaml
 - name: Install Playwright with deps
   run: bunx playwright install --with-deps chromium
@@ -582,22 +586,29 @@ Use **GitHub Actions Dashboard** or **Allure Reports** for trends:
 ### Issue: "Out of memory in CI"
 
 **Solution**: Reduce workers
+
 ```typescript
-workers: process.env.CI ? 1 : undefined
+workers: process.env.CI ? 1 : undefined;
 ```
 
 ### Issue: "Tests are flaky in CI"
 
 **Solutions**:
+
 1. Increase timeouts for CI:
+
    ```typescript
-   timeout: isCI ? 60000 : 30000
+   timeout: isCI ? 60000 : 30000;
    ```
+
 2. Enable retries:
+
    ```typescript
-   retries: isCI ? 2 : 0
+   retries: isCI ? 2 : 0;
    ```
+
 3. Add wait conditions:
+
    ```typescript
    await page.waitForLoadState('networkidle');
    ```
@@ -605,6 +616,7 @@ workers: process.env.CI ? 1 : undefined
 ### Issue: "Artifacts not uploaded"
 
 **Solution**: Use `if: always()`
+
 ```yaml
 - name: Upload artifacts
   if: always() # Run even if tests fail
@@ -616,6 +628,7 @@ workers: process.env.CI ? 1 : undefined
 ## 10. Best Practices
 
 ✅ **DO:**
+
 - Run unit tests on every PR (fast feedback)
 - Run E2E tests only on main branch and nightly
 - Use sharding for large E2E suites
@@ -625,6 +638,7 @@ workers: process.env.CI ? 1 : undefined
 - Use quality gates (block PRs with failures)
 
 ❌ **DON'T:**
+
 - Run full E2E suite on every PR (too slow)
 - Ignore flaky tests (fix them!)
 - Skip cleanup (test data pollution)
@@ -635,7 +649,7 @@ workers: process.env.CI ? 1 : undefined
 
 ## 11. References
 
-- **GitHub Actions**: https://docs.github.com/en/actions
-- **Playwright CI**: https://playwright.dev/docs/ci
-- **Sharding**: https://playwright.dev/docs/test-sharding
-- **GitHub Actions Marketplace**: https://github.com/marketplace?type=actions
+- **GitHub Actions**: <https://docs.github.com/en/actions>
+- **Playwright CI**: <https://playwright.dev/docs/ci>
+- **Sharding**: <https://playwright.dev/docs/test-sharding>
+- **GitHub Actions Marketplace**: <https://github.com/marketplace?type=actions>
