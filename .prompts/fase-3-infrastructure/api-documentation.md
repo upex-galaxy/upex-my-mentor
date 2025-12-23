@@ -716,6 +716,37 @@ if (process.env.VERCEL_ENV === 'production') {
 }
 ```
 
+#### Error: "Package path ./v4/core is not exported from package zod"
+
+**Cause:** Version conflict between `@hookform/resolvers` and `zod`
+
+- `@hookform/resolvers@5.x` requires `zod@3.25+` (uses v4 exports like `./v4/core`)
+- `zod-to-openapi@7.3.4` requires `zod@~3.24.x`
+- These two packages have incompatible zod version requirements
+
+**Solution:** Downgrade `@hookform/resolvers` to 3.x:
+
+```bash
+# Check current version
+grep '"@hookform/resolvers"' package.json
+
+# Downgrade to compatible version
+bun add @hookform/resolvers@3.10.0
+
+# Verify build passes
+bun run build
+```
+
+**Compatible versions matrix:**
+
+| Package                  | Version  | Zod Requirement |
+| ------------------------ | -------- | --------------- |
+| `zod`                    | ~3.24.1  | -               |
+| `zod-to-openapi`         | 7.3.4    | ~3.24.x         |
+| `@hookform/resolvers`    | 3.10.0   | any 3.x         |
+
+> **Note:** If using react-hook-form with zod validation, always check `@hookform/resolvers` compatibility when pinning zod versions.
+
 ### Debugging Tips
 
 ```bash
