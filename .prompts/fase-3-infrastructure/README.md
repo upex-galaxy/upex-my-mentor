@@ -27,7 +27,7 @@ La **Fase 3: Infrastructure** implementa la base técnica del proyecto ANTES de 
 | 1   | `cloud-services.md`              | Configurar cloud provider (Supabase, Vercel, Railway)       | 15-30 min  | ❌ Ninguno            |
 | 2   | `backend-setup.md`               | Crear DB schemas, Auth, API layer, seed data                | 45-90 min  | ✅ Supabase, Context7 |
 | 3   | `frontend-setup.md`              | Design System, Layout, páginas demo, integrar tipos backend | 60-120 min | ✅ Context7           |
-| 4*  | `api-documentation-openapi.md`   | Documentar APIs custom con OpenAPI + Zod                    | 30-60 min  | ✅ Context7           |
+| 4*  | `api-documentation.md`           | Documentar APIs custom con OpenAPI + Zod + Redoc            | 30-60 min  | ✅ Context7           |
 
 **Total estimado:** 2-4 horas (depende de complejidad del proyecto)
 
@@ -49,7 +49,7 @@ La **Fase 3: Infrastructure** implementa la base técnica del proyecto ANTES de 
          ... Continúa desarrollo en Fase 7: Implementation ...
          ... Cuando tengas endpoints custom en src/app/api/ ...
 
-4. api-documentation-openapi.md   (DESPUÉS de tener endpoints - Documenta APIs)
+4. api-documentation.md           (DESPUÉS de tener endpoints - Documenta APIs)
 ```
 
 ### Diagrama de Ejecución
@@ -77,8 +77,8 @@ La **Fase 3: Infrastructure** implementa la base técnica del proyecto ANTES de 
                                   ▼ (cuando tengas varios endpoints)
 ┌─────────────────────────────────────────────────────────────────┐
 │   VOLVER A FASE 3:                                              │
-│   └── 4. api-documentation-openapi.md                           │
-│       (Documenta TODOS los endpoints existentes)                │
+│   └── 4. api-documentation.md                                   │
+│       (Documenta TODOS los endpoints existentes con Redoc)      │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
