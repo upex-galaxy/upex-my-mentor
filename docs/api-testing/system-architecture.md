@@ -111,22 +111,27 @@
 
 ---
 
-## ¿Están en la API Docs de Supabase?
+## ¿Dónde Están Documentadas las APIs?
 
-**NO.** Los endpoints custom de Next.js **NO aparecen** en `/api-docu` (Redoc).
+**Ambas APIs están documentadas en `/api-docu`** con selector para elegir entre ellas.
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        ¿DÓNDE ESTÁ DOCUMENTADO?                             │
+│                        DOCUMENTACIÓN INTERACTIVA                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  📗 /api-docu (Redoc - Supabase)                                            │
-│  └── Solo muestra: /rest/v1/profiles, /rest/v1/bookings, etc.               │
-│      (endpoints auto-generados de PostgREST)                                │
+│  📘 /api-docu?api=nextjs (Redoc - Next.js) ← DEFAULT                        │
+│  └── 14 endpoints custom con lógica de negocio                              │
+│  └── Documentación OpenAPI generada desde Zod schemas                       │
+│  └── Incluye: ejemplos, schemas, autenticación                              │
 │                                                                             │
-│  📘 Endpoints Custom (Next.js)                                              │
-│  └── NO tienen documentación auto-generada                                  │
-│  └── Documentados en: código fuente (JSDoc en route.ts)                     │
-│  └── Para QA: Ver esta guía + código                                        │
+│  📗 /api-docu?api=supabase (Redoc - Supabase)                               │
+│  └── Endpoints auto-generados: /rest/v1/profiles, /bookings, etc.           │
+│  └── CRUD directo a PostgreSQL vía PostgREST                                │
+│                                                                             │
+│  📚 Documentación detallada: docs/api-testing/                              │
+│  └── authentication-guide.md - Guía completa de autenticación               │
+│  └── postman-guide.md - Colección Postman lista para usar                   │
+│  └── playwright-integration.md - Testing automatizado                       │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 
@@ -289,7 +294,7 @@ Body:
 │                                                                             │
 │  2️⃣  NEXT.JS API (/api/*)                                                   │
 │      • 14 endpoints custom con lógica de negocio                            │
-│      • NO documentada en Redoc                                              │
+│      • Documentada en /api-docu?api=nextjs (Redoc + OpenAPI)                │
 │      • Auth: Cookies de sesión (automático en browser)                      │
 │      • Testing: DevTools (fácil), Postman (copiar cookies)                  │
 │                                                                             │

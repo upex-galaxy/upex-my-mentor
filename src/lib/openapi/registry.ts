@@ -7,11 +7,10 @@
  * @see https://github.com/asteasolutions/zod-to-openapi
  */
 
-import { OpenAPIRegistry, OpenApiGeneratorV3 } from '@asteasolutions/zod-to-openapi'
+import { OpenAPIRegistry, OpenApiGeneratorV3, extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi'
 import { z } from 'zod'
 
 // Extend Zod with OpenAPI methods
-import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi'
 extendZodWithOpenApi(z)
 
 // Create the registry instance
@@ -76,22 +75,103 @@ These endpoints are responsible for:
 - **Messaging**: Unread message counts
 - **System**: Payout processing, email notifications
 
-### Authentication
+---
 
-Most endpoints require authentication via **Supabase session cookies**. The cookie is automatically set when a user logs in through the web application.
+## Authentication Methods
 
-For testing, you can:
-1. Login via the web app to get the session cookie
-2. Use the cookie value in your API testing tool
-3. Some endpoints accept \`X-API-Key\` header for testing purposes
+This API uses **4 different authentication methods** depending on the endpoint type:
 
-### Base URLs
+### 1. Cookie Auth (Most Endpoints)
+**Used by:** User-facing endpoints (checkout, bookings, messages, etc.)
+
+The primary authentication method uses **Supabase session cookies**. When a user logs in through the web app, Supabase sets authentication cookies automatically.
+
+**Cookie name:** \`sb-ionevzckjyxtpmyenbxc-auth-token\`
+
+**How to test:**
+1. Open browser DevTools → Application → Cookies
+2. Login to the app at \`/login\`
+3. Copy the \`sb-ionevzckjyxtpmyenbxc-auth-token\` cookie value
+4. In Postman/cURL, add the cookie to your request
+
+**Example with cURL:**
+\`\`\`bash
+curl -X POST http://localhost:3000/api/checkout/session \\
+  -H "Content-Type: application/json" \\
+  -H "Cookie: sb-ionevzckjyxtpmyenbxc-auth-token=YOUR_TOKEN_HERE" \\
+  -d '{"booking_id": "uuid-here"}'
+\`\`\`
+
+### 2. API Key Auth (Testing/Internal)
+**Used by:** Testing endpoints, some internal operations
+
+For development and testing, some endpoints accept an API key header.
+
+**Header:** \`X-API-Key: dev-api-key\`
+
+**Example:**
+\`\`\`bash
+curl http://localhost:3000/api/testing/cleanup \\
+  -H "X-API-Key: dev-api-key"
+\`\`\`
+
+### 3. Cron Auth (Scheduled Jobs)
+**Used by:** \`/api/cron/*\` endpoints
+
+Cron endpoints are protected by a Bearer token that only Vercel Cron can provide.
+
+**Header:** \`Authorization: Bearer CRON_SECRET\`
+
+**Note:** These endpoints cannot be called manually in production.
+
+### 4. Stripe Signature (Webhooks)
+**Used by:** \`/api/stripe/webhook\`
+
+Stripe webhooks are verified using the \`Stripe-Signature\` header. Only Stripe's servers can call these endpoints.
+
+---
+
+## Quick Start Testing
+
+### Option A: Browser Session (Recommended)
+1. Login at \`http://localhost:3000/login\`
+2. Open DevTools → Network tab
+3. Make an action (book a session, etc.)
+4. Copy the request as cURL from DevTools
+5. Modify and replay in your testing tool
+
+### Option B: Postman/Insomnia
+1. Login via browser and copy the auth cookie
+2. Create a new request in Postman
+3. Add cookie: \`sb-ionevzckjyxtpmyenbxc-auth-token=YOUR_TOKEN\`
+4. Send requests to endpoints
+
+### Option C: Automated Tests
+Use the provided TypeScript types:
+\`\`\`typescript
+import { CreateCheckoutSessionRequest } from '@/lib/openapi'
+// Types are auto-generated from this spec
+\`\`\`
+
+---
+
+## Detailed Documentation
+
+For comprehensive guides including Postman collections and Playwright integration, see the \`docs/api-testing/\` directory in the repository:
+- **authentication-guide.md** - Complete auth guide with examples
+- **postman-guide.md** - Ready-to-use Postman collection
+- **playwright-integration.md** - Automated testing setup
+- **system-architecture.md** - Full system architecture diagrams
+
+---
+
+## Base URLs
 
 | Environment | URL |
 |------------|-----|
 | Development | \`http://localhost:3000/api\` |
-| Staging | \`https://upex-my-mentor-staging.vercel.app/api\` |
-| Production | \`https://upex-my-mentor.vercel.app/api\` |
+| Staging | \`https://staging-upexmymentor.vercel.app/api\` |
+| Production | \`https://upexmymentor.vercel.app/api\` |
       `.trim(),
       contact: {
         name: 'Upex QA Team',
@@ -107,7 +187,11 @@ For testing, you can:
         description: 'Development server',
       },
       {
-        url: 'https://upex-my-mentor.vercel.app/api',
+        url: 'https://staging-upexmymentor.vercel.app/api',
+        description: 'Staging server',
+      },
+      {
+        url: 'https://upexmymentor.vercel.app/api',
         description: 'Production server',
       },
     ],

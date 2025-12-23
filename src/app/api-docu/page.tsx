@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { RedocViewer } from "./redoc-viewer";
 import { ApiDocSelector } from "./api-doc-selector";
+import { AuthInfoPanel } from "./auth-info-panel";
 import { supabaseUrl, supabaseAnonKey } from "@/lib/config";
 
 // Check if we're in an allowed environment (development, staging, preview)
@@ -40,6 +41,7 @@ export default async function ApiDocuPage({ searchParams }: PageProps) {
   return (
     <div className="min-h-screen bg-background">
       <ApiDocSelector currentApi={apiType} />
+      <AuthInfoPanel apiType={apiType} />
       <RedocViewer specUrl={specUrl} />
     </div>
   );
