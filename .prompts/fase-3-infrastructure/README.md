@@ -22,13 +22,16 @@ La **Fase 3: Infrastructure** implementa la base técnica del proyecto ANTES de 
 
 ## 📋 Prompts de esta Fase
 
-| #   | Archivo             | Descripción                                                 | Duración   | MCP Requerido        |
-| --- | ------------------- | ----------------------------------------------------------- | ---------- | -------------------- |
-| 1   | `cloud-services.md` | Configurar cloud provider (Supabase, Vercel, Railway)       | 15-30 min  | ❌ Ninguno            |
-| 2   | `backend-setup.md`  | Crear DB schemas, Auth, API layer, seed data                | 45-90 min  | ✅ Supabase, Context7 |
-| 3   | `frontend-setup.md` | Design System, Layout, páginas demo, integrar tipos backend | 60-120 min | ✅ Context7           |
+| #   | Archivo                          | Descripción                                                 | Duración   | MCP Requerido        |
+| --- | -------------------------------- | ----------------------------------------------------------- | ---------- | -------------------- |
+| 1   | `cloud-services.md`              | Configurar cloud provider (Supabase, Vercel, Railway)       | 15-30 min  | ❌ Ninguno            |
+| 2   | `backend-setup.md`               | Crear DB schemas, Auth, API layer, seed data                | 45-90 min  | ✅ Supabase, Context7 |
+| 3   | `frontend-setup.md`              | Design System, Layout, páginas demo, integrar tipos backend | 60-120 min | ✅ Context7           |
+| 4*  | `api-documentation-openapi.md`   | Documentar APIs custom con OpenAPI + Zod                    | 30-60 min  | ✅ Context7           |
 
 **Total estimado:** 2-4 horas (depende de complejidad del proyecto)
+
+> **\* Nota sobre prompt #4:** Este prompt tiene dependencia de **Fase 7: Implementation**. Se ejecuta DESPUÉS de que existan endpoints custom en `src/app/api/`. Ver detalles en el propio archivo.
 
 ---
 
@@ -37,11 +40,46 @@ La **Fase 3: Infrastructure** implementa la base técnica del proyecto ANTES de 
 ### **⚠️ ORDEN CRÍTICO - NO ALTERAR**
 
 ```
-1. cloud-services.md       (PRIMERO - Setup de infraestructura cloud)
-                           ↓
-2. backend-setup.md        (SEGUNDO - Schemas + API + Tipos)
-                           ↓
-3. frontend-setup.md       (TERCERO - UI + Integración de tipos)
+1. cloud-services.md              (PRIMERO - Setup de infraestructura cloud)
+                                  ↓
+2. backend-setup.md               (SEGUNDO - Schemas + Auth + Tipos)
+                                  ↓
+3. frontend-setup.md              (TERCERO - UI + Integración de tipos)
+
+         ... Continúa desarrollo en Fase 7: Implementation ...
+         ... Cuando tengas endpoints custom en src/app/api/ ...
+
+4. api-documentation-openapi.md   (DESPUÉS de tener endpoints - Documenta APIs)
+```
+
+### Diagrama de Ejecución
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    FASE 3 - INFRASTRUCTURE                       │
+└─────────────────────────────────────────────────────────────────┘
+         │
+         ├── 1. cloud-services.md      ───────────────────────────┐
+         │                                                        │
+         ├── 2. backend-setup.md       ───────────────────────────┤ Ejecutar
+         │                                                        │ en orden
+         └── 3. frontend-setup.md      ───────────────────────────┘
+                                  │
+                                  ▼
+┌─────────────────────────────────────────────────────────────────┐
+│            FASE 7 - IMPLEMENTATION (Sprints)                     │
+│                                                                 │
+│   Story X: Crea /api/checkout/                                  │
+│   Story Y: Crea /api/bookings/                                  │
+│   Story Z: Crea /api/stripe/webhook/                            │
+└─────────────────────────────────────────────────────────────────┘
+                                  │
+                                  ▼ (cuando tengas varios endpoints)
+┌─────────────────────────────────────────────────────────────────┐
+│   VOLVER A FASE 3:                                              │
+│   └── 4. api-documentation-openapi.md                           │
+│       (Documenta TODOS los endpoints existentes)                │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ### **Por qué este orden:**
