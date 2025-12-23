@@ -1,6 +1,7 @@
 Actúa como UX Designer y Product Manager.
 
 **Input:**
+
 - User Personas: [usar .context/PRD/user-personas.md]
 - MVP Scope: [usar .context/PRD/mvp-scope.md]
 
@@ -37,6 +38,7 @@ Mapea 2-3 user journeys principales:
    - ¿Qué pasa si [acción no esperada]?
 
 **Journeys recomendados:**
+
 1. **Happy Path** (flujo ideal sin errores)
 2. **Edge Case 1** (ej: error de validación, campos faltantes)
 3. **Edge Case 2** (ej: usuario sin permisos, timeout)
@@ -44,6 +46,7 @@ Mapea 2-3 user journeys principales:
 **Formato:** Markdown estructurado, listo para copiar a .context/PRD/user-journeys.md
 
 **Restricciones:**
+
 - Journeys realistas (no idealizados)
 - Identificar pain points en cada paso
 - Cubrir tanto happy path como edge cases

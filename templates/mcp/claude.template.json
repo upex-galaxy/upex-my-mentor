@@ -16,55 +16,46 @@
     },
     "devtools": {
       "command": "npx",
-      "args": [
-        "-y",
-        "chrome-devtools-mcp"
-      ]
+      "args": ["-y", "chrome-devtools-mcp"]
     },
-    "mailtrap": {
+    "api": {
+      "command": "npx",
+      "args": ["-y", "@ivotoby/openapi-mcp-server", "--tools dynamic"],
+      "env": {
+        "API_BASE_URL": "https://{SUPABASE_URL}.supabase.co/rest/v1",
+        "OPENAPI_SPEC_PATH": "https://{SUPABASE_URL}.supabase.co/rest/v1/?apikey={SUPABASE_ANON_KEY}",
+        "API_HEADERS": "apikey:{SUPABASE_ANON_KEY}"
+      }
+    },
+    "sql": {
       "command": "npx",
       "args": [
         "-y",
-        "mcp-mailtrap"
-      ],
-      "env": {
-        "MAILTRAP_API_TOKEN": "your_mailtrap_api_token",
-        "DEFAULT_FROM_EMAIL": "your_sender@example.com",
-        "MAILTRAP_ACCOUNT_ID": "your_account_id",
-        "MAILTRAP_TEST_INBOX_ID": "your_test_inbox_id"
-      }
+        "@bytebase/dbhub",
+        "--transport",
+        "stdio",
+        "--dsn",
+        "postgresql://{USER}.{DATABASE}.{HOST}:{PORT}/{DATABASE}"
+      ]
     },
     "supabase": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@supabase/mcp-server-supabase@latest"
-      ],
+      "args": ["-y", "@supabase/mcp-server-supabase@latest"],
       "env": {
         "SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}"
       }
     },
     "shadcn": {
       "command": "npx",
-      "args": [
-        "shadcn@latest",
-        "mcp"
-      ]
+      "args": ["shadcn@latest", "mcp"]
     },
     "context7": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp"
-      ]
+      "args": ["-y", "@upstash/context7-mcp"]
     },
     "tavity": {
       "command": "npx",
-      "args": [
-        "-y",
-        "mcp-remote",
-        "https://mcp.tavily.com/mcp/?tavilyApiKey=${TAVILY_API_KEY}"
-      ]
+      "args": ["-y", "mcp-remote", "https://mcp.tavily.com/mcp/?tavilyApiKey=${TAVILY_API_KEY}"]
     },
     "postman": {
       "type": "http",
@@ -87,9 +78,7 @@
     },
     "atlassian": {
       "command": "uvx",
-      "args": [
-        "mcp-atlassian"
-      ],
+      "args": ["mcp-atlassian"],
       "env": {
         "JIRA_URL": "https://tu-servidor.atlassian.net",
         "JIRA_USERNAME": "tu.email@servidor.com",
@@ -105,12 +94,7 @@
     },
     "slack": {
       "command": "npx",
-      "args": [
-        "-y",
-        "slack-mcp-server@latest",
-        "--transport",
-        "stdio"
-      ],
+      "args": ["-y", "slack-mcp-server@latest", "--transport", "stdio"],
       "env": {
         "SLACK_MCP_XOXP_TOKEN": "${SLACK_MCP_XOXP_TOKEN}",
         "SLACK_MCP_ADD_MESSAGE_TOOL": "true",
@@ -120,10 +104,7 @@
     },
     "memory": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-memory"
-      ],
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
       "env": {
         "MEMORY_FILE_PATH": "/context/mcp/memory.jsonl"
       }

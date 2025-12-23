@@ -30,6 +30,7 @@ Debuggear y corregir errores en la implementación de **STORY-{PROJECT_KEY}-{ISS
    - Datos/inputs usados
 
 **Output:**
+
 ```markdown
 ## 🐛 Error Identificado
 
@@ -37,7 +38,9 @@ Debuggear y corregir errores en la implementación de **STORY-{PROJECT_KEY}-{ISS
 
 **Mensaje:**
 ```
+
 [Copiar mensaje de error completo]
+
 ```
 
 **Ubicación:**
@@ -64,6 +67,7 @@ Debuggear y corregir errores en la implementación de **STORY-{PROJECT_KEY}-{ISS
    - `.context/guidelines/code-standards.md`
 
 **Causas comunes:**
+
 - ❌ Tipo TypeScript incorrecto
 - ❌ Import mal escrito
 - ❌ Variable undefined
@@ -71,6 +75,7 @@ Debuggear y corregir errores en la implementación de **STORY-{PROJECT_KEY}-{ISS
 - ❌ Missing dependency
 
 **Output:**
+
 ```markdown
 ## 🔍 Diagnóstico
 
@@ -92,7 +97,8 @@ Debuggear y corregir errores en la implementación de **STORY-{PROJECT_KEY}-{ISS
 3. Valida que corrige el error
 
 **Output:**
-```markdown
+
+````markdown
 ## ✅ Corrección Aplicada
 
 **Archivo:** `[ruta]`
@@ -101,17 +107,21 @@ Debuggear y corregir errores en la implementación de **STORY-{PROJECT_KEY}-{ISS
 [Descripción del cambio]
 
 **Código antes:**
+
 ```typescript
 [Código con error]
 ```
+````
 
 **Código después:**
+
 ```typescript
 [Código corregido]
 ```
 
 **Por qué funciona:** [Explicación]
-```
+
+````
 
 ---
 
@@ -122,7 +132,8 @@ Debuggear y corregir errores en la implementación de **STORY-{PROJECT_KEY}-{ISS
 1. **Build exitoso:**
 ```bash
 npm run build
-```
+````
+
 - ✅ Sin errores TypeScript
 - ✅ Sin errores de linting
 
@@ -131,12 +142,14 @@ npm run build
    - Verifica que ahora funciona
 
 **Output:**
+
 ```markdown
 ## ✅ Validación
 
 **Build:** ✅ Exitoso
 
 **Prueba manual:**
+
 - ✅ [Paso 1] - Funciona
 - ✅ [Paso 2] - Funciona
 - ✅ Error ya no ocurre
@@ -153,6 +166,7 @@ npm run build
 **Síntoma:** `Type 'X' is not assignable to type 'Y'`
 
 **Solución:**
+
 - Verifica tipos en interfaces/types
 - Consulta Context7 MCP para tipos correctos de biblioteca
 - Usa type guards si necesario
@@ -162,6 +176,7 @@ npm run build
 **Síntoma:** `Cannot find module 'X'`
 
 **Solución:**
+
 - Verifica ruta del import
 - Instala dependency si falta: `npm install [paquete]`
 - Verifica alias de paths (si usa `@/` o similar)
@@ -171,6 +186,7 @@ npm run build
 **Síntoma:** Error en console del navegador
 
 **Solución:**
+
 - Revisa stack trace
 - Valida que datos existen antes de acceder
 - Agrega error handling (try-catch)
@@ -180,6 +196,7 @@ npm run build
 **Síntoma:** Build falla
 
 **Solución:**
+
 - Lee mensaje completo
 - Verifica configuración (next.config.js, tsconfig.json)
 - Consulta Context7 MCP para framework específico
@@ -193,8 +210,10 @@ Tengo este error en STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}:
 
 **Error:**
 ```
+
 Type 'undefined' is not assignable to type 'EntityType[]'
-  at EntityList.tsx:15
+at EntityList.tsx:15
+
 ```
 
 **Proceso:**

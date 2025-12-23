@@ -80,6 +80,7 @@ Actúa como QA Engineer experto en Shift-Left Testing, Test Case Design y Critic
 - Story (Jira): [usar MCP de Atlassian con el Story Jira Key real extraído del paso 1]
 
 **⚠️ IMPORTANTE:** Leer los comentarios del epic en Jira proporciona contexto actualizado incluyendo:
+
 - Respuestas de PO/Dev a preguntas críticas
 - Discusiones y clarificaciones adicionales
 - Updates al test plan después de refinements
@@ -107,17 +108,20 @@ Actúa como QA Engineer experto en Shift-Left Testing, Test Case Design y Critic
 **Formato de rama:** `test/{JIRA_ISSUE_KEY}/{short-description}`
 
 **Ejemplos:**
+
 - `test/UPEX-45/user-login-flow`
 - `test/UPEX-123/profile-update`
 - `test/UPEX-78/checkout-validation`
 
 **Reglas:**
+
 1. Prefijo `test/` obligatorio (indica trabajo de QA/testing)
 2. Jira Issue Key en mayúsculas (ej: UPEX-45) - extraído del campo `**Jira Key:**` del story.md
 3. Descripción corta en kebab-case (máx 3-4 palabras) - derivada del nombre de la story
 4. Base branch: siempre `staging` (nunca `main`)
 
 **⚠️ IMPORTANTE:**
+
 - Esta rama SOLO debe contener cambios en archivos de documentación de la story (test-cases.md)
 - NO incluir código de producción, configuración de testing frameworks, ni implementación
 - El nombre de la rama debe derivarse del contexto de la story analizada
@@ -773,11 +777,11 @@ Este prompt trabaja en **10 pasos** (Paso 0-9) organizados en 3 partes, siguiend
 
 [Consolidar todos los edge cases identificados]
 
-| Edge Case     | Covered in Original Story? | Added to Refined AC?    | Test Case | Priority |
-| ------------- | -------------------------- | ----------------------- | --------- | -------- |
-| [Edge case 1] | ❌ No                       | ✅ Yes (Scenario 4)      | TC-XXX    | High     |
-| [Edge case 2] | ✅ Yes                      | ✅ Yes (Scenario 3)      | TC-YYY    | Medium   |
-| [Edge case 3] | ❌ No                       | ⚠️ Needs PO confirmation | TBD       | Low      |
+| Edge Case     | Covered in Original Story? | Added to Refined AC?     | Test Case | Priority |
+| ------------- | -------------------------- | ------------------------ | --------- | -------- |
+| [Edge case 1] | ❌ No                      | ✅ Yes (Scenario 4)      | TC-XXX    | High     |
+| [Edge case 2] | ✅ Yes                     | ✅ Yes (Scenario 3)      | TC-YYY    | Medium   |
+| [Edge case 3] | ❌ No                      | ⚠️ Needs PO confirmation | TBD       | Low      |
 
 ---
 
@@ -838,7 +842,6 @@ Este prompt trabaja en **10 pasos** (Paso 0-9) organizados en 3 partes, siguiend
 2. **Preparar contenido refinado:**
 
    Basado en análisis de Paso 2, preparar:
-
    - **Refined Acceptance Criteria** (de Paso 3)
    - **Edge Cases Identificados** (de Paso 2)
    - **Clarified Business Rules** (de Paso 2)
@@ -847,23 +850,26 @@ Este prompt trabaja en **10 pasos** (Paso 0-9) organizados en 3 partes, siguiend
    - Usar MCP de Atlassian para editar la issue
    - Agregar nueva sección al description con el siguiente contenido:
 
-   ---
+   ***
+
    ## 🧪 QA Refinements (Shift-Left Analysis)
 
    **Analysis Date:** [YYYY-MM-DD]
    **Status:** Refined by QA
 
    ### Refined Acceptance Criteria
+
    [Pegar refined scenarios de Paso 3]
 
    ### Edge Cases Identified
+
    [Listar edge cases de Paso 2]
 
    ### Clarified Business Rules
+
    [Agregar clarificaciones de Paso 2]
 
-   ---
-
+   ***
    - Agregar label: `shift-left-reviewed`
 
 **Output esperado:**
@@ -1199,10 +1205,12 @@ Esta story se considera "Done" desde QA cuando:
 **⚠️ Validación de story.md:**
 
 El archivo story.md debe contener en su metadata:
+
 ```markdown
 **Jira Key:** UPEX-45
 **Epic:** EPIC-UPEX-13-feature-name
 ```
+
 Estos son los datos reales. Nota: El número de issue (45, 13) es el mismo en la nomenclatura de carpeta y en el Jira Key.
 
 ---
@@ -1214,12 +1222,14 @@ Estos son los datos reales. Nota: El número de issue (45, 13) es el mismo en la
 **Objetivo:** Crear una rama específica para el trabajo de Shift-Left Testing antes de generar los test cases.
 
 **Pasos a ejecutar:**
+
 1. Checkout desde `staging`: `git checkout staging && git pull`
 2. Crear rama usando el formato: `test/{JIRA_KEY}/{short-description}`
 3. El `{JIRA_KEY}` se extrae del campo `**Jira Key:**` del story.md
 4. El `{short-description}` se deriva del nombre/título de la story en kebab-case (máx 3-4 palabras)
 
 **Ejemplo:**
+
 ```bash
 git checkout staging && git pull
 git checkout -b test/UPEX-45/user-login-flow
@@ -1236,6 +1246,7 @@ Story Path: .context/PBI/epics/EPIC-UPEX-13-nombre/stories/STORY-UPEX-45-nombre/
 ```
 
 **⚠️ Proceso Automático:**
+
 1. Prompt lee: `{STORY_PATH}/story.md`
 2. Prompt extrae: Campo `**Jira Key:**` (ej: UPEX-45)
 3. Prompt extrae: Campo `**Epic:**` para encontrar epic path
@@ -1245,44 +1256,31 @@ Story Path: .context/PBI/epics/EPIC-UPEX-13-nombre/stories/STORY-UPEX-45-nombre/
 ### Orden de ejecución:
 
 **Paso 0: Crear rama de trabajo**
+
 1. Leer `{STORY_PATH}/story.md` proporcionado por usuario
 2. Extraer campo `**Jira Key:**` de story (ej: UPEX-45)
 3. Derivar `{short-description}` del título de la story en kebab-case
 4. Ejecutar: `git checkout staging && git pull`
 5. Crear rama: `git checkout -b test/{JIRA_KEY}/{short-description}`
 
-**Pre-requisito: Extraer Jira Keys**
-6. Extraer campo `**Epic:**` para obtener epic path
-7. Leer epic.md y extraer Epic Jira Key (ej: UPEX-13)
-8. Guardar ambos Jira Keys reales para Pasos 5 y 6
+**Pre-requisito: Extraer Jira Keys** 6. Extraer campo `**Epic:**` para obtener epic path 7. Leer epic.md y extraer Epic Jira Key (ej: UPEX-13) 8. Guardar ambos Jira Keys reales para Pasos 5 y 6
 
-**Leer Contexto Completo:**
-9. Leer todos los archivos de contexto (PRD, SRS, epic.md local, feature-test-plan.md, story.md)
-10. Leer story actual de Jira con MCP (usando Story Jira Key real)
-11. Leer epic de Jira con MCP (usando Epic Jira Key real)
-12. **Leer comentarios del epic en Jira** - especialmente "Feature Test Plan"
+**Leer Contexto Completo:** 9. Leer todos los archivos de contexto (PRD, SRS, epic.md local, feature-test-plan.md, story.md) 10. Leer story actual de Jira con MCP (usando Story Jira Key real) 11. Leer epic de Jira con MCP (usando Epic Jira Key real) 12. **Leer comentarios del epic en Jira** - especialmente "Feature Test Plan"
 
-**PARTE 1 - Análisis y Diseño:**
-13. **Paso 1:** Critical Analysis (incluye Epic-Level Context de comentarios)
-14. **Paso 2:** Story Quality Analysis
-15. **Paso 3:** Refined Acceptance Criteria
-16. **Paso 4:** Test Design
+**PARTE 1 - Análisis y Diseño:** 13. **Paso 1:** Critical Analysis (incluye Epic-Level Context de comentarios) 14. **Paso 2:** Story Quality Analysis 15. **Paso 3:** Refined Acceptance Criteria 16. **Paso 4:** Test Design
 
-**PARTE 2 - Integración y Output:**
-17. **Paso 5:** Actualizar story en Jira con refinamientos (MCP + Story Jira Key real)
-18. **Paso 6:** Crear comentario en Jira con test cases completos (MCP + Story Jira Key real)
-19. **Paso 7:** Generar archivo local `test-cases.md` en {STORY_PATH}/ (Write tool)
-20. **Paso 8:** Reportar resumen al usuario (Output)
-21. **Paso 9:** Commit del archivo `test-cases.md` en la rama de trabajo
+**PARTE 2 - Integración y Output:** 17. **Paso 5:** Actualizar story en Jira con refinamientos (MCP + Story Jira Key real) 18. **Paso 6:** Crear comentario en Jira con test cases completos (MCP + Story Jira Key real) 19. **Paso 7:** Generar archivo local `test-cases.md` en {STORY_PATH}/ (Write tool) 20. **Paso 8:** Reportar resumen al usuario (Output) 21. **Paso 9:** Commit del archivo `test-cases.md` en la rama de trabajo
 
 ### Herramientas a usar:
 
 **Git (Bash):**
+
 - Para checkout de `staging` y pull de cambios recientes
 - Para crear rama de trabajo con formato `test/{JIRA_KEY}/{short-description}`
 - Para commit del archivo `test-cases.md` generado
 
 **MCP de Atlassian:**
+
 - Para leer story de Jira
 - Para leer epic de Jira (description actualizado)
 - **Para leer comentarios del epic en Jira** (especialmente "Feature Test Plan")
@@ -1290,6 +1288,7 @@ Story Path: .context/PBI/epics/EPIC-UPEX-13-nombre/stories/STORY-UPEX-45-nombre/
 - Para agregar comentarios a issues
 
 **File Operations:**
+
 - Para crear archivo local test-cases.md
 - Para leer archivos de contexto (PRD, SRS, epic, feature-test-plan, story.md)
 

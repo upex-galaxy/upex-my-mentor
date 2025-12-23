@@ -31,10 +31,12 @@ Actúa como Scrum Master y Product Owner.
 **IMPORTANTE:** La nomenclatura tiene 4 partes con diferentes orígenes:
 
 #### 1. **Fijo (del template):**
+
 - `EPIC-` o `STORY-` - Prefijo que indica el tipo de issue
 - **No cambia nunca, es parte del sistema**
 
 #### 2. **Variable del proyecto (usuario define):**
+
 - `{PROJECT_KEY}` - Código del proyecto en Jira
   - Ejemplos: `MYM`, `SHOP`, `BLOG`, `UPEX`, etc.
   - Lo define el usuario al crear el proyecto en Jira
@@ -42,6 +44,7 @@ Actúa como Scrum Master y Product Owner.
   - Características: MAYÚSCULAS, 2-5 caracteres, sin espacios
 
 #### 3. **Autogenerado por Jira (NO controlable):**
+
 - `{ISSUE_NUM}` - Número secuencial que Jira asigna automáticamente
   - Ejemplos: `1`, `2`, `13`, `45`, etc.
   - **NO lo controla la IA ni el usuario**
@@ -49,6 +52,7 @@ Actúa como Scrum Master y Product Owner.
   - Siempre es secuencial y sin ceros a la izquierda
 
 #### 4. **Definido por análisis del dominio:**
+
 - `{nombre-descriptivo}` - 2-4 palabras en kebab-case
   - Se infiere analizando el PRD/SRS del proyecto actual
   - Usa el vocabulario específico del dominio de negocio
@@ -63,13 +67,16 @@ Actúa como Scrum Master y Product Owner.
 **Ejemplos con diferentes proyectos:**
 
 Proyecto "MYM" (Jira asignó issues #2 y #13):
+
 - ✅ `EPIC-MYM-2-user-authentication-profiles/`
 - ✅ `EPIC-MYM-13-entity-discovery-search/`
 
 Proyecto "SHOP" (Jira asignó issue #45):
+
 - ✅ `EPIC-SHOP-45-payment-processing/`
 
 Proyecto "BLOG" (Jira asignó issue #1):
+
 - ✅ `EPIC-BLOG-1-content-management-system/`
 
 **Ejemplos INVÁLIDOS:**
@@ -90,13 +97,16 @@ Proyecto "BLOG" (Jira asignó issue #1):
 **Ejemplos con diferentes proyectos:**
 
 Proyecto "MYM" (Jira asignó issues #3 y #14):
+
 - ✅ `STORY-MYM-3-user-signup-email/`
 - ✅ `STORY-MYM-14-view-all-entities/`
 
 Proyecto "SHOP" (Jira asignó issue #46):
+
 - ✅ `STORY-SHOP-46-add-to-cart-flow/`
 
 Proyecto "BLOG" (Jira asignó issue #2):
+
 - ✅ `STORY-BLOG-2-create-blog-post/`
 
 ---
@@ -130,6 +140,7 @@ Por favor ingresa el PROJECT_KEY:
 ### Validación
 
 Si el usuario proporciona un valor inválido:
+
 - ❌ `mym` → Debe ser MAYÚSCULAS
 - ❌ `MY-M` → No debe tener guiones ni espacios
 - ❌ `MYPROJECT` → Muy largo (máximo 5 caracteres)
@@ -139,6 +150,7 @@ Pedir corrección hasta que sea válido.
 ### Output
 
 **Guardar el PROJECT_KEY** para usar en:
+
 - Nomenclatura de carpetas: `EPIC-{PROJECT_KEY}-{NUM}-{nombre}/`
 - Consultas MCP a Jira
 - Documentación generada
@@ -148,6 +160,7 @@ Pedir corrección hasta que sea válido.
 Si el usuario responde: `MYM`
 
 Entonces TODAS las carpetas usarán:
+
 - `EPIC-MYM-{NUM}-{nombre}/`
 - `STORY-MYM-{NUM}-{nombre}/`
 
@@ -176,18 +189,21 @@ Jira Project: [URL del proyecto en Jira]
 ## Epic Hierarchy
 
 ### EPIC 1: [Epic Title]
+
 **Planned Jira Key:** {PROJECT_KEY}-TBD
 **Priority:** CRITICAL | HIGH | MEDIUM | LOW
 **Description:** [1-2 líneas]
 
 **User Stories (estimado: X):**
+
 1. {PROJECT_KEY}-TBD - As a [user], I want to [action] so that [benefit]
 2. {PROJECT_KEY}-TBD - As a [user], I want to [action] so that [benefit]
-...
+   ...
 
 ---
 
 ### EPIC 2: [Epic Title]
+
 ...
 
 ---
@@ -195,10 +211,12 @@ Jira Project: [URL del proyecto en Jira]
 ## Epic Prioritization
 
 ### Phase 1: Foundation (Sprint 1-2)
+
 1. Epic 1 - [Nombre]
 2. Epic 2 - [Nombre]
 
 ### Phase 2: Core Features (Sprint 3-4)
+
 ...
 
 ---
@@ -259,6 +277,7 @@ Y en paso 2.1 Jira asignó el issue number = 13
 Entonces el Jira Key completo es: "MYM-13"
 
 Crear carpeta:
+
 ```
 .context/PBI/epics/EPIC-MYM-13-{nombre-segun-dominio}/
 ```
@@ -296,7 +315,7 @@ Crear carpeta:
 
 1. **{PROJECT_KEY}-TBD** - As a [user], I want to [action] so that [benefit]
 2. **{PROJECT_KEY}-TBD** - As a [user], I want to [action] so that [benefit]
-...
+   ...
 
 **NOTA:** Los IDs serán actualizados cuando se creen las stories en Jira (siguiente paso)
 
@@ -305,11 +324,13 @@ Crear carpeta:
 ## Scope
 
 ### In Scope
+
 - Feature 1
 - Feature 2
 - ...
 
 ### Out of Scope (Future)
+
 - Features que NO están incluidas en MVP
 - Mejoras futuras
 - ...
@@ -321,7 +342,7 @@ Crear carpeta:
 1. ✅ Criterio 1 de aceptación a nivel épica
 2. ✅ Criterio 2
 3. ✅ Criterio 3
-...
+   ...
 
 ---
 
@@ -337,15 +358,18 @@ See: `.context/SRS/functional-specs.md`
 ## Technical Considerations
 
 ### [Subsección relevante]
+
 [Consideraciones técnicas específicas de esta épica]
 
 ### Database Schema
+
 **Tables:**
 [Listar tablas relevantes con campos principales]
 
 **IMPORTANTE:** NO hardcodear schema SQL completo. Usar Supabase MCP para schema real.
 
 ### Security Requirements
+
 [Requerimientos de seguridad específicos si aplican]
 
 ---
@@ -353,12 +377,15 @@ See: `.context/SRS/functional-specs.md`
 ## Dependencies
 
 ### External Dependencies
+
 [APIs, services externos, etc.]
 
 ### Internal Dependencies
+
 [Otras épicas que deben completarse primero]
 
 ### Blocks
+
 [Qué épicas están bloqueadas por esta]
 
 ---
@@ -366,9 +393,11 @@ See: `.context/SRS/functional-specs.md`
 ## Success Metrics
 
 ### Functional Metrics
+
 [Métricas técnicas de éxito]
 
 ### Business Metrics
+
 [Métricas de negocio del Executive Summary]
 
 ---
@@ -386,6 +415,7 @@ See: `.context/SRS/functional-specs.md`
 See: `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{nombre}/feature-test-plan.md` (se crea en Fase 5)
 
 ### Test Coverage Requirements
+
 - **Unit Tests:** [Qué cubrir]
 - **Integration Tests:** [Qué cubrir]
 - **E2E Tests:** [Qué cubrir]
@@ -397,11 +427,13 @@ See: `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{nombre}/feature-test-plan.md`
 See: `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{nombre}/feature-implementation-plan.md` (se crea en Fase 6)
 
 ### Recommended Story Order
+
 1. [KEY-1] - [Story title] - Foundation
 2. [KEY-2] - [Story title] - Core logic
-...
+   ...
 
 ### Estimated Effort
+
 - **Development:** [X sprints / Y weeks]
 - **Testing:** [X sprint / Y weeks]
 - **Total:** [X sprints]
@@ -480,6 +512,7 @@ Y en paso 3.1 Jira asignó el issue number = 14 a la story
 Entonces el Jira Key completo de la story es: "MYM-14"
 
 Crear carpeta:
+
 ```
 .context/PBI/epics/EPIC-MYM-13-{epic-name}/stories/STORY-MYM-14-{story-name}/
 ```
@@ -524,16 +557,19 @@ Crear carpeta:
 ## Acceptance Criteria (Gherkin format)
 
 ### Scenario 1: [Happy path scenario name]
+
 - **Given:** [Contexto inicial / precondiciones]
 - **When:** [Acción del usuario]
 - **Then:** [Resultado esperado]
 
 ### Scenario 2: [Error/edge case scenario name]
+
 - **Given:** [Contexto inicial]
 - **When:** [Acción del usuario]
 - **Then:** [Resultado esperado / manejo del error]
 
 ### Scenario 3: [Additional scenario if needed]
+
 - **Given:** [Contexto inicial]
 - **When:** [Acción del usuario]
 - **Then:** [Resultado esperado]
@@ -545,17 +581,21 @@ Crear carpeta:
 ## Technical Notes
 
 ### Frontend
+
 [Componentes a crear/modificar, libraries a usar]
 
 ### Backend
+
 [APIs a crear/modificar, servicios necesarios]
 
 ### Database
+
 [Tablas afectadas, queries relevantes]
 
 **IMPORTANTE:** NO hardcodear SQL. Usar Supabase MCP.
 
 ### External Services
+
 [APIs externas, servicios de terceros si aplican]
 
 ---
@@ -563,12 +603,15 @@ Crear carpeta:
 ## Dependencies
 
 ### Blocked By
+
 [Otras stories que deben completarse primero]
 
 ### Blocks
+
 [Qué stories dependen de esta]
 
 ### Related Stories
+
 [Stories relacionadas en otras épicas]
 
 ---
@@ -600,6 +643,7 @@ Crear carpeta:
 See: `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{NUM}-{nombre}/test-cases.md` (se crea en Fase 5)
 
 **Test Cases Expected:** 6+ detailed test cases covering:
+
 - Happy path
 - Error scenarios
 - Edge cases
@@ -612,6 +656,7 @@ See: `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{nombre}/stories/STORY-{PROJEC
 See: `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{NUM}-{nombre}/implementation-plan.md` (se crea en Fase 6)
 
 **Implementation Steps Expected:**
+
 - Step-by-step technical plan
 - File structure
 - Function signatures

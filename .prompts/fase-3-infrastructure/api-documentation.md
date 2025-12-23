@@ -5,8 +5,9 @@
 > **Reusability:** Generic (works for any Next.js + Supabase project)
 > **Version:** 2.0
 > **Dependencies:**
->   - `backend-setup.md` (Fase 3) - Infraestructura base
->   - Custom API endpoints (Fase 7) - Al menos 1 endpoint para documentar
+>
+> - `backend-setup.md` (Fase 3) - Infraestructura base
+> - Custom API endpoints (Fase 7) - Al menos 1 endpoint para documentar
 
 ---
 
@@ -112,7 +113,7 @@ RETURN TO Fase 3:
 
 ## The Prompt
 
-```markdown
+````markdown
 I need you to implement an OpenAPI documentation infrastructure for my Next.js API endpoints.
 
 ## Pre-Execution Verification
@@ -120,6 +121,7 @@ I need you to implement an OpenAPI documentation infrastructure for my Next.js A
 BEFORE doing anything, verify these prerequisites:
 
 ### Step 0.1: Check Backend Infrastructure
+
 Run these commands and analyze output:
 
 ```bash
@@ -132,8 +134,10 @@ ls -la src/lib/config.ts 2>/dev/null
 # Check for custom API endpoints
 find src/app/api -name "route.ts" 2>/dev/null | wc -l
 ```
+````
 
 **Decision:**
+
 - IF any Supabase client files are MISSING:
   → STOP and inform: "Backend infrastructure not found. Run backend-setup.md first."
   → Path: `.prompts/fase-3-infrastructure/backend-setup.md`
@@ -158,6 +162,7 @@ bun add @asteasolutions/zod-to-openapi@7.3.4
 ```
 
 **Why these versions?**
+
 - `zod-to-openapi@8.x` has breaking changes with `zod@3.25.x`
 - `zod@3.25.x` changed internal APIs that break `extendZodWithOpenApi()`
 - The combination `7.3.4 + ~3.24.1` is tested and stable
@@ -176,7 +181,9 @@ bun add @asteasolutions/zod-to-openapi@7.3.4
 ## Requirements
 
 ### 1. Discovery Phase
+
 Analyze all API routes in `src/app/api/`:
+
 - List each endpoint with HTTP method
 - Identify request body schemas
 - Identify query parameters
@@ -191,6 +198,7 @@ Analyze all API routes in `src/app/api/`:
 ### 2. Implementation Phase
 
 **Create directory structure:**
+
 ```
 src/lib/openapi/
 ├── registry.ts          # Central OpenAPI configuration
@@ -204,7 +212,9 @@ src/lib/openapi/
 **Key files to implement:**
 
 #### 2.1 registry.ts
+
 Must include:
+
 - `extendZodWithOpenApi(z)` call at the top
 - Security schemes for all 4 auth methods
 - Server URLs for dev/staging/prod
@@ -212,25 +222,31 @@ Must include:
 - Comprehensive API description with auth examples
 
 #### 2.2 schemas/common.ts
+
 Reusable schemas:
+
 - `UUIDSchema` with UUID format
 - `TimestampSchema` for ISO dates
 - `ErrorResponseSchema` (standard error format)
 - `SuccessMessageSchema`
 
 #### 2.3 schemas/[domain].ts
+
 For each API domain:
+
 - Request schemas with `.openapi({ description, example })`
 - Response schemas for success and error cases
 - `registry.registerPath()` for each endpoint
 - Export TypeScript types via `z.infer<>`
 
 #### 2.4 API Route: /api/openapi/route.ts
+
 - Serve OpenAPI spec as JSON
 - Add CORS headers for external tools
 - Cache in production, no-cache in development
 
 #### 2.5 Documentation Page: /api-docu/page.tsx
+
 - Use Redoc to render the spec
 - **CRITICAL:** Redoc must be a client component with dynamic import (no SSR)
 - Add API selector if project has multiple APIs (e.g., Next.js + Supabase REST)
@@ -239,16 +255,19 @@ For each API domain:
 ### 3. Best Practices
 
 **Schema Design:**
+
 - Include realistic examples for all fields
 - Document all error responses with HTTP status codes
 - Use `z.enum()` for fixed options
 
 **Security:**
+
 - Define all security schemes in registry
 - Mark each endpoint with correct security
 - Hide /api-docu in production
 
 **Maintainability:**
+
 - Schemas are the single source of truth
 - Types are auto-exported for tests
 - Spec is always generated, never hand-edited
@@ -258,6 +277,7 @@ For each API domain:
 ## Expected Output
 
 After implementation:
+
 1. `/api-docu` - Interactive API documentation (dev/staging only)
 2. `/api/openapi` - OpenAPI JSON spec
 3. `@/lib/openapi` - TypeScript types for testing
@@ -268,10 +288,12 @@ After implementation:
 ## Additional Request
 
 Create documentation in `docs/api-testing/openapi-guide.md` explaining:
+
 - How the OpenAPI system works
 - How to add documentation for new endpoints
 - How to use types in automated tests
-```
+
+````
 
 ---
 
@@ -288,18 +310,22 @@ These are concrete examples based on real implementation. Use as reference, adap
     "zod": "~3.24.1"
   }
 }
-```
+````
 
 ### Registry Configuration (registry.ts)
 
 ```typescript
-import { OpenAPIRegistry, OpenApiGeneratorV3, extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi'
-import { z } from 'zod'
+import {
+  OpenAPIRegistry,
+  OpenApiGeneratorV3,
+  extendZodWithOpenApi,
+} from '@asteasolutions/zod-to-openapi';
+import { z } from 'zod';
 
 // MUST call this before any schema definitions
-extendZodWithOpenApi(z)
+extendZodWithOpenApi(z);
 
-export const registry = new OpenAPIRegistry()
+export const registry = new OpenAPIRegistry();
 
 // ============================================================================
 // Security Schemes (4 types)
@@ -311,7 +337,7 @@ registry.registerComponent('securitySchemes', 'cookieAuth', {
   in: 'cookie',
   name: 'sb-{project-ref}-auth-token',
   description: 'Supabase session cookie. Set automatically after login.',
-})
+});
 
 // 2. API Key Auth - Internal/testing endpoints
 registry.registerComponent('securitySchemes', 'apiKeyAuth', {
@@ -319,14 +345,14 @@ registry.registerComponent('securitySchemes', 'apiKeyAuth', {
   in: 'header',
   name: 'X-API-Key',
   description: 'API key for internal endpoints. Use "dev-api-key" in development.',
-})
+});
 
 // 3. Cron Auth - Scheduled jobs
 registry.registerComponent('securitySchemes', 'cronAuth', {
   type: 'http',
   scheme: 'bearer',
   description: 'CRON_SECRET token for scheduled job endpoints.',
-})
+});
 
 // 4. Stripe Signature - Webhooks
 registry.registerComponent('securitySchemes', 'stripeSignature', {
@@ -334,14 +360,14 @@ registry.registerComponent('securitySchemes', 'stripeSignature', {
   in: 'header',
   name: 'Stripe-Signature',
   description: 'Stripe webhook signature. Only Stripe can call these.',
-})
+});
 
 // ============================================================================
 // OpenAPI Document Generator
 // ============================================================================
 
 export function generateOpenAPIDocument() {
-  const generator = new OpenApiGeneratorV3(registry.definitions)
+  const generator = new OpenApiGeneratorV3(registry.definitions);
 
   return generator.generateDocument({
     openapi: '3.0.3',
@@ -378,40 +404,44 @@ curl -X POST http://localhost:3000/api/cron/job \\
       { url: 'https://staging.example.com/api', description: 'Staging' },
       { url: 'https://example.com/api', description: 'Production' },
     ],
-  })
+  });
 }
 
-export { z }
+export { z };
 ```
 
 ### Domain Schema Example (schemas/checkout.ts)
 
 ```typescript
-import { z } from 'zod'
-import { registry } from '../registry'
-import { UUIDSchema, ErrorResponseSchema } from './common'
+import { z } from 'zod';
+import { registry } from '../registry';
+import { UUIDSchema, ErrorResponseSchema } from './common';
 
 // ============================================================================
 // Request Schemas
 // ============================================================================
 
-export const CreateCheckoutSessionRequestSchema = z.object({
-  booking_id: UUIDSchema.openapi({
-    description: 'The booking ID to create a checkout session for',
-    example: '123e4567-e89b-12d3-a456-426614174000',
-  }),
-}).openapi('CreateCheckoutSessionRequest')
+export const CreateCheckoutSessionRequestSchema = z
+  .object({
+    booking_id: UUIDSchema.openapi({
+      description: 'The booking ID to create a checkout session for',
+      example: '123e4567-e89b-12d3-a456-426614174000',
+    }),
+  })
+  .openapi('CreateCheckoutSessionRequest');
 
 // ============================================================================
 // Response Schemas
 // ============================================================================
 
-export const CreateCheckoutSessionResponseSchema = z.object({
-  url: z.string().url().openapi({
-    description: 'Stripe Checkout URL to redirect the user',
-    example: 'https://checkout.stripe.com/c/pay/cs_test_...',
-  }),
-}).openapi('CreateCheckoutSessionResponse')
+export const CreateCheckoutSessionResponseSchema = z
+  .object({
+    url: z.string().url().openapi({
+      description: 'Stripe Checkout URL to redirect the user',
+      example: 'https://checkout.stripe.com/c/pay/cs_test_...',
+    }),
+  })
+  .openapi('CreateCheckoutSessionResponse');
 
 // ============================================================================
 // Register Endpoint
@@ -459,35 +489,33 @@ registry.registerPath({
       },
     },
   },
-})
+});
 
 // ============================================================================
 // Export Types
 // ============================================================================
 
-export type CreateCheckoutSessionRequest = z.infer<typeof CreateCheckoutSessionRequestSchema>
-export type CreateCheckoutSessionResponse = z.infer<typeof CreateCheckoutSessionResponseSchema>
+export type CreateCheckoutSessionRequest = z.infer<typeof CreateCheckoutSessionRequestSchema>;
+export type CreateCheckoutSessionResponse = z.infer<typeof CreateCheckoutSessionResponseSchema>;
 ```
 
 ### OpenAPI Route (/api/openapi/route.ts)
 
 ```typescript
-import { NextResponse } from 'next/server'
-import { generateOpenAPIDocument } from '@/lib/openapi'
+import { NextResponse } from 'next/server';
+import { generateOpenAPIDocument } from '@/lib/openapi';
 
 export async function GET() {
-  const spec = generateOpenAPIDocument()
+  const spec = generateOpenAPIDocument();
 
   return NextResponse.json(spec, {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
-      'Cache-Control': process.env.NODE_ENV === 'production'
-        ? 'public, max-age=3600'
-        : 'no-cache',
+      'Cache-Control': process.env.NODE_ENV === 'production' ? 'public, max-age=3600' : 'no-cache',
     },
-  })
+  });
 }
 
 export async function OPTIONS() {
@@ -498,7 +526,7 @@ export async function OPTIONS() {
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
     },
-  })
+  });
 }
 ```
 
@@ -621,6 +649,7 @@ For each new endpoint, ensure:
 
 ```markdown
 ## API Documentation
+
 - [ ] Added/updated schema in `src/lib/openapi/schemas/`
 - [ ] Registered endpoint with `registry.registerPath()`
 - [ ] Verified endpoint appears in /api-docu
@@ -638,6 +667,7 @@ For each new endpoint, ensure:
 **Cause:** Version incompatibility between zod and zod-to-openapi
 
 **Solution:**
+
 ```bash
 # Check current versions
 grep -E '"zod"|"@asteasolutions/zod-to-openapi"' package.json
@@ -658,16 +688,17 @@ bun install
 **Cause:** Redoc trying to render on server
 
 **Solution:** Use dynamic import with `ssr: false`:
+
 ```typescript
-const RedocStandalone = dynamic(
-  () => import('redoc').then((mod) => mod.RedocStandalone),
-  { ssr: false }
-)
+const RedocStandalone = dynamic(() => import('redoc').then(mod => mod.RedocStandalone), {
+  ssr: false,
+});
 ```
 
 #### Error: CORS when fetching /api/openapi from external tool
 
 **Solution:** Add CORS headers to the route:
+
 ```typescript
 headers: {
   'Access-Control-Allow-Origin': '*',
@@ -678,9 +709,10 @@ headers: {
 #### /api-docu shows in production
 
 **Solution:** Add environment check:
+
 ```typescript
 if (process.env.VERCEL_ENV === 'production') {
-  notFound()
+  notFound();
 }
 ```
 
@@ -740,8 +772,8 @@ curl http://localhost:3000/api/openapi | jq '.paths | keys'
 
 ## Version History
 
-| Version | Date    | Changes |
-|---------|---------|---------|
-| 1.0 | 2024-12 | Initial version |
-| 1.1 | 2024-12 | Added prerequisite verification |
-| 2.0 | 2024-12 | Major update: version pinning, concrete examples, troubleshooting, Redoc SSR fix, production protection, extending guide |
+| Version | Date    | Changes                                                                                                                  |
+| ------- | ------- | ------------------------------------------------------------------------------------------------------------------------ |
+| 1.0     | 2024-12 | Initial version                                                                                                          |
+| 1.1     | 2024-12 | Added prerequisite verification                                                                                          |
+| 2.0     | 2024-12 | Major update: version pinning, concrete examples, troubleshooting, Redoc SSR fix, production protection, extending guide |

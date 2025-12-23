@@ -13,6 +13,7 @@ Identify, validate, and report defects found during exploratory testing. This pr
 3. **Create the bug in Jira** using MCP Atlassian
 
 **Prerequisites:**
+
 - Bug identified during exploratory testing
 - Access to Playwright MCP tools (`mcp__playwright__*`)
 - Access to Atlassian MCP tools (`mcp__atlassian__*`)
@@ -67,11 +68,13 @@ Tools:
 ## Retest Results
 
 **Attempt 1:**
+
 - Steps executed: [1, 2, 3...]
 - Result: [Reproduced / Not Reproduced]
 - Evidence: [Screenshot if applicable]
 
 **Attempt 2 (if needed):**
+
 - Result: [Reproduced / Not Reproduced]
 
 **Conclusion:** [Bug confirmed / Could not reproduce]
@@ -89,18 +92,21 @@ Tools:
 **Title:** [Clear, descriptive title]
 
 **Severity:**
+
 - [ ] Critical - Blocks core functionality, no workaround
 - [ ] High - Major feature broken, difficult workaround
 - [ ] Medium - Feature issue, easy workaround exists
 - [ ] Low - Cosmetic issue, doesn't affect functionality
 
 **Environment:**
+
 - URL: [Staging URL where bug occurs]
 - Browser: [Chrome/Firefox/Safari + version]
 - OS: [Windows/Mac/Linux]
 - User Role: [Admin/User/Guest]
 
 **Steps to Reproduce:**
+
 1. [Detailed step 1]
 2. [Detailed step 2]
 3. [Detailed step 3]
@@ -113,6 +119,7 @@ Tools:
 [What actually happens]
 
 **Evidence:**
+
 - Screenshot: [Attached/Reference]
 - Console Errors: [If any]
 - Network Errors: [If any]
@@ -193,6 +200,7 @@ Purpose: Get the schema for Bug issue type including custom fields
 **After creating the bug:**
 
 1. **Confirm creation** with user:
+
    ```
    Bug created successfully!
 
@@ -203,6 +211,7 @@ Purpose: Get the schema for Bug issue type including custom fields
    ```
 
 2. **Link to related story** (if applicable):
+
    ```
    Tool: mcp__atlassian__addCommentToJiraIssue
 
@@ -221,15 +230,20 @@ h2. Summary
 [Brief description of the bug]
 
 h2. Environment
-* *URL:* [URL]
-* *Browser:* [Browser + version]
-* *OS:* [OS]
-* *User Role:* [Role]
+
+- _URL:_ [URL]
+- _Browser:_ [Browser + version]
+- _OS:_ [OS]
+- _User Role:_ [Role]
 
 h2. Steps to Reproduce
+
 # [Step 1]
+
 # [Step 2]
+
 # [Step 3]
+
 # Observe the bug
 
 h2. Expected Behavior
@@ -242,9 +256,10 @@ h2. Evidence
 [Screenshots, console errors, network logs]
 
 h2. Additional Context
-* *Related Story:* [STORY-XXX]
-* *Found During:* Exploratory Testing
-* *Reproducible:* Yes/No/Intermittent
+
+- _Related Story:_ [STORY-XXX]
+- _Found During:_ Exploratory Testing
+- _Reproducible:_ Yes/No/Intermittent
 ```
 
 ---

@@ -9,6 +9,7 @@ Actúa como Senior DevOps Engineer especializado en deployment automation y stag
 Desplegar código a staging environment (automático via CI/CD o manual si necesario).
 
 **Este prompt se ejecuta DESPUÉS de:**
+
 - ci-cd-setup.md (GitHub Actions configurado)
 - environment-config.md (Variables configuradas)
 - Code Review (Fase 8)
@@ -20,6 +21,7 @@ Desplegar código a staging environment (automático via CI/CD o manual si neces
 ### 1. Estado del PR/Feature
 
 **Verificar:**
+
 - PR aprobado en code review (Fase 8)
 - Unit tests pasando localmente
 - Build local exitoso
@@ -28,10 +30,12 @@ Desplegar código a staging environment (automático via CI/CD o manual si neces
 ### 2. CI/CD Setup
 
 **Leer:**
+
 - `.github/workflows/ci.yml` - **CRÍTICO** - Workflow de GitHub Actions
 - `.context/ci-cd-setup.md` - Documentación del CI/CD
 
 **Qué identificar:**
+
 1. ¿GitHub Actions está configurado?
 2. ¿Deploy automático a staging funciona?
 3. ¿Qué branch trigger el deploy? (`develop`)
@@ -43,6 +47,7 @@ Desplegar código a staging environment (automático via CI/CD o manual si neces
 **NO se requieren MCP para esta fase.**
 
 ### Herramientas Locales:
+
 - Git instalado
 - Acceso a GitHub repo
 - Acceso a Vercel/Railway dashboard
@@ -54,6 +59,7 @@ Desplegar código a staging environment (automático via CI/CD o manual si neces
 Desplegar código a staging environment:
 
 **Incluye:**
+
 - ✅ Merge feature branch a `develop`
 - ✅ GitHub Actions ejecuta: lint → test → build → deploy
 - ✅ Vercel/Railway despliega automáticamente
@@ -61,6 +67,7 @@ Desplegar código a staging environment:
 - ✅ Smoke test post-deploy
 
 **NO incluye:**
+
 - ❌ Deploy a production (eso es Fase 12)
 - ❌ Exploratory testing completo (eso es Fase 10)
 - ❌ Integration/E2E tests (eso es Fase 11)
@@ -72,12 +79,14 @@ Desplegar código a staging environment:
 ## 📤 OUTPUT GENERADO
 
 ### Deployment:
+
 - ✅ Feature branch merged a `develop`
 - ✅ GitHub Actions workflow ejecutado exitosamente
 - ✅ Deployment en Vercel/Railway completado
 - ✅ Staging URL: `https://[project]-develop.vercel.app`
 
 ### Validación:
+
 - ✅ Smoke test básico pasado
 - ✅ No hay errores 500 en staging
 - ✅ Assets cargan correctamente
@@ -141,6 +150,7 @@ npm run build
 ```
 
 **Verificar:**
+
 - ✅ Todos los comandos pasan sin errores
 - ✅ No hay warnings críticos
 
@@ -156,9 +166,11 @@ npm run build
 ¿GitHub Actions está configurado y funcionando?
 
 **Opción 1: CI/CD Configurado (Automático)**
+
 - Merge PR → GitHub Actions deploya automáticamente
 
 **Opción 2: CI/CD NO Configurado (Manual)**
+
 - Deploy manual desde CLI de Vercel/Railway
 ```
 
@@ -222,21 +234,25 @@ git push origin develop
 ### ⚠️ Job Fallido
 
 **Lint fails:**
+
 - Ejecuta `npm run lint -- --fix` localmente
 - Commit fix
 - Push → CI re-ejecuta
 
 **Test fails:**
+
 - Investiga el test fallido
 - Corrige código o test
 - Push → CI re-ejecuta
 
 **Build fails:**
+
 - Ejecuta `npm run build` localmente
 - Revisa errores de compilación
 - Corrige y push
 
 **Deploy fails:**
+
 - Verifica environment variables en Vercel
 - Revisa logs en Vercel dashboard
 - Corrige configuración
@@ -263,6 +279,7 @@ git push origin develop
 https://[project]-develop.vercel.app
 
 **Deployment Details:**
+
 - Branch: develop
 - Commit: [hash corto]
 - Status: Ready
@@ -384,17 +401,21 @@ railway logs
 ### 🐛 Errores Comunes Post-Deploy
 
 **Error: "NEXT_PUBLIC_SUPABASE_URL is not defined"**
+
 - Fix: Configurar environment variables en Vercel (environment-config.md)
 
 **Error: 500 Internal Server Error**
+
 - Fix: Revisar logs de Vercel/Railway
 - Posible: DB connection issue, check .env vars
 
 **Error: Assets 404**
+
 - Fix: Verificar `next.config.js` settings
 - Posible: basePath incorrecto
 
 **Error: Auth not working**
+
 - Fix: Verificar Supabase redirect URLs incluyen staging URL
 ```
 
@@ -404,7 +425,7 @@ railway logs
 
 **Mostrar al usuario:**
 
-```markdown
+````markdown
 # ✅ DEPLOY TO STAGING COMPLETADO
 
 ## Deployment Details:
@@ -414,6 +435,7 @@ railway logs
 **Status:** ✅ Ready
 
 **Validation:**
+
 - ✅ Smoke test pasado
 - ✅ Aplicación carga correctamente
 - ✅ No hay errores críticos
@@ -439,6 +461,7 @@ Use: .prompts/fase-10-exploratory-testing/test-charter.md
 # Ejecutar session exploratoria
 Use: .prompts/fase-10-exploratory-testing/session-notes.md
 ```
+````
 
 ### 3️⃣ Si encuentras bugs
 
@@ -463,7 +486,8 @@ Use: .prompts/fase-10-exploratory-testing/bug-report.md
 **🎊 Feature desplegada en staging exitosamente!**
 
 Lista para QA y exploratory testing.
-```
+
+````
 
 ---
 
@@ -500,7 +524,7 @@ Lista para QA y exploratory testing.
 ```bash
 # Antes de merge/deploy:
 npm run lint && npm run test && npm run build
-```
+````
 
 ### **2. Merge via Pull Request**
 
@@ -525,12 +549,15 @@ npm run lint && npm run test && npm run build
 ## 📚 REFERENCIAS
 
 **Vercel Deployments:**
+
 - https://vercel.com/docs/deployments/overview
 
 **Railway Deployments:**
+
 - https://docs.railway.app/deploy/deployments
 
 **GitHub Actions Monitoring:**
+
 - https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows
 
 ---

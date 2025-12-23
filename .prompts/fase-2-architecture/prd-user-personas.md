@@ -1,6 +1,7 @@
 Actúa como Product Manager y UX Researcher.
 
 **Input:**
+
 - Executive Summary: [usar .context/PRD/executive-summary.md]
 - Business Model: [usar .context/idea/business-model.md]
 
@@ -39,6 +40,7 @@ Crea 2-3 personas detalladas con:
 **Formato:** Markdown estructurado, listo para copiar a .context/PRD/user-personas.md
 
 **Restricciones:**
+
 - Personas realistas y basadas en target audience
 - Diversidad en perfiles (no todos iguales)
 - Específico (no genérico)

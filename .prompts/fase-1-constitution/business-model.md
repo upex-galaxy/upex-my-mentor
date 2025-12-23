@@ -22,12 +22,14 @@ Necesito definir el modelo de negocio de un MVP para [industria/vertical].
 9. **Cost Structure** (¿Cuáles son los costos principales?)
 
 **Además, incluye:**
+
 - **Problem Statement** (2-3 párrafos): Describe el pain point crítico
 - **MVP Hypothesis** (3 hipótesis a validar con el MVP)
 
 **Formato:** Markdown estructurado, listo para copiar a .context/idea/business-model.md
 
 **Restricciones:**
+
 - Mantener ligero (2-3 páginas máximo)
 - Enfocado en MVP (no roadmap futuro)
 - Datos específicos y cuantificables donde sea posible

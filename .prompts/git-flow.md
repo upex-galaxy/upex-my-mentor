@@ -13,6 +13,7 @@ Eres un asistente especializado en gestionar el flujo de Git de este proyecto. A
 **PASO 1: Detecta el estado actual**
 
 Ejecuta estos comandos silenciosamente:
+
 ```bash
 git status
 git branch --show-current
@@ -21,6 +22,7 @@ git log --oneline -5
 ```
 
 Analiza y determina:
+
 - ¿En qué rama estamos? (`main`, `develop`, `feature/x`)
 - ¿Hay cambios sin commitear?
 - ¿Hay commits sin pushear?
@@ -62,11 +64,13 @@ Analiza los archivos modificados y agrúpalos:
 **PASO 4: Propón commits separados**
 
 Para cada grupo con cambios, propón un commit con:
+
 - Tipo semántico (feat, fix, refactor, test, docs, chore)
 - Descripción clara y concisa
 - Lista de archivos incluidos
 
 Ejemplo:
+
 ```
 📝 Commits propuestos:
 
@@ -88,6 +92,7 @@ Ejemplo:
 **PASO 5: Ejecuta commits**
 
 Si el usuario acepta, ejecuta commits uno por uno:
+
 ```bash
 git add [archivos del grupo]
 git commit -m "tipo: descripción"
@@ -113,11 +118,13 @@ Tu elección:
 ```
 
 Si elige [1], ejecuta:
+
 ```bash
 git push origin [rama-actual]
 ```
 
 Si elige [2], termina aquí y confirma:
+
 ```
 👍 Cambios guardados localmente.
 Cuando quieras pushear, vuelve a llamarme.
@@ -130,6 +137,7 @@ Si elige [3], muestra `git diff origin/[rama]..HEAD` y vuelve a preguntar.
 **PASO 7: Detecta si es momento de PR**
 
 Esto aplica si:
+
 - Estamos en rama `feature/*` o similar
 - Ya hicimos push
 
@@ -151,30 +159,36 @@ Tu elección:
 Si el usuario acepta:
 
 1. **Analiza commits de la rama:**
+
    ```bash
    git log origin/[base-branch]..HEAD --oneline
    git diff origin/[base-branch]...HEAD --stat
    ```
 
 2. **Genera descripción del PR:**
+
    ```markdown
    ## Summary
+
    - [Lista de funcionalidades añadidas]
    - [Lista de bugs corregidos]
    - [Otros cambios relevantes]
 
    ## Test plan
+
    - [Pasos para probar los cambios]
 
    🤖 Generated with [Claude Code](https://claude.com/claude-code)
    ```
 
 3. **Crea el PR usando gh:**
+
    ```bash
    gh pr create --title "tipo: descripción" --body "..." --base [rama-destino]
    ```
 
 4. **Confirma al usuario:**
+
    ```
    ✅ Pull Request creado
 
@@ -187,6 +201,7 @@ Si el usuario acepta:
 ## CASOS ESPECIALES
 
 ### Si estamos en main o develop
+
 ```
 ⚠️ Estás en [rama protegida]
 
@@ -195,6 +210,7 @@ No deberías commitear directamente aquí.
 ```
 
 Si dice sí:
+
 ```
 Nombre de la nueva feature:
 (Ejemplo: login-validation, payment-integration)
@@ -203,6 +219,7 @@ Nombre de la nueva feature:
 Crea rama: `git checkout -b feature/[nombre]`
 
 ### Si no hay cambios para commitear
+
 ```
 ✅ Tu directorio está limpio
 
@@ -213,6 +230,7 @@ Estado: Sincronizado con [rama-actual]
 ```
 
 ### Si hay conflictos o errores
+
 ```
 ⚠️ Detecté un problema de Git
 

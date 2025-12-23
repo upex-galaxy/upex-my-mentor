@@ -23,6 +23,7 @@ Crear unit tests para funciones y lógica de negocio implementadas en la story a
 - `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/test-cases.md` - (Opcional) Test cases de Fase 5
 
 **Qué identificar:**
+
 1. **Funcionalidad implementada:** Qué hace la story
 2. **Criterios de aceptación:** Qué debe cumplir
 3. **Módulos creados:** Qué archivos se implementaron
@@ -64,6 +65,7 @@ Crear unit tests para funciones y lógica de negocio implementadas en la story a
 - Archivos `.test.ts` o `.spec.ts` existentes - Patrones actuales
 
 **Qué identificar:**
+
 1. ¿Qué testing framework usa el proyecto? (Jest / Vitest)
 2. ¿Existe configuración de coverage?
 3. ¿Qué patrones de naming se usan?
@@ -85,6 +87,7 @@ Crear unit tests para funciones y lógica de negocio implementadas en la story a
 2. **NO se requieren otros MCP** para esta fase
 
 ### Herramientas Locales:
+
 - Testing framework instalado (Jest/Vitest)
 - Package manager (npm/pnpm/yarn/bun)
 
@@ -95,6 +98,7 @@ Crear unit tests para funciones y lógica de negocio implementadas en la story a
 Crear unit tests que:
 
 **Incluye:**
+
 - ✅ Testear funciones con lógica de negocio compleja
 - ✅ Testear helpers y utilidades reutilizables
 - ✅ Testear transformaciones de datos y cálculos
@@ -104,6 +108,7 @@ Crear unit tests que:
 - ✅ Alcanzar mínimo 80% cobertura en funciones críticas
 
 **NO incluye:**
+
 - ❌ Tests de componentes React (eso es component testing, opcional)
 - ❌ Tests de integración con APIs (eso es Fase 11: Integration Tests)
 - ❌ Tests E2E (eso es Fase 11: E2E Tests)
@@ -116,19 +121,23 @@ Crear unit tests que:
 ## 📤 OUTPUT GENERADO
 
 ### Archivos de Tests:
+
 - ✅ `src/lib/[module].test.ts` - Unit tests para helpers/utilities
 - ✅ `src/utils/[function].test.ts` - Unit tests para funciones de transformación
 - ✅ (Más archivos según módulos implementados)
 
 ### Configuración (Si no existe):
+
 - ✅ `jest.config.js` o `vitest.config.ts` - Configuración del testing framework
 - ✅ `package.json` - Scripts de test actualizados
 
 ### Reports:
+
 - ✅ Tests pasando localmente (100% pass rate)
 - ✅ Coverage report generado (mínimo 80% en funciones críticas)
 
 ### Documentación:
+
 - ✅ README.md actualizado con comando de tests (si aplica)
 
 ---
@@ -181,6 +190,7 @@ El proceso se divide en 5 pasos ejecutados secuencialmente.
    ```
 
 **Output interno (no mostrar):**
+
 - Lista de archivos implementados
 - Lista de funciones en cada archivo
 - Clasificación: ¿necesita test? ¿por qué?
@@ -192,6 +202,7 @@ El proceso se divide en 5 pasos ejecutados secuencialmente.
 **Para cada función encontrada, clasificar en:**
 
 **🟢 CRÍTICA - Requiere unit test:**
+
 - Lógica de negocio compleja
 - Cálculos matemáticos o financieros
 - Transformaciones de datos
@@ -199,10 +210,12 @@ El proceso se divide en 5 pasos ejecutados secuencialmente.
 - Helpers reutilizables
 
 **🟡 OPCIONAL - Test recomendado pero no crítico:**
+
 - Funciones simples pero reutilizadas
 - Formatters y parsers básicos
 
 **🔴 NO TESTEAR:**
+
 - Componentes React solo presentacionales
 - Código que solo llama APIs
 - Configuraciones o constantes
@@ -218,6 +231,7 @@ El proceso se divide en 5 pasos ejecutados secuencialmente.
 ## 📊 Análisis de Funciones Implementadas
 
 ### Archivos revisados:
+
 - src/lib/discount-calculator.ts
 - src/utils/format-currency.ts
 - src/components/PriceCard.tsx (solo UI - sin tests)
@@ -225,22 +239,27 @@ El proceso se divide en 5 pasos ejecutados secuencialmente.
 ### Funciones CRÍTICAS que requieren unit tests:
 
 #### 1. `calculateDiscount()` - `src/lib/discount-calculator.ts`
+
 **Razón:** Lógica de negocio crítica (cálculo de precios)
 **Casos a testear:**
+
 - ✅ Happy path: descuento aplicado correctamente
 - ✅ Edge case: orden de exactamente $100
 - ✅ Edge case: orden de $0
 - ✅ Error case: valores negativos
 
 #### 2. `formatCurrency()` - `src/utils/format-currency.ts`
+
 **Razón:** Helper reutilizable en múltiples componentes
 **Casos a testear:**
+
 - ✅ Happy path: formato correcto con decimales
 - ✅ Edge case: valores muy grandes
 - ✅ Edge case: null/undefined
 - ✅ Diferentes monedas
 
 ### Funciones que NO necesitan tests:
+
 - `PriceCard.tsx` - Componente presentacional (solo renderiza props)
 ```
 
@@ -309,9 +328,9 @@ SI framework = Vitest:
 ```json
 {
   "scripts": {
-    "test": "jest",  // O "vitest"
-    "test:watch": "jest --watch",  // O "vitest --watch"
-    "test:coverage": "jest --coverage"  // O "vitest --coverage"
+    "test": "jest", // O "vitest"
+    "test:watch": "jest --watch", // O "vitest --watch"
+    "test:coverage": "jest --coverage" // O "vitest --coverage"
   }
 }
 ```
@@ -346,42 +365,42 @@ SI framework = Vitest:
 **Template:**
 
 ```typescript
-import { functionName } from './module'
+import { functionName } from './module';
 
 describe('functionName', () => {
   // Happy path tests
   describe('when input is valid', () => {
     it('should return expected result for typical case', () => {
       // Arrange
-      const input = validInput
-      const expected = expectedOutput
+      const input = validInput;
+      const expected = expectedOutput;
 
       // Act
-      const result = functionName(input)
+      const result = functionName(input);
 
       // Assert
-      expect(result).toBe(expected)
-    })
-  })
+      expect(result).toBe(expected);
+    });
+  });
 
   // Edge cases
   describe('edge cases', () => {
     it('should handle boundary value X', () => {
       // ...
-    })
+    });
 
     it('should handle empty/null/undefined', () => {
       // ...
-    })
-  })
+    });
+  });
 
   // Error cases
   describe('error handling', () => {
     it('should throw error for invalid input Y', () => {
-      expect(() => functionName(invalidInput)).toThrow()
-    })
-  })
-})
+      expect(() => functionName(invalidInput)).toThrow();
+    });
+  });
+});
 ```
 
 ---
@@ -392,60 +411,60 @@ describe('functionName', () => {
 
 ```typescript
 // src/lib/discount-calculator.test.ts
-import { calculateDiscount } from './discount-calculator'
+import { calculateDiscount } from './discount-calculator';
 
 describe('calculateDiscount', () => {
   describe('when order is over $100', () => {
     it('should apply 10% discount', () => {
       // Arrange
-      const orderAmount = 150
+      const orderAmount = 150;
 
       // Act
-      const result = calculateDiscount(orderAmount)
+      const result = calculateDiscount(orderAmount);
 
       // Assert
-      expect(result).toBe(135) // 150 - 15 = 135
-    })
+      expect(result).toBe(135); // 150 - 15 = 135
+    });
 
     it('should apply 10% discount for $1000 order', () => {
-      expect(calculateDiscount(1000)).toBe(900)
-    })
-  })
+      expect(calculateDiscount(1000)).toBe(900);
+    });
+  });
 
   describe('when order is under $100', () => {
     it('should not apply discount', () => {
-      expect(calculateDiscount(50)).toBe(50)
-    })
+      expect(calculateDiscount(50)).toBe(50);
+    });
 
     it('should not apply discount for $99.99', () => {
-      expect(calculateDiscount(99.99)).toBe(99.99)
-    })
-  })
+      expect(calculateDiscount(99.99)).toBe(99.99);
+    });
+  });
 
   describe('edge cases', () => {
     it('should handle exactly $100 (boundary)', () => {
-      expect(calculateDiscount(100)).toBe(90)
-    })
+      expect(calculateDiscount(100)).toBe(90);
+    });
 
     it('should handle $0 order', () => {
-      expect(calculateDiscount(0)).toBe(0)
-    })
+      expect(calculateDiscount(0)).toBe(0);
+    });
 
     it('should handle very large orders', () => {
-      expect(calculateDiscount(1_000_000)).toBe(900_000)
-    })
-  })
+      expect(calculateDiscount(1_000_000)).toBe(900_000);
+    });
+  });
 
   describe('error handling', () => {
     it('should throw error for negative amounts', () => {
-      expect(() => calculateDiscount(-50)).toThrow('Order amount must be positive')
-    })
+      expect(() => calculateDiscount(-50)).toThrow('Order amount must be positive');
+    });
 
     it('should throw error for NaN', () => {
-      expect(() => calculateDiscount(NaN)).toThrow()
-    })
-  })
-})
+      expect(() => calculateDiscount(NaN)).toThrow();
+    });
+  });
+});
 ```
 
 ---
@@ -456,8 +475,8 @@ describe('calculateDiscount', () => {
 
 ```typescript
 // src/lib/user-service.test.ts
-import { getUserById } from './user-service'
-import { supabase } from '@/lib/supabase/client'
+import { getUserById } from './user-service';
+import { supabase } from '@/lib/supabase/client';
 
 // Mock Supabase client
 jest.mock('@/lib/supabase/client', () => ({
@@ -466,21 +485,21 @@ jest.mock('@/lib/supabase/client', () => ({
       select: jest.fn().mockReturnValue({
         eq: jest.fn().mockResolvedValue({
           data: { id: '123', name: 'John' },
-          error: null
-        })
-      })
-    })
-  }
-}))
+          error: null,
+        }),
+      }),
+    }),
+  },
+}));
 
 describe('getUserById', () => {
   it('should return user data from Supabase', async () => {
-    const result = await getUserById('123')
+    const result = await getUserById('123');
 
-    expect(result).toEqual({ id: '123', name: 'John' })
-    expect(supabase.from).toHaveBeenCalledWith('users')
-  })
-})
+    expect(result).toEqual({ id: '123', name: 'John' });
+    expect(supabase.from).toHaveBeenCalledWith('users');
+  });
+});
 ```
 
 **Explicar al usuario:**
@@ -507,11 +526,13 @@ describe('getUserById', () => {
 ```
 
 **Verificar:**
+
 - ✅ Todos los tests pasan (100% pass rate)
 - ✅ No hay errores de importación
 - ✅ No hay warnings críticos
 
 **Si fallan tests:**
+
 1. Leer error message
 2. Identificar qué test falló
 3. Debuggear:
@@ -574,7 +595,7 @@ utils/format-currency.ts   | 95     | 87.5     | 100     | 95      |
 
 **Si el proyecto tiene README.md, agregar sección:**
 
-```markdown
+````markdown
 ## 🧪 Running Tests
 
 ### Unit Tests
@@ -589,12 +610,14 @@ npm run test:watch
 # Run tests with coverage
 npm run test:coverage
 ```
+````
 
 ### Coverage Requirements
 
 - Minimum 80% coverage for business logic functions
 - All critical paths must be tested
-```
+
+````
 
 ---
 
@@ -638,7 +661,7 @@ npm run test:watch
 
 # Coverage report
 npm run test:coverage
-```
+````
 
 ## Próximos Pasos:
 
@@ -649,7 +672,8 @@ npm run test:coverage
 ---
 
 **🎊 Funciones críticas testeadas con alta cobertura!**
-```
+
+````
 
 ---
 
@@ -697,9 +721,10 @@ npm run test:coverage
 ❌ Mal:
 ```typescript
 it('test 1', () => { ... })
-```
+````
 
 ✅ Bien:
+
 ```typescript
 it('should apply 10% discount for orders over $100', () => { ... })
 ```
@@ -711,15 +736,15 @@ it('should apply 10% discount for orders over $100', () => { ... })
 ```typescript
 it('should format currency correctly', () => {
   // Arrange - Setup
-  const amount = 1234.56
-  const currency = 'USD'
+  const amount = 1234.56;
+  const currency = 'USD';
 
   // Act - Execute
-  const result = formatCurrency(amount, currency)
+  const result = formatCurrency(amount, currency);
 
   // Assert - Verify
-  expect(result).toBe('$1,234.56')
-})
+  expect(result).toBe('$1,234.56');
+});
 ```
 
 ---
@@ -727,24 +752,30 @@ it('should format currency correctly', () => {
 ### **3. Test Isolation**
 
 ❌ Mal (tests dependen de orden):
+
 ```typescript
 let user;
-it('should create user', () => { user = createUser() })
-it('should delete user', () => { deleteUser(user.id) })
+it('should create user', () => {
+  user = createUser();
+});
+it('should delete user', () => {
+  deleteUser(user.id);
+});
 ```
 
 ✅ Bien (cada test es independiente):
+
 ```typescript
 it('should create user', () => {
-  const user = createUser()
-  expect(user).toBeDefined()
-})
+  const user = createUser();
+  expect(user).toBeDefined();
+});
 
 it('should delete user', () => {
-  const user = createUser()
-  deleteUser(user.id)
-  expect(getUser(user.id)).toBeNull()
-})
+  const user = createUser();
+  deleteUser(user.id);
+  expect(getUser(user.id)).toBeNull();
+});
 ```
 
 ---
@@ -752,13 +783,15 @@ it('should delete user', () => {
 ### **4. Mock Solo lo Necesario**
 
 ❌ Mal (mockear funciones internas):
+
 ```typescript
-jest.mock('./discount-calculator')  // NO mockear lo que estás testeando
+jest.mock('./discount-calculator'); // NO mockear lo que estás testeando
 ```
 
 ✅ Bien (mockear dependencias externas):
+
 ```typescript
-jest.mock('@/lib/supabase/client')  // Mockear servicios externos
+jest.mock('@/lib/supabase/client'); // Mockear servicios externos
 ```
 
 ---
@@ -766,14 +799,17 @@ jest.mock('@/lib/supabase/client')  // Mockear servicios externos
 ## 📚 REFERENCIAS
 
 **Jest Documentation:**
+
 - https://jestjs.io/docs/getting-started
 - https://jestjs.io/docs/expect
 
 **Vitest Documentation:**
+
 - https://vitest.dev/guide/
 - https://vitest.dev/api/
 
 **Testing Best Practices:**
+
 - https://kentcdodds.com/blog/common-mistakes-with-react-testing-library
 - https://testingjavascript.com/
 

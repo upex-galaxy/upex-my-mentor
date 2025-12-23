@@ -1,6 +1,7 @@
 Actúa como Senior Software Architect, Tech Lead, y UI/UX Designer.
 
 **Input:**
+
 - Epic: [usar .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/epic.md]
 - SRS completo: [usar .context/SRS/*.md]
 - Feature Test Plan: [usar .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/feature-test-plan.md]
@@ -17,12 +18,14 @@ Actúa como Senior Software Architect, Tech Lead, y UI/UX Designer.
 Esta feature implementa [descripción high-level de la feature].
 
 **Alcance:**
+
 - [Story 1]: [Título]
 - [Story 2]: [Título]
 - [Story 3]: [Título]
 - ...
 
 **Stack técnico:**
+
 - Frontend: [framework y versión]
 - Backend: [framework/plataforma]
 - Database: [sistema de BD]
@@ -60,6 +63,7 @@ Antes de tomar decisiones técnicas críticas a nivel feature, DEBES:
 ### Decision 1: [Nombre de la decisión]
 
 **Options considered:**
+
 - A) [Opción A]
 - B) [Opción B]
 - C) [Opción C]
@@ -67,12 +71,14 @@ Antes de tomar decisiones técnicas críticas a nivel feature, DEBES:
 **Chosen:** [Opción elegida]
 
 **Reasoning:**
+
 - ✅ Ventaja 1
 - ✅ Ventaja 2
 - ✅ Ventaja 3
 - ❌ Trade-off: [Desventaja o compromiso]
 
 **Implementation notes:**
+
 - [Detalle de implementación]
 - [Consideraciones específicas]
 
@@ -83,10 +89,12 @@ Antes de tomar decisiones técnicas críticas a nivel feature, DEBES:
 **Chosen:** [Decisión]
 
 **Reasoning:**
+
 - ✅ ...
 - ❌ Trade-off: ...
 
 **Implementation notes:**
+
 - [Detalles]
 
 ---
@@ -100,6 +108,7 @@ Antes de tomar decisiones técnicas críticas a nivel feature, DEBES:
 **⚠️ IMPORTANTE:** Esta feature debe usar tipos del backend para garantizar type-safety consistente en todas las stories.
 
 **Tipos disponibles:**
+
 - `lib/database.types.ts` - Tipos generados desde database schema (Fase 3.2 - Backend Setup)
 - `lib/types.ts` - Type helpers extraídos del backend
 
@@ -120,13 +129,14 @@ Antes de tomar decisiones técnicas críticas a nivel feature, DEBES:
    - ✅ Zero type errors relacionados a entidades del backend
 
 **Ejemplo a nivel feature:**
+
 ```typescript
 // lib/types.ts (o lib/mentor-types.ts para feature específica)
-import type { Database } from './database.types'
+import type { Database } from './database.types';
 
-export type Mentor = Database['public']['Tables']['mentors']['Row']
-export type MentorInsert = Database['public']['Tables']['mentors']['Insert']
-export type MentorUpdate = Database['public']['Tables']['mentors']['Update']
+export type Mentor = Database['public']['Tables']['mentors']['Row'];
+export type MentorInsert = Database['public']['Tables']['mentors']['Insert'];
+export type MentorUpdate = Database['public']['Tables']['mentors']['Update'];
 
 // Todas las stories de esta feature usan estos tipos
 // Story A: MentorCard component usa Mentor
@@ -135,6 +145,7 @@ export type MentorUpdate = Database['public']['Tables']['mentors']['Update']
 ```
 
 **Beneficios a nivel feature:**
+
 - Consistencia de tipos entre todas las stories
 - Refactoring seguro (cambio en schema afecta a todas las stories)
 - Zero duplicación de definiciones de tipos
@@ -152,22 +163,26 @@ export type MentorUpdate = Database['public']['Tables']['mentors']['Update']
 **⚠️ IMPORTANTE - Uso de MCP shadcn/ui a nivel feature:**
 
 Si el proyecto usa shadcn/ui, **ANTES** de planificar componentes custom:
+
 - 🔍 **Usa MCP shadcn** para buscar componentes disponibles
 - ✅ Identifica componentes complejos que shadcn ya provee (data-table, form, command, etc.)
 - 🚫 Evita crear componentes custom si shadcn tiene una solución
 - 📖 Planifica integración de componentes shadcn en las stories
 
 **Ejemplo de búsqueda a nivel feature:**
+
 - Feature necesita múltiples diálogos → Busca "dialog" en shadcn MCP
 - Feature necesita manejo de formularios complejos → Busca "form" en shadcn MCP
 - Feature necesita mostrar data en tablas → Busca "data-table" en shadcn MCP
 
 **Componentes del Design System a usar:**
+
 - ✅ [Componente 1]: [Cómo se usa en esta feature]
 - ✅ [Componente 2]: [Cómo se usa en esta feature]
 - ✅ [Layout]: [Navbar/Sidebar - si se necesitan ajustes]
 
 **Componentes custom a nivel feature:**
+
 - 🆕 [FeatureComponentName]
   - **Usado por stories:** [Story A, Story B]
   - **Propósito:** [Descripción]
@@ -179,17 +194,20 @@ Si el proyecto usa shadcn/ui, **ANTES** de planificar componentes custom:
 ### Consistencia visual:
 
 **Paleta aplicada (del design system):**
+
 - Primary: `bg-primary` - [Uso específico en esta feature]
 - Secondary: `bg-secondary` - [Uso específico]
 - Accent: `bg-accent` - [Uso específico]
 
 **Patrones de diseño comunes:**
+
 - [Patrón 1]: [Descripción de cómo se aplica] (ej: Todas las listas usan Card grid)
 - [Patrón 2]: [Descripción]
 
 ### Flujos de UX:
 
 **User journeys específicos de esta feature:**
+
 1. [Flujo 1]: [Descripción paso a paso]
    - Estado inicial → [Story A]
    - Acción → [Story B]
@@ -198,6 +216,7 @@ Si el proyecto usa shadcn/ui, **ANTES** de planificar componentes custom:
 2. [Flujo 2]: [Descripción]
 
 **Estados globales de la feature:**
+
 - Loading: [Cómo se muestra]
 - Empty: [Qué mensaje/CTA]
 - Error: [Cómo se recupera]
@@ -237,6 +256,7 @@ Si el proyecto usa shadcn/ui, **ANTES** de planificar componentes custom:
   - Animaciones suaves
 
 **Validar a nivel feature:**
+
 - ✅ Todas las stories usan bordes consistentes
 - ✅ Todas las stories usan sombras consistentes
 - ✅ Todas las stories usan espaciado consistente
@@ -275,18 +295,21 @@ Si el proyecto usa shadcn/ui, **ANTES** de planificar componentes custom:
 **Ejemplos a nivel feature según dominio:**
 
 **Si feature es "Mentor Discovery" (proyecto MentorYourMind):**
+
 - ❌ Genérico: "Bienvenido a nuestra plataforma de gestión"
 - ✅ Contextual: "Encuentra mentores expertos en tu área"
 - ✅ Contextual: "Explora perfiles de mentores verificados"
 - ✅ Contextual: "Filtra por experiencia, disponibilidad y especialidad"
 
 **Si feature es "Inventory Management" (proyecto ShopFlow):**
+
 - ❌ Genérico: "Administra tus recursos"
 - ✅ Contextual: "Controla tu inventario en tiempo real"
 - ✅ Contextual: "Recibe alertas cuando el stock esté bajo"
 - ✅ Contextual: "Sincroniza automáticamente con tus ventas"
 
 **Si feature es "Content Publishing" (proyecto BlogHub):**
+
 - ❌ Genérico: "Crea y publica contenido"
 - ✅ Contextual: "Escribe y monetiza tus artículos"
 - ✅ Contextual: "Programa publicaciones para tu audiencia"
@@ -326,17 +349,19 @@ Todas las stories de esta feature usan vocabulario consistente del dominio, refl
 
 /app
 ├── /feature-name
-│   ├── /component1
-│   └── /component2
+│ ├── /component1
+│ └── /component2
 /lib
 ├── /feature-utils
 ...
 
 ### Design Patterns
+
 1. **[Pattern 1]**: [Descripción de uso]
 2. **[Pattern 2]**: [Descripción de uso]
 
 ### Third-party Libraries
+
 - **[Library 1]**: [versión] - [para qué se usa]
 - **[Library 2]**: [versión] - [para qué se usa]
 
@@ -366,6 +391,7 @@ Todas las stories de esta feature usan vocabulario consistente del dominio, refl
 **Impact:** High | Medium | Low (explicar impacto)
 **Likelihood:** High | Medium | Low
 **Mitigation:**
+
 - [Estrategia de mitigación 1]
 - [Estrategia de mitigación 2]
 
@@ -374,6 +400,7 @@ Todas las stories de esta feature usan vocabulario consistente del dominio, refl
 **Impact:** ...
 **Likelihood:** ...
 **Mitigation:**
+
 - ...
 
 ---
@@ -412,6 +439,7 @@ Todas las stories de esta feature usan vocabulario consistente del dominio, refl
 **Formato:** Markdown estructurado, listo para copiar a .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/feature-implementation-plan.md
 
 **Restricciones:**
+
 - Decisiones técnicas justificadas
 - Dependencias compartidas claras
 - Orden de implementación lógico

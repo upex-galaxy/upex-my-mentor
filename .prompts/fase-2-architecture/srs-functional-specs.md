@@ -1,6 +1,7 @@
 Actúa como Software Architect y Business Analyst.
 
 **Input:**
+
 - PRD completo: [usar .context/PRD/mvp-scope.md]
 - User Stories: [listar todas las User Stories del PRD]
 
@@ -21,6 +22,7 @@ Mapea cada User Story del PRD a Functional Requirements (FR):
 **Ejemplo:**
 
 **FR-001: El sistema debe permitir registro de usuarios con email**
+
 - **Relacionado a:** EPIC-001 (User Authentication), US 1.1
 - **Input:**
   - email (string, formato RFC 5321, max 254 chars)
@@ -41,6 +43,7 @@ Mapea cada User Story del PRD a Functional Requirements (FR):
   - Email válido según RFC
 
 **Restricciones:**
+
 - Mapeo 1:1 con User Stories del PRD
 - FRs numerados secuencialmente (FR-001, FR-002, etc.)
 - Específicos y no ambiguos

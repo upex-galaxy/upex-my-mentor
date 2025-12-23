@@ -114,6 +114,7 @@ Antes de clasificar, pregúntate:
 [Explicar por qué pertenece a este nivel]
 
 **Estimación preliminar:**
+
 - User Stories: [número estimado]
 - Story Points totales: [estimación]
 - Épicas necesarias: [número] - [nombres si aplica]
@@ -187,6 +188,7 @@ Y en Paso 2 Jira asignó el issue number = 45
 Entonces el Jira Key completo de la story es: "MYM-45"
 
 Crear carpeta:
+
 ```
 .context/PBI/epics/EPIC-MYM-13-{epic-name}/stories/STORY-MYM-45-{story-name}/
 ```
@@ -231,16 +233,19 @@ Crear carpeta:
 ## Acceptance Criteria (Gherkin format)
 
 ### Scenario 1: [Happy path scenario name]
+
 - **Given:** [Contexto inicial / precondiciones]
 - **When:** [Acción del usuario]
 - **Then:** [Resultado esperado]
 
 ### Scenario 2: [Error/edge case scenario name]
+
 - **Given:** [Contexto inicial]
 - **When:** [Acción del usuario]
 - **Then:** [Resultado esperado / manejo del error]
 
 ### Scenario 3: [Additional scenario if needed]
+
 - **Given:** [Contexto inicial]
 - **When:** [Acción del usuario]
 - **Then:** [Resultado esperado]
@@ -252,16 +257,20 @@ Crear carpeta:
 ## Technical Notes
 
 ### Frontend
+
 [Componentes a crear/modificar]
 
 ### Backend
+
 [APIs a crear/modificar, lógica de negocio]
 
 ### Database
+
 [Tablas/campos a agregar]
 **IMPORTANTE:** NO hardcodear SQL. Usar Supabase MCP.
 
 ### Impact Analysis
+
 [Qué partes del sistema se ven afectadas]
 
 ---
@@ -269,12 +278,15 @@ Crear carpeta:
 ## Dependencies
 
 ### Blocked By
+
 [Otras stories que deben completarse primero]
 
 ### Blocks
+
 [Qué stories dependen de esta]
 
 ### Related Stories
+
 [Stories relacionadas]
 
 ---
@@ -382,7 +394,7 @@ EPIC-{PROJECT_KEY}-{NUM}: [Epic Title según dominio]
 1. As a [user], I want to [action], so that [benefit] - [X pts]
 2. As a [user], I want to [action], so that [benefit] - [X pts]
 3. As a [user], I want to [action], so that [benefit] - [X pts]
-...
+   ...
 
 **Total estimado:** [suma de story points]
 **Número de stories:** [número]
@@ -423,6 +435,7 @@ Y en Paso 2 Jira asignó el issue number = 50
 Entonces el Jira Key completo es: "MYM-50"
 
 Crear carpeta:
+
 ```
 .context/PBI/epics/EPIC-MYM-50-{nombre-segun-dominio}/
 ```
@@ -543,12 +556,14 @@ Si PROJECT_KEY = "MYM", épica padre = "MYM-50", y stories con issue numbers 51,
 ## Post-MVP Features
 
 ### ⭐ EPIC-{PROJECT_KEY}-{NUM}: [Epic Title según dominio]
+
 **Jira Key:** {PROJECT_KEY}-{ISSUE_NUM}
 **Status:** BACKLOG
 **Priority:** MEDIUM (Post-MVP)
 **Description:** [Descripción de la épica según análisis del dominio del proyecto actual]
 
 **User Stories (X):**
+
 1. **{PROJECT_KEY}-{NUM}** - [Story title 1]
 2. **{PROJECT_KEY}-{NUM}** - [Story title 2]
 3. **{PROJECT_KEY}-{NUM}** - [Story title 3]
@@ -601,6 +616,7 @@ Esta feature requiere **múltiples épicas** con dependencias y scope extenso. C
 # Plan de Implementación: [Nombre de la Feature]
 
 ## 🚨 ADVERTENCIA
+
 Esta feature requiere **[número] épicas** para implementarse correctamente.
 
 **IMPORTANTE:** NO proceder con la creación hasta que este plan sea revisado y aprobado.
@@ -610,6 +626,7 @@ Esta feature requiere **[número] épicas** para implementarse correctamente.
 ## Análisis de Complejidad
 
 **Scope total estimado:**
+
 - Épicas necesarias: [número]
 - User stories estimadas: [número total]
 - Story points totales: [estimación]
@@ -623,6 +640,7 @@ Esta feature requiere **[número] épicas** para implementarse correctamente.
 ## División Recomendada en Épicas
 
 ### ÉPICA 1: [Nombre]
+
 **Prioridad:** CRITICAL | HIGH | MEDIUM
 **Fase:** Foundation | Core | Enhancement
 **Descripción:** [1-2 párrafos]
@@ -631,11 +649,13 @@ Esta feature requiere **[número] épicas** para implementarse correctamente.
 **Story Points:** [total]
 
 **Scope:**
+
 - Feature 1
 - Feature 2
 - ...
 
 **Dependencias:**
+
 - **Requiere:** [Épicas que deben completarse antes]
 - **Bloqueada por:** [Épicas externas]
 
@@ -644,6 +664,7 @@ Esta feature requiere **[número] épicas** para implementarse correctamente.
 ---
 
 ### ÉPICA 2: [Nombre]
+
 **Prioridad:** CRITICAL | HIGH | MEDIUM
 **Fase:** Foundation | Core | Enhancement
 **Descripción:** [1-2 párrafos]
@@ -652,11 +673,13 @@ Esta feature requiere **[número] épicas** para implementarse correctamente.
 **Story Points:** [total]
 
 **Scope:**
+
 - Feature 1
 - Feature 2
 - ...
 
 **Dependencias:**
+
 - **Requiere:** ÉPICA 1 completada
 - **Bloqueada por:** [Si aplica]
 
@@ -671,10 +694,12 @@ Esta feature requiere **[número] épicas** para implementarse correctamente.
 ## Orden de Implementación Recomendado
 
 ### Fase 1: Foundation (Sprint 1-X)
+
 1. **EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}** - [Descripción] (base fundamental)
    - **¿Por qué primero?** [Razón]
 
 ### Fase 2: Core Features (Sprint X-Y)
+
 2. **EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}** - [Descripción] (funcionalidad principal)
    - **Depende de:** EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}
    - **¿Por qué ahora?** [Razón]
@@ -684,6 +709,7 @@ Esta feature requiere **[número] épicas** para implementarse correctamente.
    - **¿Por qué ahora?** [Razón]
 
 ### Fase 3: Enhancements (Sprint Y-Z)
+
 4. **EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}** - [Descripción] (mejoras y optimizaciones)
    - **Depende de:** EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}, EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}
    - **¿Por qué al final?** [Razón]
@@ -704,6 +730,7 @@ Esta feature requiere **[número] épicas** para implementarse correctamente.
 [Listar cambios significativos en la arquitectura del sistema que esta feature requiere]
 
 **Ejemplos:**
+
 - Nueva tabla de base de datos: [nombre y propósito]
 - Nuevo servicio backend: [nombre y propósito]
 - Integración con API externa: [cuál y por qué]
@@ -730,15 +757,18 @@ Antes de comenzar la implementación, se deben tomar estas decisiones:
 **NO proceder con la creación de épicas/stories todavía.**
 
 ### Paso 1: Revisar este Plan
+
 - [ ] Revisar división de épicas propuesta
 - [ ] Validar orden de implementación
 - [ ] Confirmar estimaciones de esfuerzo
 - [ ] Aprobar cambios arquitectónicos
 
 ### Paso 2: Dividir la Idea
+
 Una vez aprobado el plan, dividir la idea original en épicas individuales.
 
 ### Paso 3: Ejecutar Incremental
+
 Usar el prompt `pbi-add-feature.md` de nuevo, pero ahora con **UNA épica a la vez**:
 
 **Ejemplo:**

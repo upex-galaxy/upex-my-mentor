@@ -9,11 +9,13 @@
 Create E2E (End-to-End) automated tests for validated scenarios using the KATA framework.
 
 **This prompt is executed AFTER:**
+
 - Test documented in Jira (Fase 11)
 - Test marked as "automation-candidate"
 - Framework setup complete (kata-framework-setup.md)
 
 **Prerequisites:**
+
 - Access to Playwright MCP tools (for exploration)
 - KATA framework configured in project
 - Test case documented in Jira
@@ -26,12 +28,13 @@ Create E2E (End-to-End) automated tests for validated scenarios using the KATA f
 
 ```
 MANDATORY READING (in order):
-1. .context/guidelines/tae/KATA-AI-GUIDE.md       # Quick orientation
-2. .context/guidelines/tae/automation-standards.md # Rules and patterns
-3. .context/guidelines/tae/kata-architecture.md    # Layer structure
+1. .context/guidelines/TAE/KATA-AI-GUIDE.md       # Quick orientation
+2. .context/guidelines/TAE/automation-standards.md # Rules and patterns
+3. .context/guidelines/TAE/kata-architecture.md    # Layer structure
 ```
 
 **Key KATA principles to follow:**
+
 - ATCs represent UNIQUE expected outputs
 - Locators INLINE within ATCs (no separate storage)
 - NO helper methods for single Playwright actions
@@ -49,6 +52,7 @@ Provide ONE of the following:
 3. **Multiple Test IDs** - For batch automation
 
 **Also specify:**
+
 - Target component (existing or new)
 - Related User Story ID
 
@@ -128,14 +132,17 @@ Questions:
 ## Implementation Plan
 
 **Files to CREATE:**
+
 - tests/components/ui/CheckoutPage.ts
   └── ATC: completeCheckoutSuccessfully
 
 **Files to MODIFY:**
+
 - tests/components/UiFixture.ts
   └── Add: readonly checkout: CheckoutPage
 
 **Test file:**
+
 - tests/e2e/checkout/checkout.test.ts
 ```
 
@@ -170,7 +177,7 @@ export class CheckoutPage extends UiBase {
     await this.page.goto(this.buildUrl('/checkout'));
   }
 
-  @atc('TEST-XXX')  // Map to Jira Test ID
+  @atc('TEST-XXX') // Map to Jira Test ID
   async completeCheckoutSuccessfully(data: CheckoutData) {
     await this.goto();
 
@@ -226,11 +233,11 @@ test.describe('Checkout Flow', () => {
 import { CheckoutPage } from '@components/ui/CheckoutPage';
 
 export class UiFixture extends UiBase {
-  readonly checkout: CheckoutPage;  // Add
+  readonly checkout: CheckoutPage; // Add
 
   constructor(page: Page, environment?: Environment) {
     super(page, environment);
-    this.checkout = new CheckoutPage(page, environment);  // Initialize
+    this.checkout = new CheckoutPage(page, environment); // Initialize
   }
 }
 ```

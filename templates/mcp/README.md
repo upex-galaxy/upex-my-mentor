@@ -4,14 +4,15 @@ This directory contains **pre-configured MCP server templates** for different AI
 
 ## 📋 Available Templates
 
-| File | For Tool | Description |
-|------|----------|-------------|
-| `gemini.template.json` | Gemini CLI | Template with Gemini-specific format |
+| File                   | For Tool    | Description                          |
+| ---------------------- | ----------- | ------------------------------------ |
+| `gemini.template.json` | Gemini CLI  | Template with Gemini-specific format |
 | `claude.template.json` | Claude Code | Template with Claude-specific format |
 
 ## 🎯 What's Included
 
 Each template contains popular MCP servers:
+
 - **playwright** - E2E browser testing
 - **devtools** - Chrome DevTools
 - **supabase** - PostgreSQL database
@@ -29,12 +30,14 @@ Each template contains popular MCP servers:
 ### 1. Copy Template
 
 **For Gemini CLI**:
+
 ```bash
 mkdir -p .gemini
 cp templates/mcp/gemini.template.json .gemini/settings.catalog.json
 ```
 
 **For Claude Code**:
+
 ```bash
 cp templates/mcp/claude.template.json .mcp.catalog.json
 ```
@@ -46,7 +49,9 @@ Open your new catalog file and replace placeholders:
 ```json
 "SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}"
 ```
+
 ↓
+
 ```json
 "SUPABASE_ACCESS_TOKEN": "sbp_your_real_token_here"
 ```

@@ -387,6 +387,7 @@ Archivo: `.context/PRD/release-notes.md`
 ### Features Implementadas
 
 #### {PROJECT_KEY}-{N}: {Titulo de la Story}
+
 - **Epic:** EPIC-{PROJECT_KEY}-{N} ({nombre del epic})
 - **PR:** #{numero}
 - **Implementado por:** Claude + Developer
@@ -400,12 +401,15 @@ Archivo: `.context/PRD/release-notes.md`
 ## [v0.x.x] - {YYYY-MM-DD}
 
 ### Added
+
 - ...
 
 ### Fixed
+
 - ...
 
 ### Changed
+
 - ...
 ```
 
@@ -424,17 +428,19 @@ Archivo: `.context/PRD/release-notes.md`
 ## Configuracion del Proyecto (Referencia)
 
 > **Nota:** Los siguientes valores deben estar definidos en el archivo de configuración del AI tool que se esté usando (`CLAUDE.md`, `GEMINI.md`, `AGENTS.md`, `CURSOR.md`, etc.):
+>
 > - `PROJECT_KEY`: Key del proyecto en Jira (ej: MYM, UPEX, etc.)
 > - `PRODUCT_NAME`: Nombre del producto para release notes
 > - `JIRA_CLOUD_ID`: ID del cloud de Jira (si se usa MCP Atlassian)
 > - `SUPABASE_PROJECT_ID`: ID del proyecto en Supabase (si aplica)
 
 **Transiciones comunes en Jira:**
+
 - `Ready For Dev` -> `In Progress`: Usar transition disponible
 - `In Progress` -> `In Review`: Automatico via PR
 - `In Review` -> `Ready For QA`: Automatico via Merge
 
 ---
 
-*Ultima actualizacion: 2025-12-08*
-*Generado por Claude Code*
+_Ultima actualizacion: 2025-12-08_
+_Generado por Claude Code_

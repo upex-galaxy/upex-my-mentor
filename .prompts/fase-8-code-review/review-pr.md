@@ -11,9 +11,11 @@ Realizar code review estático completo del código implementado para **STORY-{P
 ## ⚙️ VERIFICACIÓN DE HERRAMIENTAS (MCP)
 
 ### Context7 MCP (Recomendado)
+
 **¿Está disponible?** [Verificar si puedes acceder a `mcp__context7__get-library-docs`]
 
 **Si NO está disponible:**
+
 ```
 ⚠️ MCP Context7 no detectado
 
@@ -34,35 +36,44 @@ Puedo continuar, pero la revisión se basará en conocimiento interno (puede est
 **DEBES leer:**
 
 ### 1. Story y Plan:
+
 ```
 .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/story.md
 .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/implementation-plan.md
 ```
 
 **Propósito:**
+
 - Entender Acceptance Criteria (qué debe cumplir)
 - Entender approach técnico planificado
 
-### 2. Code Standards:
+### 2. Code Standards (DEV):
+
 ```
-.context/guidelines/code-standards.md
-.context/guidelines/error-handling.md
+.context/guidelines/DEV/code-standards.md
+.context/guidelines/DEV/error-handling.md
+.context/guidelines/DEV/data-testid-standards.md
 ```
 
 **Propósito:**
+
 - Checklist de estándares de código
 - Reglas de manejo de errores
+- Estándares de data-testid para testing
 
 ### 3. Design System (si hay UI):
+
 ```
 .context/design-system.md
 ```
 
 **Propósito:**
+
 - Validar que usa componentes correctos
 - Validar paleta de colores aplicada
 
 ### 4. Código implementado:
+
 - Diff completo de la implementación
 - Archivos creados/modificados
 
@@ -73,11 +84,13 @@ Puedo continuar, pero la revisión se basará en conocimiento interno (puede est
 ### 1. ✅ **Acceptance Criteria**
 
 **Revisar:**
+
 - [ ] Todos los AC de `story.md` se cumplen
 - [ ] Funcionalidad implementada correctamente
 - [ ] Edge cases considerados (según `test-cases.md`)
 
 **Si algún AC no se cumple:**
+
 - 🚨 **CRITICAL** - Blocker para approval
 
 ---
@@ -85,20 +98,24 @@ Puedo continuar, pero la revisión se basará en conocimiento interno (puede est
 ### 2. 🔧 **Linting y Build**
 
 **Ejecutar (si es posible):**
+
 ```bash
 npm run lint    # o: bun run lint
 npm run build   # o: bun run build
 ```
 
 **Revisar:**
+
 - [ ] **Linting:** Sin errores de ESLint
 - [ ] **TypeScript:** Sin errores de compilación
 - [ ] **Build:** Exitoso
 
 **Si hay errores:**
+
 - 🚨 **CRITICAL** - Debe corregirse antes de merge
 
 **Si NO puedes ejecutar:**
+
 - Instruir al usuario a ejecutar y reportar resultado
 
 ---
@@ -108,30 +125,33 @@ npm run build   # o: bun run build
 **Revisar archivo por archivo:**
 
 #### A) **DRY (Don't Repeat Yourself)**
+
 - [ ] No hay código duplicado
 - [ ] Lógica repetida extraída a funciones reutilizables
 - [ ] Componentes UI reutilizan design system
 
 **Ejemplo de violación:**
+
 ```typescript
 // ❌ MAL - Código duplicado
 function getUserName() {
-  const user = await fetch('/api/user')
-  return user.name
+  const user = await fetch('/api/user');
+  return user.name;
 }
 
 function getUserEmail() {
-  const user = await fetch('/api/user')  // Duplicado
-  return user.email
+  const user = await fetch('/api/user'); // Duplicado
+  return user.email;
 }
 
 // ✅ BIEN - DRY
 async function getUser() {
-  return await fetch('/api/user')
+  return await fetch('/api/user');
 }
 ```
 
 #### B) **Naming Conventions**
+
 - [ ] Variables: `camelCase` descriptivas
 - [ ] Funciones: `camelCase` con verbos (`getUserData`, `handleClick`)
 - [ ] Componentes React: `PascalCase`
@@ -139,75 +159,82 @@ async function getUser() {
 - [ ] No nombres genéricos (`data`, `temp`, `x`)
 
 **Ejemplo de violación:**
+
 ```typescript
 // ❌ MAL
-const data = getUserData()
-const x = 5
+const data = getUserData();
+const x = 5;
 
 // ✅ BIEN
-const userData = getUserData()
-const maxRetryAttempts = 5
+const userData = getUserData();
+const maxRetryAttempts = 5;
 ```
 
 #### C) **TypeScript Strict**
+
 - [ ] No usa `any` (salvo excepciones justificadas)
 - [ ] Tipos explícitos en parámetros y retornos
 - [ ] Interfaces/types definidos para objetos complejos
 - [ ] No usa `@ts-ignore` sin comentario explicativo
 
 **Ejemplo de violación:**
+
 ```typescript
 // ❌ MAL
 function processData(data: any) {
-  return data.map((item: any) => item.value)
+  return data.map((item: any) => item.value);
 }
 
 // ✅ BIEN
 interface DataItem {
-  value: string
-  id: number
+  value: string;
+  id: number;
 }
 
 function processData(data: DataItem[]): string[] {
-  return data.map(item => item.value)
+  return data.map(item => item.value);
 }
 ```
 
 #### D) **Error Handling**
+
 - [ ] Try-catch en operaciones async
 - [ ] NO usa `console.error()` (usar logger apropiado)
 - [ ] Errores específicos, no genéricos
 - [ ] Mensajes de error útiles para debugging
 
 **Ejemplo de violación:**
+
 ```typescript
 // ❌ MAL
 async function fetchData() {
-  const data = await fetch('/api/data')  // Sin error handling
-  console.error('Error')  // No específico
+  const data = await fetch('/api/data'); // Sin error handling
+  console.error('Error'); // No específico
 }
 
 // ✅ BIEN
 async function fetchData(): Promise<Data[]> {
   try {
-    const response = await fetch('/api/data')
+    const response = await fetch('/api/data');
     if (!response.ok) {
-      throw new Error(`API error: ${response.status}`)
+      throw new Error(`API error: ${response.status}`);
     }
-    return await response.json()
+    return await response.json();
   } catch (error) {
-    logger.error('Failed to fetch data', { error })
-    throw error
+    logger.error('Failed to fetch data', { error });
+    throw error;
   }
 }
 ```
 
 #### E) **Magic Numbers y Hardcoding**
+
 - [ ] No valores hardcodeados (usar constants/env vars)
 - [ ] No API keys/secrets en código
 - [ ] Configuración en archivos apropiados
 
 **Ejemplo de violación:**
+
 ```typescript
 // ❌ MAL
 const apiKey = 'sk-1234567890'  // Hardcoded secret
@@ -224,6 +251,7 @@ if (users.length > MAX_USERS_PER_PAGE) {
 ### 4. 🏗️ **Architecture & Structure**
 
 **Revisar:**
+
 - [ ] Estructura de carpetas correcta (según proyecto)
 - [ ] Separación de concerns:
   - UI (componentes) ≠ Logic (hooks, utils) ≠ Data (API calls)
@@ -231,6 +259,7 @@ if (users.length > MAX_USERS_PER_PAGE) {
 - [ ] Imports organizados (React → libraries → local)
 
 **Ejemplo de buena estructura:**
+
 ```
 app/
 ├── [feature]/
@@ -251,6 +280,7 @@ lib/
 ### 5. 🔒 **Security** (CRÍTICO)
 
 **Revisar:**
+
 - [ ] **NO secrets hardcodeados** (API keys, tokens, passwords)
 - [ ] **Validación de inputs de usuario** (sanitización)
 - [ ] **SQL injection prevention** (si usa queries SQL directas)
@@ -258,6 +288,7 @@ lib/
 - [ ] **Auth checks** (rutas protegidas tienen auth)
 
 **Ejemplo de violación:**
+
 ```typescript
 // ❌ MAL - Secret hardcodeado
 const dbUrl = 'postgresql://user:password@localhost/db'
@@ -277,6 +308,7 @@ function createUser(email: string) {
 ```
 
 **Si encuentras secret hardcodeado:**
+
 - 🚨 **CRITICAL** - Blocker absoluto para approval
 
 ---
@@ -284,6 +316,7 @@ function createUser(email: string) {
 ### 6. ⚡ **Performance Básico**
 
 **Revisar:**
+
 - [ ] No loops innecesarios o anidados complejos (O(n²))
 - [ ] React: Usa `useMemo`/`useCallback` si hay cálculos costosos
 - [ ] No refetch innecesario de datos
@@ -291,15 +324,16 @@ function createUser(email: string) {
 - [ ] Lazy loading de componentes pesados (si aplica)
 
 **Ejemplo de problema:**
+
 ```typescript
 // ❌ MAL - N+1 queries
 users.forEach(user => {
-  const posts = await fetchPostsByUser(user.id)  // N queries
-})
+  const posts = await fetchPostsByUser(user.id); // N queries
+});
 
 // ✅ BIEN - Una query
-const allPosts = await fetchAllPosts()
-const postsByUser = groupBy(allPosts, 'userId')
+const allPosts = await fetchAllPosts();
+const postsByUser = groupBy(allPosts, 'userId');
 ```
 
 ---
@@ -307,6 +341,7 @@ const postsByUser = groupBy(allPosts, 'userId')
 ### 7. 🎨 **UI/UX** (Si la story tiene interfaz)
 
 **Revisar:**
+
 - [ ] **Usa componentes del design system** (Button, Card, Input, etc.)
 - [ ] **Paleta de colores correcta** (`bg-primary`, no `bg-blue-500`)
 - [ ] **Responsive design** (mobile, tablet, desktop)
@@ -319,22 +354,21 @@ const postsByUser = groupBy(allPosts, 'userId')
   - Keyboard navigation funciona
 
 **Ejemplo de violación:**
+
 ```tsx
 // ❌ MAL - No usa design system, color hardcodeado
-<button className="bg-blue-500 px-4 py-2">
-  Click me
-</button>
+<button className="bg-blue-500 px-4 py-2">Click me</button>;
 
 // ✅ BIEN - Usa design system
-import { Button } from '@/components/ui/button'
-<Button variant="primary">Click me</Button>
+import { Button } from '@/components/ui/button';
+<Button variant="primary">Click me</Button>;
 ```
 
 ---
 
 ### 8. 🧪 **Data-TestID para E2E Testing**
 
-**Revisar según `.context/guidelines/data-testid-standards.md`:**
+**Revisar según `.context/guidelines/DEV/data-testid-standards.md`:**
 
 - [ ] **Componentes de dominio** (MentorCard, LoginForm, etc.) tienen `data-testid` en su **definición**
 - [ ] **Componentes UI base** (Button, Card, Input de shadcn) reciben `data-testid` donde se **usan**, NO en su definición
@@ -344,6 +378,7 @@ import { Button } from '@/components/ui/button'
 - [ ] **NO hay IDs dinámicos:** ❌ `data-testid={`card-${id}`}`
 
 **Ejemplo de violación:**
+
 ```tsx
 // ❌ MAL - ID dinámico (impredecible para tests)
 <Card data-testid={`mentor-${mentor.id}`}>
@@ -366,6 +401,7 @@ export function MentorCard({ mentor }) {
 ```
 
 **Si falta data-testid en componentes UI críticos:**
+
 - ⚠️ **MEDIUM** - Bloquea futura automatización E2E (Fase 11)
 
 ---
@@ -373,6 +409,7 @@ export function MentorCard({ mentor }) {
 ### 9. 📝 **Code Quality General**
 
 **Revisar:**
+
 - [ ] Funciones pequeñas (< 50 líneas idealmente)
 - [ ] Comentarios solo donde necesario (código auto-explicativo)
 - [ ] No código comentado (borrar, no comentar)
@@ -384,6 +421,7 @@ export function MentorCard({ mentor }) {
 ## ⚠️ LO QUE NO REVISA ESTA FASE
 
 **Tests automatizados:**
+
 - ❌ NO revisar tests unitarios (ya creados en Fase 7)
 - ❌ NO revisar tests de integración (eso es Fase 11: Test Automation)
 - ❌ NO revisar test coverage (eso es Fase 7 y Fase 11)
@@ -414,10 +452,10 @@ export function MentorCard({ mentor }) {
 
 **Story:** [Título de la story]
 
-| AC | Status | Notas |
-|----|--------|-------|
-| AC1: [Descripción] | ✅ Cumplido | [Comentario opcional] |
-| AC2: [Descripción] | ✅ Cumplido | [Comentario opcional] |
+| AC                 | Status         | Notas                         |
+| ------------------ | -------------- | ----------------------------- |
+| AC1: [Descripción] | ✅ Cumplido    | [Comentario opcional]         |
+| AC2: [Descripción] | ✅ Cumplido    | [Comentario opcional]         |
 | AC3: [Descripción] | ❌ NO cumplido | **Razón:** [Explicar por qué] |
 
 ---
@@ -500,10 +538,12 @@ export function MentorCard({ mentor }) {
 ## 🎯 Próximos Pasos
 
 **Si APPROVED:**
+
 - Proceder a Fase 9: Deployment Staging
 - Usar `.prompts/fase-9-deployment-staging/`
 
 **Si CHANGES REQUESTED:**
+
 - Developer corrige critical/medium issues
 - Usa `.prompts/fase-7-implementation/fix-issues.md`
 - Re-review después de correcciones
@@ -517,19 +557,22 @@ export function MentorCard({ mentor }) {
 Revisa el código implementado para STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}.
 
 **Contexto:**
+
 - Story: .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/story.md
 - Implementation plan: .../ implementation-plan.md
-- Code standards: .context/guidelines/code-standards.md
+- Code standards: .context/guidelines/DEV/
 
 (Donde {PROJECT_KEY}, {ISSUE_NUM}, {nombre} se obtienen de la story que estás revisando)
 
 **Proceso:**
+
 1. Valida que AC se cumplen
 2. Ejecuta linting + build (o instruye al usuario)
 3. Revisa código según checklist completo
 4. Genera reporte con decisión: APPROVE / CHANGES REQUESTED
 
 **Importante:**
+
 - Usa Context7 MCP si dudas de best practices
 - NO revises tests (unit tests ya en Fase 7, integration/E2E en Fase 11)
 - Sé específico en feedback (archivo:línea)

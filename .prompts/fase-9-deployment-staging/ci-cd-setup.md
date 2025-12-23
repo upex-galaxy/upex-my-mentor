@@ -23,6 +23,7 @@ Configurar GitHub Actions workflow que automatice linting, testing, build, y dep
 - Branch strategy: `main` (production) y `develop` (staging)
 
 **Qué identificar:**
+
 1. ¿El proyecto tiene remote origin en GitHub?
 2. ¿Existen branches `main` y `develop`?
 3. ¿El repo es público o privado?
@@ -54,6 +55,7 @@ Configurar GitHub Actions workflow que automatice linting, testing, build, y dep
 ### 3. Vercel Project (Si usa Vercel)
 
 **Información necesaria del usuario:**
+
 - Vercel Project ID
 - Vercel Org ID
 - Vercel Token (para GitHub Actions)
@@ -74,6 +76,7 @@ Configurar GitHub Actions workflow que automatice linting, testing, build, y dep
 2. **NO se requieren otros MCP** para esta fase
 
 ### Herramientas Locales:
+
 - Git instalado
 - GitHub CLI (opcional, para verificar secrets)
 - Acceso al repositorio GitHub
@@ -85,6 +88,7 @@ Configurar GitHub Actions workflow que automatice linting, testing, build, y dep
 Crear un workflow de GitHub Actions que:
 
 **Incluye:**
+
 - ✅ Se ejecuta automáticamente en push/PR a `main` y `develop`
 - ✅ **Linting:** Valida code style (ESLint + Prettier)
 - ✅ **Unit Tests:** Ejecuta tests y genera coverage
@@ -94,6 +98,7 @@ Crear un workflow de GitHub Actions que:
 - ✅ Notifica fallos claramente en PRs
 
 **NO incluye:**
+
 - ❌ Deploy automático a production sin aprobación (eso requiere estrategia adicional)
 - ❌ Integration/E2E tests (eso es Fase 11: Test Automation)
 - ❌ Performance tests
@@ -106,16 +111,19 @@ Crear un workflow de GitHub Actions que:
 ## 📤 OUTPUT GENERADO
 
 ### GitHub Actions Workflow:
+
 - ✅ `.github/workflows/ci.yml` - Main CI/CD workflow
 - (Opcional) `.github/workflows/deploy-production.yml` - Production deployment workflow separado
 
 ### Secrets Configurados en GitHub:
+
 - ✅ `VERCEL_TOKEN` - Token de Vercel API
 - ✅ `VERCEL_ORG_ID` - Organization ID de Vercel
 - ✅ `VERCEL_PROJECT_ID` - Project ID de Vercel
 - (Si aplica) Otros secrets específicos del proyecto
 
 ### Documentación:
+
 - ✅ `.context/ci-cd-setup.md` - Documentación del workflow
 - ✅ README.md actualizado con badges de CI status
 
@@ -169,6 +177,7 @@ git branch -a
 ```
 
 **Analizar:**
+
 - ¿El proyecto está en GitHub?
 - ¿Existen branches `main` y `develop`?
 - ¿Qué branch está activo?
@@ -184,11 +193,12 @@ Leer `package.json` completo
 **Identificar:**
 
 1. **Scripts disponibles:**
+
    ```json
    {
      "scripts": {
-       "lint": "eslint .",  // ✅
-       "test": "jest",      // ✅
+       "lint": "eslint .", // ✅
+       "test": "jest", // ✅
        "build": "next build" // ✅
      }
    }
@@ -206,6 +216,7 @@ Leer `package.json` completo
 **Leer:** `.context/infrastructure-setup.md`
 
 **Identificar:**
+
 - ¿Vercel, Railway, Netlify, o custom?
 - URLs de staging y production
 - Credenciales necesarias
@@ -216,20 +227,24 @@ Leer `package.json` completo
 ## 📊 Análisis Completado
 
 ### Git Repository:
+
 - ✅ GitHub remote: https://github.com/[org]/[repo]
 - ✅ Branches: main, develop
 
 ### Scripts npm disponibles:
+
 - ✅ `npm run lint` - ESLint configured
 - ✅ `npm run test` - Jest configured
 - ✅ `npm run build` - Next.js build
 
 ### Hosting Provider:
+
 - Provider: Vercel
 - Staging URL: https://[project]-develop.vercel.app
 - Production URL: https://[project].vercel.app
 
 ### Workflow a crear:
+
 1. CI job: lint → test → build
 2. Deploy to staging: cuando push a `develop`
 3. (Opcional) Deploy to production: cuando push a `main`
@@ -314,6 +329,7 @@ jobs:
 ### Paso 2.3: Generar Workflow Completo
 
 **Consultar Context7:**
+
 - "GitHub Actions setup Node.js latest version"
 - "Vercel deployment GitHub Actions"
 
@@ -340,7 +356,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'  # O 'pnpm', 'yarn', según proyecto
+          cache: 'npm' # O 'pnpm', 'yarn', según proyecto
 
       - name: Install dependencies
         run: npm ci
@@ -478,10 +494,10 @@ Para que el workflow funcione, necesitas agregar estos secrets en GitHub:
 3. Click en "New repository secret"
 4. Agrega cada secret:
 
-   | Name | Value |
-   |------|-------|
-   | `VERCEL_TOKEN` | [token copiado] |
-   | `VERCEL_ORG_ID` | [org ID copiado] |
+   | Name                | Value                |
+   | ------------------- | -------------------- |
+   | `VERCEL_TOKEN`      | [token copiado]      |
+   | `VERCEL_ORG_ID`     | [org ID copiado]     |
    | `VERCEL_PROJECT_ID` | [project ID copiado] |
 
 5. Verifica que los 3 secrets aparezcan en la lista
@@ -528,21 +544,25 @@ git push origin develop
 ### 3️⃣ Si algún job falla:
 
 **Lint fails:**
+
 - Ejecuta `npm run lint` localmente
 - Corrige los errores
 - Push nuevamente
 
 **Test fails:**
+
 - Ejecuta `npm run test` localmente
 - Corrige los tests fallidos
 - Push nuevamente
 
 **Build fails:**
+
 - Ejecuta `npm run build` localmente
 - Corrige los errores de build
 - Push nuevamente
 
 **Deploy fails:**
+
 - Verifica que los secrets estén correctamente configurados
 - Revisa los logs del deploy en GitHub Actions
 ```
@@ -569,6 +589,7 @@ git push origin develop
 ### Triggers
 
 El workflow se ejecuta automáticamente en:
+
 - ✅ Push a `main` branch
 - ✅ Push a `develop` branch
 - ✅ Pull requests a `main` o `develop`
@@ -576,22 +597,26 @@ El workflow se ejecuta automáticamente en:
 ### Jobs
 
 #### 1️⃣ Lint (🔍)
+
 - Ejecuta ESLint
 - Valida code style
 - Duración: ~30 segundos
 
 #### 2️⃣ Test (🧪)
+
 - Ejecuta unit tests
 - Genera coverage report
 - Upload coverage a Codecov (opcional)
 - Duración: ~1-2 minutos
 
 #### 3️⃣ Build (🏗️)
+
 - Ejecuta build de producción
 - Valida que el proyecto compila
 - Duración: ~1-2 minutos
 
 #### 4️⃣ Deploy Staging (🚀)
+
 - **Solo ejecuta si:** Push a `develop` branch
 - Despliega a Vercel staging environment
 - URL: https://[project]-develop.vercel.app
@@ -599,25 +624,26 @@ El workflow se ejecuta automáticamente en:
 
 ### Secrets Configurados
 
-| Secret | Descripción | Dónde obtenerlo |
-|--------|-------------|-----------------|
-| `VERCEL_TOKEN` | Token de API de Vercel | https://vercel.com/account/tokens |
-| `VERCEL_ORG_ID` | Organization ID de Vercel | Settings de Vercel |
-| `VERCEL_PROJECT_ID` | Project ID de Vercel | Settings del proyecto |
+| Secret              | Descripción               | Dónde obtenerlo                   |
+| ------------------- | ------------------------- | --------------------------------- |
+| `VERCEL_TOKEN`      | Token de API de Vercel    | https://vercel.com/account/tokens |
+| `VERCEL_ORG_ID`     | Organization ID de Vercel | Settings de Vercel                |
+| `VERCEL_PROJECT_ID` | Project ID de Vercel      | Settings del proyecto             |
 
 ### Branch Strategy
+```
 
-```
 main (production)
-  ↑
-  merge después de QA
-  ↑
+↑
+merge después de QA
+↑
 develop (staging)
-  ↑
-  merge PRs aquí
-  ↑
+↑
+merge PRs aquí
+↑
 feature/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}
-```
+
+````
 
 ### Workflow Local → Staging → Production
 
@@ -626,7 +652,7 @@ feature/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}
    git checkout -b feature/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}
    # Implementar feature
    git push origin feature/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}
-   ```
+````
 
 2. **Pull Request a develop:**
    - CI runs: lint → test → build
@@ -638,28 +664,34 @@ feature/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}
    - Si bugs → fix → repeat
 
 4. **Release a production:**
+
    ```bash
    git checkout main
    git merge develop
    git push origin main
    ```
+
    - CI runs nuevamente
    - (Opcional) Auto-deploy a production
 
 ### Troubleshooting
 
 **Workflow fails en "Install dependencies":**
+
 - Verifica que `package-lock.json` esté commiteado
 - Usa `npm ci` localmente para replicar
 
 **Deploy fails con "Invalid token":**
+
 - Verifica que `VERCEL_TOKEN` esté configurado en GitHub Secrets
 - Regenera el token en Vercel si es necesario
 
 **Coverage upload fails:**
+
 - Es opcional, no bloquea el workflow
 - Configura Codecov si quieres ver coverage online
-```
+
+````
 
 ---
 
@@ -672,7 +704,7 @@ feature/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}
 
 [![CI/CD Pipeline](https://github.com/[org]/[repo]/actions/workflows/ci.yml/badge.svg)](https://github.com/[org]/[repo]/actions/workflows/ci.yml)
 [![Coverage](https://codecov.io/gh/[org]/[repo]/branch/develop/graph/badge.svg)](https://codecov.io/gh/[org]/[repo])
-```
+````
 
 ---
 
@@ -680,23 +712,26 @@ feature/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}
 
 **Mostrar al usuario:**
 
-```markdown
+````markdown
 # ✅ CI/CD SETUP COMPLETADO
 
 ## Archivos Creados:
 
 ### 1. `.github/workflows/ci.yml`
+
 - ✅ Lint job configurado
 - ✅ Test job configurado
 - ✅ Build job configurado
 - ✅ Deploy staging job configurado
 
 ### 2. `.context/ci-cd-setup.md`
+
 - ✅ Documentación completa del workflow
 - ✅ Instrucciones de troubleshooting
 - ✅ Branch strategy explicada
 
 ### 3. README.md
+
 - ✅ Badge de CI status agregado
 - ✅ Badge de coverage agregado (opcional)
 
@@ -705,6 +740,7 @@ feature/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}
 ### 1️⃣ Configurar Secrets en GitHub (AHORA)
 
 Sigue las instrucciones en "Paso 3" arriba para agregar:
+
 - `VERCEL_TOKEN`
 - `VERCEL_ORG_ID`
 - `VERCEL_PROJECT_ID`
@@ -722,6 +758,7 @@ git commit -m "ci: add GitHub Actions CI/CD workflow
 "
 git push origin develop
 ```
+````
 
 Luego verifica en: https://github.com/[org]/[repo]/actions
 
@@ -738,7 +775,8 @@ Luego verifica en: https://github.com/[org]/[repo]/actions
 **🎊 CI/CD automatizado exitosamente!**
 
 Ahora cada push a `develop` despliega automáticamente a staging.
-```
+
+````
 
 ---
 
@@ -790,14 +828,14 @@ jobs:
     needs: lint  # Depende de lint
   build:
     needs: test  # Depende de test
-```
+````
 
 ### **2. Cache Dependencies**
 
 ```yaml
 - uses: actions/setup-node@v4
   with:
-    cache: 'npm'  # Cachea node_modules
+    cache: 'npm' # Cachea node_modules
 ```
 
 ### **3. Environment Protection**
@@ -814,7 +852,7 @@ deploy-staging:
 ```yaml
 - name: Generate coverage
   run: npm run test:coverage
-  continue-on-error: true  # No fallar workflow si coverage falla
+  continue-on-error: true # No fallar workflow si coverage falla
 ```
 
 ---
@@ -822,14 +860,17 @@ deploy-staging:
 ## 📚 REFERENCIAS
 
 **GitHub Actions:**
+
 - https://docs.github.com/en/actions/quickstart
 - https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 
 **Vercel Deployment:**
+
 - https://vercel.com/docs/deployments/overview
 - https://github.com/marketplace/actions/vercel-action
 
 **Best Practices:**
+
 - https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions
 
 ---

@@ -17,11 +17,13 @@ Configurar variables de entorno separadas por ambiente (Development, Staging, Pr
 ### 1. Infrastructure Setup
 
 **Leer:**
+
 - `.context/infrastructure-setup.md` - **CRÍTICO** - URLs, credenciales, configuración de servicios
 - `.env.example` - Template de variables necesarias
 - `package.json` - Framework usado (Next.js, etc.)
 
 **Qué identificar:**
+
 1. ¿Qué servicios cloud está usando? (Supabase, Vercel, etc.)
 2. ¿Qué variables se necesitan? (DB, Auth, APIs externas)
 3. ¿Qué hosting provider? (Vercel, Railway, Netlify)
@@ -29,6 +31,7 @@ Configurar variables de entorno separadas por ambiente (Development, Staging, Pr
 ### 2. Existing Environment Files
 
 **Verificar:**
+
 - `.env` - Variables de desarrollo local
 - `.env.example` - Template con todas las variables
 
@@ -39,6 +42,7 @@ Configurar variables de entorno separadas por ambiente (Development, Staging, Pr
 **NO se requieren MCP para esta fase.**
 
 ### Herramientas Locales:
+
 - Acceso a Vercel/Railway dashboard
 - CLI del hosting provider (opcional)
 
@@ -49,12 +53,14 @@ Configurar variables de entorno separadas por ambiente (Development, Staging, Pr
 Configurar environment variables en:
 
 **Incluye:**
+
 - ✅ **Development:** Variables en `.env` para local dev
 - ✅ **Staging:** Variables en Vercel/Railway para staging environment
 - ✅ **Production:** (Placeholder para Fase 12) Estructura preparada
 - ✅ Validar que no hay secrets hardcodeados en código
 
 **NO incluye:**
+
 - ❌ Configurar production environment completo (eso es Fase 12)
 - ❌ Secrets de terceros no configurados aún (se agregan cuando se integran)
 
@@ -65,14 +71,17 @@ Configurar environment variables en:
 ## 📤 OUTPUT GENERADO
 
 ### Local (Development):
+
 - ✅ `.env` - Variables completas para desarrollo local (gitignored)
 - ✅ `.env.example` - Actualizado con todas las variables necesarias
 
 ### Staging (Vercel/Railway):
+
 - ✅ Environment variables configuradas en plataforma con scope "Preview"
 - ✅ Variables apuntando a servicios de staging (Supabase staging, etc.)
 
 ### Documentation:
+
 - ✅ `.context/environment-variables.md` - Documentación de qué variables existen y para qué
 
 ---
@@ -92,7 +101,7 @@ Configurar environment variables en:
 - **Separar por ambiente** - Dev, staging, prod con valores diferentes
 - **Documentar cada variable** - Explicar para qué sirve
 - **Validar que funciona** - Probar build con variables de staging
-- **Usar NEXT_PUBLIC_ prefix** - Para variables que frontend necesita
+- **Usar NEXT*PUBLIC* prefix** - Para variables que frontend necesita
 
 ---
 
@@ -123,14 +132,17 @@ Configurar environment variables en:
 ## 📊 Variables Identificadas
 
 ### Core Variables (Supabase):
+
 - `NEXT_PUBLIC_SUPABASE_URL` - URL del proyecto Supabase
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Anon key pública
 - `SUPABASE_SERVICE_ROLE_KEY` - Service role (server-only)
 
 ### App Variables:
+
 - `NEXT_PUBLIC_APP_URL` - URL base de la aplicación
 
 ### Third-party (si aplica):
+
 - [Listar según proyecto]
 
 ---
@@ -151,6 +163,7 @@ ls -la | grep .env
 ```
 
 **Si `.env` no existe:**
+
 ```bash
 cp .env.example .env
 ```
@@ -159,7 +172,7 @@ cp .env.example .env
 
 **Instrucciones al usuario:**
 
-```markdown
+````markdown
 ## 🔧 Configurar `.env` (Development)
 
 ### 1️⃣ Abre el archivo `.env`
@@ -187,6 +200,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 # STRIPE_SECRET_KEY=sk_test_...
 # SENDGRID_API_KEY=SG...
 ```
+````
 
 ### 3️⃣ Verificar
 
@@ -196,7 +210,8 @@ npm run dev
 
 - ✅ App inicia sin errores de variables faltantes
 - ✅ Conexión a Supabase funciona
-```
+
+````
 
 ---
 
@@ -231,7 +246,7 @@ https://vercel.com/[org]/[project]/settings/environment-variables
 - **Encrypted** = Vercel encripta automáticamente los valores
 
 ### 3️⃣ Click "Save" después de cada variable
-```
+````
 
 **Para Railway (alternativa):**
 
@@ -247,6 +262,7 @@ https://railway.app/project/[project-id]/settings
 ### 3️⃣ Agregar cada variable:
 
 Click en "New Variable" y agrega:
+
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
@@ -265,12 +281,13 @@ Click en "New Variable" y agrega:
 
 **Contenido:**
 
-```markdown
+````markdown
 # Environment Variables - [Proyecto]
 
 ## Variables por Ambiente
 
 ### Development (Local)
+
 **Archivo:** `.env` (gitignored)
 
 | Variable                        | Descripción                    | Ejemplo                 |
@@ -283,6 +300,7 @@ Click en "New Variable" y agrega:
 ---
 
 ### Staging (Vercel Preview)
+
 **Platform:** Vercel Dashboard → Settings → Environment Variables
 
 **Scope:** Preview (solo deploy de `develop` branch)
@@ -297,12 +315,13 @@ Click en "New Variable" y agrega:
 ---
 
 ### Production (Configurar en Fase 12)
+
 **Platform:** Vercel Dashboard → Settings → Environment Variables
 
 **Scope:** Production (solo deploy de `main` branch)
 
-| Variable                        | Valor                              | Notas                   |
-| ------------------------------- | ---------------------------------- | ----------------------- |
+| Variable                        | Valor                              | Notas                    |
+| ------------------------------- | ---------------------------------- | ------------------------ |
 | `NEXT_PUBLIC_SUPABASE_URL`      | https://[prod-project].supabase.co | ⚠️ Configurar en Fase 12 |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | [anon key production]              | ⚠️ Configurar en Fase 12 |
 | `SUPABASE_SERVICE_ROLE_KEY`     | [service key production]           | ⚠️ Configurar en Fase 12 |
@@ -318,6 +337,7 @@ Click en "New Variable" y agrega:
 # Nueva variable
 NEW_VAR=valor-de-ejemplo
 ```
+````
 
 ### 2️⃣ Agregar a `.env` (local dev):
 
@@ -338,17 +358,20 @@ Agregar fila a tabla correspondiente explicando para qué sirve.
 
 ## ⚠️ Security Best Practices
 
-### Variables Públicas (NEXT_PUBLIC_)
+### Variables Públicas (NEXT*PUBLIC*)
+
 - ✅ Expuestas en frontend (browser)
 - ✅ Ejemplo: URLs públicas, anon keys
 - ❌ NUNCA service role keys o API secrets
 
 ### Variables Privadas (Server-only)
+
 - ✅ Solo accesibles en server-side (API routes, server components)
 - ✅ Ejemplo: service role keys, API secrets
 - ❌ NUNCA usar en componentes client
 
 ### .gitignore
+
 ```
 .env
 .env*.local
@@ -356,9 +379,11 @@ Agregar fila a tabla correspondiente explicando para qué sirve.
 ```
 
 ### Rotation
+
 - Rotar service role keys cada 90 días
 - Si compromiso de secret → regenerar inmediatamente
-```
+
+````
 
 ---
 
@@ -374,7 +399,7 @@ npm run dev
 # ✅ No hay errores de variables faltantes
 # ✅ Supabase connection funciona
 # ✅ Auth flow funciona
-```
+````
 
 ### Paso 5.2: Validar Staging
 
@@ -387,11 +412,13 @@ git push origin develop
 ```
 
 **Verificar en Vercel Dashboard:**
+
 - ✅ Build success
 - ✅ Deployment success
 - ✅ Abrir URL de staging y probar auth/DB
 
 **Checklist:**
+
 - [ ] Staging URL abre correctamente
 - [ ] No hay errores en browser console relacionados con env vars
 - [ ] Auth flow funciona (signup/login)
@@ -407,15 +434,18 @@ git push origin develop
 ## Ambientes Configurados:
 
 ### ✅ Development (Local)
+
 - `.env` configurado con valores de development
 - Variables validadas localmente
 
 ### ✅ Staging (Vercel Preview)
-- [X] variables configuradas en Vercel con scope "Preview"
+
+- [x] variables configuradas en Vercel con scope "Preview"
 - Deploy de staging validado
 - URL: https://[project]-develop.vercel.app
 
 ### ⏭️ Production (Fase 12)
+
 - Estructura documentada
 - Variables placeholder en `.context/environment-variables.md`
 
@@ -441,19 +471,23 @@ Cada ambiente tiene sus propias variables sin crossover.
 ## 📋 CHECKLIST INTERNO (NO MOSTRAR)
 
 ### Identificación:
+
 - [ ] Todas las variables identificadas desde .env.example
 - [ ] Variables clasificadas (public vs private)
 
 ### Development:
+
 - [ ] `.env` existe y está completo
 - [ ] Variables validadas localmente
 
 ### Staging:
+
 - [ ] Variables configuradas en hosting platform
 - [ ] Scope correcto (Preview/Staging)
 - [ ] Deploy de staging exitoso
 
 ### Documentación:
+
 - [ ] `.context/environment-variables.md` creado
 - [ ] Tabla de variables completa
 - [ ] Security best practices incluidas
@@ -462,7 +496,7 @@ Cada ambiente tiene sus propias variables sin crossover.
 
 ## 💡 MEJORES PRÁCTICAS
 
-### **1. NEXT_PUBLIC_ Prefix**
+### **1. NEXT*PUBLIC* Prefix**
 
 ```bash
 # ✅ Variable expuesta en frontend
@@ -491,12 +525,15 @@ Production:   NEXT_PUBLIC_APP_URL=https://[domain].com
 ## 📚 REFERENCIAS
 
 **Vercel Environment Variables:**
+
 - https://vercel.com/docs/projects/environment-variables
 
 **Next.js Environment Variables:**
+
 - https://nextjs.org/docs/app/building-your-application/configuring/environment-variables
 
 **Security Best Practices:**
+
 - https://12factor.net/config
 
 ---

@@ -1,184 +1,147 @@
 # Guidelines - Reference Material
 
-> **Para**: Fases 6-7-8 (Implementation, Code Review, Test Automation)
-> **Propósito**: Guidelines que la IA debe leer antes de implementar código o tests
+> **Propósito**: Guidelines que la IA debe leer antes de trabajar
+> **Principio**: Cada carpeta corresponde a un ROL específico
 
 ---
 
-## 📂 Estructura
+## Estructura por Rol
 
 ```
 guidelines/
 ├── README.md (este archivo)
 │
-├── 📝 Code Implementation Guidelines
-│   ├── implementation-workflow.md  # Workflow paso a paso
-│   ├── code-standards.md          # DRY, naming, TypeScript strict
-│   ├── error-handling.md          # Manejo de errores estructurado
-│   ├── context-loading.md         # Qué leer en cada fase
-│   └── mcp-usage-tips.md          # Cuándo usar cada MCP
+├── DEV/                           # Development Guidelines
+│   ├── README.md                  # Índice de DEV
+│   ├── code-standards.md          # DRY, KISS, naming, TypeScript
+│   ├── error-handling.md          # Custom errors, retry, logging
+│   ├── data-testid-standards.md   # Cómo CREAR data-testid
+│   └── spec-driven-development.md # Principio SDD
 │
-├── 🎨 Project-Specific Guidelines
-│   └── data-testid-standards.md   # Estándares de data-testid (proyecto)
+├── QA/                            # Quality Engineering Guidelines
+│   ├── README.md                  # Índice de QA
+│   ├── spec-driven-testing.md     # Principio SDT
+│   ├── exploratory-testing.md     # Técnicas de testing exploratorio
+│   ├── data-testid-usage.md       # Cómo USAR data-testid en tests
+│   └── jira-test-management.md    # Gestión de tests en Jira
 │
-└── 🧪 Test Automation Guidelines
-    └── tae/                        # Test Automation Engineering
-        ├── README.md
-        ├── kata-architecture.md
-        ├── test-strategy.md
-        ├── automation-standards.md
-        ├── test-data-management.md
-        ├── ci-cd-integration.md
-        ├── tms-integration.md
-        ├── component-catalog.md
-        └── atc-registry.md
-```
-
-> **Nota:** Para workflows específicos (Git, Deployment, Testing), consulta los prompts en `.prompts/`:
-> - Git Flow: `.prompts/git-flow.md`
-> - Git Conflicts: `.prompts/git-conflict-fix.md`
-> - Testing Strategy: `.prompts/fase-11-test-automation/test-strategy.md`
-
----
-
-## 🎯 Uso por Fase
-
-### **Fase 6: Implementation**
-
-La IA DEBE leer:
-```
-✅ implementation-workflow.md  # Cómo implementar
-✅ code-standards.md          # Estándares de código
-✅ error-handling.md          # Manejo de errores
-✅ context-loading.md         # Qué archivos leer
-✅ mcp-usage-tips.md          # Cuándo usar MCPs
-```
-
-### **Fase 7: Code Review**
-
-La IA DEBE leer:
-```
-✅ code-standards.md          # Verificar estándares
-✅ error-handling.md          # Verificar errores
-✅ implementation-workflow.md # Definition of Done
-```
-
-### **Fase 8: Test Automation**
-
-La IA DEBE leer:
-```
-✅ tae/kata-architecture.md   # Arquitectura KATA
-✅ tae/test-strategy.md       # Estrategia de testing
-✅ tae/automation-standards.md # Estándares de tests
-✅ tae/test-data-management.md # Manejo de datos
-✅ context-loading.md         # Qué archivos leer
-✅ mcp-usage-tips.md          # Usar Playwright MCP
+├── TAE/                           # Test Automation Engineering
+│   ├── README.md                  # Índice de TAE
+│   ├── KATA-AI-GUIDE.md           # Entry point para IA
+│   ├── kata-architecture.md       # Arquitectura KATA
+│   ├── automation-standards.md    # Estándares de tests
+│   ├── api-setup-guide.md         # Setup de API testing
+│   ├── test-data-management.md    # Manejo de datos de prueba
+│   ├── tms-integration.md         # Integración con Jira/Xray
+│   └── ci-cd-integration.md       # Integración con CI/CD
+│
+└── MCP/                           # MCP Guidelines (atomizado)
+    ├── README.md                  # Overview + decision tree
+    ├── supabase.md                # Solo Supabase
+    ├── context7.md                # Solo Context7
+    ├── tavily.md                  # Solo Tavily
+    ├── playwright.md              # Solo Playwright
+    ├── devtools.md                # Solo DevTools
+    ├── postman.md                 # Solo Postman
+    ├── sentry.md                  # Solo Sentry
+    ├── atlassian.md               # Solo Atlassian/Jira
+    ├── github.md                  # Solo GitHub
+    ├── slack.md                   # Solo Slack
+    └── memory.md                  # Solo Memory
 ```
 
 ---
 
-## 🔑 Conceptos Clave
+## Uso por Rol
 
-### **1. Guidelines vs Documentation**
+### Desarrollador (DEV)
 
-| Tipo | Ubicación | Cuándo se lee |
-|------|-----------|---------------|
-| **Guidelines** | `.context/guidelines/` | SIEMPRE antes de implementar |
-| **Specs** | `.context/SRS/`, `.context/PRD/` | Al planificar features |
-| **Stories** | `.context/PBI/` | Al implementar tasks específicas |
+```
+Leer ANTES de implementar:
+├── DEV/code-standards.md
+├── DEV/error-handling.md
+├── DEV/data-testid-standards.md
+├── DEV/spec-driven-development.md
+└── MCP/ (los que necesites)
+```
 
-### **2. Living Documentation**
+### QA Engineer (Testing Manual)
 
-Guidelines promueven **living documentation**:
-- ✅ Usar Supabase MCP para schema real (no docs estáticos)
-- ✅ Usar Context7 MCP para docs oficiales (siempre actualizadas)
-- ✅ Usar Atlassian MCP para issues en vivo
+```
+Leer ANTES de testear:
+├── QA/spec-driven-testing.md
+├── QA/exploratory-testing.md
+├── QA/data-testid-usage.md
+├── QA/jira-test-management.md
+└── MCP/ (los que necesites)
+```
 
-Ver: `mcp-usage-tips.md`
+### QA Automation Engineer (TAE)
 
-### **3. Reference Material**
-
-Guidelines son **reference material**, NO se generan:
-- Pre-pobladas con best practices
-- Se consultan constantemente
-- Se actualizan solo cuando cambian estándares del proyecto
-
----
-
-## 📚 Archivos Detallados
-
-### **implementation-workflow.md**
-Workflow completo de implementación:
-1. Cargar contexto
-2. Verificar plan
-3. Breakdown en subtareas
-4. Implementar iterativamente
-5. Quality checks
-6. Testing continuo
-7. Code review self-check
-8. Documentación
-
-### **code-standards.md**
-Estándares de código:
-- DRY, KISS, YAGNI
-- Naming conventions
-- TypeScript strict mode
-- Component structure
-- Performance best practices
-- Accessibility (a11y)
-
-### **error-handling.md**
-Manejo de errores:
-- Custom error classes
-- Structured responses
-- Retry logic
-- Strategic logging
-- Qué NO hacer
-
-### **context-loading.md**
-Qué leer en cada fase:
-- Fase 3: Specification
-- Fase 4: Shift-Left Testing
-- Fase 5: Planning
-- Fase 6: Implementation
-- Fase 7: Code Review
-- Fase 8: Test Automation
-
-### **mcp-usage-tips.md**
-Cuándo usar cada MCP:
-- Supabase → Database schema
-- Context7 → Docs oficiales
-- Atlassian → Project management
-- Playwright → E2E testing
-- Postman → API testing
-- GitHub → Repository
-- Slack → Notifications
-
-### **tae/** (Test Automation Engineering)
-Ver `tae/README.md` para detalles completos de testing guidelines.
+```
+Leer ANTES de automatizar:
+├── TAE/KATA-AI-GUIDE.md (entry point)
+├── TAE/kata-architecture.md
+├── TAE/automation-standards.md
+└── MCP/ (los que necesites)
+```
 
 ---
 
-## ✅ Checklist para Developers
+## Conceptos Clave
 
-Antes de implementar cualquier feature:
-- [ ] Leí `implementation-workflow.md`
-- [ ] Revisé `code-standards.md`
-- [ ] Entiendo `error-handling.md`
-- [ ] Sé qué contexto cargar (`context-loading.md`)
-- [ ] Configuré MCPs correctos (`mcp-usage-tips.md`)
-- [ ] Si hago tests, leí `tae/` guidelines
+### 1. Guidelines por Rol
+
+Cada carpeta contiene los guidelines específicos para un rol:
+
+- **DEV**: Cómo escribir código de calidad
+- **QA**: Cómo hacer testing manual efectivo
+- **TAE**: Cómo automatizar tests
+- **MCP**: Cómo usar herramientas externas
+
+### 2. Principios Compartidos
+
+Aunque cada rol tiene sus guidelines, comparten principios:
+
+- **Spec-Driven**: Todo nace de especificaciones
+- **Quality First**: Calidad desde el inicio
+- **Traceability**: Todo mapea a requirements
+
+### 3. MCP Atomizado
+
+La carpeta MCP tiene un archivo por herramienta:
+
+- Carga **solo** el MCP que necesitas
+- Evita llenar contexto con información irrelevante
+- Ver `MCP/README.md` para el decision tree
 
 ---
 
-## 🔗 Ver También
+## Workflows
 
-- **MCP Builder**: `docs/mcp-builder-strategy.md`
-- **Blueprint**: `docs/ai-driven-software-project-blueprint.md`
-- **KATA Testing**: `docs/kata-test-architecture.md`
+Los guidelines son **principios constantes**. Para workflows paso a paso, ver:
+
+- `.prompts/us-dev-workflow.md` - Workflow de desarrollo
+- `.prompts/us-qa-workflow.md` - Workflow de QA
+- `.prompts/fase-12-test-automation/` - Workflow de TAE
 
 ---
 
-**Última actualización**: 2025-12-05
-**Tipo**: Reference material (pre-poblado)
-**Fases**: 6-7-8 (Implementation, Code Review, Test Automation)
+## System Prompt
+
+Para configurar tu IA para que cargue contexto automáticamente:
+
+- Ver `.context/system-prompt.md`
+- Copiar a `.claude/claude.md` o equivalente
+
+---
+
+## Ver También
+
+- `.context/system-prompt.md` - System prompt para IA
+- `.prompts/` - Prompts para cada fase
+- `docs/ai-driven-software-project-blueprint.md` - Blueprint completo
+
+---
+
+**Última actualización**: 2025-12-21

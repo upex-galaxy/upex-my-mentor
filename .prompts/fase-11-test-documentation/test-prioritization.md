@@ -9,6 +9,7 @@
 Prioritize test candidates based on risk, business value, and automation feasibility to build an effective regression suite.
 
 **This prompt is executed AFTER:**
+
 - Test analysis completed
 - Regression candidates identified
 
@@ -47,6 +48,7 @@ RISK       │    MEDIUM     │    LOW        │      RISK
 ### Scoring Criteria
 
 **Business Impact (1-5):**
+
 | Score | Description                                      |
 | ----- | ------------------------------------------------ |
 | 5     | Core revenue flow (checkout, payments)           |
@@ -56,6 +58,7 @@ RISK       │    MEDIUM     │    LOW        │      RISK
 | 1     | Rarely used, edge case                           |
 
 **Failure Risk (1-5):**
+
 | Score | Description                                      |
 | ----- | ------------------------------------------------ |
 | 5     | High complexity, frequent changes, past failures |
@@ -100,14 +103,17 @@ RISK       │    MEDIUM     │    LOW        │      RISK
 ### Phase 3: Assign to Regression Tracks
 
 **Track 1: Automated Regression (CI/CD)**
+
 - Tests that run on every PR or nightly
 - High priority + automatable
 
 **Track 2: Manual Regression**
+
 - Tests that require human execution
 - High priority + not automatable
 
 **Track 3: Deferred**
+
 - Low priority tests
 - May be added later
 
@@ -169,11 +175,13 @@ RISK       │    MEDIUM     │    LOW        │      RISK
 ## Recommendations
 
 ### Immediate Actions:
+
 1. Document top [N] scenarios in Jira (next: test-documentation.md)
 2. Mark automation candidates with label `automation-candidate`
 3. Add manual tests to regression checklist
 
 ### For Fase 12 (Automation):
+
 - Start with scenarios ranked 1-3
 - Estimated [X] ATCs to implement
 - Test types: [N] E2E, [M] Integration

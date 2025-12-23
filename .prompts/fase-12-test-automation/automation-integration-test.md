@@ -9,11 +9,13 @@
 Create API Integration automated tests for validated scenarios using the KATA framework.
 
 **This prompt is executed AFTER:**
+
 - Test documented in Jira (Fase 11)
 - Test marked as "automation-candidate"
 - Framework setup complete (kata-framework-setup.md)
 
 **Prerequisites:**
+
 - KATA framework configured in project
 - API documentation available (OpenAPI preferred)
 - Test case documented in Jira
@@ -26,12 +28,13 @@ Create API Integration automated tests for validated scenarios using the KATA fr
 
 ```
 MANDATORY READING (in order):
-1. .context/guidelines/tae/KATA-AI-GUIDE.md       # Quick orientation
-2. .context/guidelines/tae/automation-standards.md # Rules and patterns
-3. .context/guidelines/tae/api-setup-guide.md     # API testing specifics
+1. .context/guidelines/TAE/KATA-AI-GUIDE.md       # Quick orientation
+2. .context/guidelines/TAE/automation-standards.md # Rules and patterns
+3. .context/guidelines/TAE/api-setup-guide.md     # API testing specifics
 ```
 
 **Key KATA principles for API testing:**
+
 - Use `ApiBase` methods: `apiGET`, `apiPOST`, `apiPUT`, `apiPATCH`, `apiDELETE`
 - Return tuples: `[APIResponse, TBody]` or `[APIResponse, TBody, TPayload]`
 - Type-safe generics for request/response
@@ -48,6 +51,7 @@ Provide ONE of the following:
 3. **OpenAPI operation** - Operation ID from OpenAPI spec
 
 **Also specify:**
+
 - Target API component (existing or new)
 - Authentication requirements
 
@@ -107,15 +111,18 @@ Questions:
 ## Implementation Plan
 
 **Files to CREATE:**
+
 - tests/components/api/OrdersApi.ts
   └── ATC: createOrderSuccessfully
   └── ATC: createOrderWithInvalidData
 
 **Files to MODIFY:**
+
 - tests/components/ApiFixture.ts
   └── Add: readonly orders: OrdersApi
 
 **Test file:**
+
 - tests/integration/orders/orders.test.ts
 ```
 
@@ -280,12 +287,12 @@ import { OrdersApi } from '@components/api/OrdersApi';
 
 export class ApiFixture extends TestContext {
   readonly auth: AuthApi;
-  readonly orders: OrdersApi;  // Add
+  readonly orders: OrdersApi; // Add
 
   constructor(environment?: Environment) {
     super(environment);
     this.auth = new AuthApi(environment);
-    this.orders = new OrdersApi(environment);  // Initialize
+    this.orders = new OrdersApi(environment); // Initialize
   }
 }
 ```

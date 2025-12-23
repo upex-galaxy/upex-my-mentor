@@ -7,6 +7,7 @@ La **Fase 3: Infrastructure** implementa la base técnica del proyecto ANTES de 
 **Esta fase se ejecuta UNA SOLA VEZ** por proyecto, después de tener las especificaciones técnicas (Fase 2: Architecture).
 
 **Esta fase se enfoca en:**
+
 - ✅ Configurar servicios cloud (Supabase, Vercel, Railway, etc.)
 - ✅ Crear database schemas y API backend base
 - ✅ Generar tipos TypeScript desde el backend
@@ -14,6 +15,7 @@ La **Fase 3: Infrastructure** implementa la base técnica del proyecto ANTES de 
 - ✅ Integrar tipos del backend en el frontend
 
 **Esta fase NO incluye:**
+
 - ❌ Implementar features específicas de negocio (eso es Fase 7: Implementation)
 - ❌ Definir user stories o épicas (eso es Fase 4: Specification)
 - ❌ Crear tests automatizados E2E (eso es Fase 11: Test Automation)
@@ -22,16 +24,13 @@ La **Fase 3: Infrastructure** implementa la base técnica del proyecto ANTES de 
 
 ## 📋 Prompts de esta Fase
 
-| #   | Archivo                          | Descripción                                                 | Duración   | MCP Requerido        |
-| --- | -------------------------------- | ----------------------------------------------------------- | ---------- | -------------------- |
-| 1   | `cloud-services.md`              | Configurar cloud provider (Supabase, Vercel, Railway)       | 15-30 min  | ❌ Ninguno            |
-| 2   | `backend-setup.md`               | Crear DB schemas, Auth, API layer, seed data                | 45-90 min  | ✅ Supabase, Context7 |
-| 3   | `frontend-setup.md`              | Design System, Layout, páginas demo, integrar tipos backend | 60-120 min | ✅ Context7           |
-| 4*  | `api-documentation.md`           | Documentar APIs custom con OpenAPI + Zod + Redoc            | 30-60 min  | ✅ Context7           |
+| #   | Archivo             | Descripción                                                 | Duración   | MCP Requerido         |
+| --- | ------------------- | ----------------------------------------------------------- | ---------- | --------------------- |
+| 1   | `cloud-services.md` | Configurar cloud provider (Supabase, Vercel, Railway)       | 15-30 min  | ❌ Ninguno            |
+| 2   | `backend-setup.md`  | Crear DB schemas, Auth, API layer, seed data                | 45-90 min  | ✅ Supabase, Context7 |
+| 3   | `frontend-setup.md` | Design System, Layout, páginas demo, integrar tipos backend | 60-120 min | ✅ Context7           |
 
 **Total estimado:** 2-4 horas (depende de complejidad del proyecto)
-
-> **\* Nota sobre prompt #4:** Este prompt tiene dependencia de **Fase 7: Implementation**. Se ejecuta DESPUÉS de que existan endpoints custom en `src/app/api/`. Ver detalles en el propio archivo.
 
 ---
 
@@ -40,72 +39,42 @@ La **Fase 3: Infrastructure** implementa la base técnica del proyecto ANTES de 
 ### **⚠️ ORDEN CRÍTICO - NO ALTERAR**
 
 ```
-1. cloud-services.md              (PRIMERO - Setup de infraestructura cloud)
-                                  ↓
-2. backend-setup.md               (SEGUNDO - Schemas + Auth + Tipos)
-                                  ↓
-3. frontend-setup.md              (TERCERO - UI + Integración de tipos)
-
-         ... Continúa desarrollo en Fase 7: Implementation ...
-         ... Cuando tengas endpoints custom en src/app/api/ ...
-
-4. api-documentation.md           (DESPUÉS de tener endpoints - Documenta APIs)
-```
-
-### Diagrama de Ejecución
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    FASE 3 - INFRASTRUCTURE                       │
-└─────────────────────────────────────────────────────────────────┘
-         │
-         ├── 1. cloud-services.md      ───────────────────────────┐
-         │                                                        │
-         ├── 2. backend-setup.md       ───────────────────────────┤ Ejecutar
-         │                                                        │ en orden
-         └── 3. frontend-setup.md      ───────────────────────────┘
-                                  │
-                                  ▼
-┌─────────────────────────────────────────────────────────────────┐
-│            FASE 7 - IMPLEMENTATION (Sprints)                     │
-│                                                                 │
-│   Story X: Crea /api/checkout/                                  │
-│   Story Y: Crea /api/bookings/                                  │
-│   Story Z: Crea /api/stripe/webhook/                            │
-└─────────────────────────────────────────────────────────────────┘
-                                  │
-                                  ▼ (cuando tengas varios endpoints)
-┌─────────────────────────────────────────────────────────────────┐
-│   VOLVER A FASE 3:                                              │
-│   └── 4. api-documentation.md                                   │
-│       (Documenta TODOS los endpoints existentes con Redoc)      │
-└─────────────────────────────────────────────────────────────────┘
+1. cloud-services.md       (PRIMERO - Setup de infraestructura cloud)
+                           ↓
+2. backend-setup.md        (SEGUNDO - Schemas + API + Tipos)
+                           ↓
+3. frontend-setup.md       (TERCERO - UI + Integración de tipos)
 ```
 
 ### **Por qué este orden:**
 
 **🔹 Cloud Services primero:**
+
 - Crea los proyectos en Supabase/Vercel
 - Obtiene credenciales (URLs, API keys)
 - Sin esto, backend-setup no puede conectar a la DB
 
 **🔹 Backend antes que Frontend:**
+
 - Backend define schemas de DB → Genera tipos TypeScript automáticamente
 - Frontend importa esos tipos → Zero type mismatches
 - Ejemplo: `profiles` table → `Profile` type → `UserCard` component
 
 **Flujo natural de datos:**
+
 ```
 DB Schema → TypeScript Types → Frontend Components
    (Backend)                      (Frontend)
 ```
 
 **❌ Si haces Frontend primero:**
+
 - Tipos manuales → Propensos a errores
 - Cambios en backend → Rompen frontend
 - Type mismatches en producción
 
 **✅ Si haces Backend primero:**
+
 - Tipos auto-generados → Siempre sincronizados
 - Cambios en backend → TypeScript te avisa
 - Zero bugs por type mismatches
@@ -118,19 +87,22 @@ Esta fase requiere los siguientes MCP tools configurados:
 
 | MCP Tool         | Fase que lo usa                     | ¿Obligatorio? | Propósito                                           |
 | ---------------- | ----------------------------------- | ------------- | --------------------------------------------------- |
-| **Supabase MCP** | backend-setup.md                    | ✅ CRÍTICO     | Crear tablas, RLS policies, gestionar DB            |
-| **Context7 MCP** | backend-setup.md, frontend-setup.md | ✅ CRÍTICO     | Consultar docs oficiales antes de instalar paquetes |
+| **Supabase MCP** | backend-setup.md                    | ✅ CRÍTICO    | Crear tablas, RLS policies, gestionar DB            |
+| **Context7 MCP** | backend-setup.md, frontend-setup.md | ✅ CRÍTICO    | Consultar docs oficiales antes de instalar paquetes |
 
 **Verificar MCP disponibles:**
+
 ```bash
 # El AI verificará automáticamente durante ejecución
 # Si falta Supabase MCP, backend-setup se detendrá
 ```
 
 **Configurar MCP Supabase:**
+
 - Documentación: [Supabase MCP Setup](https://github.com/supabase-community/supabase-mcp)
 
 **Configurar MCP Context7:**
+
 - Documentación: [Context7 Integration](https://context7.ai/docs)
 
 ---
@@ -140,22 +112,26 @@ Esta fase requiere los siguientes MCP tools configurados:
 ### Antes de ejecutar esta fase, debes tener:
 
 **✅ Fase 2 (Architecture) completada:**
+
 - `.context/SRS/architecture-specs.md` - Tech stack decidido, ERD de DB
 - `.context/SRS/design-specs.md` - Paleta de colores, wireframes
 - `.context/SRS/functional-specs.md` - Features principales
 - `.context/PRD/` - PRD completo
 
 **✅ Herramientas locales instaladas:**
+
 - Node.js (v18+)
 - Package manager (npm/pnpm/yarn/bun)
 - Git
 - Supabase CLI (se instalará durante backend-setup si falta)
 
 **✅ Cuentas en servicios cloud:**
+
 - Cuenta Supabase (o el DB provider elegido en SRS)
 - Cuenta Vercel/Railway/Netlify (o el hosting provider elegido en SRS)
 
 **✅ Decisiones tomadas:**
+
 - Database provider (Supabase, Firebase, PostgreSQL, etc.)
 - Hosting provider (Vercel, Railway, Netlify, etc.)
 - Auth strategy (Supabase Auth, Auth0, etc.)
@@ -167,6 +143,7 @@ Esta fase requiere los siguientes MCP tools configurados:
 Al finalizar esta fase tendrás:
 
 ### **1. Infraestructura Cloud Configurada:**
+
 - ✅ Proyecto Supabase creado y configurado
 - ✅ Proyecto Vercel desplegado (o equivalente)
 - ✅ URLs de servicios documentadas
@@ -174,6 +151,7 @@ Al finalizar esta fase tendrás:
 - ✅ `.context/infrastructure-setup.md` documentado
 
 ### **2. Backend Funcional:**
+
 - ✅ Database schemas creados (tablas fundacionales)
 - ✅ Row Level Security (RLS) configurado
 - ✅ Auth integration (Supabase Auth o similar)
@@ -183,6 +161,7 @@ Al finalizar esta fase tendrás:
 - ✅ `.context/backend-setup.md` documentado
 
 ### **3. Frontend con Design System:**
+
 - ✅ Proyecto frontend configurado (Next.js, React, etc.)
 - ✅ Design System completo:
   - Paleta de colores aplicada
@@ -193,6 +172,7 @@ Al finalizar esta fase tendrás:
 - ✅ `.context/design-system.md` documentado
 
 ### **4. Integración Backend ↔ Frontend:**
+
 - ✅ Frontend importa tipos del backend
 - ✅ Zero type errors en build
 - ✅ AuthContext conectado a Supabase Auth
@@ -208,6 +188,7 @@ Al finalizar esta fase tendrás:
 **Situación:** Estás empezando un proyecto completamente nuevo.
 
 **Flujo:**
+
 1. Ejecuta `cloud-services.md` → Crea proyectos en Supabase/Vercel
 2. Ejecuta `backend-setup.md` → Crea DB schemas, auth, seed data
 3. Ejecuta `frontend-setup.md` → Crea proyecto frontend, integra tipos
@@ -223,6 +204,7 @@ Al finalizar esta fase tendrás:
 **Situación:** Ya tienes un frontend con mock data, necesitas conectar backend real.
 
 **Flujo:**
+
 1. Ejecuta `cloud-services.md` → Configura Supabase/Vercel
 2. Ejecuta `backend-setup.md` → Crea DB, genera tipos, conecta frontend
 3. **Salta `frontend-setup.md`** o úsalo solo como referencia para:
@@ -241,6 +223,7 @@ Al finalizar esta fase tendrás:
 **Situación:** Decidiste usar PostgreSQL + Railway, o Firebase + Netlify.
 
 **Flujo:**
+
 1. Ejecuta `cloud-services.md` → **Adapta para tu stack**
    - El prompt te guiará a configurar el provider elegido en el SRS
 2. Ejecuta `backend-setup.md` → **Adapta para tu stack**
@@ -257,16 +240,19 @@ Al finalizar esta fase tendrás:
 ### **1. Backend-First Philosophy**
 
 **Problema que resuelve:**
+
 - Type mismatches entre frontend y backend
 - Cambios en DB rompen frontend sin avisar
 - Duplicación de tipos (uno en frontend, otro en backend)
 
 **Solución:**
+
 ```
 Backend define schema → Genera tipos automáticamente → Frontend importa tipos
 ```
 
 **Ejemplo:**
+
 ```typescript
 // Backend: Database schema (Supabase)
 CREATE TABLE profiles (
@@ -311,11 +297,13 @@ Fase 7: Implementation (Sprints iterativos)
 ```
 
 **NO duplicas trabajo:**
+
 - Schemas fundacionales (users, profiles) → Creados UNA vez
 - Design System (Button, Card) → Creado UNA vez
 - Auth flow (login, signup) → Configurado UNA vez
 
 **Después solo implementas features específicas:**
+
 - Story 1: "Como user, quiero ver [lista de recursos]"
 - Story 2: "Como user, quiero crear [item de negocio]"
 
@@ -324,16 +312,19 @@ Fase 7: Implementation (Sprints iterativos)
 ### **3. Tablas Fundacionales vs Tablas de Features**
 
 **Tablas fundacionales (Fase 3):**
+
 - users, profiles, roles
 - Tablas que TODAS las features necesitan
 - Creadas en `backend-setup.md`
 
 **Tablas de features (Fase 7):**
+
 - {entity_name}, {bookings}, {reviews}, {payments}
 - Tablas específicas de cada story
 - Creadas durante Implementation según el PBI
 
 **Ejemplo:**
+
 ```
 Fase 3 (backend-setup.md):
   ✅ users
@@ -353,12 +344,14 @@ Fase 7 (implementando story "Ver [recursos de negocio]"):
 ### **Checklist de Validación:**
 
 **Después de `cloud-services.md`:**
+
 - [ ] Proyecto Supabase creado y accesible
 - [ ] Proyecto Vercel desplegado
 - [ ] URLs documentadas en `.context/infrastructure-setup.md`
 - [ ] Credenciales agregadas a `.env`
 
 **Después de `backend-setup.md`:**
+
 - [ ] Tablas fundacionales visibles en Supabase Dashboard
 - [ ] RLS policies configuradas (verificar en Supabase)
 - [ ] Seed data insertado (verificar en Supabase)
@@ -367,6 +360,7 @@ Fase 7 (implementando story "Ver [recursos de negocio]"):
 - [ ] Signup/Login funciona
 
 **Después de `frontend-setup.md`:**
+
 - [ ] Design System visualmente coherente
 - [ ] Páginas demo funcionan en `localhost`
 - [ ] Archivo `lib/types.ts` importa desde `src/types/supabase.ts`
@@ -380,11 +374,13 @@ Fase 7 (implementando story "Ver [recursos de negocio]"):
 ### **Problema 1: MCP Supabase no disponible**
 
 **Error:**
+
 ```
 ❌ MCP de Supabase NO disponible
 ```
 
 **Solución:**
+
 1. Configura Supabase MCP según [docs](https://github.com/supabase-community/supabase-mcp)
 2. Reinicia la sesión del AI
 3. Re-ejecuta `backend-setup.md`
@@ -394,11 +390,13 @@ Fase 7 (implementando story "Ver [recursos de negocio]"):
 ### **Problema 2: Tipos del backend no se encuentran**
 
 **Error:**
+
 ```
 Cannot find module '@/types/supabase'
 ```
 
 **Solución:**
+
 1. Verifica que `backend-setup.md` se ejecutó completamente
 2. Busca archivo: `ls src/types/supabase.ts` o `ls lib/database.types.ts`
 3. Si no existe, regenera: `npx supabase gen types typescript --project-id XXX > src/types/supabase.ts`
@@ -408,11 +406,13 @@ Cannot find module '@/types/supabase'
 ### **Problema 3: Build falla con errores de tipos**
 
 **Error:**
+
 ```
 Type 'User' is not assignable to type 'UserInsert'
 ```
 
 **Solución:**
+
 1. Revisa que estás usando el tipo correcto:
    - `Row` para leer de DB
    - `Insert` para insertar
@@ -431,6 +431,7 @@ Type 'User' is not assignable to type 'UserInsert'
 **Error:** Después de login, no redirige a dashboard.
 
 **Solución:**
+
 1. Verifica URLs en Supabase Dashboard → Authentication → URL Configuration
 2. Debe incluir: `http://localhost:3000/**`
 3. En producción: `https://tu-dominio.com/**`
@@ -441,19 +442,23 @@ Type 'User' is not assignable to type 'UserInsert'
 ## 🎓 Mejores Prácticas
 
 ### **1. Ejecuta en orden estricto**
+
 - ❌ NO saltes de `cloud-services` a `frontend-setup`
 - ✅ Sigue: cloud → backend → frontend
 
 ### **2. Documenta todo**
+
 - Los 3 prompts crean archivos en `.context/`
 - Esta documentación es crítica para el equipo
 
 ### **3. Valida después de cada prompt**
+
 - No asumas que funcionó
 - Verifica en dashboards (Supabase, Vercel)
 - Prueba localmente (`npm run dev`)
 
 ### **4. Commitea después de cada prompt**
+
 ```bash
 # Después de cloud-services.md
 git add . && git commit -m "feat: cloud infrastructure setup"
@@ -466,6 +471,7 @@ git add . && git commit -m "feat: design system + frontend integration"
 ```
 
 ### **5. No implementes features todavía**
+
 - Esta fase es SOLO base técnica
 - Features específicas van en Fase 7 (Implementation)
 
@@ -481,6 +487,7 @@ git add . && git commit -m "feat: design system + frontend integration"
 4. **Fase 7: Implementation** → Implementar features reutilizando base de Fase 3
 
 **La base técnica de Fase 3 será reutilizada en TODAS las stories:**
+
 - DB schemas fundacionales ya existen
 - Auth ya está configurado
 - Design System ya está creado

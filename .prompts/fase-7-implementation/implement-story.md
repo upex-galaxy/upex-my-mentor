@@ -13,9 +13,11 @@ Implementar la story **STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}** siguiendo su i
 **ANTES de empezar, verifica:**
 
 ### Context7 MCP
+
 **¿Está disponible?** [Verificar si puedes acceder a `mcp__context7__get-library-docs`]
 
 **Si NO está disponible:**
+
 ```
 ⚠️ MCP Context7 no detectado
 
@@ -40,27 +42,33 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 ```
 
 ### Supabase MCP (Si proyecto usa Supabase)
+
 **¿Está disponible?** [Verificar si puedes acceder a `mcp__supabase__*`]
 
 **Si NO está disponible y la story requiere DB:**
+
 - Advertir al usuario
 - Proporcionar SQL manual para que ejecute
 - O instruir cómo conectar Supabase MCP
 
 ### shadcn/ui MCP (Si proyecto usa shadcn)
+
 **¿Está disponible?** [Verificar si puedes acceder a `mcp__shadcn__*`]
 
 **¿Cuándo usarlo?**
+
 - Al crear nuevos componentes de UI
 - Para buscar componentes de shadcn disponibles
 - Para confirmar props y API de componentes shadcn
 
 **Beneficios:**
+
 - Búsqueda semántica de componentes shadcn
 - Acceso a documentación actualizada de componentes
 - Implementación correcta según best practices de shadcn
 
 **Si NO está disponible:**
+
 - Puedo continuar usando conocimiento interno de shadcn (puede estar desactualizado)
 
 ---
@@ -70,6 +78,7 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 **DEBES leer estos archivos en orden:**
 
 ### 1. Story y Plan de Implementación:
+
 ```
 .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/story.md
 .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/implementation-plan.md
@@ -77,45 +86,59 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 ```
 
 **Propósito:**
+
 - Entender **qué** implementar (Acceptance Criteria)
 - Entender **cómo** implementarlo (pasos técnicos)
 - Entender **qué validar** después
 
-### 2. Guidelines (TODOS - crítico):
+### 2. Guidelines de Desarrollo (DEV):
+
 ```
-.context/guidelines/implementation-workflow.md
-.context/guidelines/code-standards.md
-.context/guidelines/error-handling.md
-.context/guidelines/context-loading.md
-.context/guidelines/mcp-usage-tips.md
-.context/guidelines/data-testid-standards.md
+.context/guidelines/DEV/
+├── code-standards.md           # Estándares de código (DRY, naming, TypeScript)
+├── error-handling.md           # Manejo de errores estructurado
+├── data-testid-standards.md    # Atributos data-testid para testing E2E
+└── spec-driven-development.md  # Principio de desarrollo guiado por specs
 ```
 
 **Propósito:**
-- Workflow correcto de implementación
+
 - Estándares de código (DRY, naming, TypeScript)
 - Manejo de errores estructurado
-- Qué archivos leer en cada caso
-- Cuándo y cómo usar MCPs
 - **Atributos `data-testid` para testing E2E**
+- Principios de Spec-Driven Development
+
+### 2.1 Guidelines de MCP (si necesitas herramientas):
+
+```
+.context/guidelines/MCP/
+├── README.md      # Decision tree: ¿Qué MCP usar?
+├── supabase.md    # Para queries de DB
+├── context7.md    # Para docs oficiales
+└── ...            # Otros MCPs según necesidad
+```
 
 ### 3. Design System (Si story tiene UI):
+
 ```
 .context/design-system.md
 ```
 
 **Propósito:**
+
 - Componentes UI reutilizables disponibles
 - Paleta de colores y estilo visual
 - Patrones de diseño a seguir
 
 ### 4. Specs técnicas:
+
 ```
 .context/SRS/architecture-specs.md
 .context/SRS/api-contracts.yaml  (si story toca backend/API)
 ```
 
 **Propósito:**
+
 - Stack técnico del proyecto
 - Estructura de carpetas
 - Contratos de API (endpoints, schemas)
@@ -154,26 +177,31 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
    - Ejemplo: buscar "dialog", "form", "table" para encontrar componentes apropiados
 
 **Output de este paso:**
+
 ```markdown
 ## Análisis Completado
 
 **Story:** STORY-{PROJECT_KEY}-{ISSUE_NUM} - [Título]
 
 **Acceptance Criteria:**
+
 1. [AC1]
 2. [AC2]
 3. [AC3]
 
 **Steps a implementar:**
+
 1. [Step 1]: [Descripción breve]
 2. [Step 2]: [Descripción breve]
 3. [Step 3]: [Descripción breve]
 
 **Tecnologías involucradas:**
+
 - [Tech 1]
 - [Tech 2]
 
 **Componentes del Design System a usar:**
+
 - Button (variant: primary)
 - Card
 - [Otros...]
@@ -186,16 +214,19 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 ### Paso 2: Setup y Validación de Dependencias
 
 **Verifica que existen:**
+
 - [ ] Dependencias necesarias instaladas
 - [ ] Variables de entorno configuradas (`.env`)
 - [ ] Base de datos accesible (si aplica)
 
 **Si falta algo:**
+
 - ❌ **NO ejecutes scripts interactivos** (`npm init`, `npx create-*`, etc.)
 - ✅ Instala dependencias manualmente: `npm install [paquete]` o `bun add [paquete]`
 - ✅ Si requiere setup complejo: instruye al usuario paso a paso
 
 **Para cambios de DB:**
+
 - ✅ Usa Supabase MCP si está disponible
 - ✅ Si NO está disponible: proporciona SQL para que usuario ejecute manualmente
 
@@ -208,11 +239,13 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 #### Para cada step:
 
 **A) Anuncia qué vas a hacer:**
+
 ```markdown
 ### 🔨 Implementando Step 1: [Nombre del step]
 
 **Task:** [Descripción]
 **Archivos a crear/modificar:**
+
 - [Archivo 1]
 - [Archivo 2]
 
@@ -220,9 +253,10 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 ```
 
 **B) Implementa el código:**
+
 - Crea o modifica archivos
-- Sigue code standards (`.context/guidelines/code-standards.md`)
-- Aplica error handling (`.context/guidelines/error-handling.md`)
+- Sigue code standards (`.context/guidelines/DEV/code-standards.md`)
+- Aplica error handling (`.context/guidelines/DEV/error-handling.md`)
 - Si hay UI: usa componentes del design system
 - **Agrega `data-testid`** a todos los componentes UI (ver abajo)
 
@@ -232,10 +266,10 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 
 **Regla crítica - Dónde agregar el data-testid:**
 
-| Tipo | Dónde agregarlo | Ejemplo |
-|------|-----------------|---------|
-| Componentes UI base (Button, Card, Input de shadcn) | Donde se **usa** | `<Button data-testid="submit_button">` |
-| Componentes de dominio (MentorCard, LoginForm, etc.) | En la **definición** | Ver ejemplo abajo |
+| Tipo                                                 | Dónde agregarlo      | Ejemplo                                |
+| ---------------------------------------------------- | -------------------- | -------------------------------------- |
+| Componentes UI base (Button, Card, Input de shadcn)  | Donde se **usa**     | `<Button data-testid="submit_button">` |
+| Componentes de dominio (MentorCard, LoginForm, etc.) | En la **definición** | Ver ejemplo abajo                      |
 
 ```tsx
 // ✅ Componente de dominio específico: data-testid en la DEFINICIÓN
@@ -254,35 +288,43 @@ export function MentorCard({ mentor }) {
 ```
 
 **Nomenclatura:**
+
 - Componente root: **camelCase** (`mentorCard`, `loginForm`)
 - Elementos internos: **snake_case** (`email_input`, `submit_button`)
 
 **Reglas clave:**
+
 - **NUNCA** IDs dinámicos: ❌ `data-testid={`card-${id}`}`
 - Permite selectores descendientes: `$('[data-testid="mentorCard"] button')`
 
-**Referencia completa:** `.context/guidelines/data-testid-standards.md`
+**Referencia completa:** `.context/guidelines/DEV/data-testid-standards.md`
 
 **C) Explica decisiones importantes:**
+
 ```markdown
 **Decisión:** [Decisión tomada]
 **Razón:** [Por qué elegiste ese approach]
 ```
 
 **D) Valida manualmente que funciona:**
-```markdown
+
+````markdown
 **Validación:**
+
 - ✅ Código compila sin errores TypeScript
 - ✅ Linting pasa (si hay configurado)
 - ✅ Funcionalidad básica se ve/funciona (smoke test)
 
 **Cómo probar:**
+
 ```bash
 npm run dev
 # Navega a: http://localhost:3000/[ruta]
 # Verifica: [Qué debe verse/funcionar]
 ```
-```
+````
+
+````
 
 **E) Continúa al siguiente step**
 
@@ -307,7 +349,7 @@ npm run dev
 - **Manejar errores apropiadamente** (try-catch, error boundaries)
 - **Usar componentes del design system** (Button, Card, etc.)
 - **Validar inputs de usuario** (sanitización, validación)
-- **Agregar `data-testid` a componentes UI** (ver guidelines `data-testid-standards.md`)
+- **Agregar `data-testid` a componentes UI** (ver `.context/guidelines/DEV/data-testid-standards.md`)
 
 ---
 
@@ -318,7 +360,8 @@ npm run dev
 1. **Build del proyecto:**
 ```bash
 npm run build  # o: bun run build
-```
+````
+
 - ✅ Build exitoso sin errores TypeScript
 - ✅ Linting pasa (si hay configurado)
 
@@ -328,19 +371,23 @@ npm run build  # o: bun run build
    - Valida CADA Acceptance Criterion manualmente
 
 **Output:**
+
 ```markdown
 ## ✅ Validación Manual
 
 **Acceptance Criteria:**
+
 - ✅ AC1: [Descripción] - Funciona correctamente
 - ✅ AC2: [Descripción] - Funciona correctamente
 - ✅ AC3: [Descripción] - Funciona correctamente
 
 **Edge cases revisados:**
+
 - ✅ [Edge case 1]: Funciona
 - ✅ [Edge case 2]: Funciona
 
 **Cómo probé:**
+
 1. [Paso 1]
 2. [Paso 2]
 3. [Resultado esperado] ✅
@@ -354,21 +401,24 @@ npm run build  # o: bun run build
 
 **Al finalizar implementación:**
 
-```markdown
+````markdown
 ## 🎉 Implementación Completada
 
 ### 📄 Archivos creados/modificados:
 
 **Creados:**
+
 - `[ruta]` - [Descripción breve de qué hace]
 - `[ruta]` - [Descripción breve]
 
 **Modificados:**
+
 - `[ruta]` - [Qué cambió]
 
 ### ✅ Funcionalidad implementada:
 
 **Acceptance Criteria cumplidos:**
+
 - ✅ AC1: [Descripción]
 - ✅ AC2: [Descripción]
 - ✅ AC3: [Descripción]
@@ -381,6 +431,7 @@ npm run build  # o: bun run build
 - ✅ Edge cases considerados
 
 **Comandos para probar localmente:**
+
 ```bash
 # 1. Instalar dependencias (si agregaste alguna)
 npm install
@@ -395,20 +446,24 @@ npm run dev
 # - [Punto 1 a validar]
 # - [Punto 2 a validar]
 ```
+````
 
 ### 📋 Próximos pasos:
 
 **1. Unit Tests (si no se hicieron):**
-   - Usa `.prompts/fase-7-implementation/unit-testing.md`
-   - Crea tests para lógica de negocio crítica
+
+- Usa `.prompts/fase-7-implementation/unit-testing.md`
+- Crea tests para lógica de negocio crítica
 
 **2. Code Review (Fase 8):**
-   - Usa `.prompts/fase-8-code-review/review-pr.md`
-   - Revisa código con análisis estático
+
+- Usa `.prompts/fase-8-code-review/review-pr.md`
+- Revisa código con análisis estático
 
 **3. Integration/E2E Tests (Fase 11):**
-   - Después de code review y deployment staging
-   - Usa `.prompts/fase-11-test-automation/`
+
+- Después de code review y deployment staging
+- Usa `.prompts/fase-11-test-automation/`
 
 ### 💬 Sugerencia de commit message:
 
@@ -428,7 +483,8 @@ Story: [Link a Jira si aplica]
 ```
 
 **Nota:** NO hagas commit todavía - primero crea unit tests y luego pasa por Code Review (Fase 8).
-```
+
+````
 
 ---
 
@@ -455,7 +511,7 @@ Implementa STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre} siguiendo estos pasos:
 - Valida con build + prueba manual
 
 (Donde {PROJECT_KEY}, {ISSUE_NUM}, {nombre} se obtienen del epic/story que estás implementando)
-```
+````
 
 ---
 
@@ -464,16 +520,19 @@ Implementa STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre} siguiendo estos pasos:
 ### Problema: Script requiere input interactivo
 
 **❌ NO ejecutar:**
+
 ```bash
 npx create-next-app@latest  # Pide input interactivo
 npm init  # Pide input interactivo
 ```
 
 **✅ Solución:**
+
 ```markdown
 Este comando requiere input interactivo. Te proporciono los pasos manuales:
 
 **Opción 1: Ejecución manual por el usuario**
+
 1. Abre una terminal
 2. Ejecuta: [comando]
 3. Selecciona: [opciones recomendadas]
@@ -489,6 +548,7 @@ Este comando requiere input interactivo. Te proporciono los pasos manuales:
 ### Problema: Error de compilación TypeScript
 
 **Solución:**
+
 1. Lee el error completo
 2. Identifica el archivo y línea
 3. Consulta Context7 MCP si es error de biblioteca externa

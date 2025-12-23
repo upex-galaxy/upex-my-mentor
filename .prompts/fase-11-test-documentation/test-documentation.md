@@ -9,10 +9,12 @@
 Document prioritized test cases in Jira as "Test" issue type for traceability and regression management.
 
 **This prompt is executed AFTER:**
+
 - Test analysis completed
 - Tests prioritized for regression
 
 **Prerequisites:**
+
 - Access to Atlassian MCP tools (`mcp__atlassian__*`)
 - Jira project with "Test" issue type configured
 - Prioritized test list from previous steps
@@ -102,6 +104,7 @@ Feature: [Feature Name]
 **Automation Status:** [Candidate/Manual-only]
 
 ### Preconditions
+
 - User is logged in
 - Test data is prepared
 
@@ -114,6 +117,7 @@ Feature: [Feature Name]
 | 3   | Click [button]     | -         | [Expected outcome]      |
 
 ### Postconditions
+
 - [Cleanup actions if needed]
 ```
 
@@ -199,11 +203,15 @@ Inward: Test issue
 ## Next Steps
 
 ### For Automation Candidates:
+
 Proceed to **Fase 12: Test Automation**
+
 - TEST-001, TEST-002 ready for ATC implementation
 
 ### For Manual Tests:
+
 Added to manual regression checklist
+
 - TEST-003 requires human execution
 
 Would you like me to proceed with automation for the candidate tests?
@@ -291,6 +299,7 @@ h3. Metadata
 ## Post-Refactor Note
 
 **PENDING:** This prompt needs further refinement:
+
 - Specify exact Custom Field IDs for the project
 - Define Test Status workflow transitions
 - Add support for X-Ray specific fields (if using X-Ray)

@@ -22,16 +22,25 @@
       "command": ["npx", "-y", "chrome-devtools-mcp"],
       "enabled": true
     },
-    "mailtrap": {
-      "type": "local",
-      "command": ["npx", "-y", "mcp-mailtrap"],
-      "environment": {
-        "MAILTRAP_API_TOKEN": "{env:MAILTRAP_API_TOKEN}",
-        "DEFAULT_FROM_EMAIL": "{env:DEFAULT_FROM_EMAIL}",
-        "MAILTRAP_ACCOUNT_ID": "{env:MAILTRAP_ACCOUNT_ID}",
-        "MAILTRAP_TEST_INBOX_ID": "{env:MAILTRAP_TEST_INBOX_ID}"
-      },
-      "enabled": true
+    "api": {
+      "command": "npx",
+      "args": ["-y", "@ivotoby/openapi-mcp-server", "--tools dynamic"],
+      "env": {
+        "API_BASE_URL": "https://{SUPABASE_URL}.supabase.co/rest/v1",
+        "OPENAPI_SPEC_PATH": "https://{SUPABASE_URL}.supabase.co/rest/v1/?apikey={SUPABASE_ANON_KEY}",
+        "API_HEADERS": "apikey:{SUPABASE_ANON_KEY}"
+      }
+    },
+    "sql": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@bytebase/dbhub",
+        "--transport",
+        "stdio",
+        "--dsn",
+        "postgresql://{USER}.{DATABASE}.{HOST}:{PORT}/{DATABASE}"
+      ]
     },
     "supabase": {
       "type": "local",
@@ -105,13 +114,7 @@
     },
     "slack": {
       "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "slack-mcp-server@latest",
-        "--transport",
-        "stdio"
-      ],
+      "command": ["npx", "-y", "slack-mcp-server@latest", "--transport", "stdio"],
       "environment": {
         "SLACK_MCP_XOXP_TOKEN": "{env:SLACK_MCP_XOXP_TOKEN}",
         "SLACK_MCP_ADD_MESSAGE_TOOL": "true",

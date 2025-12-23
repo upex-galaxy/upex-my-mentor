@@ -19,6 +19,7 @@ Actúa como QA Lead experto en Shift-Left Testing, Test Strategy y Quality Analy
 - **Jira Key (real):** `UPEX-13` ← Key real del issue en Jira
 
 **Nota:** Los números de issue son idénticos en ambos formatos (ej: 13). La diferencia está solo en el prefijo:
+
 - Carpeta local: `EPIC-` + Jira Key
 - Jira: Solo el Key (sin prefijo EPIC-)
 
@@ -737,7 +738,6 @@ Epic is considered "Done" from QA perspective when:
 2. **Preparar contenido del summary:**
 
    Basado en análisis de Pasos 1-4, preparar:
-
    - **Top Critical Risks** (de Paso 2)
    - **Test Coverage Summary** (de Paso 4)
    - **Critical Questions** (de Paso 4)
@@ -746,13 +746,15 @@ Epic is considered "Done" from QA perspective when:
    - Usar MCP de Atlassian para editar el epic
    - Agregar nueva sección al description con el siguiente contenido:
 
-   ---
+   ***
+
    ## 🧪 QA Test Strategy - Shift-Left Analysis
 
    **Analysis Date:** [YYYY-MM-DD]
    **Status:** Test Plan Ready
 
    ### Critical Risks Identified
+
    [Resumen de top 3 riesgos técnicos/negocio con mayor impacto]
 
    ### Test Coverage Summary
@@ -762,6 +764,7 @@ Epic is considered "Done" from QA perspective when:
    - **Test Complexity:** Low | Medium | High
 
    ### Critical Questions for Team
+
    [Indicar que hay preguntas críticas en comentario - ver detalles abajo]
 
    ### Test Strategy
@@ -769,8 +772,7 @@ Epic is considered "Done" from QA perspective when:
    - Tools: Playwright, Vitest, Postman
    - Timeline: [X sprints/weeks estimated]
 
-   ---
-
+   ***
    - Agregar label: `test-plan-ready`
 
 **Output esperado:**
@@ -898,16 +900,19 @@ Epic is considered "Done" from QA perspective when:
 ### 🚨 Top 3 Critical Risks
 
 **Risk 1:** [Descripción]
+
 - **Impact:** High
 - **Area:** [Technical | Business | Integration]
 - **Mitigation:** [Estrategia]
 
 **Risk 2:** [Descripción]
+
 - **Impact:** High/Medium
 - **Area:** [Technical | Business | Integration]
 - **Mitigation:** [Estrategia]
 
 **Risk 3:** [Descripción]
+
 - **Impact:** Medium
 - **Area:** [Technical | Business | Integration]
 - **Mitigation:** [Estrategia]
@@ -917,14 +922,17 @@ Epic is considered "Done" from QA perspective when:
 ### ❓ Critical Questions Requiring PO/Dev Input
 
 **Question 1 (For PO):** [Pregunta sobre negocio]
+
 - **Context:** [Por qué es importante]
 - **Impact if not answered:** [Qué riesgo representa]
 
 **Question 2 (For Dev):** [Pregunta técnica]
+
 - **Context:** [Por qué es importante]
 - **Impact if not answered:** [Qué riesgo representa]
 
 **Question 3 (For PO/Dev):** [Pregunta adicional si aplica]
+
 - **Context:** ...
 - **Impact if not answered:** ...
 
@@ -933,12 +941,14 @@ Epic is considered "Done" from QA perspective when:
 ### 💡 Suggested Epic/Story Improvements
 
 **Improvement 1:** [Sugerencia]
+
 - **Story/Epic Affected:** [KEY]
 - **Current State:** [Problema identificado]
 - **Suggested Change:** [Cómo mejorarlo]
 - **Benefit:** [Por qué es importante]
 
 **Improvement 2:** [Si aplica]
+
 - **Story/Epic Affected:** ...
 - **Current State:** ...
 - **Suggested Change:** ...
@@ -949,18 +959,21 @@ Epic is considered "Done" from QA perspective when:
 ### 🎯 Test Strategy Highlights
 
 **Test Levels:**
+
 - Unit Testing: Dev responsibility (>80% coverage goal)
 - Integration Testing: QA + Dev collaboration
 - E2E Testing: [X] critical user journeys
 - API Testing: [Y] endpoints to validate
 
 **Test Types per Story:**
+
 - Positive: [X] test cases
 - Negative: [Y] test cases
 - Boundary: [Z] test cases
 - Integration: [W] test cases
 
 **Key Integration Points:**
+
 - [Integration Point 1]
 - [Integration Point 2]
 - [Integration Point 3]
@@ -1074,9 +1087,11 @@ Epic is considered "Done" from QA perspective when:
 **⚠️ Validación de epic.md:**
 
 El archivo epic.md debe contener en su metadata:
+
 ```markdown
 **Jira Key:** UPEX-13
 ```
+
 Este es el Jira Key REAL del issue en Jira (NO la nomenclatura de carpeta).
 
 **Nota:** El número de issue (ej: 13) es el mismo en la nomenclatura de carpeta y en el Jira Key.
@@ -1092,6 +1107,7 @@ Epic Path: .context/PBI/epics/EPIC-UPEX-13-nombre-feature/
 ```
 
 **⚠️ Proceso Automático:**
+
 1. Prompt lee: `.context/PBI/epics/EPIC-UPEX-13-nombre-feature/epic.md`
 2. Prompt extrae: Campo `**Jira Key:**` (ej: UPEX-13)
 3. Prompt usa: Jira Key real UPEX-13 para operaciones MCP
@@ -1101,27 +1117,25 @@ Epic Path: .context/PBI/epics/EPIC-UPEX-13-nombre-feature/
 ### Orden de ejecución:
 
 **Pre-requisito: Extraer Jira Key**
+
 1. Leer `{EPIC_PATH}/epic.md` proporcionado por usuario
 2. Extraer campo `**Jira Key:**` (ej: UPEX-13)
 3. Guardar Jira Key real para usar en Pasos 5 y 6
 
-**PARTE 1 - Análisis y Diseño:**
-4. **Pasos 1-4:** Analizar contexto, riesgos, estrategia, test cases (contenido Markdown)
+**PARTE 1 - Análisis y Diseño:** 4. **Pasos 1-4:** Analizar contexto, riesgos, estrategia, test cases (contenido Markdown)
 
-**PARTE 2 - Integración y Output:**
-5. **Paso 5:** Actualizar epic en Jira con test strategy summary (MCP Atlassian + Jira Key real)
-6. **Paso 6:** Crear comentario en Jira con test plan completo (MCP Atlassian + Jira Key real)
-7. **Paso 7:** Generar archivo local `feature-test-plan.md` en {EPIC_PATH}/ (Write tool)
-8. **Paso 8:** Reportar resumen al usuario (Output)
+**PARTE 2 - Integración y Output:** 5. **Paso 5:** Actualizar epic en Jira con test strategy summary (MCP Atlassian + Jira Key real) 6. **Paso 6:** Crear comentario en Jira con test plan completo (MCP Atlassian + Jira Key real) 7. **Paso 7:** Generar archivo local `feature-test-plan.md` en {EPIC_PATH}/ (Write tool) 8. **Paso 8:** Reportar resumen al usuario (Output)
 
 ### Herramientas a usar:
 
 **MCP de Atlassian:**
+
 - Para leer epic de Jira
 - Para actualizar epic description y labels
 - Para agregar comentario al epic
 
 **File Operations:**
+
 - Para crear archivo local feature-test-plan.md
 - Para leer archivos de contexto (PRD, SRS, epic, stories)
 
@@ -1193,6 +1207,7 @@ Epic Path: .context/PBI/epics/EPIC-UPEX-13-nombre-feature/
 5. ✅ **Comenzar sprint** solo cuando todas las preguntas estén resueltas
 
 **Beneficio de este workflow:**
+
 - Test plan a nivel epic identifica riesgos globales
 - Test cases a nivel story identifican gaps específicos
 - Ambos retroalimentan al PO/Dev ANTES de implementación

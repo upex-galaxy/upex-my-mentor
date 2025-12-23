@@ -10,6 +10,7 @@
 En esta fase **NO generas documentación**. En su lugar, **implementas código real** que hace funcionar la aplicación **+ unit tests para lógica crítica**.
 
 **Esta fase se enfoca SOLO en:**
+
 - ✅ Implementar funcionalidad según `implementation-plan.md`
 - ✅ **Crear unit tests para lógica de negocio** (nuevo en v4.0)
 - ✅ Seguir code standards de `.context/guidelines/`
@@ -17,6 +18,7 @@ En esta fase **NO generas documentación**. En su lugar, **implementas código r
 - ✅ Crear código limpio y mantenible
 
 **Esta fase NO incluye:**
+
 - ❌ Pruebas de integración con APIs (eso es Fase 11: Test Automation)
 - ❌ Pruebas E2E (eso es Fase 11: Test Automation)
 - ❌ Code review (eso es Fase 8: Code Review)
@@ -26,12 +28,14 @@ En esta fase **NO generas documentación**. En su lugar, **implementas código r
 ## 📋 Cuándo usar esta fase
 
 **Prerequisitos:**
+
 - ✅ Story tiene `implementation-plan.md` completo (Fase 6: Planning)
 - ✅ Test cases definidos en `test-cases.md` (Fase 5: Shift-Left Testing)
 - ✅ Design system configurado (Fase 3: Infrastructure - si hay UI)
 - ✅ Architecture specs claras (Fase 2: Architecture)
 
 **Workflow típico:**
+
 ```
 Fase 6 (Planning)
     ↓
@@ -50,12 +54,12 @@ Fase 11 (Test Automation - Integration/E2E)
 
 ## 📚 Prompts disponibles
 
-| Prompt | Cuándo usarlo | Propósito | Duración |
-|--------|---------------|-----------|----------|
-| **`implement-story.md`** ⭐ | Iniciar story desde cero | Implementar funcionalidad completa | 1-4 hours |
+| Prompt                             | Cuándo usarlo                     | Propósito                            | Duración  |
+| ---------------------------------- | --------------------------------- | ------------------------------------ | --------- |
+| **`implement-story.md`** ⭐        | Iniciar story desde cero          | Implementar funcionalidad completa   | 1-4 hours |
 | **`unit-testing.md`** ⭐ **NUEVO** | Durante/después de implementación | Crear unit tests para lógica crítica | 30-90 min |
-| **`continue-implementation.md`** | Retomar story pausada | Continuar desde donde quedó | Variable |
-| **`fix-issues.md`** | Debuggear errores | Corregir bugs o errores | Variable |
+| **`continue-implementation.md`**   | Retomar story pausada             | Continuar desde donde quedó          | Variable  |
+| **`fix-issues.md`**                | Debuggear errores                 | Corregir bugs o errores              | Variable  |
 
 ---
 
@@ -128,6 +132,7 @@ Use: unit-testing.md
 
 **Si NO está disponible:**
 La IA debe pedirle al usuario:
+
 ```
 ⚠️ MCP Context7 no detectado
 
@@ -153,6 +158,7 @@ La IA debe advertir y pedir conexión o instruir al usuario cómo ejecutar manua
 ## ⚠️ Restricciones críticas
 
 ### ❌ NO HACER:
+
 - **NO hardcodear SQL** - Usa Supabase MCP o instruye al usuario
 - **NO ejecutar scripts interactivos** - Evitar comandos que requieren input del usuario
 - **NO hardcodear valores de configuración** - Usa environment variables
@@ -161,6 +167,7 @@ La IA debe advertir y pedir conexión o instruir al usuario cómo ejecutar manua
 - **NO hacer commits automáticos** - Solo recomendar al usuario
 
 ### ✅ SÍ HACER:
+
 - **Leer todos los guidelines** antes de empezar
 - **Implementar step by step** según `implementation-plan.md`
 - **Seguir code standards** (DRY, naming, TypeScript strict)
@@ -173,16 +180,19 @@ La IA debe advertir y pedir conexión o instruir al usuario cómo ejecutar manua
 ## 💬 Output esperado de la IA
 
 **Durante implementación:**
+
 1. Explicar cada step antes de ejecutarlo
 2. Mostrar código creado/modificado con contexto
 3. Validar manualmente que funciona
 4. Reportar cualquier blocker o decisión técnica
 
 **Al finalizar:**
-```markdown
+
+````markdown
 ## ✅ Implementación Completada
 
 **Archivos creados/modificados:**
+
 - `app/page.tsx` - [Descripción breve]
 - `components/[DomainComponent].tsx` - [Descripción breve]
 - `lib/api/[domain-entity].ts` - [Descripción breve]
@@ -190,35 +200,40 @@ La IA debe advertir y pedir conexión o instruir al usuario cómo ejecutar manua
 (Donde [DomainComponent] y [domain-entity] se definen según el dominio de la story. Ejemplos: MentorCard/mentors en MYM, ProductCard/products en SHOP, PostCard/posts en BLOG)
 
 **Funcionalidad implementada:**
+
 - ✅ AC1: [Descripción]
 - ✅ AC2: [Descripción]
 - ✅ AC3: [Descripción]
 
 **Validación manual:**
+
 - ✅ Página carga correctamente
 - ✅ Datos se muestran
 - ✅ Navegación funciona
 
 **Comandos para probar:**
+
 ```bash
 npm run dev
 # Abre: http://localhost:3000/[ruta-de-tu-feature]
 ```
+````
 
 **Próximo paso:**
+
 - ✅ Unit tests completados
 - ⏭️ Fase 8: Code Review (usar `.prompts/fase-8-code-review/review-pr.md`)
-```
+
+````
 
 ---
 
 ## 📖 Recursos adicionales
 
 **Guidelines a leer:**
-- `.context/guidelines/implementation-workflow.md` - Workflow detallado
-- `.context/guidelines/code-standards.md` - Estándares de código
-- `.context/guidelines/error-handling.md` - Manejo de errores
-- `.context/guidelines/mcp-usage-tips.md` - Tips de MCP tools
+- `.context/guidelines/DEV/` - Guidelines de desarrollo (code-standards, error-handling, data-testid)
+- `.context/guidelines/DEV/spec-driven-development.md` - Principio SDD
+- `.context/guidelines/MCP/` - Tips de MCP tools (un archivo por MCP)
 
 **Specs técnicas:**
 - `.context/SRS/architecture-specs.md` - Arquitectura del proyecto
@@ -244,24 +259,27 @@ cd .prompts/fase-7-implementation/
 # 4. Pégalo en tu chat con la IA
 
 # 5. La IA implementará/testeará step by step
-```
+````
 
 ---
 
 ## 💡 Mejores Prácticas
 
 ### **1. Implementa primero, testea después**
+
 - Primero usa `implement-story.md` para implementar
 - Luego usa `unit-testing.md` para crear tests
 - Esto permite identificar mejor qué funciones son críticas
 
 ### **2. No todos los archivos necesitan unit tests**
+
 - Solo funciones con lógica de negocio compleja
 - Helpers y utilidades reutilizables
 - Cálculos y transformaciones
 - NO testear componentes UI triviales
 
 ### **3. Mínimo 80% coverage en funciones críticas**
+
 - Usa `npm run test:coverage` para validar
 - Focus en calidad, no cantidad de tests
 

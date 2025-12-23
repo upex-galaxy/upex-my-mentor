@@ -1,6 +1,7 @@
 Actúa como Software Architect y Tech Lead.
 
 **Input:**
+
 - PRD completo: [usar .context/PRD/*.md]
 - Functional Specs: [usar .context/SRS/functional-specs.md]
 - Tech Stack: [especificar stack del proyecto]
@@ -12,6 +13,7 @@ Incluye:
 **1. System Architecture** (diagrama C4 Level 1-2 en Mermaid)
 
 Genera diagrama Mermaid que muestre:
+
 - Usuario (actor)
 - Frontend (Next.js App)
 - Backend API (Next.js API Routes)
@@ -23,6 +25,7 @@ Relaciones entre componentes con flechas indicando flujo de datos.
 **2. Database Design** (ERD en Mermaid)
 
 Genera Entity-Relationship Diagram en Mermaid que muestre:
+
 - Entidades principales (basadas en FRs del SRS)
 - Atributos clave (id, campos principales, timestamps)
 - Relaciones (1:1, 1:N, N:M)
@@ -33,6 +36,7 @@ Genera Entity-Relationship Diagram en Mermaid que muestre:
 **3. Tech Stack Justification**
 
 Por cada componente del stack, incluir:
+
 - **Componente:** (ej: Next.js 15)
 - **Por qué elegido:**
   - ✅ Ventaja 1
@@ -40,6 +44,7 @@ Por cada componente del stack, incluir:
   - ❌ Trade-off / Desventaja
 
 **Ejemplo:**
+
 - **Frontend: Next.js 15 (App Router)**
   - ✅ React Server Components (mejor performance)
   - ✅ Routing file-based (DX mejorada)
@@ -51,6 +56,7 @@ Por cada componente del stack, incluir:
 Describir flujo típico de una operación:
 
 **Ejemplo: User Registration Flow**
+
 1. User submits form (Frontend)
 2. Client-side validation (Zod schema)
 3. POST request to /api/auth/register
@@ -64,6 +70,7 @@ Describir flujo típico de una operación:
 **5. Security Architecture**
 
 Incluir:
+
 - **Auth Flow Diagram:** (login, registration, token refresh)
 - **RBAC Implementation:** (cómo se manejan roles y permisos)
 - **Data Protection:** (encryption, input sanitization)
@@ -71,6 +78,7 @@ Incluir:
 **Formato:** Markdown con diagramas Mermaid embebidos, listo para copiar a .context/SRS/architecture-specs.md
 
 **Restricciones:**
+
 - Diagramas Mermaid válidos y renderizables
 - Arquitectura escalable para MVP
 - Decisiones justificadas (no solo "porque sí")

@@ -137,24 +137,24 @@
 // CONFIGURATION & VALIDATION
 // ============================================================================
 
-const API_BASE_URL = "https://api.resend.com";
+const API_BASE_URL = 'https://api.resend.com';
 const API_KEY = process.env.RESEND_API_KEY;
 
 function validateEnvironment() {
   if (!API_KEY) {
     output({
       success: false,
-      error: "Missing RESEND_API_KEY environment variable",
-      hint: "Set it in your .env file or export it: export RESEND_API_KEY=re_xxxxxxxxx",
-      docs: "https://resend.com/api-keys",
+      error: 'Missing RESEND_API_KEY environment variable',
+      hint: 'Set it in your .env file or export it: export RESEND_API_KEY=re_xxxxxxxxx',
+      docs: 'https://resend.com/api-keys',
     });
     process.exit(1);
   }
 
-  if (!API_KEY.startsWith("re_")) {
+  if (!API_KEY.startsWith('re_')) {
     output({
       success: false,
-      error: "Invalid RESEND_API_KEY format",
+      error: 'Invalid RESEND_API_KEY format',
       hint: "Resend API keys start with 're_'. Check your key at https://resend.com/api-keys",
     });
     process.exit(1);
@@ -172,7 +172,7 @@ async function apiRequest(endpoint, options = {}) {
     ...options,
     headers: {
       Authorization: `Bearer ${API_KEY}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...options.headers,
     },
   });
@@ -180,9 +180,7 @@ async function apiRequest(endpoint, options = {}) {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(
-      data.message || data.error || `API error: ${response.status}`
-    );
+    throw new Error(data.message || data.error || `API error: ${response.status}`);
   }
 
   return data;
@@ -209,7 +207,7 @@ function errorExit(message, hint = null) {
 
 function parseArgs(args) {
   const result = {
-    command: args[0] || "help",
+    command: args[0] || 'help',
     positional: [],
     options: {},
   };
@@ -218,11 +216,11 @@ function parseArgs(args) {
   while (i < args.length) {
     const arg = args[i];
 
-    if (arg.startsWith("--")) {
+    if (arg.startsWith('--')) {
       const key = arg.slice(2);
       const next = args[i + 1];
 
-      if (next && !next.startsWith("--")) {
+      if (next && !next.startsWith('--')) {
         result.options[key] = next;
         i += 2;
       } else {
@@ -248,27 +246,27 @@ async function commandInbox(options) {
   if (options.limit) {
     const limit = parseInt(options.limit);
     if (isNaN(limit) || limit < 1 || limit > 100) {
-      errorExit("Invalid --limit value", "Must be a number between 1 and 100");
+      errorExit('Invalid --limit value', 'Must be a number between 1 and 100');
     }
-    params.set("limit", limit.toString());
+    params.set('limit', limit.toString());
   }
 
-  if (options.after) params.set("after", options.after);
-  if (options.before) params.set("before", options.before);
+  if (options.after) params.set('after', options.after);
+  if (options.before) params.set('before', options.before);
 
   const queryString = params.toString();
-  const endpoint = `/emails/receiving${queryString ? `?${queryString}` : ""}`;
+  const endpoint = `/emails/receiving${queryString ? `?${queryString}` : ''}`;
 
   try {
     const response = await apiRequest(endpoint);
 
     output({
       success: true,
-      command: "inbox",
+      command: 'inbox',
       data: {
         count: response.data?.length || 0,
         hasMore: response.has_more || false,
-        emails: (response.data || []).map((email) => ({
+        emails: (response.data || []).map(email => ({
           id: email.id,
           from: email.from,
           to: email.to,
@@ -280,7 +278,7 @@ async function commandInbox(options) {
       },
     });
   } catch (err) {
-    errorExit(err.message, "Check your API key and domain configuration");
+    errorExit(err.message, 'Check your API key and domain configuration');
   }
 }
 
@@ -289,8 +287,8 @@ async function commandRead(positional) {
 
   if (!emailId) {
     errorExit(
-      "Missing email ID",
-      "Usage: bun email-checker.js read <email-id>\nGet the ID from: bun email-checker.js inbox"
+      'Missing email ID',
+      'Usage: bun email-checker.js read <email-id>\nGet the ID from: bun email-checker.js inbox'
     );
   }
 
@@ -299,7 +297,7 @@ async function commandRead(positional) {
 
     output({
       success: true,
-      command: "read",
+      command: 'read',
       data: {
         id: email.id,
         from: email.from,
@@ -313,7 +311,7 @@ async function commandRead(positional) {
         headers: email.headers,
         html: email.html,
         text: email.text,
-        attachments: email.attachments?.map((att) => ({
+        attachments: email.attachments?.map(att => ({
           id: att.id,
           filename: att.filename,
           contentType: att.content_type,
@@ -324,7 +322,7 @@ async function commandRead(positional) {
   } catch (err) {
     errorExit(
       err.message,
-      "Make sure the email ID exists. List emails with: bun email-checker.js inbox"
+      'Make sure the email ID exists. List emails with: bun email-checker.js inbox'
     );
   }
 }
@@ -334,7 +332,7 @@ async function commandStatus(positional) {
 
   if (!emailId) {
     errorExit(
-      "Missing email ID",
+      'Missing email ID',
       "Usage: bun email-checker.js status <email-id>\nThis ID comes from Resend's send API response"
     );
   }
@@ -342,12 +340,12 @@ async function commandStatus(positional) {
   try {
     const email = await apiRequest(`/emails/${emailId}`);
 
-    const successStatuses = ["delivered", "opened", "clicked"];
+    const successStatuses = ['delivered', 'opened', 'clicked'];
     const isDelivered = successStatuses.includes(email.last_event);
 
     output({
       success: true,
-      command: "status",
+      command: 'status',
       data: {
         id: email.id,
         to: email.to,
@@ -360,19 +358,16 @@ async function commandStatus(positional) {
       },
       statusExplanation:
         {
-          sent: "Email accepted by Resend servers",
+          sent: 'Email accepted by Resend servers',
           delivered: "Email delivered to recipient's mail server",
-          bounced: "Email bounced - address may be invalid",
-          complained: "Recipient marked email as spam",
-          opened: "Recipient opened the email",
-          clicked: "Recipient clicked a link in the email",
-        }[email.last_event] || "Unknown status",
+          bounced: 'Email bounced - address may be invalid',
+          complained: 'Recipient marked email as spam',
+          opened: 'Recipient opened the email',
+          clicked: 'Recipient clicked a link in the email',
+        }[email.last_event] || 'Unknown status',
     });
   } catch (err) {
-    errorExit(
-      err.message,
-      "Make sure this is a SENT email ID from Resend's send API response"
-    );
+    errorExit(err.message, "Make sure this is a SENT email ID from Resend's send API response");
   }
 }
 
@@ -380,24 +375,19 @@ async function commandAttachments(positional) {
   const emailId = positional[0];
 
   if (!emailId) {
-    errorExit(
-      "Missing email ID",
-      "Usage: bun email-checker.js attachments <email-id>"
-    );
+    errorExit('Missing email ID', 'Usage: bun email-checker.js attachments <email-id>');
   }
 
   try {
-    const response = await apiRequest(
-      `/emails/receiving/${emailId}/attachments`
-    );
+    const response = await apiRequest(`/emails/receiving/${emailId}/attachments`);
 
     output({
       success: true,
-      command: "attachments",
+      command: 'attachments',
       data: {
         emailId: emailId,
         count: response.data?.length || 0,
-        attachments: (response.data || []).map((att) => ({
+        attachments: (response.data || []).map(att => ({
           id: att.id,
           filename: att.filename,
           contentType: att.content_type,
@@ -407,7 +397,7 @@ async function commandAttachments(positional) {
       },
     });
   } catch (err) {
-    errorExit(err.message, "Make sure the email ID exists and has attachments");
+    errorExit(err.message, 'Make sure the email ID exists and has attachments');
   }
 }
 
@@ -417,19 +407,17 @@ async function commandDownload(positional) {
 
   if (!emailId || !attachmentId) {
     errorExit(
-      "Missing email ID or attachment ID",
-      "Usage: bun email-checker.js download <email-id> <attachment-id>\nGet IDs from: bun email-checker.js attachments <email-id>"
+      'Missing email ID or attachment ID',
+      'Usage: bun email-checker.js download <email-id> <attachment-id>\nGet IDs from: bun email-checker.js attachments <email-id>'
     );
   }
 
   try {
-    const response = await apiRequest(
-      `/emails/receiving/${emailId}/attachments/${attachmentId}`
-    );
+    const response = await apiRequest(`/emails/receiving/${emailId}/attachments/${attachmentId}`);
 
     output({
       success: true,
-      command: "download",
+      command: 'download',
       data: {
         emailId: emailId,
         attachmentId: attachmentId,
@@ -439,10 +427,7 @@ async function commandDownload(positional) {
       },
     });
   } catch (err) {
-    errorExit(
-      err.message,
-      "Make sure both email ID and attachment ID are valid"
-    );
+    errorExit(err.message, 'Make sure both email ID and attachment ID are valid');
   }
 }
 
@@ -451,39 +436,37 @@ async function commandSearch(positional, options) {
 
   if (!query) {
     errorExit(
-      "Missing search query",
-      "Usage: bun email-checker.js search <query> [--field from|subject]"
+      'Missing search query',
+      'Usage: bun email-checker.js search <query> [--field from|subject]'
     );
   }
 
-  const field = options.field || "subject";
+  const field = options.field || 'subject';
   const limit = parseInt(options.limit) || 50;
 
-  if (!["from", "subject"].includes(field)) {
-    errorExit("Invalid --field value", "Must be 'from' or 'subject'");
+  if (!['from', 'subject'].includes(field)) {
+    errorExit('Invalid --field value', "Must be 'from' or 'subject'");
   }
 
   try {
-    const response = await apiRequest(
-      `/emails/receiving?limit=${Math.min(limit, 100)}`
-    );
+    const response = await apiRequest(`/emails/receiving?limit=${Math.min(limit, 100)}`);
     const emails = response.data || [];
 
     const queryLower = query.toLowerCase();
-    const matches = emails.filter((email) => {
-      const value = (email[field] || "").toLowerCase();
+    const matches = emails.filter(email => {
+      const value = (email[field] || '').toLowerCase();
       return value.includes(queryLower);
     });
 
     output({
       success: true,
-      command: "search",
+      command: 'search',
       data: {
         query: query,
         field: field,
         scanned: emails.length,
         matchCount: matches.length,
-        matches: matches.map((email) => ({
+        matches: matches.map(email => ({
           id: email.id,
           from: email.from,
           to: email.to,
@@ -493,7 +476,7 @@ async function commandSearch(positional, options) {
       },
     });
   } catch (err) {
-    errorExit(err.message, "Check your API key and try again");
+    errorExit(err.message, 'Check your API key and try again');
   }
 }
 
@@ -551,8 +534,8 @@ TYPICAL WORKFLOW:
 // ============================================================================
 
 function formatBytes(bytes) {
-  if (!bytes || bytes === 0) return "0 B";
-  const units = ["B", "KB", "MB", "GB"];
+  if (!bytes || bytes === 0) return '0 B';
+  const units = ['B', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
   return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${units[i]}`;
 }
@@ -564,7 +547,7 @@ function formatBytes(bytes) {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
 
-  if (args.command === "help" || args.options.help || args.options.h) {
+  if (args.command === 'help' || args.options.help || args.options.h) {
     commandHelp();
     return;
   }
@@ -573,22 +556,22 @@ async function main() {
 
   try {
     switch (args.command) {
-      case "inbox":
+      case 'inbox':
         await commandInbox(args.options);
         break;
-      case "read":
+      case 'read':
         await commandRead(args.positional);
         break;
-      case "status":
+      case 'status':
         await commandStatus(args.positional);
         break;
-      case "attachments":
+      case 'attachments':
         await commandAttachments(args.positional);
         break;
-      case "download":
+      case 'download':
         await commandDownload(args.positional);
         break;
-      case "search":
+      case 'search':
         await commandSearch(args.positional, args.options);
         break;
       default:
@@ -598,10 +581,7 @@ async function main() {
         );
     }
   } catch (err) {
-    errorExit(
-      `Unexpected error: ${err.message}`,
-      "Check your network connection and API key"
-    );
+    errorExit(`Unexpected error: ${err.message}`, 'Check your network connection and API key');
   }
 }
 

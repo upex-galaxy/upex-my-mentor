@@ -12,12 +12,14 @@ En esta fase defines la **idea central del proyecto** antes de escribir especifi
 aciones técnicas. Generas documentación de negocio que será la base para PRD y SRS en Fase 2.
 
 **Esta fase se enfoca en:**
+
 - ✅ Business Model Canvas (problema, solución, propuesta de valor)
 - ✅ Análisis de mercado y competencia
 - ✅ Contexto de la industria
 - ✅ Pain points del usuario
 
 **Esta fase NO incluye:**
+
 - ❌ Especificaciones técnicas (eso es Fase 2: Architecture)
 - ❌ Definición de épicas/stories (eso es Fase 4: Specification)
 - ❌ Tech stack decisions (eso es Fase 2: SRS)
@@ -26,14 +28,16 @@ aciones técnicas. Generas documentación de negocio que será la base para PRD 
 
 ## 📋 Cuándo usar esta fase
 
-**Prerequis
+\*\*Prerequis
 
-itos:**
+itos:\*\*
+
 - ✅ Tienes una idea de producto/negocio clara
 - ✅ Sabes qué problema estás resolviendo
 - ✅ Tienes el directorio `.context/idea/` creado
 
 **Workflow típico:**
+
 ```
 START
   ↓
@@ -48,10 +52,10 @@ Fase 3 (Infrastructure)
 
 ## 📚 Prompts disponibles
 
-| Prompt | Orden | Cuándo usarlo | Output |
-|--------|-------|---------------|--------|
-| **`business-model.md`** | 1️⃣ | Primero - definir modelo de negocio | `.context/idea/business-model.md` |
-| **`market-context.md`** | 2️⃣ | Segundo - analizar mercado | `.context/idea/market-context.md` |
+| Prompt                  | Orden | Cuándo usarlo                       | Output                            |
+| ----------------------- | ----- | ----------------------------------- | --------------------------------- |
+| **`business-model.md`** | 1️⃣    | Primero - definir modelo de negocio | `.context/idea/business-model.md` |
+| **`market-context.md`** | 2️⃣    | Segundo - analizar mercado          | `.context/idea/market-context.md` |
 
 ---
 
@@ -94,6 +98,7 @@ Fase 3 (Infrastructure)
 ### **NO se requieren MCP tools en esta fase**
 
 Esta fase es puramente estratégica/de negocio. No requiere:
+
 - ❌ Supabase MCP (no hay DB todavía)
 - ❌ Atlassian MCP (no hay issues todavía)
 - ❌ Context7 MCP (no hay tech stack definido)
@@ -105,12 +110,14 @@ Esta fase es puramente estratégica/de negocio. No requiere:
 ## ⚠️ Restricciones críticas
 
 ### ❌ NO HACER:
+
 - **NO saltarse esta fase** - Afecta calidad de PRD/SRS en Fase 2
 - **NO incluir detalles técnicos** - Esta fase es solo negocio
 - **NO definir épicas/stories** - Eso va en Fase 4 (Specification)
 - **NO escribir código** - Todavía no hay specs técnicas
 
 ### ✅ SÍ HACER:
+
 - **Enfocarse en el problema** del usuario (pain points reales)
 - **Definir value proposition** clara
 - **Analizar competencia** (qué hacen bien/mal)
@@ -130,6 +137,7 @@ Esta fase es puramente estratégica/de negocio. No requiere:
 ```
 
 **Contenido típico de business-model.md:**
+
 - Problem Statement (pain point claro)
 - Solution Overview (cómo lo resuelves)
 - Value Proposition (por qué es mejor)
@@ -138,6 +146,7 @@ Esta fase es puramente estratégica/de negocio. No requiere:
 - Key Metrics (cómo medirás éxito)
 
 **Contenido típico de market-context.md:**
+
 - Competitive Analysis (3-5 competidores)
 - Market Opportunity (tamaño de mercado, trends)
 - Differentiators (tu ventaja competitiva)
@@ -149,10 +158,12 @@ Esta fase es puramente estratégica/de negocio. No requiere:
 
 **Próximo paso:**
 Después de completar Fase 1, procede a **Fase 2: Architecture**
+
 - Usa business-model.md como input para `prd-executive-summary.md`
 - El Problem Statement será la base de todo el PRD
 
 **Referencias útiles:**
+
 - Business Model Canvas original: https://strategyzer.com/canvas/business-model-canvas
 - Lean Canvas (alternativa): https://leanstack.com/lean-canvas
 

@@ -5,6 +5,7 @@
 Asynchronous documentation of test cases in Jira AFTER the feature has passed exploratory testing.
 
 **Why this phase exists:**
+
 - Features are validated first (rapid feedback)
 - Documentation happens when feature is stable
 - Tests are documented for regression (manual or automated)
@@ -70,6 +71,7 @@ Output: Test cases documented in Jira
 ## Jira Issue Type: Test
 
 **Required fields:**
+
 - Issue Type: `Test` (Custom Issue Type)
 - Summary: Clear test case name
 - Description: Test case in Gherkin or Traditional format
@@ -110,12 +112,12 @@ Scenario Outline: Login with invalid credentials
 
 ### Traditional Format (Alternative)
 
-| Step | Action                 | Test Data        | Expected Result         |
-| ---- | ---------------------- | ---------------- | ----------------------- |
-| 1    | Navigate to login page | -                | Login form is displayed |
-| 2    | Enter email            | user@example.com | Email field populated   |
-| 3    | Enter password         | Password123!     | Password field masked   |
-| 4    | Click submit           | -                | Redirect to dashboard   |
+| Step | Action                 | Test Data          | Expected Result         |
+| ---- | ---------------------- | ------------------ | ----------------------- |
+| 1    | Navigate to login page | -                  | Login form is displayed |
+| 2    | Enter email            | <user@example.com> | Email field populated   |
+| 3    | Enter password         | Password123!       | Password field masked   |
+| 4    | Click submit           | -                  | Redirect to dashboard   |
 
 ---
 
@@ -141,6 +143,7 @@ Scenario Outline: Login with invalid credentials
 ## Next Phase
 
 For tests marked as **automation candidates**:
+
 - Proceed to **Fase 12: Test Automation**
 - Implement ATCs following KATA architecture
 
@@ -149,5 +152,5 @@ For tests marked as **automation candidates**:
 ## Related Documentation
 
 - **QA Workflow:** `.prompts/us-qa-workflow.md`
-- **KATA Guidelines:** `.context/guidelines/tae/`
-- **TMS Integration:** `.context/guidelines/tae/tms-integration.md`
+- **KATA Guidelines:** `.context/guidelines/TAE/`
+- **TMS Integration:** `.context/guidelines/TAE/tms-integration.md`

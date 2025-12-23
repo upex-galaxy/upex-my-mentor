@@ -1,6 +1,7 @@
 Actúa como Product Manager con enfoque en priorización.
 
 **Input:**
+
 - Executive Summary: [usar .context/PRD/executive-summary.md]
 - User Personas: [usar .context/PRD/user-personas.md]
 - Business Model: [usar .context/idea/business-model.md]
@@ -38,6 +39,7 @@ Define:
 **Formato:** Markdown estructurado con bullets, listo para copiar a .context/PRD/mvp-scope.md
 
 **Restricciones:**
+
 - Épicas balanceadas (no muy grandes ni muy pequeñas)
 - User Stories en formato estándar: "Como [rol], quiero [acción], para [beneficio]"
 - Priorización clara (must have vs nice to have)

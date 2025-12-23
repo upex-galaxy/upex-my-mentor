@@ -1,184 +1,189 @@
-# 📚 Documentación del Proyecto
+# Documentacion del Proyecto
 
-Bienvenido a la documentación del **AI-Driven Software Project Template**.
+Bienvenido a la documentacion del **AI-Driven Software Project Template**.
 
----
+Esta documentacion esta orientada a **humanos** - para aprender conceptos, entender arquitecturas y seguir guias paso a paso.
 
-## 🗺️ Arquitectura y Blueprint
-
-### [AI-Driven Software Project Blueprint](./ai-driven-software-project-blueprint.md)
-Documentación completa de la metodología y estructura del proyecto. Incluye las 8 fases del desarrollo impulsado por IA (2 sincrónicas + 6 asincrónicas).
-
-### [KATA Test Architecture](./kata-test-architecture.md)
-Arquitectura completa de testing automatizado con el framework KATA (Knowledge-Aware Test Automation).
+> **Nota**: Para documentacion orientada a **IA**, consulta `.context/guidelines/`.
 
 ---
 
-## 🔧 MCP (Model Context Protocol)
+## Estructura de Documentos
 
-### Conceptos Generales
-- **[MCP - Guía General](./mcp-config-general.md)**
-  - ¿Qué es MCP?
-  - Tipos de transporte (stdio, SSE, HTTP)
-  - Seguridad y autenticación
-  - Casos de uso comunes
-
-### Configuración por Herramienta
-- **[Claude Code](./mcp-config-claudecode.md)** - CLI de Anthropic
-- **[Gemini CLI](./mcp-config-geminicli.md)** - CLI de Google
-- **[GitHub Copilot CLI](./mcp-config-copilotcli.md)** - CLI de GitHub
-- **[VS Code + GitHub Copilot](./mcp-config-vscode.md)** - Integración en VS Code
-
-### Estrategia de Configuración
-- **[MCP Builder Strategy](./mcp-builder-strategy.md)**
-  - Sistema de configuración dinámica
-  - Carga de MCPs por sesión
-  - Optimización de uso de tokens
-  - Problema del "Token Hell" y su solución
+```
+docs/
+├── architecture/          # Arquitectura del proyecto
+│   └── ai-driven-blueprint.md
+│
+├── workflows/             # Flujos de trabajo
+│   ├── ambientes.md       # Ambientes de desarrollo (dev, staging, prod)
+│   └── git-flow-guide.md  # Guia de Git Flow
+│
+├── mcp/                   # Model Context Protocol
+│   ├── README.md          # Conceptos generales de MCP
+│   ├── builder-strategy.md
+│   ├── claude-code.md
+│   ├── gemini-cli.md
+│   ├── copilot-cli.md
+│   └── vscode.md
+│
+└── testing/               # Testing y QA
+    ├── api-guide/         # API Testing (Supabase + Next.js)
+    ├── database-guide/    # Database Testing con MCPs
+    └── test-architecture/ # Arquitecturas de testing (KATA)
+```
 
 ---
 
-## 📖 Guías de Uso
+## Arquitectura
 
-### Quick Start
+### [AI-Driven Software Project Blueprint](./architecture/ai-driven-blueprint.md)
 
-1. **Elige tu herramienta de IA**:
-   - Claude Code → [Configuración](./mcp-config-claudecode.md)
-   - Gemini CLI → [Configuración](./mcp-config-geminicli.md)
-   - GitHub Copilot CLI → [Configuración](./mcp-config-copilotcli.md)
-   - VS Code → [Configuración](./mcp-config-vscode.md)
-
-2. **Configura MCP Builder**:
-   - Lee [MCP Builder Strategy](./mcp-builder-strategy.md)
-   - Copia template: `cp templates/mcp/gemini.template.json .gemini/settings.catalog.json`
-   - Agrega tus API keys
-   - Ejecuta: `node scripts/mcp-builder.js backend`
-
-3. **Empieza a desarrollar**:
-   - Sigue el [Blueprint](./ai-driven-software-project-blueprint.md)
-   - Implementa tests con [KATA](./kata-test-architecture.md)
+Documentacion completa de la metodologia y estructura del proyecto. Incluye las 13 fases del desarrollo impulsado por IA (3 sincronicas + 10 asincronicas).
 
 ---
 
-## 🎯 Workflow Recomendado
+## Workflows
 
-### Para Nuevos Proyectos
+### [Ambientes de Desarrollo](./workflows/ambientes.md)
 
-**Fases Sincrónicas** (una sola vez, setup inicial):
-```
-1. Fase 1: Constitution
-   └─ Usa prompts de .prompts/fase-1-constitution/
+Guia educativa sobre ambientes de desarrollo:
 
-2. Fase 2: Architecture (PRD + SRS)
-   └─ Usa prompts de .prompts/fase-2-architecture/
-```
+- Local, Development, Staging, Production
+- Diferencias entre empresas
+- Relacion entre ramas Git y ambientes
 
-**Fases Asincrónicas** (iterativas, por sprint/épica):
-```
-3. Fase 3: Specification (PBI)
-   └─ Usa prompts de .prompts/fase-3-specification/
+### [Git Flow Guide](./workflows/git-flow-guide.md)
 
-4. Fase 4: Shift-Left Testing
-   └─ Usa prompts de .prompts/fase-4-shift-left-testing/
+Tutorial sobre Git Flow simplificado para trabajo con IA:
 
-5. Fase 5: Planning
-   └─ Usa prompts de .prompts/fase-5-planning/
+- Estructura de ramas (main, staging, feature/\*)
+- Ciclo de trabajo tipico
+- Commits semanticos
+- Pull Requests
 
-6. Fase 6: Implementation
-   └─ Lee .context/guidelines/
-   └─ Configura MCPs con MCP Builder
-   └─ NO hay prompts (usa guidelines)
+---
 
-7. Fase 7: Code Review
-   └─ Lee .context/guidelines/code-standards.md
-   └─ NO hay prompts (usa guidelines)
+## MCP (Model Context Protocol)
 
-8. Fase 8: Test Automation Engineering
-   └─ Usa prompts de .prompts/fase-8-test-automation/
-   └─ Implementa KATA framework
-```
+### [Conceptos Generales](./mcp/README.md)
 
-### Para Desarrollo Diario
+Introduccion a MCP:
+
+- Que es MCP y como funciona
+- Tipos de transporte (stdio, SSE, HTTP)
+- Seguridad y autenticacion
+- Casos de uso comunes
+
+### [MCP Builder Strategy](./mcp/builder-strategy.md)
+
+Sistema de configuracion dinamica de MCPs:
+
+- Problema del "Token Hell"
+- Carga de MCPs por sesion
+- Optimizacion de uso de tokens (80-90% reduccion)
+
+### Configuracion por Herramienta
+
+| Herramienta        | Documento                              |
+| ------------------ | -------------------------------------- |
+| Claude Code        | [claude-code.md](./mcp/claude-code.md) |
+| Gemini CLI         | [gemini-cli.md](./mcp/gemini-cli.md)   |
+| GitHub Copilot CLI | [copilot-cli.md](./mcp/copilot-cli.md) |
+| VS Code            | [vscode.md](./mcp/vscode.md)           |
+
+---
+
+## Testing
+
+### [API Testing Guide](./testing/api-guide/README.md)
+
+Guia completa de API Testing para proyectos Supabase + Next.js:
+
+| Documento                                                          | Descripcion                      |
+| ------------------------------------------------------------------ | -------------------------------- |
+| [architecture.md](./testing/api-guide/architecture.md)             | Vision general de las 2 APIs     |
+| [authentication.md](./testing/api-guide/authentication.md)         | Como usar tokens para ambas APIs |
+| [devtools-testing.md](./testing/api-guide/devtools-testing.md)     | Testing manual con DevTools      |
+| [postman-testing.md](./testing/api-guide/postman-testing.md)       | Testing con Postman              |
+| [mcp-testing.md](./testing/api-guide/mcp-testing.md)               | Testing asistido por IA          |
+| [playwright-testing.md](./testing/api-guide/playwright-testing.md) | Testing automatizado             |
+
+### [Database Testing Guide](./testing/database-guide/README.md)
+
+Guia de testing de bases de datos con MCPs:
+
+| Documento                                                         | Descripcion                    |
+| ----------------------------------------------------------------- | ------------------------------ |
+| [concepts.md](./testing/database-guide/concepts.md)               | Conceptos de API vs DB testing |
+| [mcp-dbhub.md](./testing/database-guide/mcp-dbhub.md)             | Configuracion DBHub MCP        |
+| [mcp-openapi.md](./testing/database-guide/mcp-openapi.md)         | Configuracion OpenAPI MCP      |
+| [troubleshooting.md](./testing/database-guide/troubleshooting.md) | Solucion de problemas          |
+
+### [Test Architecture](./testing/test-architecture/)
+
+Documentacion conceptual de arquitecturas de testing:
+
+| Documento                                                                | Descripcion                             |
+| ------------------------------------------------------------------------ | --------------------------------------- |
+| [kata-fundamentals.md](./testing/test-architecture/kata-fundamentals.md) | Filosofia y conceptos de KATA Framework |
+
+---
+
+## Quick Start
+
+### 1. Elige tu herramienta de IA
+
+- Claude Code → [Configuracion](./mcp/claude-code.md)
+- Gemini CLI → [Configuracion](./mcp/gemini-cli.md)
+- GitHub Copilot CLI → [Configuracion](./mcp/copilot-cli.md)
+- VS Code → [Configuracion](./mcp/vscode.md)
+
+### 2. Configura MCP Builder
 
 ```bash
-# 1. Configura MCPs para tu tarea
-node scripts/mcp-builder.js backend  # o frontend, apitest, etc.
+# Lee la estrategia
+cat docs/mcp/builder-strategy.md
 
-# 2. Trabaja con tu AI tool favorita
-claude  # o gemini, copilot, etc.
+# Copia template
+cp templates/mcp/gemini.template.json .gemini/settings.catalog.json
 
-# 3. Al cambiar de tarea, reconfigura MCPs
-node scripts/mcp-builder.js frontend
+# Agrega tus API keys al archivo copiado
+
+# Ejecuta el builder
+node scripts/mcp-builder.js backend
 ```
 
----
+### 3. Empieza a desarrollar
 
-## 🔑 Conceptos Clave
-
-### Context Engineering
-La ingeniería de contexto es fundamental en este template:
-- **Modular**: Información organizada por fases y épicas
-- **DRY**: Sin duplicación, referencias cuando sea posible
-- **Eficiente**: Solo carga lo necesario (MCP Builder)
-
-### Token Optimization
-- Usa MCP Builder para cargar solo MCPs necesarios
-- 80-90% reducción en uso de tokens
-- Respuestas más rápidas y económicas
-
-### AI-First Development
-- Documentación estructurada para IA
-- Prompts optimizados en `.prompts/`
-- Guidelines claros en `.context/guidelines/`
+- Sigue el [Blueprint](./architecture/ai-driven-blueprint.md)
+- Lee los [workflows](./workflows/)
+- Implementa tests siguiendo las [guias de testing](./testing/)
 
 ---
 
-## 🆘 Soporte
+## Relacion con `.context/`
 
-### Problemas Comunes
+| Directorio  | Audiencia | Proposito                                      |
+| ----------- | --------- | ---------------------------------------------- |
+| `docs/`     | Humanos   | Aprendizaje, tutoriales, referencia            |
+| `.context/` | IA        | Guidelines, memoria persistente, instrucciones |
 
-**MCPs no cargan**:
-- Verifica [MCP Builder Strategy](./mcp-builder-strategy.md)
-- Revisa configuración específica de tu herramienta
+**Regla general**:
 
-**Tokens muy altos**:
-- Usa MCP Builder para optimizar
-- Lee sobre "Token Hell" en [MCP Builder](./mcp-builder-strategy.md)
-
-**Testing no funciona**:
-- Consulta [KATA Architecture](./kata-test-architecture.md)
-- Revisa `.context/guidelines/tae/`
+- Si necesitas **aprender** algo → `docs/`
+- Si la IA necesita **recordar** algo → `.context/guidelines/`
 
 ---
 
-## 📚 Documentos por Categoría
+## Contribuir
 
-### Arquitectura
-- [AI-Driven Blueprint](./ai-driven-software-project-blueprint.md)
-- [KATA Test Architecture](./kata-test-architecture.md)
+Para agregar documentacion:
 
-### MCP General
-- [MCP - Guía General](./mcp-config-general.md)
-- [MCP Builder Strategy](./mcp-builder-strategy.md)
-
-### MCP por Herramienta
-- [Claude Code](./mcp-config-claudecode.md)
-- [Gemini CLI](./mcp-config-geminicli.md)
-- [GitHub Copilot CLI](./mcp-config-copilotcli.md)
-- [VS Code](./mcp-config-vscode.md)
+1. **Educativa/Tutorial** → Agregar en `docs/` apropiado
+2. **Guidelines para IA** → Agregar en `.context/guidelines/`
+3. **Prompts ejecutables** → Agregar en `.prompts/`
 
 ---
 
-## 🔄 Actualizaciones
-
-Este repositorio se actualiza regularmente con:
-- Nuevos MCP servers en templates
-- Mejoras a MCP Builder
-- Nuevas estrategias de testing
-- Optimizaciones de context engineering
-
-**Última actualización**: 2025-10-29
-
----
-
-**💡 Tip**: Comienza con [MCP Builder Strategy](./mcp-builder-strategy.md) para entender cómo optimizar tu flujo de trabajo con IAs.
+**Ultima actualizacion**: 2025-12-22

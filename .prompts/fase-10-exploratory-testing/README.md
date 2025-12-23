@@ -5,6 +5,7 @@
 Execute manual exploratory testing to validate functionality and discover defects BEFORE investing in test automation.
 
 **Why exploratory testing first:**
+
 - Rapid feedback (minutes vs hours)
 - Finds UX bugs that automated tests miss
 - Validates features before automating
@@ -74,6 +75,7 @@ Decision: PASSED or FAILED?
 ## Next Phase
 
 If exploratory testing **PASSED**:
+
 - Proceed to **Fase 11: Test Documentation**
 - Document test cases in Jira
 - Identify automation candidates
@@ -83,4 +85,4 @@ If exploratory testing **PASSED**:
 ## Related Documentation
 
 - **QA Workflow:** `.prompts/us-qa-workflow.md`
-- **KATA Guidelines:** `.context/guidelines/tae/`
+- **KATA Guidelines:** `.context/guidelines/TAE/`

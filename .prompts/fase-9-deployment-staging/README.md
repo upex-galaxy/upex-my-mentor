@@ -7,6 +7,7 @@ La **Fase 9: Deployment & Staging** configura el pipeline de CI/CD y despliega c
 **Esta fase se ejecuta UNA SOLA VEZ** (setup de CI/CD) y luego AUTOMÁTICAMENTE en cada merge a develop.
 
 **Esta fase se enfoca en:**
+
 - ✅ Configurar GitHub Actions workflow (CI/CD pipeline)
 - ✅ Configurar environment variables por ambiente (dev, staging, prod)
 - ✅ Desplegar automáticamente a staging cuando merge a `develop`
@@ -14,6 +15,7 @@ La **Fase 9: Deployment & Staging** configura el pipeline de CI/CD y despliega c
 - ✅ Preparar infraestructura para Fase 10 (Exploratory Testing)
 
 **Esta fase NO incluye:**
+
 - ❌ Deploy a production (eso es Fase 12: Production Deployment)
 - ❌ Integration/E2E tests (eso es Fase 11: Test Automation)
 - ❌ Exploratory testing completo (eso es Fase 10: Exploratory Testing)
@@ -23,11 +25,11 @@ La **Fase 9: Deployment & Staging** configura el pipeline de CI/CD y despliega c
 
 ## 📋 Prompts de esta Fase
 
-| #   | Archivo                 | Descripción                                        | Cuándo ejecutar              | Duración  | MCP Requerido   |
-| --- | ----------------------- | -------------------------------------------------- | ---------------------------- | --------- | --------------- |
-| 1   | `ci-cd-setup.md`        | Configurar GitHub Actions workflow completo        | UNA vez (después de Fase 8)  | 30-45 min | ✅ Context7      |
-| 2   | `environment-config.md` | Configurar env vars separadas por ambiente         | UNA vez (después de ci-cd)   | 15-30 min | ❌ Ninguno       |
-| 3   | `deploy-to-staging.md`  | Desplegar código a staging (manual o automático)   | Por cada feature/PR          | 5-10 min  | ❌ Ninguno       |
+| #   | Archivo                 | Descripción                                      | Cuándo ejecutar             | Duración  | MCP Requerido |
+| --- | ----------------------- | ------------------------------------------------ | --------------------------- | --------- | ------------- |
+| 1   | `ci-cd-setup.md`        | Configurar GitHub Actions workflow completo      | UNA vez (después de Fase 8) | 30-45 min | ✅ Context7   |
+| 2   | `environment-config.md` | Configurar env vars separadas por ambiente       | UNA vez (después de ci-cd)  | 15-30 min | ❌ Ninguno    |
+| 3   | `deploy-to-staging.md`  | Desplegar código a staging (manual o automático) | Por cada feature/PR         | 5-10 min  | ❌ Ninguno    |
 
 **Total estimado (setup inicial):** 50-85 minutos
 
@@ -50,31 +52,37 @@ La **Fase 9: Deployment & Staging** configura el pipeline de CI/CD y despliega c
 ### **Por qué este orden:**
 
 **🔹 CI/CD Setup primero:**
+
 - Crea el archivo `.github/workflows/ci.yml`
 - Define qué se ejecuta en cada push/PR (lint → test → build → deploy)
 - Sin esto, no hay automatización de deploys
 
 **🔹 Environment Config antes de Deploy:**
+
 - Configura variables necesarias en Vercel/Railway (URLs, API keys, etc.)
 - Sin esto, el deploy falla porque faltan secrets
 
 **🔹 Deploy to Staging último:**
+
 - Trigger el workflow de GitHub Actions
 - Valida que todo funciona end-to-end
 - Genera URL de staging para QA
 
 **Flujo natural:**
+
 ```
 GitHub Actions → Environment Variables → Deploy Automático
    (CI/CD)            (Secrets)             (Staging)
 ```
 
 **❌ Si haces Deploy sin CI/CD:**
+
 - Deploys manuales cada vez → Propenso a errores humanos
 - No hay validación automática (lint/test/build)
 - Team no tiene visibilidad de qué se desplegó
 
 **✅ Si haces CI/CD primero:**
+
 - Deploy automático en cada merge → Zero intervention
 - CI valida código antes de deploy → Menos bugs en staging
 - GitHub Actions logs → Full traceability
@@ -85,20 +93,23 @@ GitHub Actions → Environment Variables → Deploy Automático
 
 Esta fase requiere los siguientes MCP tools configurados:
 
-| MCP Tool         | Fase que lo usa  | ¿Obligatorio?       | Propósito                                      |
-| ---------------- | ---------------- | ------------------- | ---------------------------------------------- |
-| **Context7 MCP** | ci-cd-setup.md   | ✅ ALTAMENTE RECOMENDADO | Consultar docs de GitHub Actions y Vercel actualizadas |
+| MCP Tool         | Fase que lo usa | ¿Obligatorio?            | Propósito                                              |
+| ---------------- | --------------- | ------------------------ | ------------------------------------------------------ |
+| **Context7 MCP** | ci-cd-setup.md  | ✅ ALTAMENTE RECOMENDADO | Consultar docs de GitHub Actions y Vercel actualizadas |
 
 **Verificar MCP disponibles:**
+
 ```bash
 # El AI verificará automáticamente durante ejecución
 # Si falta Context7, ci-cd-setup puede usar conocimiento interno (puede estar desactualizado)
 ```
 
 **Configurar MCP Context7:**
+
 - Documentación: [Context7 Integration](https://context7.ai/docs)
 
 **¿Por qué Context7 es crítico?**
+
 - GitHub Actions cambia frecuentemente (action versions)
 - Vercel deployment actions se actualizan
 - Context7 asegura usar sintaxis y versiones correctas
@@ -110,30 +121,36 @@ Esta fase requiere los siguientes MCP tools configurados:
 ### Antes de ejecutar esta fase, debes tener:
 
 **✅ Fase 8 (Code Review) completada:**
+
 - PR aprobado y listo para merge a `develop`
 - Unit tests pasando
 - Build local exitoso
 
 **✅ Fase 3 (Infrastructure) completada:**
+
 - `.context/infrastructure-setup.md` - URLs de Vercel/Railway, credenciales
 - Proyecto desplegado en Vercel/Railway (aunque sea deploy inicial)
 
 **✅ GitHub Repository configurado:**
+
 - Repositorio GitHub existente
 - Branches `main` (production) y `develop` (staging) creadas
 - Acceso de escritura al repo (para configurar secrets)
 
 **✅ Herramientas locales instaladas:**
+
 - Git
 - Node.js
 - npm/pnpm/yarn/bun
 
 **✅ Cuentas y accesos:**
+
 - Cuenta GitHub con acceso al repositorio
 - Cuenta Vercel/Railway con proyecto creado
 - Capacidad de agregar secrets en GitHub (Settings → Secrets)
 
 **✅ Scripts npm configurados:**
+
 - `package.json` debe tener:
   - `npm run lint` - ESLint configurado
   - `npm run test` - Testing framework (Jest, Vitest, etc.)
@@ -146,6 +163,7 @@ Esta fase requiere los siguientes MCP tools configurados:
 Al finalizar esta fase tendrás:
 
 ### **1. CI/CD Pipeline Configurado:**
+
 - ✅ `.github/workflows/ci.yml` - GitHub Actions workflow completo
 - ✅ Workflow triggers: push/PR a `main` y `develop`
 - ✅ Jobs secuenciales: lint → test → build → deploy
@@ -153,6 +171,7 @@ Al finalizar esta fase tendrás:
 - ✅ (Opcional) Deploy automático a production cuando push a `main`
 
 ### **2. GitHub Secrets Configurados:**
+
 - ✅ `VERCEL_TOKEN` - Token de Vercel API
 - ✅ `VERCEL_ORG_ID` - Organization ID de Vercel
 - ✅ `VERCEL_PROJECT_ID` - Project ID de Vercel
@@ -161,29 +180,35 @@ Al finalizar esta fase tendrás:
 ### **3. Environment Variables por Ambiente:**
 
 **Development (Local):**
+
 - ✅ `.env` - Variables completas para desarrollo local (gitignored)
 - ✅ `.env.example` - Template actualizado con todas las variables
 
 **Staging (Vercel/Railway):**
+
 - ✅ Environment variables configuradas con scope "Preview"
 - ✅ Variables apuntando a servicios de staging (Supabase staging, etc.)
 
 **Production (Placeholder para Fase 12):**
+
 - ✅ Estructura documentada
 - ✅ Variables placeholder en documentación
 
 ### **4. Deployment en Staging:**
+
 - ✅ Código desplegado en staging environment
 - ✅ Staging URL accesible: `https://[project]-develop.vercel.app`
 - ✅ Smoke test básico pasado
 - ✅ No hay errores 500 críticos
 
 ### **5. Documentación:**
+
 - ✅ `.context/ci-cd-setup.md` - Documentación del workflow
 - ✅ `.context/environment-variables.md` - Guía de env vars por ambiente
 - ✅ README.md actualizado con badges de CI status
 
 ### **6. Badge de CI en README:**
+
 ```markdown
 [![CI/CD Pipeline](https://github.com/[org]/[repo]/actions/workflows/ci.yml/badge.svg)](https://github.com/[org]/[repo]/actions)
 ```
@@ -197,6 +222,7 @@ Al finalizar esta fase tendrás:
 **Situación:** Proyecto no tiene CI/CD configurado, deploys son manuales.
 
 **Flujo:**
+
 1. Ejecuta `ci-cd-setup.md` → Crea GitHub Actions workflow
 2. Configura secrets en GitHub (VERCEL_TOKEN, etc.)
 3. Ejecuta `environment-config.md` → Configura env vars en Vercel/Railway
@@ -216,6 +242,7 @@ Al finalizar esta fase tendrás:
 **Situación:** CI/CD ya está configurado, quieres desplegar nueva feature.
 
 **Flujo:**
+
 1. Implementa feature en `feature/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}` branch
 2. Crea Pull Request a `develop`
 3. GitHub Actions ejecuta: lint → test → build (automático)
@@ -235,6 +262,7 @@ Al finalizar esta fase tendrás:
 **Situación:** GitHub Actions no está configurado o tiene problemas, necesitas desplegar YA.
 
 **Flujo:**
+
 1. Ejecuta `deploy-to-staging.md` → Sigue instrucciones de deploy manual
 2. Usa Vercel CLI o Railway CLI para desplegar
 3. Valida staging URL
@@ -250,6 +278,7 @@ Al finalizar esta fase tendrás:
 **Situación:** Agregaste nueva API key o cambiaste URL de servicio, staging necesita actualización.
 
 **Flujo:**
+
 1. Ejecuta `environment-config.md` → Sección "Cómo Agregar Nueva Variable"
 2. Agrega variable en Vercel Dashboard con scope "Preview"
 3. Trigger re-deploy:
@@ -268,6 +297,7 @@ Al finalizar esta fase tendrás:
 **Situación:** GitHub Actions muestra "Deploy to Staging" job en rojo.
 
 **Flujo:**
+
 1. Ve a GitHub Actions logs: `https://github.com/[org]/[repo]/actions`
 2. Click en workflow fallido → "Deploy to Staging" job
 3. Revisa errores:
@@ -286,11 +316,13 @@ Al finalizar esta fase tendrás:
 ### **1. CI/CD Pipeline (Continuous Integration / Continuous Deployment)**
 
 **Problema que resuelve:**
+
 - Deploys manuales propensos a errores
 - No hay validación automática antes de deploy
 - Team no sabe si código está roto hasta después de deploy
 
 **Solución:**
+
 ```
 Push a develop → GitHub Actions ejecuta:
   1. Lint (valida code style)
@@ -300,26 +332,27 @@ Push a develop → GitHub Actions ejecuta:
 ```
 
 **Ejemplo de workflow:**
+
 ```yaml
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
       - checkout código
-      - npm run lint  # Si falla, se detiene aquí
+      - npm run lint # Si falla, se detiene aquí
 
   test:
-    needs: lint  # Solo ejecuta si lint pasó
+    needs: lint # Solo ejecuta si lint pasó
     steps:
-      - npm run test  # Si falla, no despliega
+      - npm run test # Si falla, no despliega
 
   build:
-    needs: test  # Solo ejecuta si test pasó
+    needs: test # Solo ejecuta si test pasó
     steps:
       - npm run build
 
   deploy-staging:
-    needs: build  # Solo despliega si todo lo anterior pasó
+    needs: build # Solo despliega si todo lo anterior pasó
     if: github.ref == 'refs/heads/develop'
     steps:
       - Deploy to Vercel staging
@@ -332,10 +365,12 @@ jobs:
 ### **2. Environment Variables por Ambiente**
 
 **Problema que resuelve:**
+
 - Usar mismas credenciales en dev, staging y production → Riesgo de contaminar prod
 - Hardcodear URLs/keys en código → Security risk
 
 **Solución:**
+
 ```
 Development:   NEXT_PUBLIC_API_URL=http://localhost:3000
                SUPABASE_URL=https://dev-project.supabase.co
@@ -348,6 +383,7 @@ Production:    NEXT_PUBLIC_API_URL=https://[domain].com
 ```
 
 **Cada ambiente tiene:**
+
 - URLs diferentes
 - Database separada (dev DB, staging DB, prod DB)
 - API keys diferentes
@@ -359,15 +395,18 @@ Production:    NEXT_PUBLIC_API_URL=https://[domain].com
 ### **3. Staging Environment (Pre-production)**
 
 **¿Qué es staging?**
+
 - Copia casi idéntica de production
 - Donde QA valida features antes de production
 - Conectado a staging database (no production)
 
 **URL típica:**
+
 - Staging: `https://[project]-develop.vercel.app`
 - Production: `https://[project].vercel.app` o `https://[domain].com`
 
 **Flujo de datos:**
+
 ```
 Feature branch → develop → Staging → QA valida → main → Production
 ```
@@ -379,20 +418,23 @@ Feature branch → develop → Staging → QA valida → main → Production
 ### **4. GitHub Secrets (Encrypted Variables)**
 
 **Problema que resuelve:**
+
 - No puedes hardcodear API keys en código (security risk)
 - No puedes commitear `.env` a Git (exposed secrets)
 
 **Solución:**
+
 - Guardas secrets en GitHub Settings → Secrets
 - GitHub Actions accede a ellos via `${{ secrets.VERCEL_TOKEN }}`
 - Nunca aparecen en logs (GitHub los oculta)
 
 **Ejemplo:**
+
 ```yaml
 - name: Deploy to Vercel
   uses: amondnet/vercel-action@v25
   with:
-    vercel-token: ${{ secrets.VERCEL_TOKEN }}  # ✅ Encrypted
+    vercel-token: ${{ secrets.VERCEL_TOKEN }} # ✅ Encrypted
     vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
 ```
 
@@ -403,13 +445,16 @@ Feature branch → develop → Staging → QA valida → main → Production
 ### **5. Smoke Test Post-Deploy**
 
 **¿Qué es smoke test?**
+
 - Validación rápida de que deployment funciona básicamente
 - NO es testing completo (eso es Fase 10)
 - Solo verifica: "¿La app carga sin errores 500?"
 
 **Checklist típico:**
+
 ```markdown
 Smoke Test - Staging:
+
 - [ ] Landing page carga sin errores 500
 - [ ] No hay errores en browser console (F12)
 - [ ] Assets (CSS, JS, images) cargan correctamente
@@ -428,6 +473,7 @@ Smoke Test - Staging:
 ### **Checklist de Validación:**
 
 **Después de `ci-cd-setup.md`:**
+
 - [ ] Archivo `.github/workflows/ci.yml` existe y está completo
 - [ ] Secrets configurados en GitHub (Settings → Secrets):
   - [ ] `VERCEL_TOKEN`
@@ -439,6 +485,7 @@ Smoke Test - Staging:
 - [ ] README.md tiene badge de CI status
 
 **Verificar en GitHub:**
+
 1. Ve a: `https://github.com/[org]/[repo]/actions`
 2. Deberías ver workflow "CI/CD Pipeline" ejecutándose o completado
 3. Todos los jobs deben estar verdes (✅)
@@ -446,6 +493,7 @@ Smoke Test - Staging:
 ---
 
 **Después de `environment-config.md`:**
+
 - [ ] `.env` existe localmente con valores de development
 - [ ] `.env.example` actualizado con todas las variables
 - [ ] Variables configuradas en Vercel Dashboard con scope "Preview":
@@ -457,6 +505,7 @@ Smoke Test - Staging:
 - [ ] `npm run dev` local funciona sin errores de env vars
 
 **Verificar en Vercel:**
+
 1. Ve a: `https://vercel.com/[org]/[project]/settings/environment-variables`
 2. Variables deben aparecer con scope "Preview"
 3. Valores deben ser diferentes a production (si existe)
@@ -464,6 +513,7 @@ Smoke Test - Staging:
 ---
 
 **Después de `deploy-to-staging.md`:**
+
 - [ ] Feature branch merged a `develop` (o push directo)
 - [ ] GitHub Actions workflow ejecutado exitosamente
 - [ ] Deployment completado en Vercel/Railway
@@ -475,6 +525,7 @@ Smoke Test - Staging:
   - [ ] Database connection funciona
 
 **Verificar en Vercel:**
+
 1. Ve a: `https://vercel.com/[org]/[project]`
 2. En "Deployments", busca deployment más reciente de `develop`
 3. Status debe ser "Ready" (verde)
@@ -487,12 +538,14 @@ Smoke Test - Staging:
 ### **Problema 1: Workflow falla en "Install dependencies"**
 
 **Error en GitHub Actions:**
+
 ```
 npm ERR! code ENOLOCK
 npm ERR! npm ci can only install packages when your package.json and package-lock.json are in sync
 ```
 
 **Solución:**
+
 1. Localmente ejecuta:
    ```bash
    rm -rf node_modules package-lock.json
@@ -508,11 +561,13 @@ npm ERR! npm ci can only install packages when your package.json and package-loc
 ### **Problema 2: Deploy falla con "Invalid token"**
 
 **Error en GitHub Actions:**
+
 ```
 Error: Invalid Vercel token
 ```
 
 **Solución:**
+
 1. Verifica que `VERCEL_TOKEN` está configurado en GitHub Secrets:
    - Ve a: `https://github.com/[org]/[repo]/settings/secrets/actions`
    - Debe aparecer `VERCEL_TOKEN` en la lista
@@ -527,11 +582,13 @@ Error: Invalid Vercel token
 ### **Problema 3: Staging carga pero con errores en console**
 
 **Error en browser console (F12):**
+
 ```
 Error: NEXT_PUBLIC_SUPABASE_URL is not defined
 ```
 
 **Solución:**
+
 1. Verifica variables en Vercel Dashboard:
    - Ve a: `https://vercel.com/[org]/[project]/settings/environment-variables`
    - `NEXT_PUBLIC_SUPABASE_URL` debe existir con scope "Preview"
@@ -550,12 +607,14 @@ Error: NEXT_PUBLIC_SUPABASE_URL is not defined
 ### **Problema 4: CI pasa pero deploy no se ejecuta**
 
 **GitHub Actions muestra:**
+
 - ✅ Lint (verde)
 - ✅ Test (verde)
 - ✅ Build (verde)
 - ⏭️ Deploy Staging (skip)
 
 **Solución:**
+
 1. Verifica condición en `.github/workflows/ci.yml`:
    ```yaml
    deploy-staging:
@@ -573,6 +632,7 @@ Error: NEXT_PUBLIC_SUPABASE_URL is not defined
 **Error:** Después de login en staging, redirect falla.
 
 **Solución:**
+
 1. Agrega staging URL a Supabase redirect URLs:
    - Ve a Supabase Dashboard → Authentication → URL Configuration
    - Redirect URLs debe incluir:
@@ -586,11 +646,13 @@ Error: NEXT_PUBLIC_SUPABASE_URL is not defined
 ### **Problema 6: Build falla con TypeScript errors**
 
 **Error en GitHub Actions:**
+
 ```
 Type error: Property 'email' does not exist on type 'User'
 ```
 
 **Solución:**
+
 1. Ejecuta localmente:
    ```bash
    npm run build
@@ -616,10 +678,12 @@ Type error: Property 'email' does not exist on type 'User'
 ### **1. Ejecuta CI/CD Setup SOLO una vez**
 
 **❌ NO hacer:**
+
 - Re-ejecutar `ci-cd-setup.md` por cada feature
 - Crear múltiples workflows para mismo propósito
 
 **✅ SÍ hacer:**
+
 - Ejecutar `ci-cd-setup.md` una vez después de Fase 3 (Infrastructure)
 - Después, GitHub Actions maneja deploys automáticamente
 - Si necesitas modificar workflow, edita `.github/workflows/ci.yml` directamente
@@ -629,12 +693,14 @@ Type error: Property 'email' does not exist on type 'User'
 ### **2. Separar Variables por Ambiente (CRÍTICO)**
 
 **❌ NO hacer:**
+
 ```
 # Usar misma DB en dev, staging y prod
 SUPABASE_URL=https://prod-project.supabase.co  # ⚠️ PELIGRO
 ```
 
 **✅ SÍ hacer:**
+
 ```
 Development:  SUPABASE_URL=https://dev-project.supabase.co
 Staging:      SUPABASE_URL=https://staging-project.supabase.co
@@ -648,6 +714,7 @@ Production:   SUPABASE_URL=https://prod-project.supabase.co
 ### **3. Smoke Test INMEDIATO después de Deploy**
 
 **Workflow recomendado:**
+
 ```bash
 # 1. Merge PR a develop
 git checkout develop
@@ -674,6 +741,7 @@ https://[project]-develop.vercel.app
 **No asumas que deployment pasó.**
 
 **Checklist:**
+
 1. Push a develop
 2. Ve a: `https://github.com/[org]/[repo]/actions`
 3. Espera a que workflow complete (3-7 min)
@@ -681,6 +749,7 @@ https://[project]-develop.vercel.app
 5. **Solo entonces** valida staging URL
 
 **Si algún job falla:**
+
 - Click en job rojo
 - Lee logs completos
 - Identifica error específico
@@ -691,6 +760,7 @@ https://[project]-develop.vercel.app
 ### **5. Commitea después de cada prompt**
 
 **Después de `ci-cd-setup.md`:**
+
 ```bash
 git add .github/workflows/ci.yml .context/ci-cd-setup.md
 git commit -m "ci: configure GitHub Actions CI/CD pipeline
@@ -703,6 +773,7 @@ git push origin develop
 ```
 
 **Después de `environment-config.md`:**
+
 ```bash
 git add .env.example .context/environment-variables.md
 git commit -m "chore: configure environment variables per environment
@@ -720,6 +791,7 @@ git push origin develop
 ### **6. Protege `main` branch**
 
 **Configurar GitHub Branch Protection:**
+
 1. Ve a: `https://github.com/[org]/[repo]/settings/branches`
 2. Add rule para `main` branch:
    - ✅ Require pull request before merging
@@ -738,6 +810,7 @@ git push origin develop
 ### **1. Fase 10: Exploratory Testing (QA en Staging)**
 
 **Prompts disponibles:**
+
 ```bash
 .prompts/fase-10-exploratory-testing/smoke-test.md       # Smoke test completo
 .prompts/fase-10-exploratory-testing/test-charter.md     # Planear sesión exploratoria
@@ -774,6 +847,7 @@ Si OK → Fase 11 (Test Automation)
 ### **3. Fase 11: Test Automation (Integration & E2E Tests)**
 
 **Después de QA aprobar staging:**
+
 - Crear integration tests (API tests)
 - Crear E2E tests (Playwright, Cypress)
 - Agregar tests al CI/CD pipeline
@@ -783,6 +857,7 @@ Si OK → Fase 11 (Test Automation)
 ### **4. Fase 12: Production Deployment**
 
 **Cuando features están estables en staging:**
+
 - Configurar environment variables de production
 - Merge `develop` → `main`
 - GitHub Actions despliega a production
@@ -793,18 +868,22 @@ Si OK → Fase 11 (Test Automation)
 ## 📚 Referencias
 
 **Prompts validados:**
+
 - `.prompts/fase-2-architecture/prd-executive-summary.md` - Patrón de prompt validado
 - `.prompts/fase-3-infrastructure/README.md` - README de referencia
 
 **Specs técnicas:**
+
 - `.context/SRS/architecture-specs.md` - Arquitectura del proyecto
 - `.context/infrastructure-setup.md` - URLs y credenciales
 
 **Git & Testing:**
+
 - `.prompts/git-flow.md` - Git workflow strategy
 - `.prompts/fase-11-test-automation/test-strategy.md` - Testing strategy
 
 **Documentación externa:**
+
 - [GitHub Actions Docs](https://docs.github.com/en/actions)
 - [Vercel Deployment](https://vercel.com/docs/deployments/overview)
 - [Railway Deployment](https://docs.railway.app/deploy/deployments)
@@ -817,26 +896,31 @@ Si OK → Fase 11 (Test Automation)
 **Al completar esta fase exitosamente:**
 
 ✅ **CI/CD automatizado:**
+
 - Cada merge a `develop` despliega a staging automáticamente
 - Zero deploys manuales necesarios
 - CI valida código antes de desplegar
 
 ✅ **Environment variables correctas:**
+
 - Development, Staging, Production separados
 - No hay crossover de datos entre ambientes
 - Secrets nunca expuestos en código
 
 ✅ **Staging accesible:**
+
 - URL funcional: `https://[project]-develop.vercel.app`
 - Smoke test pasa
 - Listo para QA (Fase 10)
 
 ✅ **Documentación completa:**
+
 - `.context/ci-cd-setup.md` - Cómo funciona el pipeline
 - `.context/environment-variables.md` - Guía de env vars
 - README.md con CI badge
 
 ✅ **Team tiene visibilidad:**
+
 - GitHub Actions logs muestran qué se desplegó
 - Badge de CI en README muestra status
 - Staging URL accesible para todo el team
@@ -850,6 +934,7 @@ Si OK → Fase 11 (Test Automation)
 **¿Para qué?** Ver test coverage online, integrado con PRs.
 
 **Cómo:**
+
 1. Crea cuenta en: https://codecov.io
 2. Conecta repo GitHub
 3. Agrega a `.github/workflows/ci.yml`:
@@ -871,6 +956,7 @@ Si OK → Fase 11 (Test Automation)
 **¿Para qué?** Team recibe notificación cuando deploy a staging completa.
 
 **Cómo:**
+
 1. Crea Slack webhook: https://api.slack.com/messaging/webhooks
 2. Agrega secret `SLACK_WEBHOOK` en GitHub
 3. Agrega step a workflow:
@@ -890,10 +976,12 @@ Si OK → Fase 11 (Test Automation)
 **¿Qué es?** Vercel crea deployment único por cada PR.
 
 **Beneficio:**
+
 - Code reviewer puede ver cambios en vivo
 - No espera a merge para validar UI
 
 **Cómo funciona:**
+
 - Vercel detecta PR automáticamente
 - Crea deploy con URL única: `https://[project]-pr-123.vercel.app`
 - Comenta URL en el PR
@@ -907,6 +995,7 @@ Si OK → Fase 11 (Test Automation)
 **¿Para qué?** Si deploy a staging falla, mantener versión anterior funcionando.
 
 **Cómo:**
+
 1. Vercel automáticamente mantiene deployment anterior activo
 2. Si nuevo deploy falla, URL sigue apuntando a versión previa
 3. Fix error → Push → Re-deploy automático

@@ -11,12 +11,15 @@ Configurar **ESLint + Prettier** en el proyecto actual (si no está configurado)
 ## ⚙️ VERIFICACIÓN DE HERRAMIENTAS (MCP)
 
 ### Context7 MCP (Recomendado)
+
 **¿Está disponible?** [Verificar si puedes acceder a `mcp__context7__get-library-docs`]
 
 **Si ESTÁ disponible:**
+
 - Consultar docs oficiales de ESLint, Prettier, y framework del proyecto
 
 **Si NO está disponible:**
+
 ```
 ⚠️ MCP Context7 no detectado
 
@@ -33,11 +36,13 @@ Puedo continuar, pero usaré configuración genérica (puede no ser óptima).
 ### 1.1 Identificar framework del proyecto
 
 **Lee estos archivos:**
+
 - `package.json` - Identificar framework (Next.js, React+Vite, etc.)
 - `.eslintrc.*` o `eslint.config.js` - Ver si ya existe configuración
 - `.prettierrc.*` - Ver si ya existe Prettier
 
 **Output:**
+
 ```markdown
 ## Análisis del Proyecto
 
@@ -45,6 +50,7 @@ Puedo continuar, pero usaré configuración genérica (puede no ser óptima).
 **Package manager:** [npm / pnpm / bun]
 
 **Estado actual:**
+
 - ESLint: ✅ Configurado / ❌ No configurado
 - Prettier: ✅ Configurado / ❌ No configurado
 
@@ -60,21 +66,25 @@ Puedo continuar, pero usaré configuración genérica (puede no ser óptima).
 ### 2.1 Instalar packages manualmente
 
 **Comando a ejecutar:**
+
 ```bash
 [npm/pnpm/bun] install -D eslint prettier eslint-config-prettier eslint-plugin-prettier
 ```
 
 **Para Next.js:**
+
 ```bash
 [npm/pnpm/bun] install -D eslint-config-next
 ```
 
 **Para React (sin Next.js):**
+
 ```bash
 [npm/pnpm/bun] install -D eslint-plugin-react eslint-plugin-react-hooks
 ```
 
 **Para TypeScript:**
+
 ```bash
 [npm/pnpm/bun] install -D @typescript-eslint/eslint-plugin @typescript-eslint/parser
 ```
@@ -90,13 +100,10 @@ Puedo continuar, pero usaré configuración genérica (puede no ser óptima).
 **Consulta Context7 MCP:** Buscar configuración oficial del framework.
 
 **Ejemplo para Next.js:**
+
 ```json
 {
-  "extends": [
-    "next/core-web-vitals",
-    "plugin:@typescript-eslint/recommended",
-    "prettier"
-  ],
+  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "prettier"],
   "rules": {
     "@typescript-eslint/no-explicit-any": "error",
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
@@ -106,6 +113,7 @@ Puedo continuar, pero usaré configuración genérica (puede no ser óptima).
 ```
 
 **Ejemplo para React+Vite:**
+
 ```json
 {
   "env": {
@@ -127,11 +135,7 @@ Puedo continuar, pero usaré configuración genérica (puede no ser óptima).
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": [
-    "react",
-    "react-hooks",
-    "@typescript-eslint"
-  ],
+  "plugins": ["react", "react-hooks", "@typescript-eslint"],
   "rules": {
     "react/react-in-jsx-scope": "off",
     "@typescript-eslint/no-explicit-any": "error",
@@ -214,28 +218,34 @@ package-lock.json
 **Ejecutar comandos:**
 
 ### 5.1 Probar linting
+
 ```bash
 [npm/pnpm/bun] run lint
 ```
 
 **Resultado esperado:**
+
 - ✅ Se ejecuta sin errores de configuración
 - Puede mostrar warnings/errors de código (eso es normal)
 
 ### 5.2 Probar fix automático
+
 ```bash
 [npm/pnpm/bun] run lint:fix
 ```
 
 **Resultado esperado:**
+
 - Corrige issues automáticamente (formateo, imports, etc.)
 
 ### 5.3 Probar Prettier
+
 ```bash
 [npm/pnpm/bun] run format
 ```
 
 **Resultado esperado:**
+
 - Formatea todos los archivos según reglas
 
 ---
@@ -252,6 +262,7 @@ package-lock.json
 
 2. **Configurar auto-format on save:**
    - Crear `.vscode/settings.json`:
+
 ```json
 {
   "editor.formatOnSave": true,
@@ -266,10 +277,11 @@ package-lock.json
 
 ## 💬 OUTPUT ESPERADO
 
-```markdown
+````markdown
 ## ✅ Linting Configurado Exitosamente
 
 ### Dependencias instaladas:
+
 - eslint
 - prettier
 - eslint-config-prettier
@@ -277,17 +289,20 @@ package-lock.json
 - [Otros según framework]
 
 ### Archivos creados:
+
 - `.eslintrc.json` - Configuración ESLint
 - `.prettierrc` - Configuración Prettier
 - `.eslintignore` - Archivos ignorados por ESLint
 - `.prettierignore` - Archivos ignorados por Prettier
 
 ### Scripts agregados a `package.json`:
+
 - `npm run lint` - Ejecutar linting
 - `npm run lint:fix` - Fix automático
 - `npm run format` - Formatear código
 
 ### ✅ Validación:
+
 - ✅ `npm run lint` ejecuta sin errores de configuración
 - ✅ `npm run format` formatea archivos
 
@@ -297,10 +312,13 @@ package-lock.json
    ```bash
    npm run lint
    ```
-   - Revisar warnings/errors
-   - Corregir issues críticos
+````
+
+- Revisar warnings/errors
+- Corregir issues críticos
 
 2. **Fix automático (si es seguro):**
+
    ```bash
    npm run lint:fix
    npm run format
@@ -319,7 +337,8 @@ package-lock.json
 - Algunos warnings existentes son normales (código legacy)
 - Priorizar corregir errors sobre warnings
 - Configurar pre-commit hooks (Husky) es recomendado para el futuro
-```
+
+````
 
 ---
 
@@ -339,7 +358,7 @@ Configura ESLint y Prettier para este proyecto Next.js.
 - Usa Context7 MCP para consultar configuración oficial de Next.js
 - NO ejecutes scripts interactivos (ej: npm init @eslint/config)
 - Crea archivos manualmente
-```
+````
 
 ---
 
@@ -352,14 +371,17 @@ Configura ESLint y Prettier para este proyecto Next.js.
 **❌ NO ejecutar**
 
 **✅ Solución:**
+
 ```markdown
 Este comando requiere input interactivo. En su lugar:
 
 **Opción 1 (Recomendado):** Crear configuración manualmente
+
 - He creado `.eslintrc.json` con configuración apropiada
 - Basada en docs oficiales de [Framework]
 
 **Opción 2:** Usuario ejecuta manualmente
+
 1. Abre terminal
 2. Ejecuta: npm init @eslint/config
 3. Selecciona: [Opciones recomendadas]

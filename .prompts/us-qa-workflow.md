@@ -13,6 +13,7 @@ This workflow guides AI through the complete QA process for a User Story, coveri
 - **Fase 12:** Test Automation (KATA implementation)
 
 **Input options:**
+
 - Single User Story
 - Multiple related User Stories
 - Complete Epic
@@ -81,6 +82,7 @@ This workflow guides AI through the complete QA process for a User Story, coveri
 ```
 
 **Output:**
+
 ```markdown
 ## QA Workflow Started
 
@@ -102,12 +104,14 @@ Proceeding to Smoke Test...
 **Objective:** Quick validation that the deployment is functional.
 
 **Actions:**
+
 1. Navigate to staging
 2. Verify page loads
 3. Check critical paths work
 4. Validate no blocking errors
 
 **Decision:**
+
 - **PASSED** → Continue to Step 2
 - **FAILED** → Report blocker, STOP workflow
 
@@ -120,12 +124,14 @@ Proceeding to Smoke Test...
 **Objective:** Deep exploration of the feature to find edge cases and defects.
 
 **Actions:**
+
 1. Use Shift-Left test cases as guide (or ACs if no Shift-Left)
 2. Execute scenarios using Playwright MCP
 3. Document findings as session notes
 4. Identify any issues
 
 **Tools:**
+
 - `mcp__playwright__browser_navigate`
 - `mcp__playwright__browser_snapshot`
 - `mcp__playwright__browser_click`
@@ -133,6 +139,7 @@ Proceeding to Smoke Test...
 - `mcp__playwright__browser_take_screenshot`
 
 **Output:**
+
 - Session notes with tested scenarios
 - List of issues found (if any)
 - Recommendations
@@ -150,6 +157,7 @@ Proceeding to Smoke Test...
 **CRITICAL:** Always confirm with human before creating bug in Jira.
 
 **Actions:**
+
 1. Ask user if bug should be retested
 2. Retest to confirm reproducibility (if requested)
 3. Document bug details
@@ -157,6 +165,7 @@ Proceeding to Smoke Test...
 5. Create Bug in Jira (if confirmed)
 
 **Output:**
+
 - Bug issue created in Jira
 - Bug linked to User Story
 - Session notes updated
@@ -168,6 +177,7 @@ Proceeding to Smoke Test...
 **Objective:** Determine if the feature passes QA.
 
 **Criteria for PASSED:**
+
 - All acceptance criteria validated
 - No critical or high bugs
 - UX is acceptable
@@ -182,6 +192,7 @@ Proceeding to Smoke Test...
 | **FAILED**             | Report issues, do NOT continue                     |
 
 **Transition:**
+
 ```
 Tool: mcp__atlassian__transitionJiraIssue (if available)
 
@@ -199,12 +210,14 @@ Transition US to "QA Approved" status
 **Timing:** This step happens AFTER "QA Approved" (asynchronous).
 
 **Actions:**
+
 1. Review exploratory session notes
 2. Identify scenarios for regression
 3. Classify: automatable vs manual-only
 4. Generate analysis report
 
 **Output:**
+
 - List of regression test candidates
 - Automation recommendations
 
@@ -217,12 +230,14 @@ Transition US to "QA Approved" status
 **Objective:** Determine priority for regression tests.
 
 **Actions:**
+
 1. Apply risk-based scoring
 2. Rank tests by business impact × failure risk
 3. Separate automated vs manual tracks
 4. Generate prioritization report
 
 **Output:**
+
 - Prioritized test list
 - Clear automation vs manual separation
 
@@ -235,6 +250,7 @@ Transition US to "QA Approved" status
 **Objective:** Document test cases in Jira for traceability.
 
 **Actions:**
+
 1. Ask user: Gherkin format or Traditional?
 2. Generate test case content
 3. Create "Test" issues in Jira
@@ -242,10 +258,12 @@ Transition US to "QA Approved" status
 5. Link tests to User Story
 
 **Tools:**
+
 - `mcp__atlassian__createJiraIssue`
 - `mcp__atlassian__getJiraProjectIssueTypesMetadata`
 
 **Output:**
+
 - Test issues created in Jira
 - Tests linked to User Story
 - Automation candidates identified
@@ -257,6 +275,7 @@ Transition US to "QA Approved" status
 **Objective:** Choose which test to implement.
 
 **Ask user:**
+
 ```
 The following tests are marked for automation:
 
@@ -276,16 +295,19 @@ Which test would you like to automate?
 **Prompt (Integration):** `.prompts/fase-12-test-automation/automation-integration-test.md`
 
 **CRITICAL:** Before implementing, read KATA guidelines:
-- `.context/guidelines/tae/automation-standards.md`
-- `.context/guidelines/tae/kata-architecture.md`
+
+- `.context/guidelines/TAE/automation-standards.md`
+- `.context/guidelines/TAE/kata-architecture.md`
 
 **Actions:**
+
 1. Determine if component exists
 2. Create/update component with ATC
 3. Create test file
 4. Register in fixture
 
 **Output:**
+
 - ATC implemented following KATA standards
 - Test file created
 - Component registered
@@ -297,11 +319,13 @@ Which test would you like to automate?
 **Objective:** Ensure test passes locally and in CI.
 
 **Actions:**
+
 1. Run test locally: `bun run test [test-file]`
 2. Verify passes
 3. Check CI pipeline (if configured)
 
 **KATA Compliance Check:**
+
 - [ ] ATC has `@atc('TEST-XXX')` decorator
 - [ ] Locators inline (not separate)
 - [ ] Fixed assertions in ATC
@@ -315,6 +339,7 @@ Which test would you like to automate?
 **Objective:** Mark test as automated in Jira.
 
 **Actions:**
+
 1. Update Test issue status to "Automated"
 2. Add label "automated"
 3. Add comment with implementation reference
@@ -326,12 +351,14 @@ Which test would you like to automate?
 **Objective:** Continue until all candidates are automated.
 
 **Loop:**
+
 ```
 For each remaining automation candidate:
   → Go to Step 8
 ```
 
 **When complete:**
+
 ```markdown
 ## QA Workflow Complete
 
@@ -339,14 +366,17 @@ For each remaining automation candidate:
 **Status:** QA Approved
 
 ### Summary:
+
 - Exploratory Testing: PASSED
 - Tests Documented: [N] tests in Jira
 - Tests Automated: [M] ATCs implemented
 
 ### Files Created/Modified:
+
 - [List of test files]
 
 ### Next Steps:
+
 - Tests will run in CI pipeline
 - Manual tests added to regression checklist
 ```
@@ -359,9 +389,9 @@ Before starting, ensure these files are available:
 
 | File                                              | Purpose                |
 | ------------------------------------------------- | ---------------------- |
-| `.context/guidelines/tae/KATA-AI-GUIDE.md`        | Quick KATA orientation |
-| `.context/guidelines/tae/automation-standards.md` | Coding standards       |
-| `.context/guidelines/tae/kata-architecture.md`    | Framework architecture |
+| `.context/guidelines/TAE/KATA-AI-GUIDE.md`        | Quick KATA orientation |
+| `.context/guidelines/TAE/automation-standards.md` | Coding standards       |
+| `.context/guidelines/TAE/kata-architecture.md`    | Framework architecture |
 
 ---
 
@@ -388,6 +418,7 @@ Use this template to track workflow progress:
 ## QA Workflow Progress: [US-XXX]
 
 ### Fase 10: Exploratory Testing
+
 - [x] Step 0: Verify Ready For QA
 - [x] Step 1: Smoke Test - PASSED
 - [x] Step 2: Exploratory Testing - PASSED
@@ -395,11 +426,13 @@ Use this template to track workflow progress:
 - [x] Step 4: Decision - PASSED → QA Approved
 
 ### Fase 11: Test Documentation
+
 - [x] Step 5: Analyze candidates - 5 tests identified
 - [x] Step 6: Prioritize - 3 for automation, 2 manual
 - [x] Step 7: Created in Jira - TEST-001 to TEST-005
 
 ### Fase 12: Test Automation
+
 - [x] Step 8-11: TEST-001 - Automated
 - [x] Step 8-11: TEST-002 - Automated
 - [ ] Step 8-11: TEST-003 - In progress
@@ -425,7 +458,7 @@ Use this template to track workflow progress:
 ## Related Documentation
 
 - **Developer Workflow:** `.prompts/us-dev-workflow.md`
-- **KATA Guidelines:** `.context/guidelines/tae/`
+- **KATA Guidelines:** `.context/guidelines/TAE/`
 - **Phase 10:** `.prompts/fase-10-exploratory-testing/`
 - **Phase 11:** `.prompts/fase-11-test-documentation/`
 - **Phase 12:** `.prompts/fase-12-test-automation/`

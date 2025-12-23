@@ -10,6 +10,7 @@
 En esta fase se realiza **code review estático** del código implementado en Fase 7 (Implementation).
 
 **Esta fase se enfoca SOLO en:**
+
 - ✅ **Análisis estático** del código
 - ✅ **Linting** (ESLint, Prettier, etc.)
 - ✅ **Code standards** (DRY, naming, TypeScript)
@@ -18,6 +19,7 @@ En esta fase se realiza **code review estático** del código implementado en Fa
 - ✅ **Cumplimiento de Acceptance Criteria**
 
 **Esta fase NO incluye:**
+
 - ❌ Tests unitarios (eso es Fase 7: Unit Testing - durante implementation)
 - ❌ Tests de integración (eso es Fase 11: Test Automation)
 - ❌ Test coverage (eso es Fase 7 y Fase 11)
@@ -28,11 +30,13 @@ En esta fase se realiza **code review estático** del código implementado en Fa
 ## 📋 Cuándo usar esta fase
 
 **Prerequisitos:**
+
 - ✅ Story implementada completamente (Fase 7: Implementation)
 - ✅ Build exitoso sin errores TypeScript
 - ✅ Funcionalidad validada manualmente
 
 **Workflow típico:**
+
 ```
 Fase 7 (Implementation)
     ↓
@@ -48,7 +52,7 @@ Fase 8 (Code Review) ← ESTÁS AQUÍ
 
 | Prompt                 | Cuándo usarlo         | Propósito                    |
 | ---------------------- | --------------------- | ---------------------------- |
-| **`review-pr.md`** ⭐   | Review completo de PR | Análisis estático completo   |
+| **`review-pr.md`** ⭐  | Review completo de PR | Análisis estático completo   |
 | **`setup-linting.md`** | Proyecto sin linter   | Configurar ESLint + Prettier |
 
 ---
@@ -56,10 +60,12 @@ Fase 8 (Code Review) ← ESTÁS AQUÍ
 ## 🔍 ¿Qué revisa esta fase?
 
 ### 1. ✅ **Acceptance Criteria**
+
 - Todos los AC de la story se cumplen
 - Funcionalidad implementada según especificación
 
 ### 2. 📐 **Code Standards**
+
 - **DRY:** No código duplicado
 - **Naming:** Variables/funciones descriptivas
 - **TypeScript:** Sin `any`, tipos correctos
@@ -67,30 +73,35 @@ Fase 8 (Code Review) ← ESTÁS AQUÍ
 - **Magic numbers:** No valores hardcodeados
 
 ### 3. 🏗️ **Architecture**
+
 - Estructura de carpetas correcta
 - Separación de concerns (UI / Logic / Data)
 - Componentes reutilizables
 - Design patterns apropiados
 
 ### 4. 🔒 **Security**
+
 - No secrets hardcodeados
 - Validación de inputs de usuario
 - Sanitización de datos
 - SQL injection prevention (si aplica)
 
 ### 5. ⚡ **Performance**
+
 - No loops innecesarios
 - Memoization donde aplique (React)
 - Queries optimizadas (no N+1)
 - Lazy loading si corresponde
 
 ### 6. 🎨 **UI/UX** (si aplica)
+
 - Usa componentes del design system
 - Responsive design
 - Loading/error states
 - Accesibilidad básica (a11y)
 
 ### 7. 🔧 **Linting**
+
 - ESLint sin errores
 - Prettier aplicado (formato consistente)
 - No warnings ignorados sin razón
@@ -100,12 +111,14 @@ Fase 8 (Code Review) ← ESTÁS AQUÍ
 ## 🚫 ¿Qué NO revisa esta fase?
 
 **Tests automatizados:**
+
 - ❌ NO revisa tests unitarios (ya creados en Fase 7)
 - ❌ NO revisa tests de integración (eso es Fase 11: Test Automation)
 - ❌ NO revisa test coverage (eso es Fase 7 y Fase 11)
 - ❌ NO ejecuta tests automatizados (ya ejecutados en Fase 7)
 
 **Razón:** La separación entre Code Review (estático) y Test Automation (dinámico) permite:
+
 - QA Engineer se enfoca en integration/E2E testing (Fase 11)
 - Tech Lead se enfoca en calidad de código (Fase 8)
 - Procesos paralelos y especializados
@@ -121,6 +134,7 @@ Fase 8 (Code Review) ← ESTÁS AQUÍ
 3. Valida que funciona: `npm run lint`
 
 **Si el proyecto YA tiene linter:**
+
 - Ejecuta: `npm run lint`
 - Revisa warnings/errors
 - Corrige antes de aprobar PR
@@ -160,6 +174,7 @@ Use: setup-linting.md
 ## ⚠️ Restricciones críticas
 
 ### ❌ NO HACER:
+
 - **NO aprobar código con secrets hardcodeados**
 - **NO aprobar código con `any` en TypeScript (salvo excepciones justificadas)**
 - **NO ignorar violaciones de DRY**
@@ -167,6 +182,7 @@ Use: setup-linting.md
 - **NO revisar tests automatizados** (unit tests ya en Fase 7, integration/E2E en Fase 11)
 
 ### ✅ SÍ HACER:
+
 - **Ejecutar linting** (`npm run lint`)
 - **Revisar code standards** completos
 - **Validar AC cumplidos** (manualmente o con smoke test)
@@ -198,6 +214,7 @@ Use: setup-linting.md
 ## 🔍 Issues Encontrados
 
 ### 🚨 Critical (debe corregirse):
+
 1. **`app/[feature]/page.tsx:45`** - API key hardcodeada
    - **Razón:** Security risk
    - **Sugerencia:** Mover a `.env`
@@ -205,11 +222,13 @@ Use: setup-linting.md
 (Donde [feature] se determina según el dominio del proyecto)
 
 ### ⚠️ Medium (debería corregirse):
+
 2. **`lib/api.ts:12`** - Código duplicado
    - **Razón:** Viola DRY
    - **Sugerencia:** Extraer a función reutilizable
 
 ### 💡 Nitpicks (opcional):
+
 3. **`components/[DomainCard].tsx:8`** - Nombre de variable poco descriptivo
    - **Sugerencia:** `data` → `[entity]Data`
 
@@ -248,6 +267,7 @@ Use: setup-linting.md
 ---
 
 **Próximo paso:**
+
 - Si APPROVED → Fase 9: Deployment Staging (`.prompts/fase-9-deployment-staging/`)
 - Si CHANGES REQUESTED → Fase 7: Corregir issues (`.prompts/fase-7-implementation/fix-issues.md`)
 ```
@@ -257,11 +277,14 @@ Use: setup-linting.md
 ## 📖 Recursos adicionales
 
 **Guidelines a consultar:**
-- `.context/guidelines/code-standards.md` - Estándares completos
-- `.context/guidelines/error-handling.md` - Manejo de errores
+
+- `.context/guidelines/DEV/code-standards.md` - Estándares completos
+- `.context/guidelines/DEV/error-handling.md` - Manejo de errores
+- `.context/guidelines/DEV/data-testid-standards.md` - Estándares data-testid
 - `.context/design-system.md` - UI/UX standards
 
 **Story context:**
+
 - `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/story.md` - Acceptance Criteria
 - `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/implementation-plan.md` - Plan técnico
 
