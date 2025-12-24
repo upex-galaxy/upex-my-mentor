@@ -49,6 +49,11 @@ function transformToMentor(profile: ProfileRow): Mentor {
   };
 }
 
+// Helper to check if URL is an SVG (requires unoptimized for Next.js Image)
+function isSvgUrl(url: string): boolean {
+  return url.includes('.svg') || url.includes('/svg') || url.includes('dicebear.com');
+}
+
 // Helper to transform DB reviews to ReviewWithReviewer type
 function transformReviews(dbReviews: ReviewRow[]): ReviewWithReviewer[] {
   return dbReviews.map((review) => ({
@@ -113,6 +118,7 @@ export default async function MentorProfilePage({
                       alt={mentor.name}
                       fill
                       className="object-cover"
+                      unoptimized={isSvgUrl(mentor.photoUrl)}
                     />
                   </div>
                 ) : (

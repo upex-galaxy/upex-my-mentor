@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
@@ -14,6 +14,7 @@ import { PasswordStrengthIndicator } from '@/components/auth/password-strength'
 import { RoleSelector } from '@/components/auth/role-selector'
 import { signupSchema, type SignupFormData } from '@/lib/validations/auth'
 import { createClient } from '@/lib/supabase/client'
+import { useAuth } from '@/contexts/auth-context'
 
 interface SignupFormProps {
   defaultRole?: 'mentor' | 'student'
@@ -21,8 +22,16 @@ interface SignupFormProps {
 
 export function SignupForm({ defaultRole }: SignupFormProps) {
   const router = useRouter()
+  const { user, isLoading: isAuthLoading } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [serverError, setServerError] = useState<string | null>(null)
+
+  // MYM-85: Redirect authenticated users to dashboard
+  useEffect(() => {
+    if (!isAuthLoading && user) {
+      router.replace('/dashboard')
+    }
+  }, [user, isAuthLoading, router])
 
   const {
     register,

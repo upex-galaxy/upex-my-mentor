@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -20,9 +20,16 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") || "/dashboard";
   const passwordResetSuccess = searchParams.get("reset") === "success";
-  const { login } = useAuth();
+  const { login, user, isLoading: isAuthLoading } = useAuth();
   const [serverError, setServerError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // MYM-85: Redirect authenticated users to dashboard
+  useEffect(() => {
+    if (!isAuthLoading && user) {
+      router.replace(redirectTo);
+    }
+  }, [user, isAuthLoading, router, redirectTo]);
 
   const {
     register,
