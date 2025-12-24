@@ -206,15 +206,19 @@ export async function PUT(request: NextRequest): Promise<NextResponse<ApiRespons
       (existingChannels ?? []).map((c) => [c.channel_type, c.id])
     )
 
-    // Prepare upsert data
-    const upsertData = validatedChannels.map((channel) => ({
-      id: existingByType.get(channel.type) ?? undefined,
-      user_id: user.id,
-      channel_type: channel.type,
-      handle: channel.handle,
-      is_active: channel.isActive,
-      updated_at: new Date().toISOString(),
-    }))
+    // Prepare upsert data - MYM-87: Don't include id if it doesn't exist
+    const upsertData = validatedChannels.map((channel) => {
+      const existingId = existingByType.get(channel.type);
+      return {
+        // Only include id if channel already exists (for update)
+        ...(existingId && { id: existingId }),
+        user_id: user.id,
+        channel_type: channel.type,
+        handle: channel.handle,
+        is_active: channel.isActive,
+        updated_at: new Date().toISOString(),
+      };
+    })
 
     // Determine which channels to delete (types not in new list)
     const newTypes = new Set(validatedChannels.map((c) => c.type))
