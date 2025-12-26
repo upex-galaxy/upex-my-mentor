@@ -1,8 +1,45 @@
 #!/usr/bin/env bun
+/**
+ * @fileoverview UPEX Template Updater - CLI para sincronizar proyectos con el template
+ *
+ * Este script permite mantener proyectos derivados sincronizados con el template
+ * oficial de UPEX (ai-driven-project-starter). Usa una estrategia de "merge inteligente"
+ * que actualiza archivos del template sin eliminar archivos personalizados del usuario.
+ *
+ * @description
+ * Características principales:
+ * - Menú interactivo para selección de componentes
+ * - Actualización por roles (QA, Dev, DevOps, PO)
+ * - Actualización por fases específicas (1-14)
+ * - Sistema de backups automáticos
+ * - Merge inteligente (preserva archivos del usuario)
+ *
+ * @requires gh - GitHub CLI debe estar instalado y autenticado
+ * @requires bun - Runtime de JavaScript (o Node.js compatible)
+ *
+ * @example
+ * // Menú interactivo
+ * bun up
+ *
+ * @example
+ * // Actualizar todo
+ * bun up all
+ *
+ * @example
+ * // Actualizar por rol
+ * bun up prompts --rol qa
+ *
+ * @see docs/workflows/update-prompts-guide.md - Guía completa de uso
+ *
+ * @author UPEX Galaxy
+ * @version 3.0
+ */
+
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const readline = require('readline');
 
 // ============================================================================
 // CONFIGURATION
@@ -80,6 +117,7 @@ const SCRIPT_FILES = ['update-prompts.js', 'mcp-builder.js', 'email-checker.js']
 // TERMINAL COLORS
 // ============================================================================
 
+/** @description ANSI escape codes para colorear output en terminal */
 const colors = {
   green: '\x1b[32m',
   yellow: '\x1b[33m',
@@ -92,36 +130,147 @@ const colors = {
   reset: '\x1b[0m',
 };
 
-function log(message, color = 'reset') {
-  console.log(`${colors[color]}${message}${colors.reset}`);
-}
-
+/** @param {string} message - Título de sección */
 function logHeader(message) {
   console.log(`\n${colors.bold}${colors.cyan}${message}${colors.reset}`);
 }
 
+/** @param {string} message - Mensaje de éxito */
 function logSuccess(message) {
   console.log(`${colors.green}✅ ${message}${colors.reset}`);
 }
 
+/** @param {string} message - Mensaje de advertencia */
 function logWarning(message) {
   console.log(`${colors.yellow}⚠️  ${message}${colors.reset}`);
 }
 
+/** @param {string} message - Mensaje de error */
 function logError(message) {
   console.log(`${colors.red}❌ ${message}${colors.reset}`);
 }
 
+/** @param {string} message - Mensaje informativo */
 function logInfo(message) {
   console.log(`${colors.blue}ℹ️  ${message}${colors.reset}`);
 }
 
+/** @param {string} message - Mensaje de paso/progreso */
 function logStep(message) {
   console.log(`${colors.yellow}📦 ${message}${colors.reset}`);
 }
 
+/** @param {string} message - Mensaje de operación merge */
 function logMerge(message) {
   console.log(`${colors.magenta}🔀 ${message}${colors.reset}`);
+}
+
+// ============================================================================
+// DEPENDENCY CHECK
+// ============================================================================
+
+/**
+ * Check if a npm package is installed locally
+ * Uses filesystem check instead of require.resolve for Bun compatibility
+ */
+function isPackageInstalled(packageName) {
+  // Check in node_modules (works with both npm and bun)
+  const nodeModulesPath = path.join(process.cwd(), 'node_modules', packageName);
+  if (fs.existsSync(nodeModulesPath)) {
+    return true;
+  }
+
+  // Also check for scoped packages like @inquirer/prompts
+  if (packageName.startsWith('@')) {
+    const [scope, name] = packageName.split('/');
+    const scopedPath = path.join(process.cwd(), 'node_modules', scope, name);
+    if (fs.existsSync(scopedPath)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Prompt nativo usando readline (sin dependencias externas).
+ * Se usa como fallback cuando @inquirer/prompts no está instalado.
+ *
+ * @param {string} question - Pregunta a mostrar al usuario
+ * @returns {Promise<string>} Respuesta del usuario en minúsculas y sin espacios
+ */
+function nativePrompt(question) {
+  return new Promise(resolve => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+
+    rl.question(question, answer => {
+      rl.close();
+      resolve(answer.trim().toLowerCase());
+    });
+  });
+}
+
+/**
+ * Check if interactive mode dependencies are available.
+ * If not, offer to install them.
+ * @returns {Promise<boolean>} true if dependencies are ready, false if user declined
+ */
+async function ensureDependencies() {
+  if (isPackageInstalled('@inquirer/prompts')) {
+    return true;
+  }
+
+  console.log(`
+${colors.yellow}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}
+${colors.bold}${colors.yellow}⚠️  Dependencia faltante: @inquirer/prompts${colors.reset}
+${colors.yellow}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}
+
+Esta dependencia es necesaria para el ${colors.cyan}menú interactivo${colors.reset} del script.
+
+${colors.dim}Sin ella, solo puedes usar comandos directos como:${colors.reset}
+  ${colors.green}bun up all${colors.reset}              - Actualizar todo
+  ${colors.green}bun up docs${colors.reset}             - Actualizar docs/
+  ${colors.green}bun up prompts --rol qa${colors.reset} - Actualizar prompts para QA
+
+${colors.bold}¿Deseas instalar la dependencia ahora?${colors.reset}
+`);
+
+  const answer = await nativePrompt(`${colors.cyan}[Y/n]:${colors.reset} `);
+
+  if (answer === '' || answer === 'y' || answer === 'yes' || answer === 'si' || answer === 's') {
+    console.log(`\n${colors.blue}📦 Instalando @inquirer/prompts...${colors.reset}\n`);
+
+    try {
+      execSync('bun add @inquirer/prompts', { stdio: 'inherit' });
+      console.log(`
+${colors.green}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}
+${colors.bold}${colors.green}✅ Dependencia instalada correctamente${colors.reset}
+${colors.green}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}
+
+Ahora puedes ejecutar el script nuevamente:
+
+  ${colors.cyan}bun up${colors.reset}          - Menú interactivo
+  ${colors.cyan}bun up all${colors.reset}      - Actualizar todo
+  ${colors.cyan}bun up help${colors.reset}     - Ver opciones
+
+`);
+      process.exit(0);
+    } catch (error) {
+      logError(`Error instalando dependencia: ${error.message}`);
+      console.log(`\n${colors.yellow}Intenta instalar manualmente:${colors.reset}`);
+      console.log(`  ${colors.green}bun add @inquirer/prompts${colors.reset}\n`);
+      process.exit(1);
+    }
+  } else {
+    console.log(`\n${colors.yellow}Instalación cancelada.${colors.reset}`);
+    console.log(`\nPuedes usar comandos directos sin el menú interactivo:`);
+    console.log(`  ${colors.green}bun up all${colors.reset}      - Actualizar todo`);
+    console.log(`  ${colors.green}bun up help${colors.reset}     - Ver todas las opciones\n`);
+    process.exit(0);
+  }
 }
 
 // ============================================================================
@@ -332,6 +481,12 @@ async function showPhasesMenu() {
 // ARGUMENT PARSING
 // ============================================================================
 
+/**
+ * Parsea argumentos de línea de comandos.
+ *
+ * @param {string[]} args - Array de argumentos (process.argv.slice(2))
+ * @returns {{commands: string[], phases: number[]|null, role: string|null, standalone: boolean, all: boolean, help: boolean}}
+ */
 function parseArgs(args) {
   const result = {
     commands: [],
@@ -396,6 +551,13 @@ function parseArgs(args) {
 // PREREQUISITES
 // ============================================================================
 
+/**
+ * Verifica si un comando CLI está disponible en el sistema.
+ *
+ * @param {string} command - Comando a verificar (ej: 'gh', 'node')
+ * @param {string} name - Nombre descriptivo para mensajes de error
+ * @returns {boolean} true si el comando existe, false si no
+ */
 function checkCommand(command, name) {
   try {
     execSync(`${command} --version`, { stdio: 'ignore' });
@@ -406,6 +568,12 @@ function checkCommand(command, name) {
   }
 }
 
+/**
+ * Valida que GitHub CLI esté instalado y autenticado.
+ * Termina el proceso si no cumple los requisitos.
+ *
+ * @returns {Promise<void>}
+ */
 async function validatePrerequisites() {
   if (!checkCommand('gh', 'GitHub CLI (gh)')) {
     console.log('\nInstalalo con:');
@@ -433,6 +601,13 @@ async function validatePrerequisites() {
 // BACKUP
 // ============================================================================
 
+/**
+ * Crea un backup de los componentes antes de actualizarlos.
+ * Los backups se guardan en .backups/update-YYYY-MM-DD-HHMMSS/
+ *
+ * @param {string[]} components - Lista de componentes a respaldar ('prompts', 'docs', etc.)
+ * @returns {string} Ruta del directorio de backup creado
+ */
 function createBackup(components) {
   logStep('Creando backup...');
 
@@ -473,17 +648,65 @@ function createBackup(components) {
 // CLONE TEMPLATE
 // ============================================================================
 
+/**
+ * Clona el template desde GitHub a un directorio temporal.
+ * Usa GitHub CLI (gh) para manejar autenticación automáticamente.
+ *
+ * @returns {Promise<void>}
+ * @throws {Error} Si no hay autenticación o acceso al repo
+ */
 async function cloneTemplate() {
   logStep('Descargando ultima version del template...');
-  fs.rmSync(TEMP_DIR, { recursive: true, force: true });
+  console.log(`${colors.dim}  Repo: ${TEMPLATE_REPO}${colors.reset}`);
+  console.log(`${colors.dim}  Destino temporal: ${TEMP_DIR}${colors.reset}`);
+
+  // Clean up any previous temp directory
+  if (fs.existsSync(TEMP_DIR)) {
+    console.log(`${colors.dim}  Limpiando directorio temporal anterior...${colors.reset}`);
+    fs.rmSync(TEMP_DIR, { recursive: true, force: true });
+  }
+
+  // First, verify gh CLI is authenticated
+  console.log(`${colors.dim}  Verificando autenticacion de GitHub CLI...${colors.reset}`);
+  try {
+    execSync('gh auth status', { stdio: 'pipe' });
+    console.log(`${colors.green}  ✓ GitHub CLI autenticado${colors.reset}`);
+  } catch {
+    logError('GitHub CLI no esta autenticado');
+    console.log(`\n${colors.yellow}Ejecuta primero:${colors.reset}`);
+    console.log(`  ${colors.cyan}gh auth login${colors.reset}\n`);
+    process.exit(1);
+  }
+
+  // Clone the repository
+  console.log(
+    `${colors.dim}  Clonando repositorio (esto puede tomar unos segundos)...${colors.reset}`
+  );
 
   try {
-    execSync(`gh repo clone ${TEMPLATE_REPO} "${TEMP_DIR}" -- --depth 1`, {
-      stdio: 'inherit',
+    const cloneCommand = `gh repo clone ${TEMPLATE_REPO} "${TEMP_DIR}" -- --depth 1 --quiet`;
+    execSync(cloneCommand, {
+      stdio: ['pipe', 'pipe', 'pipe'],
+      timeout: 60000, // 60 second timeout
     });
+    console.log(`${colors.green}  ✓ Template descargado correctamente${colors.reset}`);
   } catch (error) {
-    logError('Error al descargar el template');
-    console.log('Verifica que tienes acceso al repositorio privado de UPEX Galaxy');
+    if (error.killed) {
+      logError('Timeout: La descarga tardo demasiado (>60s)');
+      console.log(`${colors.yellow}Posibles causas:${colors.reset}`);
+      console.log('  • Conexion a internet lenta');
+      console.log('  • Problemas con GitHub');
+      console.log(`\n${colors.yellow}Intenta ejecutar manualmente:${colors.reset}`);
+      console.log(`  ${colors.cyan}gh repo clone ${TEMPLATE_REPO}${colors.reset}\n`);
+    } else {
+      logError('Error al descargar el template');
+      console.log(`${colors.yellow}Posibles causas:${colors.reset}`);
+      console.log('  • No tienes acceso al repositorio privado de UPEX Galaxy');
+      console.log('  • Problemas de conexion a internet');
+      console.log('  • GitHub CLI no configurado correctamente');
+      console.log(`\n${colors.yellow}Verifica tu acceso:${colors.reset}`);
+      console.log(`  ${colors.cyan}gh repo view ${TEMPLATE_REPO}${colors.reset}\n`);
+    }
     process.exit(1);
   }
 }
@@ -594,7 +817,7 @@ function updateTemplates() {
 }
 
 /**
- * Update scripts/ directory (specific files only)
+ * Actualiza scripts/ (archivos específicos definidos en SCRIPT_FILES).
  */
 function updateScripts() {
   logStep('Actualizando scripts/...');
@@ -609,7 +832,38 @@ function updateScripts() {
 }
 
 /**
- * Update context-engineering.md from template README
+ * Auto-actualiza este script antes de cualquier operación.
+ * Compara el script actual con la versión del template y lo actualiza si hay diferencias.
+ *
+ * @returns {boolean} true si el script fue actualizado y necesita reiniciarse
+ */
+function selfUpdate() {
+  const currentScriptPath = path.join(process.cwd(), 'scripts', 'update-prompts.js');
+  const templateScriptPath = path.join(TEMP_DIR, 'scripts', 'update-prompts.js');
+
+  if (!fs.existsSync(templateScriptPath)) {
+    return false;
+  }
+
+  const currentContent = fs.existsSync(currentScriptPath)
+    ? fs.readFileSync(currentScriptPath, 'utf-8')
+    : '';
+  const templateContent = fs.readFileSync(templateScriptPath, 'utf-8');
+
+  if (currentContent !== templateContent) {
+    logStep('Auto-actualizando update-prompts.js...');
+    fs.mkdirSync('scripts', { recursive: true });
+    fs.cpSync(templateScriptPath, currentScriptPath);
+    logSuccess('update-prompts.js actualizado a la ultima version');
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Actualiza context-engineering.md desde el README del template.
+ * Este archivo sirve como documentación maestra de la arquitectura.
  */
 function updateContextEngineering() {
   const templateReadmePath = path.join(TEMP_DIR, 'README.md');
@@ -620,6 +874,10 @@ function updateContextEngineering() {
   }
 }
 
+/**
+ * Limpia el directorio temporal después de la actualización.
+ * Se ejecuta al final de cada operación exitosa.
+ */
 function cleanup() {
   fs.rmSync(TEMP_DIR, { recursive: true, force: true });
 }
@@ -636,6 +894,10 @@ async function main() {
 
   // No arguments -> Interactive menu
   if (args.length === 0) {
+    // Check for interactive dependencies before showing menu
+    const depsReady = await ensureDependencies();
+    if (!depsReady) return; // Script is restarting after install
+
     const selected = await showMainMenu();
 
     if (selected.length === 0) {
@@ -652,6 +914,9 @@ async function main() {
 
     createBackup(components);
     await cloneTemplate();
+
+    // Auto-actualizar el script primero (siempre)
+    selfUpdate();
 
     if (selected.includes('all')) {
       updatePrompts(Object.keys(PHASE_CONFIG).map(Number), true);
@@ -708,6 +973,9 @@ async function main() {
   createBackup(parsed.commands);
   await cloneTemplate();
 
+  // Auto-actualizar el script primero (siempre)
+  selfUpdate();
+
   // Execute commands
   for (const cmd of parsed.commands) {
     switch (cmd) {
@@ -719,6 +987,10 @@ async function main() {
         } else if (parsed.standalone) {
           updatePrompts([], true);
         } else {
+          // Check for interactive dependencies before showing prompts menu
+          const depsReady = await ensureDependencies();
+          if (!depsReady) return;
+
           const promptsConfig = await showPromptsMenu();
           updatePrompts(promptsConfig.phases, promptsConfig.standalone);
         }

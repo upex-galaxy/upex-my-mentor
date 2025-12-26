@@ -739,11 +739,11 @@ bun run build
 
 **Compatible versions matrix:**
 
-| Package                  | Version  | Zod Requirement |
-| ------------------------ | -------- | --------------- |
-| `zod`                    | ~3.24.1  | -               |
-| `zod-to-openapi`         | 7.3.4    | ~3.24.x         |
-| `@hookform/resolvers`    | 3.10.0   | any 3.x         |
+| Package               | Version | Zod Requirement |
+| --------------------- | ------- | --------------- |
+| `zod`                 | ~3.24.1 | -               |
+| `zod-to-openapi`      | 7.3.4   | ~3.24.x         |
+| `@hookform/resolvers` | 3.10.0  | any 3.x         |
 
 > **Note:** If using react-hook-form with zod validation, always check `@hookform/resolvers` compatibility when pinning zod versions.
 
