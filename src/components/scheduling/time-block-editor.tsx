@@ -102,12 +102,12 @@ export function TimeBlockEditor({
   return (
     <div
       data-testid="time_block_editor"
-      className="p-3 bg-muted rounded-lg space-y-3"
+      className="p-2 bg-muted rounded-lg space-y-2"
     >
-      <div className="flex items-center gap-2">
-        {/* Start Time */}
+      {/* Time Selects - Stacked for narrow columns */}
+      <div className="flex flex-col gap-1">
         <Select value={startTime} onValueChange={setStartTime}>
-          <SelectTrigger className="w-[110px]" data-testid="start_time_select">
+          <SelectTrigger className="w-full h-8 text-xs" data-testid="start_time_select">
             <SelectValue placeholder="Inicio" />
           </SelectTrigger>
           <SelectContent>
@@ -119,62 +119,62 @@ export function TimeBlockEditor({
           </SelectContent>
         </Select>
 
-        <span className="text-muted-foreground">a</span>
-
-        {/* End Time */}
-        <Select value={endTime} onValueChange={setEndTime}>
-          <SelectTrigger className="w-[110px]" data-testid="end_time_select">
-            <SelectValue placeholder="Fin" />
-          </SelectTrigger>
-          <SelectContent>
-            {filteredEndOptions.map((time) => (
-              <SelectItem key={`end-${time}`} value={time}>
-                {formatTimeDisplay(time)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {/* Action Buttons */}
-        <div className="flex items-center gap-1 ml-auto">
-          <Button
-            type="button"
-            size="icon"
-            variant="ghost"
-            onClick={handleSave}
-            className="h-8 w-8 text-primary hover:text-primary"
-            data-testid="save_time_block"
-          >
-            <Check className="h-4 w-4" />
-          </Button>
-          <Button
-            type="button"
-            size="icon"
-            variant="ghost"
-            onClick={onCancel}
-            className="h-8 w-8"
-            data-testid="cancel_time_block"
-          >
-            <X className="h-4 w-4" />
-          </Button>
-          {onDelete && slot?.id && (
-            <Button
-              type="button"
-              size="icon"
-              variant="ghost"
-              onClick={onDelete}
-              className="h-8 w-8 text-destructive hover:text-destructive"
-              data-testid="delete_time_block"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          )}
+        <div className="flex items-center gap-1">
+          <span className="text-xs text-muted-foreground">a</span>
+          <Select value={endTime} onValueChange={setEndTime}>
+            <SelectTrigger className="w-full h-8 text-xs" data-testid="end_time_select">
+              <SelectValue placeholder="Fin" />
+            </SelectTrigger>
+            <SelectContent>
+              {filteredEndOptions.map((time) => (
+                <SelectItem key={`end-${time}`} value={time}>
+                  {formatTimeDisplay(time)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
+      </div>
+
+      {/* Action Buttons - Row below */}
+      <div className="flex items-center justify-end gap-1">
+        <Button
+          type="button"
+          size="icon"
+          variant="ghost"
+          onClick={handleSave}
+          className="h-7 w-7 text-primary hover:text-primary"
+          data-testid="save_time_block"
+        >
+          <Check className="h-4 w-4" />
+        </Button>
+        <Button
+          type="button"
+          size="icon"
+          variant="ghost"
+          onClick={onCancel}
+          className="h-7 w-7"
+          data-testid="cancel_time_block"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+        {onDelete && slot?.id && (
+          <Button
+            type="button"
+            size="icon"
+            variant="ghost"
+            onClick={onDelete}
+            className="h-7 w-7 text-destructive hover:text-destructive"
+            data-testid="delete_time_block"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        )}
       </div>
 
       {/* Error Message */}
       {error && (
-        <p data-testid="time_block_error" className="text-sm text-destructive">
+        <p data-testid="time_block_error" className="text-xs text-destructive">
           {error}
         </p>
       )}
