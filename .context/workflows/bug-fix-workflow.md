@@ -161,8 +161,8 @@ Volver al paso 1 con el siguiente bug de la lista priorizada.
 
 | Prioridad | Key | Título | Estado |
 |-----------|-----|--------|--------|
-| 1 | MYM-88 | Stripe Connect Error 500 | OPEN |
-| 2 | MYM-79 | Password Reset no funciona | OPEN |
+| ~~1~~ | ~~MYM-88~~ | ~~Stripe Connect Error 500~~ | ✅ DONE (env var fix) |
+| 2 | MYM-79 | Password Reset no funciona | 🎯 IN PROGRESS |
 | 3 | MYM-96 | Widget mensajes no realtime | OPEN |
 | 4 | MYM-97 | Falta link perfil mentee | OPEN |
 | 5 | MYM-89 | Navegación a settings oculta | OPEN |
@@ -205,4 +205,4 @@ Volver al paso 1 con el siguiente bug de la lista priorizada.
 
 ---
 
-**Última actualización**: 2025-12-25
+**Última actualización**: 2025-12-27

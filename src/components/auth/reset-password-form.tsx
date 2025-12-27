@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
@@ -17,7 +16,6 @@ import { PasswordInput } from './password-input'
 import { PasswordStrengthIndicator } from './password-strength'
 
 export function ResetPasswordForm() {
-  const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const supabase = createClient()
 
@@ -56,8 +54,9 @@ export function ResetPasswordForm() {
       // Sign out to invalidate all sessions after password reset
       await supabase.auth.signOut()
 
-      // Redirect to login with success message
-      router.push('/login?reset=success')
+      // Use hard redirect to clear all client state and avoid redirect loops
+      // router.push() causes issues because React state still has stale auth data
+      window.location.href = '/login?reset=success'
     } catch {
       setError('Error de conexión. Intenta de nuevo.')
     }

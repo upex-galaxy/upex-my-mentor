@@ -159,6 +159,13 @@ function LoginForm() {
                   Usar como Estudiante
                 </Button>
               </div>
+
+              {/* Warning about demo emails */}
+              <div className="p-2 rounded-md bg-amber-50 border border-amber-200 text-xs text-amber-800">
+                <strong>Nota:</strong> Estos emails son ficticios y no reciben correos reales.
+                Para probar funcionalidades como recuperación de contraseña, mensajería o notificaciones,
+                crea tu propia cuenta con un email válido.
+              </div>
             </AlertDescription>
           </Alert>
 
