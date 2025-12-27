@@ -139,9 +139,11 @@ export function QuickReplyModal({
     }
   };
 
-  // Profile link - only link to mentor profiles
+  // MYM-97: Profile link for both mentors and students
   const profileLink = otherParticipant.role === 'mentor'
     ? `/mentors/${otherParticipant.id}`
+    : otherParticipant.role === 'student'
+    ? `/students/${otherParticipant.id}`
     : null;
 
   return (
