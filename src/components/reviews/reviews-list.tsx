@@ -4,7 +4,7 @@ import { useMemo, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Select } from '@/components/ui/select';
+import { NativeSelect } from '@/components/ui/native-select';
 import { ReviewCard } from './review-card';
 import { sortReviews, filterReviews, paginateReviews } from '@/lib/reviews';
 import type { ReviewWithReviewer, ReviewSortOption, ReviewFilterOption } from '@/types';
@@ -87,7 +87,7 @@ export function ReviewsList({ reviews, mentorId }: ReviewsListProps) {
       <div className="space-y-4">
         {/* Controls */}
         <div className="flex flex-wrap gap-4">
-          <Select
+          <NativeSelect
             value={sortOption}
             onChange={handleSortChange}
             className="w-[180px]"
@@ -95,9 +95,9 @@ export function ReviewsList({ reviews, mentorId }: ReviewsListProps) {
             <option value="recent">Más recientes</option>
             <option value="highest">Mayor valoración</option>
             <option value="lowest">Menor valoración</option>
-          </Select>
+          </NativeSelect>
 
-          <Select
+          <NativeSelect
             value={filterOption}
             onChange={handleFilterChange}
             className="w-[180px]"
@@ -108,7 +108,7 @@ export function ReviewsList({ reviews, mentorId }: ReviewsListProps) {
             <option value="3">3 estrellas</option>
             <option value="2">2 estrellas</option>
             <option value="1">1 estrella</option>
-          </Select>
+          </NativeSelect>
         </div>
 
         <div className="text-center py-8">
@@ -131,7 +131,7 @@ export function ReviewsList({ reviews, mentorId }: ReviewsListProps) {
     <div data-testid="reviews-list" className="space-y-4">
       {/* Sort and Filter Controls */}
       <div className="flex flex-wrap gap-4">
-        <Select
+        <NativeSelect
           value={sortOption}
           onChange={handleSortChange}
           className="w-[180px]"
@@ -139,9 +139,9 @@ export function ReviewsList({ reviews, mentorId }: ReviewsListProps) {
           <option value="recent">Más recientes</option>
           <option value="highest">Mayor valoración</option>
           <option value="lowest">Menor valoración</option>
-        </Select>
+        </NativeSelect>
 
-        <Select
+        <NativeSelect
           value={filterOption}
           onChange={handleFilterChange}
           className="w-[180px]"
@@ -152,7 +152,7 @@ export function ReviewsList({ reviews, mentorId }: ReviewsListProps) {
           <option value="3">3 estrellas</option>
           <option value="2">2 estrellas</option>
           <option value="1">1 estrella</option>
-        </Select>
+        </NativeSelect>
       </div>
 
       {/* Reviews Cards */}
