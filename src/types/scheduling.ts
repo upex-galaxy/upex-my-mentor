@@ -156,8 +156,8 @@ export interface MentorAvailability {
   start_time: string   // HH:MM format (e.g., "09:00")
   end_time: string     // HH:MM format (e.g., "17:00")
   is_active: boolean
-  created_at: string
-  updated_at: string
+  created_at: string | null
+  updated_at: string | null
 }
 
 /**

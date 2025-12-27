@@ -26,7 +26,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select } from '@/components/ui/select'
+import { NativeSelect } from '@/components/ui/native-select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { SkillsInput } from './skills-input'
 
@@ -190,11 +190,11 @@ export function MentorProfileForm({
               name="years_of_experience"
               control={control}
               render={({ field }) => (
-                <Select
+                <NativeSelect
                   id="years_of_experience"
                   data-testid="experience_select"
                   value={String(field.value)}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => field.onChange(Number(e.target.value))}
                   className={cn(errors.years_of_experience && 'border-destructive')}
                 >
                   <option value="" disabled>
@@ -205,7 +205,7 @@ export function MentorProfileForm({
                       {option.label}
                     </option>
                   ))}
-                </Select>
+                </NativeSelect>
               )}
             />
             {errors.years_of_experience && (
