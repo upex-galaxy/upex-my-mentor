@@ -37,6 +37,8 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
 
   const [unreadCount, setUnreadCount] = useState(0)
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null)
+  // MYM-96: Key that increments when new messages arrive, triggering widget refresh
+  const [conversationsRefreshKey, setConversationsRefreshKey] = useState(0)
 
   /**
    * Fetch unread message count from API
@@ -113,6 +115,9 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
       // Increment unread count
       setUnreadCount((prev) => prev + 1)
 
+      // MYM-96: Trigger widget refresh
+      setConversationsRefreshKey((prev) => prev + 1)
+
       // Don't show toast if viewing this conversation
       if (activeConversationId === newMessage.conversation_id) return
 
@@ -181,6 +186,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     activeConversationId,
     setActiveConversation: setActiveConversationId,
     refreshUnreadCount,
+    conversationsRefreshKey,
   }
 
   return <NotificationContext.Provider value={value}>{children}</NotificationContext.Provider>
