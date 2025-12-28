@@ -130,7 +130,8 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
           ? newMessage.content.substring(0, 50) + '...'
           : newMessage.content
 
-      toast.message(sender.name, {
+      // MYM-92: Use toast.info() for better visibility with richColors
+      toast.info(`Nuevo mensaje de ${sender.name}`, {
         description: messagePreview,
         duration: 5000,
         action: {
