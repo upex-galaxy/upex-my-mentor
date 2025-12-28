@@ -48,6 +48,9 @@ Este documento define la estrategia completa para resolver defectos/bugs reporta
 | `customfield_12210` | Test Environment                  | Dropdown | Dónde se encontró: Development, Staging, Production           |
 | `customfield_10049` | Root Cause Text                   | Textarea | Análisis técnico inicial del reporter                         |
 
+> **⚠️ REGLA OBLIGATORIA DEL BUG LIFE CYCLE:**
+> El campo **Root Cause Text** (`customfield_10049`) DEBE ser actualizado por el desarrollador con la causa raíz real ANTES de crear el PR. Un bug sin Root Cause documentado NO puede transitar a Ready For QA.
+
 ### Campos Opcionales (pueden tener información útil)
 
 | Field ID            | Nombre en Jira  | Tipo     | Qué buscar                                      |
@@ -337,16 +340,37 @@ git commit -m "fix({PROJECT_KEY}-{N}): {descripción}"
 
 ---
 
-### PASO 9: Comentar en Jira
+### PASO 9: Actualizar Root Cause y Comentar en Jira
 
-**Objetivo:** Documentar el fix para el equipo de QA.
+**Objetivo:** Documentar la causa raíz real y el fix aplicado. **OBLIGATORIO antes de crear PR.**
+
+> **⚠️ BLOQUEANTE:** Un bug sin Root Cause documentado en el custom field NO puede transitar a Ready For QA. Este paso es obligatorio en el Bug Life Cycle.
+
+**Acciones:**
+
+1. **PRIMERO - Actualizar el campo Root Cause en Jira:**
+   ```
+   mcp__atlassian__jira_update_issue
+   - issue_key: "{PROJECT_KEY}-{N}"
+   - fields: {}
+   - additional_fields: {
+       "customfield_10049": "Causa raíz técnica identificada: [descripción detallada del problema en el código, archivo, línea, y por qué ocurría]"
+     }
+   ```
+
+   **Ejemplo de Root Cause bien documentado:**
+   ```
+   "La función toast.message() de Sonner no aplica estilos richColors - solo toast.success/error/info los aplican. El toast se renderizaba pero era invisible por falta de estilos de color."
+   ```
+
+2. **DESPUÉS - Agregar comentario con detalles del fix:**
 
 **Template de comentario:**
 
 ```markdown
 ## Fix Aplicado ✅
 
-**Causa Raíz:** [Descripción técnica breve]
+**Causa Raíz:** [Misma descripción que se puso en el custom field]
 
 **Archivos modificados:**
 - `path/to/file1.ts`
@@ -370,7 +394,7 @@ git commit -m "fix({PROJECT_KEY}-{N}): {descripción}"
 **Commit:** `{hash} fix({PROJECT_KEY}-{N}): {mensaje}`
 ```
 
-**Acción:**
+**Acción para comentario:**
 
 ```
 mcp__atlassian__jira_add_comment
@@ -378,7 +402,9 @@ mcp__atlassian__jira_add_comment
 - comment: "{contenido del template}"
 ```
 
-**Criterio de éxito:** Comentario agregado con detalles del fix
+**Criterio de éxito:**
+- ✅ Campo `customfield_10049` (Root Cause Text) actualizado con causa real
+- ✅ Comentario agregado con detalles del fix
 
 ---
 
@@ -553,6 +579,10 @@ Si se encuentra que el bug ya fue reportado:
 - [ ] `bun run build` pasa
 - [ ] Testeado manualmente en localhost
 - [ ] Commit message: `fix({PROJECT_KEY}-{N}): ...`
+
+## Checklist Pre-PR (OBLIGATORIO)
+
+- [ ] **Root Cause actualizado en Jira** (`customfield_10049`) ⚠️ BLOQUEANTE
 - [ ] Comentario agregado en Jira con detalles del fix
 
 ## Checklist Pre-Merge
@@ -585,7 +615,7 @@ Usar este template para identificar dónde quedamos:
 | 6. Verificar Local        | [Pendiente/Completado]             | typecheck, lint, build       |
 | 7. Testear Localhost      | [Pendiente/Completado]             |                              |
 | 8. Commit                 | [Pendiente/Completado]             |                              |
-| 9. Comentar Jira          | [Pendiente/Completado]             |                              |
+| 9. Root Cause + Comentar  | [Pendiente/Completado]             | ⚠️ BLOQUEANTE para PR       |
 | 10. Crear PR              | [Pendiente/Completado]             | PR #...                      |
 | 11. Merge + Ready For QA  | [Pendiente/Completado]             |                              |
 | 12. Notificar             | [Pendiente/Completado]             |                              |
