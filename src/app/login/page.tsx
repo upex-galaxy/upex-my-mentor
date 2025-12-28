@@ -268,7 +268,7 @@ export default function LoginPage() {
   return (
     <div data-testid="loginPage" className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50">
+      <main className="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 dark:from-purple-950 dark:via-fuchsia-950 dark:to-violet-950">
         <Suspense fallback={<LoginFormSkeleton />}>
           <LoginForm />
         </Suspense>

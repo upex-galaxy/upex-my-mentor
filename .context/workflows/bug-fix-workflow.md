@@ -159,14 +159,35 @@ Volver al paso 1 con el siguiente bug de la lista priorizada.
 
 ## Lista de Bugs Priorizada
 
-| Prioridad | Key | Título | Estado |
-|-----------|-----|--------|--------|
-| ~~1~~ | ~~MYM-88~~ | ~~Stripe Connect Error 500~~ | ✅ DONE (env var fix) |
-| ~~2~~ | ~~MYM-79~~ | ~~Password Reset no funciona~~ | ✅ DONE (redirect loop fix) |
-| 3 | MYM-96 | Widget mensajes no realtime | OPEN |
-| 4 | MYM-97 | Falta link perfil mentee | OPEN |
-| 5 | MYM-89 | Navegación a settings oculta | OPEN |
-| 6 | MYM-64 | Missing Availability page | OPEN |
+### ✅ Completados (Sesión 2025-12-27)
+
+| Key | Título | Estado |
+|-----|--------|--------|
+| ~~MYM-88~~ | ~~Stripe Connect Error 500~~ | ✅ DONE (env var fix) |
+| ~~MYM-79~~ | ~~Password Reset no funciona~~ | ✅ DONE (redirect loop fix) |
+| ~~MYM-96~~ | ~~Widget mensajes no realtime~~ | ✅ Ready For QA |
+| ~~MYM-97~~ | ~~Falta link perfil mentee~~ | ✅ Ready For QA |
+| ~~MYM-89~~ | ~~Navegación a settings oculta~~ | ✅ Ready For QA |
+| ~~MYM-64~~ | ~~Missing Availability page~~ | ✅ Duplicated (MYM-19 implemented) |
+
+### ✅ Verificados (Sesión 2025-12-28)
+
+| Key | Título | Estado |
+|-----|--------|--------|
+| ~~MYM-87~~ | ~~API Error 500 - Communication channels~~ | ✅ Ready For QA |
+| ~~MYM-85~~ | ~~Send Message Button Non-Functional~~ | ✅ Ready For QA |
+| ~~MYM-77~~ | ~~Imágenes no cargan en /mentors~~ | ✅ Ready For QA |
+| ~~MYM-46~~ | ~~Search no trimea espacios~~ | ✅ Ready For QA |
+
+### 🔄 Pendientes (Nueva Ronda)
+
+| Prioridad | Key | Título | Estado | Prioridad Jira |
+|-----------|-----|--------|--------|----------------|
+| 1 | MYM-86 | Defectos visuales Light/Dark Mode | OPEN | Medium |
+| 2 | MYM-47 | Skill filtering usa OR en vez de AND | OPEN | High |
+| 3 | MYM-92 | Toast notifications no se muestran | OPEN | Medium |
+| 4 | MYM-91 | Inconsistencia contador mensajes realtime | OPEN | Medium |
+| 5 | MYM-48 | Filters client-side only, sin backend | OPEN | Medium |
 
 ---
 

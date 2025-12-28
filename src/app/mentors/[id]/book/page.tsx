@@ -54,11 +54,11 @@ export default async function BookSessionPage({
 
       <main className="flex-1">
         {/* Header */}
-        <div className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 py-8">
+        <div className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 dark:from-purple-950 dark:via-fuchsia-950 dark:to-violet-950 py-8">
           <div className="container mx-auto px-4">
             <Link
               href={`/mentors/${id}`}
-              className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-4 transition-colors"
+              className="inline-flex items-center text-sm text-gray-600 dark:text-gray-300 hover:text-primary mb-4 transition-colors"
             >
               <ArrowLeft className="h-4 w-4 mr-1" />
               Volver al perfil
@@ -66,7 +66,7 @@ export default async function BookSessionPage({
 
             <h1
               data-testid="page_title"
-              className="text-3xl md:text-4xl font-bold mb-2"
+              className="text-3xl md:text-4xl font-bold mb-2 text-gray-900 dark:text-white"
             >
               Reservar sesión con {mentor.name}
             </h1>

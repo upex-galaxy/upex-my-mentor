@@ -65,7 +65,7 @@ export default async function DashboardPage() {
       <Navbar />
       <main className="flex-1 bg-muted/30">
         {/* Header */}
-        <div data-testid="header_section" className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 py-12">
+        <div data-testid="header_section" className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 dark:from-purple-950 dark:via-fuchsia-950 dark:to-violet-950 py-12">
           <div className="container mx-auto px-4">
             <div className="flex items-center gap-4">
               {profile.photo_url ? (
@@ -83,12 +83,12 @@ export default async function DashboardPage() {
                 </div>
               )}
               <div>
-                <h1 data-testid="user_name" className="text-3xl font-bold">Bienvenido, {profile.name}</h1>
+                <h1 data-testid="user_name" className="text-3xl font-bold text-gray-900 dark:text-white">Bienvenido, {profile.name}</h1>
                 <div className="flex items-center gap-2 mt-1">
                   <Badge data-testid="user_role_badge" variant={profile.role === "mentor" ? "default" : "secondary"}>
                     {profile.role === "mentor" ? "Mentor" : "Estudiante"}
                   </Badge>
-                  <span data-testid="user_email" className="text-sm text-muted-foreground">
+                  <span data-testid="user_email" className="text-sm text-gray-600 dark:text-gray-300">
                     {profile.email}
                   </span>
                 </div>
