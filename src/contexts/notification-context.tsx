@@ -112,8 +112,9 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
       const isParticipant = await isUserInConversation(newMessage.conversation_id)
       if (!isParticipant) return
 
-      // Increment unread count
-      setUnreadCount((prev) => prev + 1)
+      // MYM-91: Refetch unread count from server instead of optimistic +1
+      // This ensures synchronization even with network issues or duplicate events
+      await refreshUnreadCount()
 
       // MYM-96: Trigger widget refresh
       setConversationsRefreshKey((prev) => prev + 1)
@@ -140,7 +141,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
         },
       })
     },
-    [user, activeConversationId, fetchSenderInfo, isUserInConversation, router]
+    [user, activeConversationId, fetchSenderInfo, isUserInConversation, router, refreshUnreadCount]
   )
 
   // Fetch initial unread count on mount and when user changes
