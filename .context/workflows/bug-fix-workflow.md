@@ -179,15 +179,20 @@ Volver al paso 1 con el siguiente bug de la lista priorizada.
 | ~~MYM-77~~ | ~~Imágenes no cargan en /mentors~~ | ✅ Ready For QA |
 | ~~MYM-46~~ | ~~Search no trimea espacios~~ | ✅ Ready For QA |
 
+### ✅ Completados (Nueva Ronda - 2025-12-28)
+
+| Key | Título | Estado |
+|-----|--------|--------|
+| ~~MYM-86~~ | ~~Defectos visuales Light/Dark Mode~~ | ✅ Ready For QA |
+
 ### 🔄 Pendientes (Nueva Ronda)
 
 | Prioridad | Key | Título | Estado | Prioridad Jira |
 |-----------|-----|--------|--------|----------------|
-| 1 | MYM-86 | Defectos visuales Light/Dark Mode | OPEN | Medium |
-| 2 | MYM-47 | Skill filtering usa OR en vez de AND | OPEN | High |
-| 3 | MYM-92 | Toast notifications no se muestran | OPEN | Medium |
-| 4 | MYM-91 | Inconsistencia contador mensajes realtime | OPEN | Medium |
-| 5 | MYM-48 | Filters client-side only, sin backend | OPEN | Medium |
+| 1 | MYM-47 | Skill filtering usa OR en vez de AND | OPEN | High |
+| 2 | MYM-92 | Toast notifications no se muestran | OPEN | Medium |
+| 3 | MYM-91 | Inconsistencia contador mensajes realtime | OPEN | Medium |
+| 4 | MYM-48 | Filters client-side only, sin backend | OPEN | Medium |
 
 ---
 

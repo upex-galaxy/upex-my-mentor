@@ -38,7 +38,7 @@ export default async function StudentProfilePage({
     : null;
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 dark:from-purple-950 dark:via-fuchsia-950 dark:to-violet-950">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 dark:from-purple-900/40 dark:via-fuchsia-900/20 dark:to-violet-900/40">
       <Navbar />
 
       <main className="flex-1 py-12">

@@ -67,7 +67,7 @@ export default function ResetPasswordConfirmPage() {
   return (
     <div data-testid="passwordResetConfirmPage" className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 dark:from-purple-950 dark:via-fuchsia-950 dark:to-violet-950">
+      <main className="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 dark:from-purple-900/40 dark:via-fuchsia-900/20 dark:to-violet-900/40">
         {tokenState === 'loading' && (
           <Card data-testid="loading_state" className="w-full max-w-md">
             <CardContent className="flex flex-col items-center justify-center py-12">

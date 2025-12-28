@@ -106,7 +106,7 @@ export default async function MentorProfilePage({
       <Navbar />
       <main className="flex-1">
         {/* Hero Section */}
-        <div data-testid="profile_hero" className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 dark:from-purple-950 dark:via-fuchsia-950 dark:to-violet-950 py-12">
+        <div data-testid="profile_hero" className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 dark:from-purple-900/40 dark:via-fuchsia-900/20 dark:to-violet-900/40 py-12">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row gap-8 items-start">
               {/* Avatar */}

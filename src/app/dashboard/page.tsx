@@ -65,7 +65,7 @@ export default async function DashboardPage() {
       <Navbar />
       <main className="flex-1 bg-muted/30">
         {/* Header */}
-        <div data-testid="header_section" className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 dark:from-purple-950 dark:via-fuchsia-950 dark:to-violet-950 py-12">
+        <div data-testid="header_section" className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 dark:from-purple-900/40 dark:via-fuchsia-900/20 dark:to-violet-900/40 py-12">
           <div className="container mx-auto px-4">
             <div className="flex items-center gap-4">
               {profile.photo_url ? (
