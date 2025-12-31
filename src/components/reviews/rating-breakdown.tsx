@@ -38,9 +38,9 @@ export function RatingBreakdown({ distribution, totalReviews }: RatingBreakdownP
               />
             </div>
 
-            {/* Count */}
-            <span className="text-muted-foreground w-8 text-right shrink-0">
-              {count}
+            {/* Percentage */}
+            <span className="text-muted-foreground w-10 text-right shrink-0">
+              {percentage.toFixed(0)}%
             </span>
           </div>
         );
