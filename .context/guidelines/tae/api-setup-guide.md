@@ -89,6 +89,7 @@ Add to your Claude Code configuration (`.mcp.json` or VS Code settings):
 ### Step 4: Verify Setup
 
 Ask the AI:
+
 > "List all available API endpoints"
 
 The AI should use `list-api-endpoints` and show you all endpoints from your spec.
@@ -432,5 +433,5 @@ bunx swagger-cli validate api/openapi.yaml
 - [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
 - [MCP OpenAPI Server](https://github.com/ivo-toby/mcp-openapi-server)
 - [openapi-typescript](https://openapi-ts.dev/)
-- [KATA Implementation Plan](./kata-implementation-plan.md)
-- [KATA Workflow](../../.prompts/fase-11-test-automation/kata-workflow.md)
+- [KATA Framework Setup](../../.prompts/kata-framework-setup.md)
+- [API Automation Prompt](../../.prompts/fase-12-test-automation/automation-integration-test.md)

@@ -29,21 +29,21 @@ KATA (Komponent Action Test Architecture) is a test automation framework where:
 
 ## Task-Based Navigation
 
-| If you need to...                  | Read this document                                    |
-| ---------------------------------- | ----------------------------------------------------- |
-| Understand KATA concepts           | `kata-architecture.md` or `docs/kata-fundamentals.md` |
-| Create a new UI component          | `kata-implementation-plan.md` (section 9)             |
-| Create a new API component         | `kata-implementation-plan.md` (section 9)             |
-| Know naming conventions            | `automation-standards.md` (section 2)                 |
-| See anti-patterns (what NOT to do) | `automation-standards.md` (section 11)                |
-| Setup project from scratch         | `PROJECT-SETUP.md` (root directory)                   |
-| Review ATC fundamental rules       | `automation-standards.md` (section 1)                 |
-| Understand test data strategy      | `test-data-management.md`                             |
-| Learn about Preconditions module   | `automation-standards.md` (section 1.7)               |
-| Configure TMS integration          | `tms-integration.md`                                  |
-| Configure CI/CD                    | `ci-cd-integration.md`                                |
-| Configure OpenAPI/MCP              | `api-setup-guide.md`                                  |
-| See existing components/ATCs       | Run `bun run kata:manifest`                           |
+| If you need to...                  | Read this document                                                |
+| ---------------------------------- | ----------------------------------------------------------------- |
+| Understand KATA concepts           | `kata-architecture.md` or `docs/kata-fundamentals.md`             |
+| Create a new UI component          | `.prompts/fase-12-test-automation/automation-e2e-test.md`         |
+| Create a new API component         | `.prompts/fase-12-test-automation/automation-integration-test.md` |
+| Know naming conventions            | `automation-standards.md` (section 2)                             |
+| See anti-patterns (what NOT to do) | `automation-standards.md` (section 11)                            |
+| Setup project from scratch         | `.prompts/kata-framework-setup.md`                                |
+| Review ATC fundamental rules       | `automation-standards.md` (section 1)                             |
+| Understand test data strategy      | `test-data-management.md`                                         |
+| Learn about Preconditions module   | `automation-standards.md` (section 1.7)                           |
+| Configure TMS integration          | `tms-integration.md`                                              |
+| Configure CI/CD                    | `ci-cd-integration.md`                                            |
+| Configure OpenAPI/MCP              | `api-setup-guide.md`                                              |
+| See existing components/ATCs       | Run `bun run kata:manifest`                                       |
 
 ---
 
@@ -161,7 +161,7 @@ test('checkout flow', async ({ ui }) => {
 
 ```typescript
 // ❌ WRONG
-await page.waitForTimeout(3000);  // Arbitrary wait
+await page.waitForTimeout(3000); // Arbitrary wait
 
 // ✅ CORRECT
 await page.waitForSelector('[data-loaded="true"]');
@@ -171,7 +171,7 @@ await page.waitForResponse(resp => resp.url().includes('/api/data'));
 ```typescript
 // playwright.config.ts
 export default defineConfig({
-  retries: 0,  // Investigate failures, don't mask them
+  retries: 0, // Investigate failures, don't mask them
 });
 ```
 
@@ -263,9 +263,9 @@ These files are marked as **EXAMPLE COMPONENT** and demonstrate all KATA princip
 // Access configuration
 import { config, env } from '@config/variables';
 
-const baseUrl = config.baseUrl;        // Selected by TEST_ENV
+const baseUrl = config.baseUrl; // Selected by TEST_ENV
 const apiUrl = config.apiUrl;
-const testUser = config.testUser;      // { email, password }
+const testUser = config.testUser; // { email, password }
 const isCI = env.isCI;
 ```
 
@@ -323,6 +323,7 @@ Phase 5: Validation & Git Commit
 ## Auto-Generated Context
 
 Run `bun run kata:manifest` to generate `kata-manifest.json` with:
+
 - All components (API, UI, Preconditions)
 - All ATCs with their Jira IDs
 - File locations and method names

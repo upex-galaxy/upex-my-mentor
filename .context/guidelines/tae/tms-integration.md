@@ -3,6 +3,7 @@
 Integration guide for syncing KATA test results with Xray Cloud or Jira Direct.
 
 **Budget-Dependent**: This project supports **two TMS approaches** based on client budget:
+
 1. **Xray Cloud** (Premium) - Full-featured TMS with advanced reporting
 2. **Jira Direct** (Budget-Friendly) - Use Jira custom fields without Xray
 
@@ -13,6 +14,7 @@ Integration guide for syncing KATA test results with Xray Cloud or Jira Direct.
 ### What is TMS Integration?
 
 TMS Integration connects KATA's `@atc` decorators with test cases in Jira, enabling:
+
 - **Automatic traceability**: Each ATC maps 1:1 to a Jira issue
 - **Result synchronization**: Test results (PASS/FAIL) sync to Jira automatically
 - **Granular reporting**: See which ATCs passed/failed, not just tests
@@ -43,6 +45,7 @@ Jira issues updated with test results
 ### 2.1 Setup Requirements
 
 **Prerequisites:**
+
 - Jira Cloud instance
 - Xray Cloud app installed from Atlassian Marketplace
 - API credentials (Client ID + Client Secret)
@@ -100,11 +103,7 @@ interface AtcResult {
  * Usage: @atc('PROJECT-XXX')
  */
 export function atc(testId: string) {
-  return function (
-    target: any,
-    propertyName: string,
-    descriptor: PropertyDescriptor
-  ) {
+  return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: any[]) {
@@ -198,10 +197,11 @@ export async function syncToXray() {
       tests.push({
         testKey: testId,
         status: finalStatus,
-        comment: `🤖 KATA ATC: ${lastExecution.methodName}\n` +
-                 `📊 Executions: ${executions.length}\n` +
-                 `⏱️ Last run: ${lastExecution.executedAt}\n` +
-                 (lastExecution.error ? `\n❌ Error:\n${lastExecution.error}` : ''),
+        comment:
+          `🤖 KATA ATC: ${lastExecution.methodName}\n` +
+          `📊 Executions: ${executions.length}\n` +
+          `⏱️ Last run: ${lastExecution.executedAt}\n` +
+          (lastExecution.error ? `\n❌ Error:\n${lastExecution.error}` : ''),
       });
     }
 
@@ -220,7 +220,7 @@ export async function syncToXray() {
       payload,
       {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       }
@@ -229,7 +229,6 @@ export async function syncToXray() {
     console.log(`✅ Results synced to Xray Cloud successfully`);
     console.log(`   Test Execution: ${importResponse.data.key}`);
     console.log(`   URL: https://your-domain.atlassian.net/browse/${importResponse.data.key}`);
-
   } catch (error: any) {
     console.error('❌ Xray sync failed:', error.response?.data || error.message);
   }
@@ -261,6 +260,7 @@ export default defineConfig({
 ### 3.1 Setup Requirements
 
 **Prerequisites:**
+
 - Jira Cloud instance
 - Jira API token
 - Custom field in Jira for test status
@@ -280,7 +280,7 @@ export default defineConfig({
 
 **Step 2: Get Jira API Token**
 
-1. Go to https://id.atlassian.com/manage-profile/security/api-tokens
+1. Go to <https://id.atlassian.com/manage-profile/security/api-tokens>
 2. Create API Token
 3. Copy token
 
@@ -341,7 +341,7 @@ export async function syncToJiraDirect() {
         },
         {
           headers: {
-            'Authorization': `Basic ${auth}`,
+            Authorization: `Basic ${auth}`,
             'Content-Type': 'application/json',
           },
         }
@@ -358,7 +358,11 @@ export async function syncToJiraDirect() {
               {
                 type: 'paragraph',
                 content: [
-                  { type: 'text', text: `🤖 KATA Execution - ${finalStatus}\n`, marks: [{ type: 'strong' }] },
+                  {
+                    type: 'text',
+                    text: `🤖 KATA Execution - ${finalStatus}\n`,
+                    marks: [{ type: 'strong' }],
+                  },
                 ],
               },
               {
@@ -369,23 +373,26 @@ export async function syncToJiraDirect() {
                   { type: 'text', text: `Last run: ${lastExecution.executedAt}\n` },
                 ],
               },
-              ...(lastExecution.error ? [{
-                type: 'codeBlock',
-                content: [{ type: 'text', text: `Error:\n${lastExecution.error}` }],
-              }] : []),
+              ...(lastExecution.error
+                ? [
+                    {
+                      type: 'codeBlock',
+                      content: [{ type: 'text', text: `Error:\n${lastExecution.error}` }],
+                    },
+                  ]
+                : []),
             ],
           },
         },
         {
           headers: {
-            'Authorization': `Basic ${auth}`,
+            Authorization: `Basic ${auth}`,
             'Content-Type': 'application/json',
           },
         }
       );
 
       console.log(`✅ Updated ${testId} → ${finalStatus}`);
-
     } catch (error: any) {
       console.error(`❌ Failed to update ${testId}:`, error.response?.data || error.message);
     }
@@ -410,6 +417,7 @@ export async function syncToJiraDirect() {
 | **Best For**               | Teams with QA budget, need advanced reporting | Small teams, tight budget       |
 
 **Recommendation:**
+
 - **Start with Jira Direct** for MVP/early stage
 - **Upgrade to Xray** when team grows or reporting needs increase
 
@@ -426,10 +434,12 @@ Both approaches use the same test ID format:
 **Format**: `{PROJECT_KEY}-{ISSUE_NUMBER}`
 
 **Examples:**
-- `UPEX-123` - Maps to https://your-domain.atlassian.net/browse/UPEX-123
-- `DEMO-456` - Maps to https://your-domain.atlassian.net/browse/DEMO-456
+
+- `UPEX-123` - Maps to <https://your-domain.atlassian.net/browse/UPEX-123>
+- `DEMO-456` - Maps to <https://your-domain.atlassian.net/browse/DEMO-456>
 
 **Requirements:**
+
 - Must match Jira issue key exactly
 - Issue must exist in Jira before sync
 - Issue can be any type (Story, Task, Test, etc.)
@@ -462,6 +472,7 @@ Both approaches use the same test ID format:
 **Cause**: Invalid credentials
 
 **Solution**:
+
 - Verify `XRAY_CLIENT_ID` / `JIRA_API_TOKEN` are correct
 - Check credentials haven't expired
 - Ensure API token has required permissions
@@ -471,6 +482,7 @@ Both approaches use the same test ID format:
 **Cause**: Test ID doesn't exist in Jira
 
 **Solution**:
+
 - Create the Jira issue first
 - Verify issue key matches exactly (case-sensitive)
 - Check project key is correct
@@ -480,11 +492,14 @@ Both approaches use the same test ID format:
 **Cause**: Custom field ID is incorrect
 
 **Solution**:
+
 - Get correct field ID from Jira API:
+
   ```bash
   curl -u email@example.com:api_token \
     https://your-domain.atlassian.net/rest/api/3/field | grep -i "test status"
   ```
+
 - Update `JIRA_TEST_STATUS_FIELD` in `.env`
 
 ### Issue: Sync is slow
@@ -492,6 +507,7 @@ Both approaches use the same test ID format:
 **Cause**: Sequential API calls
 
 **Solution**:
+
 - Implement parallel requests with `Promise.all()`
 - Batch requests if API supports it
 - Cache authentication tokens
@@ -501,6 +517,7 @@ Both approaches use the same test ID format:
 ## 8. Best Practices
 
 ✅ **DO:**
+
 - Create Jira issues before writing ATCs
 - Use meaningful test IDs that map to requirements
 - Add comments in Jira with execution context (build ID, environment)
@@ -508,6 +525,7 @@ Both approaches use the same test ID format:
 - Monitor sync failures (set up alerts)
 
 ❌ **DON'T:**
+
 - Hardcode test IDs in multiple places
 - Sync from local runs (pollutes Jira)
 - Skip error handling in sync scripts
@@ -539,7 +557,7 @@ In GitHub Actions, enable sync only on `main` branch:
 
 ## 10. References
 
-- **Xray Cloud API**: https://docs.getxray.app/display/XRAYCLOUD/REST+API
-- **Jira Cloud API**: https://developer.atlassian.com/cloud/jira/platform/rest/v3/
-- **Xray Pricing**: https://marketplace.atlassian.com/apps/1211769/xray-test-management-for-jira
-- **Jira API Tokens**: https://id.atlassian.com/manage-profile/security/api-tokens
+- **Xray Cloud API**: <https://docs.getxray.app/display/XRAYCLOUD/REST+API>
+- **Jira Cloud API**: <https://developer.atlassian.com/cloud/jira/platform/rest/v3/>
+- **Xray Pricing**: <https://marketplace.atlassian.com/apps/1211769/xray-test-management-for-jira>
+- **Jira API Tokens**: <https://id.atlassian.com/manage-profile/security/api-tokens>
