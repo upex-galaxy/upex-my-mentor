@@ -52,3 +52,8 @@ bun.lockb
 # Sentry Config File
 .env.sentry-build-plugin
 .env*.local
+
+# Playwright
+/playwright-report/
+/test-results/
+
