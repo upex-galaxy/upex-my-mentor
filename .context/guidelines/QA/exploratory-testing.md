@@ -16,6 +16,54 @@ El Testing Exploratorio valida funcionalidades **ANTES** de invertir en automati
 
 ---
 
+## Trifuerza Testing
+
+La validación completa de features requiere testing en **tres capas**:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    TRIFUERZA TESTING                        │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │     UI      │  │     API     │  │     DB      │         │
+│  │  Testing    │  │  Testing    │  │  Testing    │         │
+│  │             │  │             │  │             │         │
+│  │ Playwright  │  │  Postman/   │  │   DBHub     │         │
+│  │    MCP      │  │ OpenAPI MCP │  │    MCP      │         │
+│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘         │
+│         │                │                │                 │
+│         └────────────────┴────────────────┘                 │
+│                          │                                  │
+│                 Data Flows Through All Layers               │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Cuándo Usar Cada Capa
+
+| Tipo de Feature | Testing Recomendado        | Prompts a Usar                 |
+| --------------- | -------------------------- | ------------------------------ |
+| UI-focused      | UI → API → DB              | exploratory-test.md → api → db |
+| API-first       | API → DB → UI (si aplica)  | exploratory-api-test.md → db   |
+| Data-focused    | DB → API → UI (si aplica)  | exploratory-db-test.md → api   |
+| Full-stack      | Todas (Trifuerza completa) | Las tres en secuencia          |
+
+### Flujo de Verificación
+
+```
+1. UI Testing    → Valida experiencia de usuario
+2. API Testing   → Valida lógica de backend y contratos
+3. DB Testing    → Valida integridad de datos y constraints
+```
+
+**Cada capa puede descubrir defectos que las otras no ven:**
+
+- **UI** encuentra problemas de UX, validaciones visuales, flujos de navegación
+- **API** encuentra problemas de contratos, auth, RLS policies, error handling
+- **DB** encuentra problemas de integridad, triggers, constraints, orphan data
+
+---
+
 ## Cuándo Realizar Testing Exploratorio
 
 | Trigger                      | Scope                  | Objetivo            |
@@ -31,19 +79,41 @@ El Testing Exploratorio valida funcionalidades **ANTES** de invertir en automati
 
 Antes de iniciar una sesión de testing exploratorio:
 
+**Generales:**
+
 - [ ] Feature desplegada en staging
 - [ ] Acceso a URL de staging
 - [ ] Acceptance Criteria o Test Cases disponibles
-- [ ] MCP de Playwright conectado (recomendado)
 - [ ] MCP de Atlassian conectado (para crear bugs)
+
+**Según la capa a testear:**
+
+| Capa | MCPs Requeridos                  |
+| ---- | -------------------------------- |
+| UI   | `playwright`                     |
+| API  | `postman` y/o `openapi`          |
+| DB   | `dbhub`                          |
+| Full | Todos los anteriores (Trifuerza) |
 
 ---
 
 ## Herramientas MCP
 
-### Playwright MCP (Recomendado)
+La Trifuerza utiliza diferentes MCPs según la capa de testing:
 
-Usar Playwright MCP para explorar la aplicación de manera sistemática:
+| MCP             | Paquete NPM                   | Capa     | Propósito                          |
+| --------------- | ----------------------------- | -------- | ---------------------------------- |
+| `playwright`    | `@anthropic/mcp-playwright`   | UI       | Exploración visual, interacciones  |
+| `postman`       | `@postman/postman-mcp-server` | API      | Colecciones, auth flows            |
+| `openapi` (api) | `@ivotoby/openapi-mcp-server` | API      | Requests directos via spec         |
+| `dbhub` (sql)   | `@bytebase/dbhub`             | DB       | Queries SQL, verificación de datos |
+| `atlassian`     | `@anthropic/mcp-atlassian`    | Workflow | Crear bugs, transicionar stories   |
+
+---
+
+### Playwright MCP (UI Testing)
+
+Explorar la aplicación de manera visual y sistemática:
 
 | Herramienta                                | Uso                              |
 | ------------------------------------------ | -------------------------------- |
@@ -53,7 +123,7 @@ Usar Playwright MCP para explorar la aplicación de manera sistemática:
 | `mcp__playwright__browser_type`            | Llenar campos de formulario      |
 | `mcp__playwright__browser_take_screenshot` | Capturar evidencia visual        |
 
-**Flujo típico con Playwright MCP:**
+**Flujo típico:**
 
 ```
 1. browser_navigate → Ir a la página
@@ -63,7 +133,65 @@ Usar Playwright MCP para explorar la aplicación de manera sistemática:
 5. Repetir para cada escenario
 ```
 
-Ver `.context/guidelines/MCP/playwright.md` para más detalles.
+---
+
+### Postman / OpenAPI MCP (API Testing)
+
+Validar endpoints, contratos y autenticación:
+
+| Herramienta (Postman)     | Uso                           |
+| ------------------------- | ----------------------------- |
+| `getCollections`          | Listar colecciones de tests   |
+| `runCollection`           | Ejecutar suite de tests       |
+| `getEnvironments`         | Ver environments configurados |
+| `createCollectionRequest` | Crear nuevos requests         |
+
+| Herramienta (OpenAPI)         | Uso                      |
+| ----------------------------- | ------------------------ |
+| `mcp__openapi__get-[table]`   | GET request a endpoint   |
+| `mcp__openapi__post-[table]`  | POST request a endpoint  |
+| `mcp__openapi__patch-[table]` | PATCH request a endpoint |
+
+**Flujo típico API Testing:**
+
+```
+1. Autenticar (obtener JWT)
+2. Ejecutar requests por endpoint
+3. Validar response schemas
+4. Verificar RLS policies
+5. Probar edge cases y errores
+```
+
+---
+
+### DBHub MCP (Database Testing)
+
+Verificar datos, constraints y triggers:
+
+| Herramienta            | Uso                           |
+| ---------------------- | ----------------------------- |
+| `mcp__dbhub__query`    | Ejecutar SELECT queries       |
+| `mcp__dbhub__execute`  | Ejecutar INSERT/UPDATE/DELETE |
+| `mcp__dbhub__describe` | Describir tablas y schemas    |
+
+**Flujo típico DB Testing:**
+
+```
+1. Explorar schema (tablas, constraints)
+2. Verificar datos creados por API/UI
+3. Validar constraints (FK, UNIQUE, CHECK)
+4. Verificar triggers y cálculos
+5. Buscar problemas de integridad
+```
+
+---
+
+**Ver también:**
+
+- `.context/guidelines/MCP/playwright.md` - Detalles de Playwright MCP
+- `docs/testing/api-guide/mcp-postman.md` - Configuración de Postman MCP
+- `docs/testing/api-guide/mcp-testing.md` - MCPs combinados
+- `docs/testing/database-guide/mcp-dbhub.md` - DBHub MCP
 
 ---
 
@@ -260,7 +388,10 @@ Fase 12: Test Automation
 **Ver también:**
 
 - `.prompts/us-qa-workflow.md` - Workflow completo de QA
-- `.prompts/fase-10-exploratory-testing/` - Prompts detallados
+- `.prompts/fase-10-exploratory-testing/README.md` - Overview de la fase
+- `.prompts/fase-10-exploratory-testing/exploratory-test.md` - UI Testing
+- `.prompts/fase-10-exploratory-testing/exploratory-api-test.md` - API Testing
+- `.prompts/fase-10-exploratory-testing/exploratory-db-test.md` - Database Testing
 - `.context/guidelines/MCP/playwright.md` - Uso de Playwright MCP
 
 ---
@@ -277,4 +408,4 @@ Al finalizar el testing exploratorio:
 
 ---
 
-**Última actualización**: 2025-12-21
+**Última actualización**: 2025-12-26

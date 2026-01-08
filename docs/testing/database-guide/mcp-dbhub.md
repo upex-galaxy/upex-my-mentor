@@ -1,8 +1,8 @@
-# Configuración de DBHub MCP para Testing de Base de Datos
+# Configuración de dbhub MCP para Testing de Base de Datos
 
-## ¿Qué es DBHub?
+## ¿Qué es dbhub?
 
-**@bytebase/dbhub** es un MCP (Model Context Protocol) que permite conectar herramientas de IA como Claude a bases de datos PostgreSQL, MySQL, SQLite y otras. Con esto, puedes pedirle a Claude que ejecute queries SQL directamente.
+**dbhub** (`@bytebase/dbhub`) es un MCP (Model Context Protocol) que permite conectar herramientas de IA como Claude a bases de datos PostgreSQL, MySQL, SQLite y otras. Con esto, puedes pedirle a Claude que ejecute queries SQL directamente.
 
 ---
 
@@ -146,7 +146,7 @@ DBHub MCP Server running on stdio
 ### Claude Code (CLI)
 
 ```bash
-claude mcp add-json "database" '{"command":"npx","args":["-y","@bytebase/dbhub","--transport","stdio","--dsn","postgresql://qa_team.ionevzckjyxtpmyenbxc:Password_Seguro_123@aws-0-us-east-1.pooler.supabase.com:6543/postgres"]}'
+claude mcp add-json "dbhub" '{"command":"npx","args":["-y","@bytebase/dbhub","--transport","stdio","--dsn","postgresql://qa_team.ionevzckjyxtpmyenbxc:Password_Seguro_123@aws-0-us-east-1.pooler.supabase.com:6543/postgres"]}'
 ```
 
 ### Claude Desktop
@@ -159,7 +159,7 @@ Archivo de configuración:
 ```json
 {
   "mcpServers": {
-    "database": {
+    "dbhub": {
       "command": "npx",
       "args": [
         "-y",
@@ -181,7 +181,7 @@ Archivo: `~/.cursor/mcp.json` (global) o `.cursor/mcp.json` (por proyecto)
 ```json
 {
   "mcpServers": {
-    "database": {
+    "dbhub": {
       "command": "npx",
       "args": [
         "-y",
@@ -203,7 +203,7 @@ Archivo: `.vscode/mcp.json`
 ```json
 {
   "servers": {
-    "database": {
+    "dbhub": {
       "command": "npx",
       "args": [
         "-y",
@@ -227,7 +227,7 @@ Si tu contraseña tiene caracteres especiales (`!`, `@`, `#`, etc.), usa variabl
 ```json
 {
   "mcpServers": {
-    "database": {
+    "dbhub": {
       "command": "npx",
       "args": ["-y", "@bytebase/dbhub", "--transport", "stdio"],
       "env": {
@@ -258,7 +258,7 @@ Si tu contraseña tiene caracteres especiales (`!`, `@`, `#`, etc.), usa variabl
 ```json
 {
   "mcpServers": {
-    "database": {
+    "dbhub": {
       "command": "npx",
       "args": [
         "-y",
@@ -282,10 +282,11 @@ Si tu contraseña tiene caracteres especiales (`!`, `@`, `#`, etc.), usa variabl
 
 Una vez configurado, tendrás acceso a estas herramientas:
 
-| Herramienta      | Función                                     |
-| ---------------- | ------------------------------------------- |
-| `execute_sql`    | Ejecutar queries SQL                        |
-| `search_objects` | Explorar schemas, tablas, columnas, índices |
+| Herramienta            | Función                                     |
+| ---------------------- | ------------------------------------------- |
+| `mcp__dbhub__query`    | Ejecutar SELECT queries                     |
+| `mcp__dbhub__execute`  | Ejecutar INSERT/UPDATE/DELETE               |
+| `mcp__dbhub__describe` | Explorar schemas, tablas, columnas, índices |
 
 ### Ejemplos de uso en conversación:
 
@@ -301,8 +302,8 @@ Una vez configurado, tendrás acceso a estas herramientas:
 | Capa                   | Qué protege  | Cómo                                          |
 | ---------------------- | ------------ | --------------------------------------------- |
 | **Usuario Postgres**   | Schema (DDL) | `qa_team` no puede CREATE/ALTER/DROP tablas   |
-| **DBHub `--readonly`** | Datos (DML)  | Bloquea INSERT/UPDATE/DELETE (opcional)       |
-| **DBHub `--max-rows`** | Performance  | Evita queries que devuelvan millones de filas |
+| **dbhub `--readonly`** | Datos (DML)  | Bloquea INSERT/UPDATE/DELETE (opcional)       |
+| **dbhub `--max-rows`** | Performance  | Evita queries que devuelvan millones de filas |
 
 ---
 
@@ -311,13 +312,13 @@ Una vez configurado, tendrás acceso a estas herramientas:
 ### En Claude Code:
 
 ```bash
-claude mcp list          # Ver servidores configurados
-claude mcp get database  # Ver detalles del servidor
+claude mcp list        # Ver servidores configurados
+claude mcp get dbhub   # Ver detalles del servidor
 ```
 
 ### En Cursor:
 
-Ve a **Settings** → **Tools & Integrations** → **MCP** y verifica que aparezca "database" con estado activo.
+Ve a **Settings** → **Tools & Integrations** → **MCP** y verifica que aparezca "dbhub" con estado activo.
 
 ---
 

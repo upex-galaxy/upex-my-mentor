@@ -8,21 +8,24 @@ Esta guia explica como usar los MCP servers configurados para realizar API testi
 
 El proyecto puede tener configurados varios MCP servers para testing:
 
-| MCP        | Proposito                    | Autenticacion                     |
-| ---------- | ---------------------------- | --------------------------------- |
-| `api`      | REST API via OpenAPI spec    | `anon_key` en headers             |
-| `sql`      | Queries SQL directos         | Rol `qa_team` con acceso completo |
-| `supabase` | Gestion de proyecto Supabase | Service role (admin)              |
+| MCP             | Paquete NPM                   | Proposito                    | Autenticacion                     |
+| --------------- | ----------------------------- | ---------------------------- | --------------------------------- |
+| `openapi` (api) | `@ivotoby/openapi-mcp-server` | REST API via OpenAPI spec    | `anon_key` en headers             |
+| `dbhub` (sql)   | `@bytebase/dbhub`             | Queries SQL directos         | Rol `qa_team` con acceso completo |
+| `postman`       | `@postman/postman-mcp-server` | Colecciones y environments   | Postman API Key                   |
+| `supabase`      | `@supabase/mcp-server`        | Gestion de proyecto Supabase | Service role (admin)              |
 
 ---
 
-## MCP: API (OpenAPI)
+## MCP: openapi (api)
+
+> Paquete: `@ivotoby/openapi-mcp-server`
 
 ### Configuracion Tipica
 
 ```json
 {
-  "api": {
+  "openapi": {
     "command": "npx",
     "args": ["-y", "@ivotoby/openapi-mcp-server", "--tools", "dynamic"],
     "env": {
@@ -38,7 +41,7 @@ Ejemplo con valores reales:
 
 ```json
 {
-  "api": {
+  "openapi": {
     "command": "npx",
     "args": ["-y", "@ivotoby/openapi-mcp-server", "--tools", "dynamic"],
     "env": {
@@ -54,21 +57,21 @@ Ejemplo con valores reales:
 
 Este MCP genera herramientas dinamicamente basadas en el schema OpenAPI:
 
-| Tool                      | Descripcion                    |
-| ------------------------- | ------------------------------ |
-| `mcp__api__get-users`     | GET /users                     |
-| `mcp__api__post-users`    | POST /users                    |
-| `mcp__api__patch-users`   | PATCH /users                   |
-| `mcp__api__delete-users`  | DELETE /users                  |
-| `mcp__api__get-products`  | GET /products                  |
-| `mcp__api__post-products` | POST /products                 |
-| `mcp__api__get-orders`    | GET /orders                    |
-| `mcp__api__post-orders`   | POST /orders                   |
-| ...                       | (una por cada tabla/operacion) |
+| Tool                          | Descripcion                    |
+| ----------------------------- | ------------------------------ |
+| `mcp__openapi__get-users`     | GET /users                     |
+| `mcp__openapi__post-users`    | POST /users                    |
+| `mcp__openapi__patch-users`   | PATCH /users                   |
+| `mcp__openapi__delete-users`  | DELETE /users                  |
+| `mcp__openapi__get-products`  | GET /products                  |
+| `mcp__openapi__post-products` | POST /products                 |
+| `mcp__openapi__get-orders`    | GET /orders                    |
+| `mcp__openapi__post-orders`   | POST /orders                   |
+| ...                           | (una por cada tabla/operacion) |
 
 ### Limitacion Importante: Solo Anon Key
 
-**El MCP `api` esta configurado con el `anon_key`, NO con un JWT de usuario.**
+**El MCP `openapi` esta configurado con el `anon_key`, NO con un JWT de usuario.**
 
 Esto significa:
 
@@ -82,13 +85,13 @@ Esto significa:
 # Pedirle a la IA:
 
 "Lista todos los productos de la categoria electronics"
---> La IA usara mcp__api__get-products con filtro category=electronics
+--> La IA usara mcp__openapi__get-products con filtro category=electronics
 
 "Muestrame las reviews del producto con ID abc123"
---> La IA usara mcp__api__get-reviews con filtro product_id
+--> La IA usara mcp__openapi__get-reviews con filtro product_id
 
 "Cuantas ordenes hay con status pending?"
---> La IA usara mcp__api__get-orders con filtro de status
+--> La IA usara mcp__openapi__get-orders con filtro de status
 ```
 
 ### Workaround: Autenticacion Manual
@@ -117,13 +120,15 @@ Puedes hacerlo en Postman o en el navegador."
 
 ---
 
-## MCP: SQL (Database Hub)
+## MCP: dbhub (sql)
+
+> Paquete: `@bytebase/dbhub`
 
 ### Configuracion Tipica
 
 ```json
 {
-  "sql": {
+  "dbhub": {
     "command": "npx",
     "args": [
       "-y",
@@ -141,7 +146,7 @@ Ejemplo con valores reales:
 
 ```json
 {
-  "sql": {
+  "dbhub": {
     "command": "npx",
     "args": [
       "-y",
@@ -157,7 +162,7 @@ Ejemplo con valores reales:
 
 ### Ventaja: Rol `qa_team`
 
-Este MCP conecta con el rol `qa_team` que tiene **RLS bypassed** para testing:
+El MCP `dbhub` conecta con el rol `qa_team` que tiene **RLS bypassed** para testing:
 
 ```sql
 -- El rol qa_team tiene policies como:
@@ -169,11 +174,11 @@ USING (true);
 
 ### Herramientas Disponibles
 
-| Tool                 | Descripcion                   |
-| -------------------- | ----------------------------- |
-| `mcp__sql__query`    | Ejecutar SELECT queries       |
-| `mcp__sql__execute`  | Ejecutar INSERT/UPDATE/DELETE |
-| `mcp__sql__describe` | Describir tablas y schema     |
+| Tool                   | Descripcion                   |
+| ---------------------- | ----------------------------- |
+| `mcp__dbhub__query`    | Ejecutar SELECT queries       |
+| `mcp__dbhub__execute`  | Ejecutar INSERT/UPDATE/DELETE |
+| `mcp__dbhub__describe` | Describir tablas y schema     |
 
 ### Casos de Uso
 
@@ -300,20 +305,20 @@ IA ejecutara:
 
 ## Limitaciones Actuales
 
-### 1. MCP API sin Autenticacion de Usuario
+### 1. MCP openapi sin Autenticacion de Usuario
 
-**Problema:** El MCP `api` solo tiene el `anon_key`, no puede simular usuarios especificos.
+**Problema:** El MCP `openapi` solo tiene el `anon_key`, no puede simular usuarios especificos.
 
 **Workaround actual:**
 
-- Usar MCP `sql` con rol `qa_team` para operaciones que requieren bypass de RLS
-- Usar Postman/DevTools para testing con JWT de usuario real
+- Usar MCP `dbhub` con rol `qa_team` para operaciones que requieren bypass de RLS
+- Usar Postman MCP o Postman app para testing con JWT de usuario real
 
 **Solucion futura posible:**
 
 ```json
 {
-  "api-authenticated": {
+  "openapi-authenticated": {
     "command": "npx",
     "args": ["-y", "@ivotoby/openapi-mcp-server", "--tools", "dynamic"],
     "env": {
@@ -332,9 +337,10 @@ Para mantener un token valido, podrias:
 
 1. Crear un script que obtenga un token fresco y actualice el MCP config
 2. Usar tokens de larga duracion (no recomendado para produccion)
-3. Usar el MCP `sql` que no tiene este problema
+3. Usar el MCP `dbhub` que no tiene este problema
+4. Usar el MCP `postman` que maneja environments con variables
 
-### 3. MCP SQL es Muy Poderoso
+### 3. MCP dbhub es Muy Poderoso
 
 El rol `qa_team` puede hacer CUALQUIER operacion. Usalo con cuidado:
 
@@ -440,22 +446,97 @@ UPDATE orders SET status = 'shipped' WHERE id = 'X'"
 
 ---
 
+## Flujos Combinados de MCPs
+
+### Configuracion Completa: openapi + dbhub + postman
+
+```json
+{
+  "mcpServers": {
+    "openapi": {
+      "command": "npx",
+      "args": ["-y", "@ivotoby/openapi-mcp-server", "--tools", "dynamic"],
+      "env": {
+        "API_BASE_URL": "{{SUPABASE_URL}}/rest/v1",
+        "OPENAPI_SPEC_PATH": "{{SUPABASE_URL}}/rest/v1/?apikey={{ANON_KEY}}",
+        "API_HEADERS": "apikey:{{ANON_KEY}}"
+      }
+    },
+    "dbhub": {
+      "command": "npx",
+      "args": ["-y", "@bytebase/dbhub", "--transport", "stdio"],
+      "env": {
+        "DB_TYPE": "postgres",
+        "DB_HOST": "aws-0-{{REGION}}.pooler.supabase.com",
+        "DB_PORT": "6543",
+        "DB_USER": "qa_team.{{PROJECT_REF}}",
+        "DB_PASSWORD": "${DB_PASSWORD}",
+        "DB_NAME": "postgres"
+      }
+    },
+    "postman": {
+      "type": "http",
+      "url": "https://mcp.postman.com/mcp",
+      "headers": { "Authorization": "Bearer ${POSTMAN_API_KEY}" }
+    }
+  }
+}
+```
+
+### Cuando Usar Cada MCP
+
+| MCP       | Usar para                                                  |
+| --------- | ---------------------------------------------------------- |
+| `openapi` | Exploracion rapida de endpoints, requests anonimos         |
+| `dbhub`   | Preparar/verificar datos, bypass de RLS, queries complejos |
+| `postman` | Tests con autenticacion, colecciones, flujos completos     |
+
+### Flujo Combinado: Testing End-to-End
+
+```
+Usuario: "Prueba el flujo completo de crear una orden"
+
+IA ejecuta:
+
+1. [dbhub] Preparar datos:
+   INSERT INTO products (...) -- producto de prueba
+   INSERT INTO users (...) -- usuario de prueba si no existe
+
+2. [postman] Ejecutar flujo autenticado:
+   runCollection("Order Flow Tests", environment: "Development")
+   - Login como usuario
+   - Agregar producto al carrito
+   - Crear orden
+   - Verificar orden creada
+
+3. [dbhub] Verificar en DB:
+   SELECT * FROM orders WHERE user_id = 'xxx' ORDER BY created_at DESC LIMIT 1
+   SELECT * FROM order_items WHERE order_id = 'orden_creada'
+   -- Verificar triggers, totales, etc.
+
+4. [dbhub] Limpiar:
+   DELETE FROM order_items WHERE order_id = 'orden_creada'
+   DELETE FROM orders WHERE id = 'orden_creada'
+```
+
+---
+
 ## Flujo Recomendado para Testing
 
-1. **Preparar datos** (MCP sql):
+1. **Preparar datos** (MCP `dbhub`):
    - Crear usuarios de prueba si no existen
    - Crear ordenes/productos necesarios
 
-2. **Ejecutar tests de API** (Postman o DevTools):
+2. **Ejecutar tests de API** (MCP `postman` o Postman app):
    - Login como usuario especifico
    - Ejecutar operaciones autenticadas
    - Validar responses
 
-3. **Verificar resultados** (MCP sql):
+3. **Verificar resultados** (MCP `dbhub`):
    - Confirmar que los datos se guardaron correctamente
    - Verificar side effects (triggers, etc.)
 
-4. **Limpiar** (MCP sql):
+4. **Limpiar** (MCP `dbhub`):
    - Eliminar datos de prueba
    - Restaurar estado inicial si es necesario
 
@@ -464,4 +545,4 @@ UPDATE orders SET status = 'shipped' WHERE id = 'X'"
 ## Siguiente Paso
 
 Para testing automatizado con codigo:
---> [06-testing-playwright.md](./06-testing-playwright.md)
+--> [playwright-testing.md](./playwright-testing.md)

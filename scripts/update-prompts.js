@@ -95,6 +95,9 @@ const STANDALONE_PROMPTS = [
   'README.md',
 ];
 
+// Books standalone files (files in root of .books/)
+const STANDALONE_BOOKS = ['README.md'];
+
 // Docs structure - directories to merge (not replace)
 const DOCS_DIRECTORIES = ['architecture', 'mcp', 'testing', 'workflows'];
 
@@ -366,13 +369,14 @@ ${colors.bold}USO:${colors.reset}
 ${colors.bold}COMANDOS:${colors.reset}
   all           Actualiza todo (merge inteligente)
   prompts       Actualiza .prompts/ (menu interactivo o con flags)
+  books         Actualiza .books/ (manuales para humanos, mismas flags que prompts)
   docs          Actualiza docs/ (merge, preserva archivos del usuario)
   context       Actualiza .context/ (system-prompt, guidelines)
   templates     Actualiza templates/mcp/
   scripts       Actualiza scripts de actualizacion
   help          Muestra esta ayuda
 
-${colors.bold}FLAGS PARA 'prompts':${colors.reset}
+${colors.bold}FLAGS PARA 'prompts' y 'books':${colors.reset}
   --all         Todas las fases (1-14) + standalone
   --fase N      Fases especificas (ej: --fase 5 o --fase 5,10,11)
   --rol ROLE    Por rol (ver roles disponibles)
@@ -398,6 +402,8 @@ ${colors.bold}EJEMPLOS:${colors.reset}
   bun up prompts                ${colors.dim}# Menu para elegir fases${colors.reset}
   bun up prompts --rol qa-full  ${colors.dim}# QA + Specification${colors.reset}
   bun up prompts --fase 7,8     ${colors.dim}# Fases 7 y 8${colors.reset}
+  bun up books --all            ${colors.dim}# Todos los manuales${colors.reset}
+  bun up books --rol qa         ${colors.dim}# Manuales de QA${colors.reset}
   bun up docs context           ${colors.dim}# Multiples componentes${colors.reset}
 `);
 }
@@ -415,6 +421,7 @@ async function showMainMenu() {
     choices: [
       { name: 'Todo (all)', value: 'all' },
       { name: 'Prompts (.prompts/)', value: 'prompts' },
+      { name: 'Books (.books/) - Manuales para humanos', value: 'books' },
       { name: 'Documentacion (docs/)', value: 'docs' },
       { name: 'Context (.context/)', value: 'context' },
       { name: 'Templates MCP (templates/mcp/)', value: 'templates' },
@@ -501,6 +508,7 @@ function parseArgs(args) {
   const validCommands = [
     'all',
     'prompts',
+    'books',
     'docs',
     'context',
     'guidelines',
@@ -621,6 +629,7 @@ function createBackup(components) {
 
   const backupMap = {
     prompts: { src: '.prompts', dest: '.prompts' },
+    books: { src: '.books', dest: '.books' },
     docs: { src: 'docs', dest: 'docs' },
     context: { src: '.context', dest: '.context' },
     templates: { src: 'templates/mcp', dest: 'templates/mcp' },
@@ -752,6 +761,47 @@ function updatePrompts(phases, includeStandalone) {
   if (includeStandalone) {
     logMerge('Archivos standalone...');
     mergeFiles(templatePromptsPath, '.prompts', STANDALONE_PROMPTS);
+  }
+}
+
+/**
+ * Update .books/ directory using merge strategy
+ * Books are human-readable manuals that mirror .prompts/ structure
+ */
+function updateBooks(phases, includeStandalone) {
+  logStep('Actualizando .books/ (merge)...');
+
+  const templateBooksPath = path.join(TEMP_DIR, '.books');
+  if (!fs.existsSync(templateBooksPath)) {
+    logWarning('No se encontro directorio .books en el template');
+    return;
+  }
+
+  // Ensure .books exists
+  fs.mkdirSync('.books', { recursive: true });
+
+  // Update specific phases using merge
+  if (phases && phases.length > 0) {
+    for (const phaseNum of phases) {
+      const phaseConfig = PHASE_CONFIG[phaseNum];
+      if (!phaseConfig) continue;
+
+      const srcPath = path.join(templateBooksPath, phaseConfig.dir);
+      const destPath = path.join('.books', phaseConfig.dir);
+
+      if (fs.existsSync(srcPath)) {
+        logMerge(`Fase ${phaseNum}: ${phaseConfig.name}`);
+        mergeDirectory(srcPath, destPath, '  ');
+      } else {
+        logWarning(`Fase ${phaseNum} no encontrada en template .books/`);
+      }
+    }
+  }
+
+  // Update standalone books files
+  if (includeStandalone) {
+    logMerge('Archivos standalone...');
+    mergeFiles(templateBooksPath, '.books', STANDALONE_BOOKS);
   }
 }
 
@@ -909,7 +959,7 @@ async function main() {
 
     // Determine which components to backup and update
     const components = selected.includes('all')
-      ? ['prompts', 'docs', 'context', 'templates', 'scripts']
+      ? ['prompts', 'books', 'docs', 'context', 'templates', 'scripts']
       : selected;
 
     createBackup(components);
@@ -920,6 +970,7 @@ async function main() {
 
     if (selected.includes('all')) {
       updatePrompts(Object.keys(PHASE_CONFIG).map(Number), true);
+      updateBooks(Object.keys(PHASE_CONFIG).map(Number), true);
       updateDocs();
       updateContext();
       updateTemplates();
@@ -930,6 +981,9 @@ async function main() {
         if (cmd === 'prompts') {
           const promptsConfig = await showPromptsMenu();
           updatePrompts(promptsConfig.phases, promptsConfig.standalone);
+        } else if (cmd === 'books') {
+          const booksConfig = await showPromptsMenu();
+          updateBooks(booksConfig.phases, booksConfig.standalone);
         } else if (cmd === 'docs') {
           updateDocs();
         } else if (cmd === 'context') {
@@ -966,7 +1020,7 @@ async function main() {
 
   // Expand 'all' command
   if (parsed.commands.includes('all')) {
-    parsed.commands = ['prompts', 'docs', 'context', 'templates', 'scripts'];
+    parsed.commands = ['prompts', 'books', 'docs', 'context', 'templates', 'scripts'];
     parsed.all = true;
   }
 
@@ -993,6 +1047,22 @@ async function main() {
 
           const promptsConfig = await showPromptsMenu();
           updatePrompts(promptsConfig.phases, promptsConfig.standalone);
+        }
+        break;
+      case 'books':
+        if (parsed.all) {
+          updateBooks(Object.keys(PHASE_CONFIG).map(Number), true);
+        } else if (parsed.phases) {
+          updateBooks(parsed.phases, parsed.standalone);
+        } else if (parsed.standalone) {
+          updateBooks([], true);
+        } else {
+          // Check for interactive dependencies before showing menu
+          const depsReady = await ensureDependencies();
+          if (!depsReady) return;
+
+          const booksConfig = await showPromptsMenu();
+          updateBooks(booksConfig.phases, booksConfig.standalone);
         }
         break;
       case 'docs':

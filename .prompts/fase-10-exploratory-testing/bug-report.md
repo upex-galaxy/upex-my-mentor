@@ -29,21 +29,21 @@ Identify, validate, and report defects found during exploratory testing. This pr
 
 ### Required Fields
 
-| Field ID            | Jira Field Name                  | Type     | What to Fill                                                                                                              |
-| ------------------- | -------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Field ID            | Jira Field Name                   | Type     | What to Fill                                                                                                              |
+| ------------------- | --------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------- |
 | `customfield_10109` | 🐞 Actual Result (Comportamiento) | Textarea | Describe exactly what happened (the bug behavior). Include error messages, unexpected UI states, or incorrect data shown. |
 | `customfield_10110` | ✅ Expected Result (Output)       | Textarea | Describe what SHOULD have happened according to requirements or standard UX patterns.                                     |
-| `customfield_10112` | Error Type                       | Dropdown | Select ONE option: `Functional`, `UI/Visual`, `Performance`, `Data`, `Integration`, or `Security`                         |
-| `customfield_10041` | Severity                         | Dropdown | Select ONE option: `Critical`, `High`, `Medium`, or `Low`                                                                 |
-| `customfield_12210` | Test Environment                 | Dropdown | Select ONE option: `Development`, `Staging`, or `Production`                                                              |
-| `customfield_10049` | Root Cause Text                  | Textarea | Technical analysis: file path, function name, API endpoint, or "Investigation needed" if unknown                          |
+| `customfield_10112` | Error Type                        | Dropdown | Select ONE option: `Functional`, `UI/Visual`, `Performance`, `Data`, `Integration`, or `Security`                         |
+| `customfield_10041` | Severity                          | Dropdown | Select ONE option: `Critical`, `High`, `Medium`, or `Low`                                                                 |
+| `customfield_12210` | Test Environment                  | Dropdown | Select ONE option: `Development`, `Staging`, or `Production`                                                              |
+| `customfield_10049` | Root Cause Text                   | Textarea | Technical analysis: file path, function name, API endpoint, or "Investigation needed" if unknown                          |
 
 ### Optional Fields
 
 | Field ID            | Jira Field Name | Type     | When to Use                                                                                                                    |
 | ------------------- | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `customfield_10111` | 🚩 Workaround    | Textarea | Only if a temporary solution exists. Otherwise, omit or set to `null`                                                          |
-| `customfield_10607` | 🧫 EVIDENCE      | Textarea | Additional notes about evidence (e.g., "See attached screenshot", "Video in attachments"). Omit if using attachments parameter |
+| `customfield_10111` | 🚩 Workaround   | Textarea | Only if a temporary solution exists. Otherwise, omit or set to `null`                                                          |
+| `customfield_10607` | 🧫 EVIDENCE     | Textarea | Additional notes about evidence (e.g., "See attached screenshot", "Video in attachments"). Omit if using attachments parameter |
 | `customfield_12212` | Fix             | Radio    | Always set to `{"value": "Bugfix"}` for bug reports                                                                            |
 
 ### Dropdown Values Reference
@@ -200,7 +200,8 @@ Tools:
 ```markdown
 ## Bug Details
 
-**Title:** [Clear, descriptive title - format: "[Component] Brief issue description"]
+**Title:** [Formato estándar: <EPICNAME>: <COMPONENT>: <ISSUE_SUMMARY>]
+Ejemplo: "CheckoutFlow: Payment: No se muestra error al ingresar contraseña incorrecta"
 
 **Error Type:** [Functional/UI-Visual/Performance/Data/Integration/Security]
 
@@ -282,7 +283,7 @@ Tool: mcp__atlassian__jira_create_issue
 
 {
   "project_key": "[PROJECT_KEY]",  // e.g., "MYM", "UPEX", "QA", etc.
-  "summary": "[Bug title - format: [Component] Brief description]",
+  "summary": "[Formato: <EPICNAME>: <COMPONENT>: <ISSUE_SUMMARY>]",
   "issue_type": "Bug",
   "description": "[See Jira Description Template below]",
   "additional_fields": {
@@ -422,6 +423,33 @@ _RELATED STORIES_
 * Relacionado: [STORY-XXX if applicable]
 * Bloquea: [Other issues blocked by this bug]
 ```
+
+---
+
+## Nomenclatura de Bugs
+
+**Formato estándar para títulos de Bug/Defect:**
+
+```
+<EPICNAME>: <COMPONENT>: <ISSUE_SUMMARY>
+```
+
+| Componente      | Descripción                        |
+| --------------- | ---------------------------------- |
+| `EPICNAME`      | Nombre de la épica o sistema (SUT) |
+| `COMPONENT`     | Módulo donde ocurre el error       |
+| `ISSUE_SUMMARY` | Breve descripción de la falla      |
+
+**Ejemplos:**
+
+```
+CheckoutFlow: Payment: No se muestra error al ingresar contraseña incorrecta
+UserAuth: Login: Sesión expira sin mensaje de advertencia
+Dashboard: Charts: Gráfico de ventas muestra datos incorrectos
+API: Users: PUT /users/settings retorna 500 al guardar
+```
+
+**Referencia completa:** `.context/guidelines/QA/jira-test-management.md` → Sección "Nomenclatura de Tickets en Jira"
 
 ---
 

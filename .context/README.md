@@ -26,7 +26,7 @@ Antes de empezar, configura tu IA:
 
 1. Lee `system-prompt.md`
 2. Copia su contenido a tu archivo de configuración:
-   - Claude Code: `.claude/claude.md`
+   - Claude Code: `./CLAUDE.md (en el root)`
    - Gemini CLI: `.gemini/gemini.md`
    - GitHub Copilot: `.github/copilot-instructions.md`
    - Cursor: `.cursor/rules`
