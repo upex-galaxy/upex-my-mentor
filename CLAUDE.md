@@ -433,3 +433,36 @@ When using Atlassian MCP tools to interact with Jira, always use the following d
 When using Supabase tools, always use the following default values:
 
 -   **Project ID (`projectId`):** `ionevzckjyxtpmyenbxc`
+
+## Vercel Environments Configuration
+
+This project uses the following Vercel environment structure:
+
+| Environment | Branch | Domain | Usage |
+|-------------|--------|--------|-------|
+| **staging** | `staging` | staging-upexmymentor.vercel.app | Primary development/testing |
+| Production | `main` | upexmymentor.vercel.app | Live production |
+| Preview | All unassigned branches | Auto-generated | PR previews |
+| Development | CLI only | N/A | Local development |
+
+**Important Notes:**
+- We **exclusively use `staging`** branch for all development and testing
+- Push directly to `staging` (no PRs for bug fixes)
+- Same Supabase database is shared across ALL environments (including local)
+- Production (`main`) is only for final releases
+
+## Stripe Configuration
+
+This project uses **Stripe Test Mode** for all environments (educational project).
+
+**Environment Variables:**
+```env
+STRIPE_SECRET_KEY=sk_test_...
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+```
+
+**Important Notes:**
+- Same Stripe test account is used across ALL environments
+- Never use live Stripe keys (this is an educational project)
+- Stripe Connect uses Express accounts for mentor payouts

@@ -1,305 +1,630 @@
 # Test Documentation
 
-> Create Test issues in Jira for regression testing.
+> Crear Test issues en Jira (con o sin Xray) siguiendo el workflow de estados y transiciones.
 
 ---
 
-## Purpose
+## Propósito
 
-Document prioritized test cases in Jira as "Test" issue type for traceability and regression management.
+Documentar los tests priorizados en Jira, aplicando el workflow de estados correcto y asegurando trazabilidad.
 
-**This prompt is executed AFTER:**
+**Este prompt se ejecuta DESPUÉS de:**
 
-- Test analysis completed
-- Tests prioritized for regression
-
-**Prerequisites:**
-
-- Access to Atlassian MCP tools (`mcp__atlassian__*`)
-- Jira project with "Test" issue type configured
-- Prioritized test list from previous steps
+- Test analysis completado
+- Tests priorizados con decisión de path (Candidate/Manual)
 
 ---
 
-## Input Required
+## Pre-requisitos
 
-1. **Prioritized test list** - From test-prioritization.md
-2. **Related User Story ID** - To link tests
-3. **Format preference** - Ask user:
+**Cargar contexto obligatorio:**
 
 ```
-How would you like to document the test cases?
-
-1. Gherkin format (KATA standard - recommended)
-2. Traditional format (Steps | Data | Expected Result)
+Leer: .context/guidelines/QA/jira-test-management.md
 ```
+
+**Herramientas según modalidad:**
+
+- **Jira nativo:** MCP Atlassian
+- **Jira + Xray:** MCP Atlassian + Xray CLI (`bun xray`)
 
 ---
 
-## Workflow
+## Input Requerido
 
-### Phase 1: Verify Jira Configuration
-
-**Check Test issue type exists:**
-
-```
-Tool: mcp__atlassian__getJiraProjectIssueTypesMetadata
-
-Verify:
-- Issue type "Test" is available
-- Identify custom fields for Test issues
-- Note the "Test Status" custom field ID
-```
-
-**Expected Custom Fields:**
-
-| Field         | Purpose                  | Example Values           |
-| ------------- | ------------------------ | ------------------------ |
-| Test Status   | Automation status        | New, Automated, Manual   |
-| Test Type     | E2E, Integration, Manual | e2e, integration, manual |
-| Related Story | Link to US               | STORY-123                |
+1. **Lista priorizada de tests** - De `test-prioritization.md`
+2. **User Story ID relacionada** - Para trazabilidad
+3. **Project Key de Jira** - Para crear issues
 
 ---
 
-### Phase 2: Generate Test Case Content
+## Workflow Completo
 
-**For each prioritized test, generate content in chosen format:**
+### Fase 0: Determinar Modalidad y Formato
 
-#### Gherkin Format (Recommended)
+**Preguntas obligatorias si no se conocen:**
 
-```gherkin
-Feature: [Feature Name]
+```
+PREGUNTA 1: ¿Qué herramienta de Test Management utiliza el proyecto?
 
-  Background:
-    Given I am a registered user
-    And I am on the application
-
-  @critical @automation-candidate
-  Scenario: [Scenario Name]
-    Given [precondition]
-    When [action]
-    And [additional action]
-    Then [expected outcome]
-    And [additional verification]
-
-  @high @automation-candidate
-  Scenario Outline: [Parameterized Scenario Name]
-    Given [precondition]
-    When I enter "<input_field>" with "<value>"
-    Then I should see "<expected_result>"
-
-    Examples:
-      | input_field | value    | expected_result |
-      | email       | valid@   | Success         |
-      | email       | invalid  | Error message   |
+1. Xray (plugin de Jira) → Usar Xray CLI (`bun xray`) + MCP Atlassian
+2. Solo Jira nativo → Usar solo MCP Atlassian con Issue Type "Test"
 ```
 
-#### Traditional Format
+```
+PREGUNTA 2: ¿En qué formato deseas documentar los test cases?
 
-```markdown
-## Test Case: [Test Name]
+1. Gherkin (Given/When/Then) → Recomendado para automatización
+2. Steps tradicionales (Paso/Acción/Datos/Resultado) → Formato clásico de QA
+```
 
-**Priority:** [Critical/High/Medium/Low]
-**Type:** [E2E/Integration/Manual]
-**Automation Status:** [Candidate/Manual-only]
+**Combinaciones válidas:**
 
-### Preconditions
+| Herramienta | Formato | Cómo se crea                                           |
+| ----------- | ------- | ------------------------------------------------------ |
+| Xray        | Gherkin | `bun xray test create --type Cucumber --gherkin "..."` |
+| Xray        | Steps   | `bun xray test create --step "Action\|Data\|Expected"` |
+| Jira nativo | Gherkin | MCP Atlassian con Gherkin en Description               |
+| Jira nativo | Steps   | MCP Atlassian con tabla de steps en Description        |
 
-- User is logged in
-- Test data is prepared
+**Verificar autenticación Xray (si aplica):**
 
-### Steps
+```bash
+bun xray auth status
+```
 
-| #   | Action             | Test Data | Expected Result         |
-| --- | ------------------ | --------- | ----------------------- |
-| 1   | Navigate to [page] | -         | Page loads successfully |
-| 2   | Enter [field]      | [value]   | Field accepts input     |
-| 3   | Click [button]     | -         | [Expected outcome]      |
+Si no está autenticado:
 
-### Postconditions
-
-- [Cleanup actions if needed]
+```bash
+bun xray auth login --client-id "$XRAY_CLIENT_ID" --client-secret "$XRAY_CLIENT_SECRET"
 ```
 
 ---
 
-### Phase 3: Create Test Issues in Jira
+### Fase 1: Verificar/Crear Épica de Regresión
 
-**For each test case:**
+**OBLIGATORIO antes de crear cualquier test.**
+
+**Buscar épica existente:**
+
+```
+Tool: mcp__atlassian__searchJiraIssues
+
+JQL: project = {PROJECT_KEY} AND issuetype = Epic AND (
+  summary ~ "regression" OR
+  summary ~ "test repository" OR
+  labels = "test-repository"
+)
+```
+
+**Si NO existe épica:**
+
+1. Preguntar al usuario:
+
+   ```
+   No encontré una épica de regresión en el proyecto {PROJECT_KEY}.
+
+   ¿Deseas que cree una con el nombre "{PROJECT_KEY} Test Repository"?
+
+   Esta épica será el contenedor de todos los tests de regresión.
+   ```
+
+2. Si acepta, crear:
+
+   ```
+   Tool: mcp__atlassian__createJiraIssue
+
+   {
+     "project": "{PROJECT_KEY}",
+     "issueType": "Epic",
+     "summary": "{PROJECT_KEY} Test Repository",
+     "description": "Épica contenedora de todos los tests de regresión del proyecto.",
+     "labels": ["test-repository", "regression", "qa"]
+   }
+   ```
+
+**Guardar referencia:**
+
+```
+REGRESSION_EPIC_KEY = {EPIC-XXX}
+```
+
+---
+
+### Fase 2: Crear Tests
+
+#### Modalidad A: Con Xray CLI
+
+**Para cada test priorizado:**
+
+```bash
+# Test Manual con steps
+bun xray test create \
+  --project {PROJECT_KEY} \
+  --summary "[{PRIORITY}] {Test Name}" \
+  --labels "regression,{test-type},{priority}" \
+  --step "{Paso 1}|{Resultado esperado 1}" \
+  --step "{Paso 2}|{Datos}|{Resultado esperado 2}"
+
+# Test Cucumber (para automation)
+bun xray test create \
+  --project {PROJECT_KEY} \
+  --type Cucumber \
+  --summary "[{PRIORITY}] {Test Name}" \
+  --labels "regression,automation-candidate,{test-type}" \
+  --gherkin "Feature: {Feature Name}
+
+@{priority} @regression
+Scenario: {Scenario Name}
+  Given {precondition}
+  When {action}
+  Then {expected result}"
+```
+
+**Ejemplo concreto:**
+
+```bash
+# Test de login - Candidato a automatización
+bun xray test create \
+  --project DEMO \
+  --type Cucumber \
+  --summary "[Critical] Login exitoso con credenciales válidas" \
+  --labels "regression,automation-candidate,e2e,critical" \
+  --gherkin "Feature: User Login
+
+@critical @regression @automation-candidate
+Scenario: Successful login with valid credentials
+  Given I am on the login page
+  When I enter email \"user@example.com\"
+  And I enter password \"Password123!\"
+  And I click the submit button
+  Then I should be redirected to the dashboard
+  And I should see a welcome message"
+```
+
+#### Modalidad B: Solo Jira (sin Xray)
 
 ```
 Tool: mcp__atlassian__createJiraIssue
 
-Parameters:
 {
-  "project": "[PROJECT_KEY]",
+  "project": "{PROJECT_KEY}",
   "issueType": "Test",
-  "summary": "[ATC-XXX] [Test Case Name]",
-  "description": "[Gherkin or Traditional content]",
-  "labels": ["regression", "automation-candidate", "feature-name"],
-  "customFields": {
-    "testStatus": "New",
-    "testType": "e2e"
-  }
+  "summary": "[{PRIORITY}] {Test Name}",
+  "description": "{Contenido en Gherkin o formato tradicional}",
+  "labels": ["regression", "{test-type}", "{priority}"],
+  "parent": "{REGRESSION_EPIC_KEY}"
 }
 ```
 
-**Naming Convention:**
-
-```
-Summary: [ATC-XXX] [Verb] [Feature] [Scenario]
-
-Examples:
-- [ATC-001] Login with valid credentials
-- [ATC-002] Validate password requirements
-- [ATC-003] Handle expired session gracefully
-```
-
----
-
-### Phase 4: Link to Related Story
-
-**After creating each Test issue:**
-
-```
-Tool: mcp__atlassian__addCommentToJiraIssue
-
-Add to the related User Story:
-"Test case documented: [TEST-XXX] - [Test Name]"
-```
-
-**Or use issue linking if available:**
-
-```
-Link type: "is tested by"
-Outward: User Story
-Inward: Test issue
-```
-
----
-
-### Phase 5: Confirmation & Summary
-
-**Present to user:**
-
-```markdown
-# Test Documentation Complete
-
-## Tests Created in Jira
-
-| Test ID  | Name                         | Type   | Status               |
-| -------- | ---------------------------- | ------ | -------------------- |
-| TEST-001 | Login with valid credentials | E2E    | Automation Candidate |
-| TEST-002 | Password validation          | E2E    | Automation Candidate |
-| TEST-003 | Visual alignment check       | Manual | Manual Only          |
-
-## Summary
-
-- **Total tests created:** [N]
-- **Automation candidates:** [N]
-- **Manual only:** [N]
-- **Linked to:** [STORY-XXX]
-
-## Next Steps
-
-### For Automation Candidates:
-
-Proceed to **Fase 12: Test Automation**
-
-- TEST-001, TEST-002 ready for ATC implementation
-
-### For Manual Tests:
-
-Added to manual regression checklist
-
-- TEST-003 requires human execution
-
-Would you like me to proceed with automation for the candidate tests?
-```
-
----
-
-## Test Issue Template (Jira Description)
-
-### Gherkin Template
+**Formato de Description (Gherkin):**
 
 ```
 h2. Test Case
 
 {code:language=gherkin}
-Feature: [Feature Name]
+Feature: User Login
 
-@[priority] @[automation-status]
-Scenario: [Scenario Name]
-  Given [precondition]
-  When [action]
-  Then [expected outcome]
+@critical @regression
+Scenario: Successful login with valid credentials
+  Given I am on the login page
+  When I enter email "user@example.com"
+  And I enter password "Password123!"
+  And I click the submit button
+  Then I should be redirected to the dashboard
 {code}
 
 h2. Metadata
 
-* *Priority:* [Critical/High/Medium/Low]
-* *Test Type:* [E2E/Integration/Manual]
-* *Automation Status:* [Candidate/Automated/Manual-only]
-* *Related Story:* [STORY-XXX]
-
-h2. Notes
-
-[Any additional context or considerations]
-```
-
-### Traditional Template
-
-```
-h2. Test Case: [Name]
-
-h3. Preconditions
-* [Precondition 1]
-* [Precondition 2]
-
-h3. Test Steps
-
-||#||Action||Test Data||Expected Result||
-|1|[Action 1]|[Data]|[Expected]|
-|2|[Action 2]|[Data]|[Expected]|
-|3|[Action 3]|[Data]|[Expected]|
-
-h3. Metadata
-
-* *Priority:* [Critical/High/Medium/Low]
-* *Test Type:* [E2E/Integration/Manual]
-* *Automation Status:* [Candidate/Automated/Manual-only]
-* *Related Story:* [STORY-XXX]
+* *Priority:* Critical
+* *Test Type:* E2E
+* *Automation Status:* Candidate
+* *Related Story:* STORY-XXX
 ```
 
 ---
 
-## Labels Convention
+### Fase 3: Vincular a User Story
 
-| Label                                  | Meaning                   |
-| -------------------------------------- | ------------------------- |
-| `regression`                           | Part of regression suite  |
-| `automation-candidate`                 | Should be automated       |
-| `manual-only`                          | Cannot be automated       |
-| `e2e`                                  | End-to-end test type      |
-| `integration`                          | API integration test type |
-| `critical` / `high` / `medium` / `low` | Priority                  |
+**Después de crear cada Test:**
+
+```
+Tool: mcp__atlassian__updateJiraIssue
+
+Agregar link:
+- Type: "is tested by" / "tests"
+- Outward: Test issue
+- Inward: User Story
+```
+
+**O agregar comentario en la US:**
+
+```
+Tool: mcp__atlassian__addCommentToJiraIssue
+
+Issue: {STORY-XXX}
+Comment: "Test case documentado: [{TEST-XXX}] - {Test Name}"
+```
+
+---
+
+### Fase 4: Transitar Estados del Workflow
+
+**Secuencia de transiciones por cada test:**
+
+```
+1. Test creado → Status: DRAFT (automático al crear)
+
+2. Iniciar documentación:
+   Tool: mcp__atlassian__transitionJiraIssue
+   Transition: "start design"
+   → Status: IN DESIGN
+
+3. Completar documentación:
+   Tool: mcp__atlassian__transitionJiraIssue
+   Transition: "ready to run"
+   → Status: READY
+
+4. Decidir path según priorización:
+
+   SI (Path = Candidate):
+     Tool: mcp__atlassian__transitionJiraIssue
+     Transition: "automation review"
+     → Status: IN REVIEW
+
+     Luego (si ROI confirmado):
+     Transition: "approve to automate"
+     → Status: CANDIDATE
+
+   SI (Path = Manual):
+     Tool: mcp__atlassian__transitionJiraIssue
+     Transition: "for manual"
+     → Status: MANUAL
+```
+
+**Flujo visual:**
+
+```
+[Crear Test]
+     │
+     ▼
+  DRAFT ──"start design"──► IN DESIGN ──"ready to run"──► READY
+                                                            │
+                                    ┌───────────────────────┴───────────────────────┐
+                                    │                                               │
+                            "for manual"                                "automation review"
+                                    │                                               │
+                                    ▼                                               ▼
+                                 MANUAL                                         IN REVIEW
+                                                                                    │
+                                                                        "approve to automate"
+                                                                                    │
+                                                                                    ▼
+                                                                               CANDIDATE
+                                                                                    │
+                                                                        (Fase 12 continúa)
+```
+
+---
+
+### Fase 5: Resumen y Confirmación
+
+**Generar reporte final:**
+
+```markdown
+# Test Documentation Complete
+
+**Proyecto:** {PROJECT_KEY}
+**Épica de Regresión:** {REGRESSION_EPIC_KEY}
+**User Story:** {STORY-XXX}
+**Fecha:** {Date}
+
+---
+
+## Tests Creados
+
+| Test ID  | Nombre                 | Tipo       | Status Final | Path     |
+| -------- | ---------------------- | ---------- | ------------ | -------- |
+| TEST-001 | Login exitoso          | E2E        | Candidate    | Automate |
+| TEST-002 | Validación password    | Functional | Candidate    | Automate |
+| TEST-003 | Visual alignment check | Manual     | Manual       | Manual   |
+
+---
+
+## Resumen
+
+| Métrica               | Valor |
+| --------------------- | ----- |
+| Tests creados         | [N]   |
+| Automation Candidates | [N]   |
+| Manual Only           | [N]   |
+| Vinculados a US       | [N]   |
+
+---
+
+## Trazabilidad
+```
+
+STORY-XXX: {Story Summary}
+├── TEST-001: Login exitoso [Candidate]
+├── TEST-002: Validación password [Candidate]
+└── TEST-003: Visual alignment [Manual]
+
+```
+
+---
+
+## Próximos Pasos
+
+### Para Candidates (Automation):
+Los siguientes tests están listos para **Fase 12: Test Automation**:
+- TEST-001 (E2E)
+- TEST-002 (Functional)
+
+### Para Manual:
+Los siguientes tests entran en la **Regresión Manual**:
+- TEST-003
+
+---
+
+¿Deseas proceder a Fase 12 con los candidates identificados?
+```
+
+---
+
+### Fase 6: Documentar Localmente (Caché)
+
+**OBLIGATORIO:** Crear archivos markdown locales como caché de los tests documentados.
+
+**Propósito:**
+
+- Evitar re-leer Jira/Xray en futuras sesiones
+- Proveer contexto inmediato para Fase 12 (Automation)
+- Mantener trazabilidad local ↔ Jira
+
+**Estructura de directorio:**
+
+```
+.context/PBI/epics/EPIC-XXX-{nombre}/stories/STORY-YYY-{nombre}/
+├── story.md                    # (existente)
+├── test-cases.md               # (existente - de Fase 5)
+├── implementation-plan.md      # (existente)
+└── tests/                      # ← NUEVO directorio
+    ├── {TEST-ID}-{nombre}.md
+    └── ...
+```
+
+**Template de archivo (uno por test):**
+
+```markdown
+# {TEST-ID}: {Test Name}
+
+**Jira:** [{TEST-ID}]({JIRA_URL}/browse/{TEST-ID})
+**Status:** {CANDIDATE | MANUAL}
+**Type:** {E2E | Integration | Functional | Smoke}
+**Related Story:** {STORY-XXX}
+**ROI Score:** {X.X}
+
+---
+
+## Diseño del Test
+
+{Contenido del test según el formato elegido: Gherkin o Steps tradicionales}
+```
+
+**Ejemplo con formato Gherkin:**
+
+```markdown
+# GX-101-TC1: Validar login exitoso con credenciales válidas
+
+**Jira:** [GX-101-TC1](https://company.atlassian.net/browse/GX-101-TC1)
+**Status:** CANDIDATE
+**Type:** Functional
+**Related Story:** GX-100
+**ROI Score:** 12.5
+
+---
+
+## Diseño del Test
+
+Feature: User Login
+
+@critical @regression
+Scenario: Successful login with valid credentials
+Given I am on the login page
+When I enter email "user@example.com"
+And I enter password "Password123!"
+And I click the submit button
+Then I should be redirected to the dashboard
+```
+
+**Ejemplo con formato Steps tradicional:**
+
+```markdown
+# GX-101-TC2: Validar error al ingresar password incorrecto
+
+**Jira:** [GX-101-TC2](https://company.atlassian.net/browse/GX-101-TC2)
+**Status:** MANUAL
+**Type:** Functional
+**Related Story:** GX-100
+**ROI Score:** 0.8
+
+---
+
+## Diseño del Test
+
+| Paso | Acción                     | Datos            | Resultado Esperado          |
+| ---- | -------------------------- | ---------------- | --------------------------- |
+| 1    | Navegar a /login           | -                | Formulario de login visible |
+| 2    | Ingresar email válido      | user@example.com | Campo poblado               |
+| 3    | Ingresar password inválido | wrongpass        | Campo enmascarado           |
+| 4    | Click en Submit            | -                | Mensaje de error visible    |
+```
+
+---
+
+## Referencia de Comandos Xray CLI
+
+### Crear Tests
+
+```bash
+# Manual con steps
+bun xray test create --project PROJ --summary "Test name" \
+  --step "Action|Expected" \
+  --step "Action|Data|Expected"
+
+# Cucumber
+bun xray test create --project PROJ --type Cucumber \
+  --summary "Feature name" \
+  --gherkin "Feature: X\n  Scenario: Y\n    Given Z"
+
+# Generic (para scripts)
+bun xray test create --project PROJ --type Generic \
+  --summary "Automation script" \
+  --definition "path/to/script.ts"
+```
+
+### Listar y Consultar
+
+```bash
+# Listar tests
+bun xray test list --project PROJ --limit 50
+
+# Ver detalles
+bun xray test get PROJ-123
+
+# Agregar step a test existente
+bun xray test add-step --test {issueId} \
+  --action "Step action" \
+  --data "Test data" \
+  --result "Expected result"
+```
+
+### Test Executions (para regresión)
+
+```bash
+# Crear ejecución
+bun xray exec create --project PROJ --summary "Sprint X Regression" \
+  --tests "123,456,789"
+
+# Agregar tests a ejecución existente
+bun xray exec add-tests --execution {execId} --tests "123,456"
+```
+
+---
+
+## Nomenclatura de Test Cases
+
+**OBLIGATORIO:** Seguir la convención estándar de nomenclatura para test cases formales en Jira/Xray.
+
+### Formato según Herramienta
+
+| Herramienta     | Formato                                      |
+| --------------- | -------------------------------------------- |
+| **Xray**        | `<TS_ID>: TC#: Validar <CORE> <CONDITIONAL>` |
+| **Jira nativo** | `<US_ID>: TC#: Validar <CORE> <CONDITIONAL>` |
+
+### Definición de Componentes
+
+| Componente    | Qué es                                                                 | Ejemplos                                                                         |
+| ------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `TS_ID`       | **Test Set ID** - ID del Test Set en Xray (solo si usa Xray)           | `GX-150` (donde GX-150 es un Test Set)                                           |
+| `US_ID`       | **User Story ID** - ID de la US relacionada (si usa Jira nativo)       | `GX-101` (donde GX-101 es una User Story)                                        |
+| `TC#`         | Número secuencial del test case                                        | `TC1`, `TC2`, `TC3`...                                                           |
+| `CORE`        | **El comportamiento principal** que se está validando (verbo + objeto) | `login exitoso`, `error de validación`, `creación de usuario`                    |
+| `CONDITIONAL` | **La condición o contexto** que hace único este escenario              | `con credenciales válidas`, `cuando el campo está vacío`, `al exceder el límite` |
+
+### Fórmula Mental
+
+```
+"[ID]: TC#: Validar [QUÉ comportamiento] [BAJO QUÉ condición]"
+```
+
+### Ejemplos por Tipo de Test
+
+| Tipo     | CORE                         | CONDITIONAL                          | Título Completo                                                                      |
+| -------- | ---------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------ |
+| Positive | `login exitoso`              | `con credenciales válidas`           | `GX-101: TC1: Validar login exitoso con credenciales válidas`                        |
+| Negative | `error de autenticación`     | `cuando el password es incorrecto`   | `GX-101: TC2: Validar error de autenticación cuando el password es incorrecto`       |
+| Boundary | `límite de caracteres`       | `al ingresar exactamente 50 chars`   | `GX-101: TC3: Validar límite de caracteres al ingresar exactamente 50 chars`         |
+| Edge     | `comportamiento del carrito` | `cuando hay múltiples ítems iguales` | `GX-101: TC4: Validar comportamiento del carrito cuando hay múltiples ítems iguales` |
+
+### Anti-patrones (evitar)
+
+| ❌ Incorrecto            | ✅ Correcto                                                         | Por qué                           |
+| ------------------------ | ------------------------------------------------------------------- | --------------------------------- |
+| `Test de login`          | `GX-101: TC1: Validar login exitoso con credenciales válidas`       | Falta ID, TC#, CORE y CONDITIONAL |
+| `Login - error`          | `GX-101: TC2: Validar error de autenticación con password inválido` | Demasiado vago                    |
+| `TC1: Probar formulario` | `GX-101: TC1: Validar envío de formulario con todos los campos`     | Falta ID, CORE no es específico   |
+
+### Para Proyectos en Inglés
+
+```
+[Should] [Feature-Expected-Behavior] [Condition(If/When/With/At)]
+```
+
+| Tipo     | Título                                                    |
+| -------- | --------------------------------------------------------- |
+| Positive | Should login successfully with valid credentials          |
+| Negative | Should display error message when password is incorrect   |
+| Boundary | Should accept exactly 50 characters in name field         |
+| Edge     | Should calculate total correctly with multiple same items |
+
+**Referencia completa:** `.context/guidelines/QA/jira-test-management.md` → Sección "Nomenclatura de Tickets en Jira"
+
+---
+
+## Labels Estándar
+
+| Label                            | Uso                          |
+| -------------------------------- | ---------------------------- |
+| `regression`                     | Todos los tests de regresión |
+| `smoke`                          | Tests de humo (críticos)     |
+| `e2e`                            | End-to-end tests             |
+| `integration`                    | Tests de integración API     |
+| `functional`                     | Tests funcionales unitarios  |
+| `automation-candidate`           | Marcado para automatizar     |
+| `manual-only`                    | No automatizable             |
+| `critical`/`high`/`medium`/`low` | Prioridad                    |
+
+---
+
+## Errores Comunes
+
+| Error                       | Solución                          |
+| --------------------------- | --------------------------------- |
+| "Not logged in"             | Ejecutar `bun xray auth login`    |
+| "Issue type Test not found" | Verificar que Xray está instalado |
+| "Epic not found"            | Crear épica de regresión primero  |
+| "Transition not allowed"    | Verificar status actual del issue |
 
 ---
 
 ## Output
 
-- Test issues created in Jira
-- Tests linked to related User Stories
-- Clear automation status for each test
-- Ready for Fase 12 (automation) or manual regression
+### Si se usa Xray CLI (`bun xray`):
 
----
+- Tests creados en Jira con Issue Type "Test" de Xray
+- Steps estructurados (si formato Steps) o Gherkin embebido (si formato Cucumber)
+- Tests vinculados a User Story
+- Tests dentro de Épica de Regresión
+- Estados transitados según workflow
 
-## Post-Refactor Note
+### Si se usa solo Jira nativo (MCP Atlassian):
 
-**PENDING:** This prompt needs further refinement:
+- Tests creados en Jira con Issue Type "Test" (custom)
+- Contenido en Description (Gherkin o tabla de Steps)
+- Tests vinculados a User Story
+- Tests dentro de Épica de Regresión
+- Estados transitados según workflow
 
-- Specify exact Custom Field IDs for the project
-- Define Test Status workflow transitions
-- Add support for X-Ray specific fields (if using X-Ray)
+### Output Local (Caché):
+
+- Directorio `tests/` en carpeta de la story
+- Un archivo `.md` por cada test documentado
+- Formato según lo elegido (Gherkin o Steps)
+
+### Para siguientes fases:
+
+- Tests con status **CANDIDATE** → Listos para Fase 12 (Automation)
+- Tests con status **MANUAL** → Suite de regresión manual

@@ -37,6 +37,8 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
 
   const [unreadCount, setUnreadCount] = useState(0)
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null)
+  // MYM-96: Key that increments when new messages arrive, triggering widget refresh
+  const [conversationsRefreshKey, setConversationsRefreshKey] = useState(0)
 
   /**
    * Fetch unread message count from API
@@ -110,8 +112,12 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
       const isParticipant = await isUserInConversation(newMessage.conversation_id)
       if (!isParticipant) return
 
-      // Increment unread count
-      setUnreadCount((prev) => prev + 1)
+      // MYM-91: Refetch unread count from server instead of optimistic +1
+      // This ensures synchronization even with network issues or duplicate events
+      await refreshUnreadCount()
+
+      // MYM-96: Trigger widget refresh
+      setConversationsRefreshKey((prev) => prev + 1)
 
       // Don't show toast if viewing this conversation
       if (activeConversationId === newMessage.conversation_id) return
@@ -125,7 +131,8 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
           ? newMessage.content.substring(0, 50) + '...'
           : newMessage.content
 
-      toast.message(sender.name, {
+      // MYM-92: Use toast.info() for better visibility with richColors
+      toast.info(`Nuevo mensaje de ${sender.name}`, {
         description: messagePreview,
         duration: 5000,
         action: {
@@ -134,7 +141,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
         },
       })
     },
-    [user, activeConversationId, fetchSenderInfo, isUserInConversation, router]
+    [user, activeConversationId, fetchSenderInfo, isUserInConversation, router, refreshUnreadCount]
   )
 
   // Fetch initial unread count on mount and when user changes
@@ -181,6 +188,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     activeConversationId,
     setActiveConversation: setActiveConversationId,
     refreshUnreadCount,
+    conversationsRefreshKey,
   }
 
   return <NotificationContext.Provider value={value}>{children}</NotificationContext.Provider>

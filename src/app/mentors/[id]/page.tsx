@@ -49,6 +49,11 @@ function transformToMentor(profile: ProfileRow): Mentor {
   };
 }
 
+// Helper to check if URL is an SVG (requires unoptimized for Next.js Image)
+function isSvgUrl(url: string): boolean {
+  return url.includes('.svg') || url.includes('/svg') || url.includes('dicebear.com');
+}
+
 // Helper to transform DB reviews to ReviewWithReviewer type
 function transformReviews(dbReviews: ReviewRow[]): ReviewWithReviewer[] {
   return dbReviews.map((review) => ({
@@ -101,7 +106,7 @@ export default async function MentorProfilePage({
       <Navbar />
       <main className="flex-1">
         {/* Hero Section */}
-        <div data-testid="profile_hero" className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 py-12">
+        <div data-testid="profile_hero" className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 dark:from-purple-900/40 dark:via-fuchsia-900/20 dark:to-violet-900/40 py-12">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row gap-8 items-start">
               {/* Avatar */}
@@ -113,6 +118,7 @@ export default async function MentorProfilePage({
                       alt={mentor.name}
                       fill
                       className="object-cover"
+                      unoptimized={isSvgUrl(mentor.photoUrl)}
                     />
                   </div>
                 ) : (
@@ -124,7 +130,7 @@ export default async function MentorProfilePage({
 
               {/* Info */}
               <div className="flex-1">
-                <h1 data-testid="name_text" className="text-4xl font-bold mb-2">{mentor.name}</h1>
+                <h1 data-testid="name_text" className="text-4xl font-bold mb-2 text-gray-900 dark:text-white">{mentor.name}</h1>
 
                 <div className="flex flex-wrap items-center gap-4 mb-4">
                   <div data-testid="rating_display" className="flex items-center text-lg">

@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
-import { User, LogOut, Menu, Settings, Shield, Wallet, MessageCircle, GraduationCap, BookOpen } from "lucide-react";
+import { User, LogOut, Menu, Settings, Shield, Wallet, MessageCircle, GraduationCap, BookOpen, Phone, Clock } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useState } from "react";
 import { MessagesNavIcon } from "@/components/messaging/messages-nav-icon";
@@ -132,14 +132,32 @@ export function Navbar() {
 
                 {/* Role-specific links */}
                 {user.role === "mentor" && (
-                  <Link
-                    href="/dashboard/payouts"
-                    data-testid="payouts_link"
-                    className="flex items-center gap-1 text-sm font-medium hover:text-primary transition-colors"
-                  >
-                    <Wallet className="h-4 w-4" />
-                    Pagos
-                  </Link>
+                  <>
+                    <Link
+                      href="/dashboard/mentor/availability"
+                      data-testid="availability_link"
+                      className="flex items-center gap-1 text-sm font-medium hover:text-primary transition-colors"
+                    >
+                      <Clock className="h-4 w-4" />
+                      Disponibilidad
+                    </Link>
+                    <Link
+                      href="/dashboard/payouts"
+                      data-testid="payouts_link"
+                      className="flex items-center gap-1 text-sm font-medium hover:text-primary transition-colors"
+                    >
+                      <Wallet className="h-4 w-4" />
+                      Pagos
+                    </Link>
+                    <Link
+                      href="/dashboard/settings/communication"
+                      data-testid="communication_settings_link"
+                      className="flex items-center gap-1 text-sm font-medium hover:text-primary transition-colors"
+                    >
+                      <Phone className="h-4 w-4" />
+                      Canales
+                    </Link>
+                  </>
                 )}
 
                 {user.role === "admin" && (
@@ -271,15 +289,35 @@ export function Navbar() {
                   </Link>
 
                   {user.role === "mentor" && (
-                    <Link
-                      href="/dashboard/payouts"
-                      data-testid="mobile_payouts_link"
-                      className="flex items-center gap-2 py-2 text-sm font-medium hover:text-primary"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <Wallet className="h-4 w-4" />
-                      Pagos
-                    </Link>
+                    <>
+                      <Link
+                        href="/dashboard/mentor/availability"
+                        data-testid="mobile_availability_link"
+                        className="flex items-center gap-2 py-2 text-sm font-medium hover:text-primary"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Clock className="h-4 w-4" />
+                        Disponibilidad
+                      </Link>
+                      <Link
+                        href="/dashboard/payouts"
+                        data-testid="mobile_payouts_link"
+                        className="flex items-center gap-2 py-2 text-sm font-medium hover:text-primary"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Wallet className="h-4 w-4" />
+                        Pagos
+                      </Link>
+                      <Link
+                        href="/dashboard/settings/communication"
+                        data-testid="mobile_communication_settings_link"
+                        className="flex items-center gap-2 py-2 text-sm font-medium hover:text-primary"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Phone className="h-4 w-4" />
+                        Canales de Comunicación
+                      </Link>
+                    </>
                   )}
 
                   {user.role === "admin" && (

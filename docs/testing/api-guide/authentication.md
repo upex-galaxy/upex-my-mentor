@@ -370,6 +370,6 @@ console.log(decoded);
 
 ## Siguiente Paso
 
-- Para testing manual con UI: [03-testing-devtools.md](./03-testing-devtools.md)
-- Para testing con Postman: [04-testing-postman.md](./04-testing-postman.md)
-- Para testing automatizado: [06-testing-playwright.md](./06-testing-playwright.md)
+- Para testing manual con UI: [devtools-testing.md](./devtools-testing.md)
+- Para testing con Postman: [postman-testing.md](./postman-testing.md)
+- Para testing automatizado: [playwright-testing.md](./playwright-testing.md)

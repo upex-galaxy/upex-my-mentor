@@ -648,4 +648,4 @@ pm.visualizer.set(template, { response: pm.response.json() });
 ## Siguiente Paso
 
 Para testing con IA usando MCP:
---> [05-testing-mcp.md](./05-testing-mcp.md)
+--> [mcp-testing.md](./mcp-testing.md)

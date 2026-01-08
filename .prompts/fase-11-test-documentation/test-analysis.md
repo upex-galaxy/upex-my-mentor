@@ -1,174 +1,270 @@
 # Test Analysis
 
-> Analyze exploratory testing results to identify regression test candidates.
+> Analizar el contexto completo de una User Story para identificar candidatos de pruebas de regresión.
 
 ---
 
-## Purpose
+## Propósito
 
-Review the outcomes of exploratory testing to identify which scenarios should become regression tests.
+Recopilar y analizar toda la información disponible sobre una funcionalidad para identificar qué escenarios deben convertirse en pruebas de regresión (manuales o automatizadas).
 
-**This prompt is executed AFTER:**
+**Este prompt se ejecuta DESPUÉS de:**
 
-- Exploratory testing passed (US status: QA Approved)
-- Session notes document validated scenarios
+- Exploratory testing completado (US status: QA Approved)
+- Session notes documentan escenarios validados
 
 ---
 
-## Input Required
+## Pre-requisitos
 
-Provide ONE of the following:
+**Cargar contexto obligatorio:**
 
-1. **Exploratory session notes** - Path or content
-2. **User Story ID** - To fetch related test information
-3. **Epic ID** - For broader analysis across multiple stories
+```
+Leer: .context/guidelines/QA/jira-test-management.md
+```
+
+**Herramientas requeridas:**
+
+- MCP Atlassian (para leer Jira)
+
+---
+
+## Input Requerido
+
+Proveer **al menos uno** de los siguientes:
+
+1. **User Story ID** - Para análisis completo desde Jira
+2. **Epic ID** - Para análisis de múltiples stories
+3. **Exploratory session notes** - Path o contenido
 
 ---
 
 ## Workflow
 
-### Phase 1: Gather Context
+### Fase 1: Recopilar Contexto desde Jira
 
-**Read the exploratory findings:**
+**Usar MCP Atlassian para obtener:**
 
 ```
-Sources to analyze:
-├── Exploratory session notes
-├── User Story acceptance criteria
-├── Shift-Left test cases (if available)
-└── Bug reports created (to understand problem areas)
+1. User Story completa:
+   Tool: mcp__atlassian__getJiraIssue
+   - Summary, Description, Acceptance Criteria
+   - Status actual
+   - Labels y componentes
+
+2. Comentarios de la US:
+   Tool: mcp__atlassian__getJiraIssue (incluye comentarios)
+   - Notas de desarrollo
+   - Feedback de QA
+   - Discusiones técnicas
+
+3. Issues enlazadas:
+   - Bugs relacionados (is blocked by, causes)
+   - Sub-tasks
+   - Otras stories relacionadas (relates to)
+   - Tests existentes (is tested by)
+
+4. Epic padre (si aplica):
+   - Contexto de negocio más amplio
+   - Otras stories del mismo epic
 ```
 
-**Extract:**
+**Extraer de cada fuente:**
 
-- Scenarios that were tested
-- Outcomes (PASSED, FAILED, OBSERVATIONS)
-- Edge cases discovered
-- Areas of concern noted
+| Fuente            | Qué buscar                                 |
+| ----------------- | ------------------------------------------ |
+| Description       | Acceptance Criteria, reglas de negocio     |
+| Comentarios US    | Edge cases discutidos, decisiones técnicas |
+| Comentarios Bugs  | Problemas conocidos, áreas de riesgo       |
+| Sub-tasks         | Detalle de implementación                  |
+| Exploratory notes | Escenarios validados, observaciones        |
 
 ---
 
-### Phase 2: Classify Scenarios
+### Fase 2: Identificar Escenarios de Prueba
 
-**For each tested scenario, determine:**
+**Para cada escenario encontrado, clasificar:**
 
-| Classification | Criteria                             |
-| -------------- | ------------------------------------ |
-| **Critical**   | Core business flow, high user impact |
-| **High**       | Important feature, frequent usage    |
-| **Medium**     | Secondary feature, moderate impact   |
-| **Low**        | Edge case, rare usage                |
+#### Por Prioridad de Negocio
 
-**Also determine automatability:**
+| Clasificación | Criterios                            |
+| ------------- | ------------------------------------ |
+| **Critical**  | Flujo core de negocio, alto impacto  |
+| **High**      | Feature importante, uso frecuente    |
+| **Medium**    | Feature secundaria, impacto moderado |
+| **Low**       | Edge case, uso raro                  |
 
-| Automatable            | Not Automatable            |
-| ---------------------- | -------------------------- |
-| Deterministic outcomes | Requires human judgment    |
-| Stable locators/APIs   | Visual-only validation     |
-| Repeatable steps       | Complex setup dependencies |
-| Clear assertions       | Third-party integrations   |
+#### Por Automatizabilidad
+
+| Automatizable              | No Automatizable       |
+| -------------------------- | ---------------------- |
+| Resultados determinísticos | Requiere juicio humano |
+| Locators/APIs estables     | Solo validación visual |
+| Pasos repetibles           | Setup complejo/manual  |
+| Assertions claras          | Integraciones terceros |
+| Pocas dependencias         | Datos muy dinámicos    |
+
+#### Por Tipo de Test
+
+| Tipo            | Descripción                           | Ejemplo                       |
+| --------------- | ------------------------------------- | ----------------------------- |
+| **E2E**         | Flujo completo de usuario             | Login → Compra → Confirmación |
+| **Integration** | Comunicación entre sistemas/APIs      | API Auth → API Productos      |
+| **Functional**  | Funcionalidad específica aislada      | Validación de formulario      |
+| **Smoke**       | Verificación básica de funcionamiento | App carga, login funciona     |
 
 ---
 
-### Phase 3: Generate Analysis Report
+### Fase 3: Identificar Componentes Reutilizables
+
+**Concepto "Lego":** Cada test atómico puede ser componente de tests más grandes.
+
+```
+Analizar si el escenario:
+
+1. Es un COMPONENTE de un flujo E2E más grande
+   Ejemplo: "Login exitoso" → componente de "Flujo de compra completo"
+
+2. Puede REUTILIZAR componentes existentes
+   Ejemplo: Test de "Editar perfil" puede reutilizar "Login exitoso"
+
+3. Es un flujo E2E COMPLETO que agrupa varios componentes
+   Ejemplo: "Checkout completo" = Login + Carrito + Pago + Confirmación
+```
+
+**Documentar relaciones:**
+
+```
+Escenario: Login exitoso
+├── Tipo: Functional (atómico)
+├── Componente de: [Checkout E2E, Profile E2E, Admin E2E]
+└── Valor: Alto (reutilizable en múltiples flujos)
+```
+
+---
+
+### Fase 4: Generar Reporte de Análisis
 
 ```markdown
 # Test Analysis Report
 
-**Feature:** [Feature/US name]
-**Date:** [Date]
-**Source:** [Exploratory session notes reference]
+**User Story:** [STORY-XXX] [Summary]
+**Epic:** [EPIC-XXX] [Epic name]
+**Fecha:** [Date]
+**Analista:** AI Assistant
 
 ---
 
-## Summary
+## Fuentes Analizadas
 
-- **Total scenarios analyzed:** [N]
-- **Regression candidates:** [N]
-- **Automation candidates:** [N]
-- **Manual-only:** [N]
-- **Deferred:** [N]
+| Fuente            | Issues/Docs         | Insights Clave           |
+| ----------------- | ------------------- | ------------------------ |
+| User Story        | STORY-XXX           | [Resumen de AC]          |
+| Comentarios US    | [N] comentarios     | [Edge cases mencionados] |
+| Bugs relacionados | BUG-XXX, BUG-YYY    | [Áreas de riesgo]        |
+| Exploratory notes | [Path o referencia] | [Escenarios validados]   |
+| Stories enlazadas | STORY-YYY           | [Contexto adicional]     |
 
 ---
 
-## Regression Test Candidates
+## Escenarios Identificados
 
 ### Critical Priority
 
-| #   | Scenario        | Type       | Automatable | Notes                     |
-| --- | --------------- | ---------- | ----------- | ------------------------- |
-| 1   | [Scenario name] | Happy path | Yes         | Core login flow           |
-| 2   | [Scenario name] | Validation | Yes         | Required field validation |
+| #   | Escenario           | Tipo       | Automatizable | Componente de |
+| --- | ------------------- | ---------- | ------------- | ------------- |
+| 1   | [Login exitoso]     | Functional | Sí            | Checkout E2E  |
+| 2   | [Checkout completo] | E2E        | Sí            | -             |
 
 ### High Priority
 
-| #   | Scenario        | Type           | Automatable | Notes                 |
-| --- | --------------- | -------------- | ----------- | --------------------- |
-| 3   | [Scenario name] | Edge case      | Yes         | Boundary condition    |
-| 4   | [Scenario name] | Error handling | No          | Requires visual check |
+| #   | Escenario             | Tipo        | Automatizable | Componente de |
+| --- | --------------------- | ----------- | ------------- | ------------- |
+| 3   | [Validación password] | Functional  | Sí            | Login         |
+| 4   | [Error en pago]       | Integration | Sí            | Checkout E2E  |
 
 ### Medium Priority
 
-| #   | Scenario        | Type           | Automatable | Notes            |
-| --- | --------------- | -------------- | ----------- | ---------------- |
-| 5   | [Scenario name] | Secondary flow | Yes         | Alternative path |
+| #   | Escenario       | Tipo       | Automatizable | Notas            |
+| --- | --------------- | ---------- | ------------- | ---------------- |
+| 5   | [Editar perfil] | Functional | Sí            | Flujo secundario |
 
 ### Low Priority / Deferred
 
-| #   | Scenario        | Reason for Deferral |
-| --- | --------------- | ------------------- |
-| 6   | [Scenario name] | Rarely used feature |
+| #   | Escenario                   | Razón para Diferir |
+| --- | --------------------------- | ------------------ |
+| 6   | [Feature X raramente usada] | Uso < 1% usuarios  |
 
 ---
 
-## Automation Candidates Summary
+## Mapa de Componentes (Lego)
+```
 
-**Ready for automation (Fase 12):**
+E2E: Flujo de Compra Completo
+├── [1] Login exitoso (Functional)
+├── [NEW] Buscar producto (Functional)
+├── [NEW] Agregar al carrito (Functional)
+├── [4] Proceso de pago (Integration)
+└── [NEW] Confirmación de orden (Functional)
 
-1. [Scenario 1] - E2E
-2. [Scenario 2] - API Integration
-3. [Scenario 3] - E2E
+E2E: Gestión de Perfil
+├── [1] Login exitoso (reutilizado)
+├── [5] Editar perfil (Functional)
+└── [NEW] Cambiar password (Functional)
 
-**Manual regression only:**
-
-1. [Scenario 4] - Requires visual validation
-2. [Scenario 5] - Complex third-party dependency
-
----
-
-## Recommendations
-
-### For Test Documentation (next step):
-
-- Document scenarios [1-5] in Jira as Test issues
-- Use Gherkin format for clarity
-
-### For Automation (Fase 12):
-
-- Prioritize scenarios [1-3] for first automation sprint
-- Consider [scenario 4] for future visual testing tools
-
-### For Manual Regression:
-
-- Add [scenarios 4-5] to manual regression checklist
 ```
 
 ---
 
-## Decision Point
+## Resumen de Candidatos
 
-After analysis, proceed to:
+| Categoría           | Cantidad |
+| ------------------- | -------- |
+| Total escenarios    | [N]      |
+| Candidatos regresión| [N]      |
+| Automatizables      | [N]      |
+| Manual-only         | [N]      |
+| Diferidos           | [N]      |
 
-| Scenarios Found                  | Next Step                  |
-| -------------------------------- | -------------------------- |
-| Regression candidates identified | → `test-prioritization.md` |
-| No candidates (simple feature)   | → Skip to Fase 12 or close |
+---
+
+## Recomendaciones
+
+### Para Priorización (siguiente paso):
+
+- Escenarios [1, 2, 3, 4] son candidatos principales
+- [1] tiene alto valor por reutilización
+- [2] es E2E crítico que agrupa componentes
+
+### Áreas de Riesgo Detectadas:
+
+- [Área X] tuvo bugs previos (BUG-XXX)
+- [Área Y] mencionada en comentarios como compleja
+
+### Componentes a Crear Primero:
+
+1. Login exitoso - base para múltiples E2E
+2. [Componente Y] - usado en [N] flujos
+```
+
+---
+
+## Decisión Point
+
+Después del análisis, proceder a:
+
+| Resultado                       | Siguiente Paso             |
+| ------------------------------- | -------------------------- |
+| Candidatos identificados        | → `test-prioritization.md` |
+| Sin candidatos (feature simple) | → Cerrar o ir a Fase 12    |
+| Necesita más exploración        | → Volver a Fase 10         |
 
 ---
 
 ## Output
 
-- Analysis report with classified scenarios
-- List of regression test candidates
-- Automation recommendations
-- Ready for prioritization phase
+- Reporte de análisis con escenarios clasificados
+- Lista de candidatos de regresión
+- Mapa de componentes (relaciones lego)
+- Recomendaciones para priorización
+- Áreas de riesgo identificadas

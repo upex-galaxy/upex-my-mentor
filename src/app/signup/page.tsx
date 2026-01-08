@@ -18,7 +18,7 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
   return (
     <div data-testid="signupPage" className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50">
+      <main className="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 dark:from-purple-900/40 dark:via-fuchsia-900/20 dark:to-violet-900/40">
         <Card data-testid="signup_card" className="w-full max-w-md shadow-lg">
           <CardHeader className="space-y-1 text-center">
             <div className="mx-auto mb-4 h-12 w-12 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">

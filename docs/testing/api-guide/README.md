@@ -42,7 +42,8 @@ TEST_ADMIN_PASSWORD={{TEST_ADMIN_PASSWORD}}
 | [Autenticacion](./authentication.md)          | Como usar UN token para ambas APIs                     | Fundamental |
 | [DevTools Testing](./devtools-testing.md)     | Testing manual interceptando requests en el navegador  | Basico      |
 | [Postman Testing](./postman-testing.md)       | Testing manual con colecciones y environments          | Intermedio  |
-| [MCP Testing](./mcp-testing.md)               | Testing asistido por IA usando MCP tools               | Intermedio  |
+| [MCP Testing](./mcp-testing.md)               | Testing asistido por IA usando OpenAPI/SQL MCP         | Intermedio  |
+| [Postman MCP](./mcp-postman.md)               | Testing asistido por IA usando Postman MCP oficial     | Intermedio  |
 | [Playwright Testing](./playwright-testing.md) | Testing automatizado con arquitectura KATA             | Avanzado    |
 
 ---
@@ -211,5 +212,16 @@ Elige la guia que mejor se adapte a tu necesidad:
 - **Entender autenticacion?** --> [authentication.md](./authentication.md)
 - **Debugging en el navegador?** --> [devtools-testing.md](./devtools-testing.md)
 - **Crear colecciones reutilizables?** --> [postman-testing.md](./postman-testing.md)
-- **Testing con IA/Claude?** --> [mcp-testing.md](./mcp-testing.md)
+- **Testing con IA (OpenAPI/SQL)?** --> [mcp-testing.md](./mcp-testing.md)
+- **Testing con IA (Postman MCP)?** --> [mcp-postman.md](./mcp-postman.md)
 - **Automatizacion con codigo?** --> [playwright-testing.md](./playwright-testing.md)
+
+---
+
+## Ver Tambien
+
+- [UI Guide](../ui-guide/README.md) - Testing de UI con Playwright
+- [Database Guide](../database-guide/README.md) - Testing de base de datos
+- [Project Management Guide](../project-management-guide/README.md) - Jira y GitHub
+- [Monitoring Guide](../monitoring-guide/README.md) - Sentry y Slack
+- [Research Guide](../research-guide/README.md) - Context7 y Tavily

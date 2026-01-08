@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { MessageSquare, ChevronRight } from 'lucide-react';
@@ -12,6 +12,7 @@ import { formatDistanceToNow, format, isToday, isYesterday } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useNotification } from '@/contexts/notification-context';
 import { QuickReplyModal } from './quick-reply-modal';
+import { getConversations } from '@/lib/actions/messaging';
 import type { RecentMessagesWidgetProps, ConversationWithDetails, ConversationParticipant } from '@/types';
 
 /**
@@ -173,8 +174,26 @@ export function RecentMessagesWidget({
   userRole,
   initialConversations,
 }: RecentMessagesWidgetProps) {
-  const { unreadCount } = useNotification();
+  const { unreadCount, conversationsRefreshKey } = useNotification();
   const [conversations, setConversations] = useState<ConversationWithDetails[]>(initialConversations);
+  const isFirstRender = useRef(true);
+
+  // MYM-96: Refresh conversations when new messages arrive via realtime
+  useEffect(() => {
+    // Skip on first render (we already have initialConversations)
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    // Fetch fresh conversation data
+    const refreshConversations = async () => {
+      const freshConversations = await getConversations();
+      setConversations(freshConversations);
+    };
+
+    refreshConversations();
+  }, [conversationsRefreshKey]);
 
   // Modal state
   const [selectedConversation, setSelectedConversation] = useState<{
@@ -196,9 +215,10 @@ export function RecentMessagesWidget({
     setSelectedConversation(null);
   }, []);
 
-  const handleMessageSent = useCallback(() => {
-    // After sending a message, we could refresh the list
-    // For now, the real-time subscription will handle updates
+  const handleMessageSent = useCallback(async () => {
+    // MYM-96: Refresh the conversation list after sending a message
+    const freshConversations = await getConversations();
+    setConversations(freshConversations);
   }, []);
 
   return (

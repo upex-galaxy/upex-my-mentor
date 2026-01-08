@@ -77,7 +77,7 @@ export default async function PayoutsPage({ searchParams }: PayoutsPageProps) {
       <Navbar />
       <main className="flex-1 bg-muted/30">
         {/* Header */}
-        <div className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 py-8">
+        <div className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 dark:from-purple-900/40 dark:via-fuchsia-900/20 dark:to-violet-900/40 py-8">
           <div className="container mx-auto px-4">
             <Link href="/dashboard">
               <Button variant="ghost" size="sm" className="mb-4">
@@ -90,8 +90,8 @@ export default async function PayoutsPage({ searchParams }: PayoutsPageProps) {
                 <Wallet className="h-8 w-8 text-primary" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold">Pagos y Transferencias</h1>
-                <p className="text-muted-foreground mt-1">
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Pagos y Transferencias</h1>
+                <p className="text-gray-600 dark:text-gray-300 mt-1">
                   Gestiona tu cuenta bancaria y recibe pagos por tus sesiones
                 </p>
               </div>

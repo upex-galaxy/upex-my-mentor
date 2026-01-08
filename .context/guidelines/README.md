@@ -132,7 +132,7 @@ Los guidelines son **principios constantes**. Para workflows paso a paso, ver:
 Para configurar tu IA para que cargue contexto automáticamente:
 
 - Ver `.context/system-prompt.md`
-- Copiar a `.claude/claude.md` o equivalente
+- Copiar a `./CLAUDE.md (en el root)` o equivalente
 
 ---
 

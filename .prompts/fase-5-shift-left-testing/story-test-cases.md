@@ -565,9 +565,67 @@ Este prompt trabaja en **10 pasos** (Paso 0-9) organizados en 3 partes, siguiend
 
 ---
 
-### Test Cases
+### Nomenclatura de Test Outlines (Shift-Left)
 
-#### **TC-001: [Título descriptivo y específico]**
+**Contexto:** En Shift-Left Testing, los test cases son **Test Outlines** - guías para testing exploratorio, no test cases formales. La nomenclatura es más simple que en Test Documentation (Fase 11).
+
+**Formato:**
+
+```
+Validar <CORE> <CONDITIONAL>
+```
+
+**Definición de componentes:**
+
+| Componente    | Qué es                                                                 | Ejemplos                                                                                                  |
+| ------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `CORE`        | **El comportamiento principal** que se está validando (verbo + objeto) | `login exitoso`, `error de validación`, `creación de usuario`, `cálculo de total`                         |
+| `CONDITIONAL` | **La condición o contexto** que hace único este escenario              | `con credenciales válidas`, `cuando el campo está vacío`, `para usuarios premium`, `al exceder el límite` |
+
+**Fórmula mental:**
+
+```
+"Validar [QUÉ comportamiento] [BAJO QUÉ condición]"
+```
+
+**Ejemplos por tipo de test:**
+
+| Tipo     | CORE                         | CONDITIONAL                          | Título Completo                                                       |
+| -------- | ---------------------------- | ------------------------------------ | --------------------------------------------------------------------- |
+| Positive | `login exitoso`              | `con credenciales válidas`           | Validar login exitoso con credenciales válidas                        |
+| Negative | `error de autenticación`     | `cuando el password es incorrecto`   | Validar error de autenticación cuando el password es incorrecto       |
+| Boundary | `límite de caracteres`       | `al ingresar exactamente 50 chars`   | Validar límite de caracteres al ingresar exactamente 50 chars         |
+| Edge     | `comportamiento del carrito` | `cuando hay múltiples ítems iguales` | Validar comportamiento del carrito cuando hay múltiples ítems iguales |
+
+**Para proyectos en inglés:**
+
+```
+Should <BEHAVIOR> <CONDITION>
+```
+
+| Tipo     | Título                                                    |
+| -------- | --------------------------------------------------------- |
+| Positive | Should login successfully with valid credentials          |
+| Negative | Should display error message when password is incorrect   |
+| Boundary | Should accept exactly 50 characters in name field         |
+| Edge     | Should calculate total correctly with multiple same items |
+
+**Anti-patrones (evitar):**
+
+| ❌ Incorrecto          | ✅ Correcto                                            | Por qué                              |
+| ---------------------- | ------------------------------------------------------ | ------------------------------------ |
+| `Test de login`        | `Validar login exitoso con credenciales válidas`       | Falta CORE específico y CONDITIONAL  |
+| `Login - error`        | `Validar error de autenticación con password inválido` | Demasiado vago, no describe contexto |
+| `Probar el formulario` | `Validar envío de formulario con todos los campos`     | No indica qué comportamiento         |
+| `Caso negativo`        | `Validar rechazo de registro cuando email ya existe`   | No describe el escenario             |
+
+**Nota:** En Fase 11 (Test Documentation), se agrega el prefijo `<TS_ID>: TC#:` para test cases formales en Jira/Xray. Ver `.context/guidelines/QA/jira-test-management.md`.
+
+---
+
+### Test Outlines
+
+#### **Validar [CORE: comportamiento principal] [CONDITIONAL: condición específica]**
 
 **Related Scenario:** Scenario 1 (Refined AC above)
 **Type:** Positive | Negative | Boundary
@@ -647,7 +705,7 @@ Este prompt trabaja en **10 pasos** (Paso 0-9) organizados en 3 partes, siguiend
 
 ---
 
-#### **TC-002: [Título - test negativo]**
+#### **Validar [CORE: error/rechazo] [CONDITIONAL: condición de error]**
 
 **Related Scenario:** Scenario 2
 **Type:** Negative
@@ -696,7 +754,7 @@ Este prompt trabaja en **10 pasos** (Paso 0-9) organizados en 3 partes, siguiend
 
 ---
 
-#### **TC-003: [Título - boundary test]**
+#### **Validar [CORE: comportamiento límite] [CONDITIONAL: valor/condición boundary]**
 
 **Related Scenario:** Scenario 3
 **Type:** Boundary
