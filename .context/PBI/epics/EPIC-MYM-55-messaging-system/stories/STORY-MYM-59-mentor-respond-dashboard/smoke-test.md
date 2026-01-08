@@ -120,3 +120,16 @@ Se han encontrado problemas críticos que impiden la validación completa de la 
 **Próximo paso:**
 - Reportar a Development inmediatamente.
 - NO continuar con exploratory testing hasta que se corrijan estos issues.
+
+---
+
+## 🔄 Re-testing Session (08/01/2026)
+
+**Status:** ❌ FAILED (Partial Fix)
+
+### Observations:
+- **Real-time Sync:** Se observa una mejora parcial. El widget de "Mensajes Recientes" en el dashboard ahora recibe y muestra el mensaje nuevo sin necesidad de refrescar la página.
+- **Bug Persistente:** Sin embargo, si el mentor tiene el modal de conversación abierto (Quick Reply), el nuevo mensaje **NO** aparece automáticamente en el historial del chat. El mentor debe cerrar y volver a abrir el modal o refrescar la página para ver la respuesta completa, lo que rompe la fluidez de la comunicación.
+
+### Conclusion:
+La corrección no es completa. El sistema de suscripciones parece estar conectado al widget del dashboard pero no a la vista de detalle de la conversación.
