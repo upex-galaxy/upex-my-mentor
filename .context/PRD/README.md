@@ -21,6 +21,7 @@ Usa los prompts de `.prompts/fase-2-architecture/` para crear:
 ## 🎯 Output esperado
 
 Al completar esta sección tendrás:
+
 - 4 archivos con la visión completa del producto
 - Base para SRS (requerimientos técnicos)
 - Claridad sobre qué construir en el MVP

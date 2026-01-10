@@ -21,6 +21,7 @@ Usa los prompts de `.prompts/fase-2-architecture/` para crear:
 ## 🎯 Output esperado
 
 Al completar esta sección tendrás:
+
 - 4 archivos con especificaciones técnicas completas
 - Diagramas de arquitectura (C4, ERD)
 - Contratos de API definidos
