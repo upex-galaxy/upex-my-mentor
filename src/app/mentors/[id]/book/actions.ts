@@ -10,6 +10,7 @@
 import { createServer } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Stripe from 'stripe'
+import { getBaseUrl } from '@/lib/urls'
 import type { BookingFormData, CreateBookingResult } from '@/types/scheduling'
 
 // Initialize Stripe (server-side only)
@@ -143,8 +144,8 @@ export async function createBooking(
         mentor_id: data.mentorId,
         mentee_id: user.id,
       },
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/bookings/${booking.id}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/mentors/${data.mentorId}/book?cancelled=true`,
+      success_url: `${getBaseUrl()}/bookings/${booking.id}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${getBaseUrl()}/mentors/${data.mentorId}/book?cancelled=true`,
     }
 
     // If mentor has Stripe Connect, use destination charges

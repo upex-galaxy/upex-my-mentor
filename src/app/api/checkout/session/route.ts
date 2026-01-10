@@ -11,6 +11,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServer } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/server'
+import { getBaseUrl } from '@/lib/urls'
 import type { CreateCheckoutSessionRequest, CreateCheckoutSessionResponse, PaymentAPIError } from '@/types/payments'
 
 // Platform fee percentage (20%)
@@ -129,7 +130,7 @@ export async function POST(request: NextRequest) {
     const mentorName = mentor?.name || 'Mentor'
 
     // Build success and cancel URLs
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const baseUrl = getBaseUrl()
     const successUrl = `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`
     const cancelUrl = `${baseUrl}/checkout/cancel?booking_id=${booking_id}`
 

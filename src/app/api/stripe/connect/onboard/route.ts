@@ -10,6 +10,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { createServer } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/server'
+import { getBaseUrl } from '@/lib/urls'
 import type { Database } from '@/types/supabase'
 import type { StripeConnectOnboardResponse, PaymentAPIError } from '@/types/payments'
 
@@ -110,7 +111,7 @@ export async function POST(): Promise<NextResponse<StripeConnectOnboardResponse 
     }
 
     // Generate Account Link for onboarding
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const baseUrl = getBaseUrl()
 
     const accountLink = await stripe.accountLinks.create({
       account: stripeAccountId,
