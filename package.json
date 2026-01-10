@@ -9,13 +9,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "ai": "bun scripts/mcp-builder.js",
-    "up": "bun scripts/update-prompts.js",
-    "test": "playwright test",
-    "test:e2e": "playwright test tests/e2e",
-    "test:integration": "playwright test tests/integration",
-    "test:headed": "playwright test --headed",
-    "test:debug": "playwright test --debug",
-    "test:report": "playwright show-report"
+    "up": "bun scripts/update-prompts.js"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "7.3.4",
@@ -58,7 +52,6 @@
     "zod": "~3.24.1"
   },
   "devDependencies": {
-    "@playwright/test": "^1.57.0",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
