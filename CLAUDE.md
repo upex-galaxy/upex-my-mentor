@@ -438,31 +438,67 @@ When using Supabase tools, always use the following default values:
 
 This project uses the following Vercel environment structure:
 
-| Environment | Branch | Domain | Usage |
-|-------------|--------|--------|-------|
-| **staging** | `staging` | staging-upexmymentor.vercel.app | Primary development/testing |
-| Production | `main` | upexmymentor.vercel.app | Live production |
-| Preview | All unassigned branches | Auto-generated | PR previews |
-| Development | CLI only | N/A | Local development |
+| Environment | Branch | URL | VERCEL_ENV | Usage |
+|-------------|--------|-----|------------|-------|
+| Development | N/A | `http://localhost:3000` | N/A | Local development |
+| **staging** | `staging` | `https://staging-upexmymentor.vercel.app` | `preview` | Primary development/testing |
+| Production | `main` | `https://upexmymentor.vercel.app` | `production` | Live production |
 
 **Important Notes:**
 - We **exclusively use `staging`** branch for all development and testing
 - Push directly to `staging` (no PRs for bug fixes)
 - Same Supabase database is shared across ALL environments (including local)
 - Production (`main`) is only for final releases
+- Preview and Development environments in Vercel are **NOT used** (no domains configured)
+
+### URL Helper (`src/lib/urls.ts`)
+
+For redirects and links that need the base URL, **always use the centralized helper**:
+
+```typescript
+import { getBaseUrl } from '@/lib/urls'
+
+// Returns the correct URL based on environment:
+// - development: 'http://localhost:3000'
+// - staging: 'https://staging-upexmymentor.vercel.app'
+// - production: 'https://upexmymentor.vercel.app'
+const baseUrl = getBaseUrl()
+```
+
+**NEVER use `process.env.NEXT_PUBLIC_APP_URL`** - this variable does not exist. The helper detects the environment automatically using `VERCEL_ENV`.
 
 ## Stripe Configuration
 
 This project uses **Stripe Test Mode** for all environments (educational project).
 
-**Environment Variables:**
-```env
-STRIPE_SECRET_KEY=sk_test_...
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-```
-
 **Important Notes:**
 - Same Stripe test account is used across ALL environments
 - Never use live Stripe keys (this is an educational project)
 - Stripe Connect uses Express accounts for mentor payouts
+
+## Environment Variables (Complete Reference)
+
+All variables actually used in the codebase:
+
+| Variable | Purpose | Required |
+|----------|---------|----------|
+| **Supabase** |||
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL (client & server) | Yes |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key (client) | Yes |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role for RLS bypass (server only) | Yes |
+| **Stripe** |||
+| `STRIPE_SECRET_KEY` | Stripe secret key for server operations | Yes |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key for client | Yes |
+| `STRIPE_WEBHOOK_SECRET` | Stripe webhook signature verification | Yes |
+| **Email (Resend)** |||
+| `RESEND_API_KEY` | Resend.com API key for sending emails | For emails |
+| `EMAIL_FROM_ADDRESS` | Sender address (e.g., `MyMentor <hello@...>`) | For emails |
+| `EMAIL_DRY_RUN` | Set to `'true'` to log emails without sending | Optional |
+| `EMAIL_API_KEY` | Secret to protect email API endpoints | For testing |
+| **Security** |||
+| `CRON_SECRET` | Vercel Cron job authorization header | For cron |
+| **System (Automatic)** |||
+| `NODE_ENV` | `'development'` or `'production'` (auto) | Auto |
+| `VERCEL_ENV` | `'production'`, `'preview'`, or `'development'` (auto in Vercel) | Auto |
+
+**Note:** `NEXT_PUBLIC_APP_URL` is **NOT used**. Use `getBaseUrl()` from `@/lib/urls` instead.
