@@ -4,7 +4,9 @@ import { revalidatePath } from 'next/cache'
 import { createServer } from '@/lib/supabase/server'
 import {
   mentorProfileSchema,
+  basicProfileSchema,
   type MentorProfileFormData,
+  type BasicProfileFormData,
 } from '@/lib/validations/profile'
 
 export interface ActionResult {
@@ -116,6 +118,86 @@ export async function updateMentorProfile(
     }
   } catch (error) {
     console.error('Unexpected error in updateMentorProfile:', error)
+    return {
+      success: false,
+      error: 'Ocurrió un error inesperado. Por favor, intenta de nuevo.',
+    }
+  }
+}
+
+/**
+ * Server Action para actualizar el perfil básico de cualquier usuario
+ * Permite a estudiantes y admins editar nombre, descripción y foto
+ */
+export async function updateBasicProfile(
+  formData: BasicProfileFormData
+): Promise<ActionResult> {
+  try {
+    // 1. Validar datos con Zod
+    const validationResult = basicProfileSchema.safeParse(formData)
+
+    if (!validationResult.success) {
+      const fieldErrors: Record<string, string> = {}
+      validationResult.error.errors.forEach((err) => {
+        const field = err.path[0] as string
+        fieldErrors[field] = err.message
+      })
+      return {
+        success: false,
+        error: 'Por favor, corrige los errores en el formulario',
+        fieldErrors,
+      }
+    }
+
+    const validatedData = validationResult.data
+
+    // 2. Obtener sesión del usuario
+    const supabase = await createServer()
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser()
+
+    if (authError || !user) {
+      return {
+        success: false,
+        error: 'Debes iniciar sesión para actualizar tu perfil',
+      }
+    }
+
+    // 3. Preparar datos para actualización (solo campos básicos)
+    const updateData = {
+      name: validatedData.name,
+      description: validatedData.description || null,
+      photo_url: validatedData.photo_url || null,
+      updated_at: new Date().toISOString(),
+    }
+
+    // 4. Ejecutar UPDATE en Supabase
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update(updateData)
+      .eq('id', user.id)
+
+    if (updateError) {
+      console.error('Error updating basic profile:', updateError)
+      return {
+        success: false,
+        error: 'No pudimos actualizar tu perfil. Por favor, intenta de nuevo.',
+      }
+    }
+
+    // 5. Revalidar páginas que muestran el perfil
+    revalidatePath('/profile/edit')
+    revalidatePath('/profile')
+    revalidatePath('/dashboard')
+    revalidatePath(`/students/${user.id}`)
+
+    return {
+      success: true,
+    }
+  } catch (error) {
+    console.error('Unexpected error in updateBasicProfile:', error)
     return {
       success: false,
       error: 'Ocurrió un error inesperado. Por favor, intenta de nuevo.',
