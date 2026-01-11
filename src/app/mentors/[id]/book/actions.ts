@@ -144,7 +144,7 @@ export async function createBooking(
         mentor_id: data.mentorId,
         mentee_id: user.id,
       },
-      success_url: `${getBaseUrl()}/bookings/${booking.id}/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${getBaseUrl()}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${getBaseUrl()}/mentors/${data.mentorId}/book?cancelled=true`,
     }
 
