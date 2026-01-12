@@ -8,7 +8,6 @@
  */
 
 import { createServer } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
 import Stripe from 'stripe'
 import { getBaseUrl } from '@/lib/urls'
 import type { BookingFormData, CreateBookingResult } from '@/types/scheduling'
@@ -60,7 +59,22 @@ export async function createBooking(
     }
   }
 
-  // 3. Check for existing booking at this time (race condition prevention)
+  // 3. Verify mentor has completed Stripe Connect verification
+  const { data: stripeAccount } = await supabase
+    .from('stripe_accounts')
+    .select('stripe_account_id, charges_enabled, payouts_enabled')
+    .eq('mentor_id', data.mentorId)
+    .single()
+
+  if (!stripeAccount?.payouts_enabled) {
+    return {
+      success: false,
+      error: 'Este mentor aún no ha completado la verificación de pagos. Por favor, intenta con otro mentor.',
+      errorCode: 'MENTOR_NOT_VERIFIED',
+    }
+  }
+
+  // 4. Check for existing booking at this time (race condition prevention)
   const { data: existingBooking } = await supabase
     .from('bookings')
     .select('id')
@@ -77,7 +91,7 @@ export async function createBooking(
     }
   }
 
-  // 4. Create booking with status 'pending_payment'
+  // 5. Create booking with status 'pending_payment'
   // MYM-30: Include communication_channels as JSONB array
   const communicationChannels = data.communicationChannel
     ? [{ type: data.communicationChannel, selectedByMentee: true }]
@@ -114,14 +128,7 @@ export async function createBooking(
     }
   }
 
-  // 5. Fetch mentor's Stripe account for connected payments
-  const { data: stripeAccount } = await supabase
-    .from('stripe_accounts')
-    .select('stripe_account_id, charges_enabled')
-    .eq('mentor_id', data.mentorId)
-    .single()
-
-  // 6. Create Stripe Checkout Session
+  // 5. Create Stripe Checkout Session
   try {
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
       mode: 'payment',
@@ -163,7 +170,7 @@ export async function createBooking(
 
     const checkoutSession = await stripe.checkout.sessions.create(sessionParams)
 
-    // 7. Update booking with Stripe session ID (for tracking)
+    // 6. Update booking with Stripe session ID (for tracking)
     await supabase
       .from('bookings')
       .update({ notes: `stripe_session:${checkoutSession.id}` })

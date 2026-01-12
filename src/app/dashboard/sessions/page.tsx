@@ -35,7 +35,7 @@ export default async function SessionDashboardPage() {
   }
 
   // Fetch all bookings where user is mentor or student
-  // Only show confirmed, completed, and cancelled sessions
+  // Include pending_payment to show bookings awaiting payment
   const { data: bookings, error: bookingsError } = await supabase
     .from("bookings")
     .select(`
@@ -44,7 +44,7 @@ export default async function SessionDashboardPage() {
       student:profiles!bookings_student_id_fkey(id, name, email, photo_url)
     `)
     .or(`mentor_id.eq.${authUser.id},student_id.eq.${authUser.id}`)
-    .in("status", ["confirmed", "completed", "cancelled"])
+    .in("status", ["pending_payment", "confirmed", "completed", "cancelled"])
     .order("session_date", { ascending: false })
 
   if (bookingsError) {
@@ -58,13 +58,18 @@ export default async function SessionDashboardPage() {
   const upcomingSessions = allSessions
     .filter((booking) => {
       const sessionDate = new Date(booking.session_date)
-      return sessionDate > now && booking.status === "confirmed"
+      // Include pending_payment and confirmed sessions that are in the future
+      return sessionDate > now && (booking.status === "confirmed" || booking.status === "pending_payment")
     })
     .sort((a, b) => new Date(a.session_date).getTime() - new Date(b.session_date).getTime())
 
   const pastSessions = allSessions
     .filter((booking) => {
       const sessionDate = new Date(booking.session_date)
+      // Exclude pending_payment sessions in the future (they go to upcoming)
+      if (booking.status === "pending_payment" && sessionDate > now) {
+        return false
+      }
       return (
         sessionDate <= now ||
         booking.status === "completed" ||
