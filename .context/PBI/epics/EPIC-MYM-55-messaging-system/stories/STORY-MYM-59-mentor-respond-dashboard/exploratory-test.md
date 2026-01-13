@@ -78,15 +78,17 @@ Shall I proceed with the exploration?
 
 ## Issues Found
 
-### Issue 1: [Title]
+### Issue 1: Bug del Indicador de Notificación Persistente
 
-- **Severity:** [Critical/High/Medium/Low]
+- **Severity:** Medium
 - **Steps to Reproduce:**
-  1. [Step 1]
-  2. [Step 2]
-- **Expected:** [Expected behavior]
-- **Actual:** [Actual behavior]
-- **Evidence:** [Screenshot reference]
+  1. Recibir un mensaje nuevo (punto morado aparece).
+  2. Abrir el modal de "Quick Reply" desde el Dashboard.
+  3. Leer y responder el mensaje.
+  4. Cerrar el modal.
+- **Expected:** El indicador de notificación (punto morado) debería desaparecer al leer el mensaje.
+- **Actual:** El punto morado persiste. El usuario debe navegar a la vista completa de mensajería para limpiarlo.
+- **Evidence:** N/A (Visual observation during smoke test re-run).
 
 ---
 

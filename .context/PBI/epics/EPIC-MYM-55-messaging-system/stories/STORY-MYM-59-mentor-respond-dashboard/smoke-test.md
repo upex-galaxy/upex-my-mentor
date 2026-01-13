@@ -79,9 +79,10 @@
   - Abrir DevTools → Network tab
   - Validar requests a `/api/conversations` o similar.
 
-- [✅] **Realtime Updates**
+- [❌] **Realtime Updates**
   - Acción: Recibir mensaje nuevo de un mentee (simulado u otro dispositivo).
   - Validar: El widget se actualiza automáticamente sin refrescar.
+  - **Nota:** FAILED. Tras limpiar caché y cookies, el widget 'Mensajes Recientes' sigue sin actualizarse automáticamente tras el envío.
 
 - [ ] **Datos del Perfil**
   - Validar: Al abrir la conversación, se puede navegar al perfil del mentee.
