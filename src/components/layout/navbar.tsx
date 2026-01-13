@@ -84,7 +84,7 @@ export function Navbar() {
               className="h-10 w-10 object-contain"
               priority
             />
-            <span className="font-[family-name:var(--font-poppins)] font-bold text-xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent tracking-tight">
+            <span className="font-[family-name:var(--font-poppins)] font-bold text-xl gradient-text-simple tracking-tight">
               MyMentor
             </span>
           </Link>

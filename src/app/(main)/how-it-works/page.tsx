@@ -101,7 +101,7 @@ export default function HowItWorksPage() {
               </div>
 
               <h1 className="font-[family-name:var(--font-poppins)] text-4xl md:text-5xl font-bold mb-4 tracking-tight">
-                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                <span className="gradient-text-simple">
                   Cómo Funciona
                 </span>
               </h1>

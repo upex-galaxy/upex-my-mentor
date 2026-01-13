@@ -22,7 +22,7 @@ export function Hero() {
           {/* Headline */}
           <h1 data-testid="headline" className="mb-6 text-4xl font-bold tracking-tight sm:text-6xl md:text-7xl">
             Acelera tu carrera tech con{" "}
-            <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+            <span className="gradient-text">
               mentoría personalizada
             </span>
           </h1>
