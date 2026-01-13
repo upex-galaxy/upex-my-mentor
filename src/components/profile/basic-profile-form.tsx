@@ -10,7 +10,7 @@ import {
   basicProfileSchema,
   type BasicProfileFormData,
 } from '@/lib/validations/profile'
-import { updateBasicProfile } from '@/app/profile/edit/actions'
+import { updateBasicProfile } from '@/app/(main)/profile/edit/actions'
 import type { Database } from '@/types/supabase'
 
 import { Button } from '@/components/ui/button'
