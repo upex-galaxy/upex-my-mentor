@@ -7,7 +7,7 @@
  * Each channel can be enabled/disabled with an optional handle (phone, link, etc.)
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import {
   MessageCircle,
   Hash,
@@ -21,12 +21,14 @@ import {
   Save,
   AlertCircle,
   CheckCircle,
+  Sparkles,
 } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Badge } from '@/components/ui/badge'
 import {
   CHANNEL_CONFIG,
   CHANNEL_TYPES,
@@ -45,6 +47,31 @@ const iconMap: Record<string, React.ReactNode> = {
   Phone: <Phone className="h-5 w-5" />,
   Send: <Send className="h-5 w-5" />,
 }
+
+// Channel categories for better organization
+const CHANNEL_CATEGORIES = {
+  video: {
+    title: 'Videollamadas',
+    description: 'Plataformas para sesiones en vivo',
+    icon: <Video className="h-5 w-5" />,
+    channels: ['google_meet', 'zoom', 'teams', 'skype'] as CommunicationChannelType[],
+  },
+  messaging: {
+    title: 'Mensajería',
+    description: 'Apps de mensajería instantánea',
+    icon: <MessageCircle className="h-5 w-5" />,
+    channels: ['slack', 'whatsapp', 'discord', 'telegram'] as CommunicationChannelType[],
+  },
+  other: {
+    title: 'Otros',
+    description: 'Canales adicionales',
+    icon: <Mail className="h-5 w-5" />,
+    channels: ['email'] as CommunicationChannelType[],
+  },
+}
+
+// Popular channels to highlight
+const POPULAR_CHANNELS: CommunicationChannelType[] = ['google_meet', 'zoom', 'slack', 'whatsapp']
 
 interface ChannelState {
   enabled: boolean
@@ -156,132 +183,233 @@ export function CommunicationPreferences() {
 
   const enabledCount = Object.values(channels).filter((c) => c.enabled).length
 
+  // Quick select popular channels
+  const handleSelectPopular = useCallback(() => {
+    setChannels((prev) => {
+      const newState = { ...prev }
+      POPULAR_CHANNELS.forEach((type) => {
+        newState[type] = { ...newState[type], enabled: true }
+      })
+      return newState
+    })
+    setSuccess(false)
+    setError(null)
+  }, [])
+
+  // Clear all channels
+  const handleClearAll = useCallback(() => {
+    setChannels(initialState)
+    setSuccess(false)
+    setError(null)
+  }, [])
+
+  // Render a single channel item
+  const renderChannelItem = (type: CommunicationChannelType) => {
+    const config = CHANNEL_CONFIG[type]
+    const state = channels[type]
+    const isPopular = POPULAR_CHANNELS.includes(type)
+
+    return (
+      <div
+        key={type}
+        className={`group relative rounded-xl border-2 p-4 transition-all duration-200 ${
+          state.enabled
+            ? 'border-primary bg-primary/5 shadow-sm'
+            : 'border-border hover:border-muted-foreground/30 hover:bg-muted/30'
+        }`}
+      >
+        <div className="flex items-start gap-4">
+          <Checkbox
+            id={`channel-${type}`}
+            checked={state.enabled}
+            onCheckedChange={() => handleToggle(type)}
+            className="mt-1"
+          />
+
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span
+                className={`transition-colors ${state.enabled ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`}
+              >
+                {iconMap[config.icon]}
+              </span>
+              <Label
+                htmlFor={`channel-${type}`}
+                className="text-base font-medium cursor-pointer"
+              >
+                {config.label}
+              </Label>
+              {isPopular && (
+                <Badge variant="secondary" className="text-xs">
+                  <Sparkles className="h-3 w-3 mr-1" />
+                  Popular
+                </Badge>
+              )}
+            </div>
+
+            <p className="text-sm text-muted-foreground mt-1">{config.description}</p>
+
+            {state.enabled && (
+              <div className="mt-3 animate-in slide-in-from-top-2 duration-200">
+                <Label htmlFor={`handle-${type}`} className="text-sm text-muted-foreground">
+                  {config.handleLabel} (opcional)
+                </Label>
+                <Input
+                  id={`handle-${type}`}
+                  placeholder={config.handlePlaceholder}
+                  value={state.handle}
+                  onChange={(e) => handleHandleChange(type, e.target.value)}
+                  className="mt-1.5"
+                />
+                {config.requiresLink && (
+                  <p className="mt-1.5 text-xs text-muted-foreground">
+                    Podrás agregar el link específico para cada sesión desde el dashboard.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   if (isLoading) {
     return (
-      <Card>
-        <CardContent className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      <Card className="border-2">
+        <CardContent className="flex flex-col items-center justify-center py-16 gap-3">
+          <Loader2 className="h-10 w-10 animate-spin text-primary" />
+          <p className="text-muted-foreground">Cargando preferencias...</p>
         </CardContent>
       </Card>
     )
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Preferencias de Comunicación</CardTitle>
-        <CardDescription>
-          Selecciona cómo te gustaría comunicarte con tus mentees. Puedes habilitar múltiples
-          canales.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Channel list */}
-        <div className="space-y-4">
-          {CHANNEL_TYPES.map((type) => {
-            const config = CHANNEL_CONFIG[type]
-            const state = channels[type]
-
-            return (
-              <div
-                key={type}
-                className={`rounded-lg border p-4 transition-colors ${
-                  state.enabled ? 'border-primary bg-primary/5' : 'border-border'
-                }`}
+    <div className="space-y-6">
+      {/* Header Card with Stats */}
+      <Card className="border-2 bg-gradient-to-r from-primary/5 to-primary/10">
+        <CardHeader>
+          <div className="flex items-start justify-between flex-wrap gap-4">
+            <div>
+              <CardTitle className="text-xl flex items-center gap-2">
+                <MessageCircle className="h-5 w-5 text-primary" />
+                Preferencias de Comunicación
+              </CardTitle>
+              <CardDescription className="mt-1">
+                Configura los canales que tus mentees podrán usar para contactarte.
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge
+                variant={enabledCount > 0 ? 'default' : 'secondary'}
+                className="text-sm px-3 py-1"
               >
-                <div className="flex items-start gap-4">
-                  {/* Checkbox */}
-                  <Checkbox
-                    id={`channel-${type}`}
-                    checked={state.enabled}
-                    onCheckedChange={() => handleToggle(type)}
-                    className="mt-1"
-                  />
+                {enabledCount} {enabledCount === 1 ? 'canal activo' : 'canales activos'}
+              </Badge>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" size="sm" onClick={handleSelectPopular}>
+              <Sparkles className="h-4 w-4 mr-1.5" />
+              Seleccionar populares
+            </Button>
+            {enabledCount > 0 && (
+              <Button variant="ghost" size="sm" onClick={handleClearAll}>
+                Limpiar selección
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
-                  {/* Icon and label */}
-                  <div className="flex-1 space-y-2">
-                    <div className="flex items-center gap-2">
-                      <span className={state.enabled ? 'text-primary' : 'text-muted-foreground'}>
-                        {iconMap[config.icon]}
-                      </span>
-                      <Label
-                        htmlFor={`channel-${type}`}
-                        className="text-base font-medium cursor-pointer"
-                      >
-                        {config.label}
-                      </Label>
-                    </div>
+      {/* Channel Categories */}
+      {Object.entries(CHANNEL_CATEGORIES).map(([key, category]) => {
+        const categoryEnabledCount = category.channels.filter((t) => channels[t].enabled).length
 
-                    <p className="text-sm text-muted-foreground">{config.description}</p>
-
-                    {/* Handle input (only when enabled) */}
-                    {state.enabled && (
-                      <div className="pt-2">
-                        <Label htmlFor={`handle-${type}`} className="text-sm text-muted-foreground">
-                          {config.handleLabel} (opcional)
-                        </Label>
-                        <Input
-                          id={`handle-${type}`}
-                          placeholder={config.handlePlaceholder}
-                          value={state.handle}
-                          onChange={(e) => handleHandleChange(type, e.target.value)}
-                          className="mt-1"
-                        />
-                        {config.requiresLink && (
-                          <p className="mt-1 text-xs text-muted-foreground">
-                            Podrás agregar el link específico para cada sesión desde el dashboard.
-                          </p>
-                        )}
-                      </div>
-                    )}
+        return (
+          <Card key={key} className="border-2">
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                    {category.icon}
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg">{category.title}</CardTitle>
+                    <CardDescription>{category.description}</CardDescription>
                   </div>
                 </div>
+                {categoryEnabledCount > 0 && (
+                  <Badge variant="outline" className="text-xs">
+                    {categoryEnabledCount} seleccionado{categoryEnabledCount !== 1 && 's'}
+                  </Badge>
+                )}
               </div>
-            )
-          })}
-        </div>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="grid gap-3 sm:grid-cols-2">
+                {category.channels.map(renderChannelItem)}
+              </div>
+            </CardContent>
+          </Card>
+        )
+      })}
 
-        {/* Validation message */}
-        {enabledCount === 0 && (
-          <div className="flex items-center gap-2 text-amber-600 dark:text-amber-500">
-            <AlertCircle className="h-4 w-4" />
-            <span className="text-sm">Selecciona al menos un canal para recibir reservas.</span>
-          </div>
-        )}
-
-        {/* Error message */}
-        {error && (
-          <div className="flex items-center gap-2 text-destructive">
-            <AlertCircle className="h-4 w-4" />
-            <span className="text-sm">{error}</span>
-          </div>
-        )}
-
-        {/* Success message */}
-        {success && (
-          <div className="flex items-center gap-2 text-green-600 dark:text-green-500">
-            <CheckCircle className="h-4 w-4" />
-            <span className="text-sm">Preferencias guardadas correctamente.</span>
-          </div>
-        )}
-
-        {/* Save button */}
-        <div className="flex justify-end pt-4 border-t">
-          <Button onClick={handleSave} disabled={isSaving || enabledCount === 0}>
-            {isSaving ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Guardando...
-              </>
-            ) : (
-              <>
-                <Save className="mr-2 h-4 w-4" />
-                Guardar Preferencias
-              </>
+      {/* Footer with Messages and Save Button */}
+      <Card className="border-2">
+        <CardContent className="pt-6">
+          {/* Messages */}
+          <div className="space-y-3 mb-6">
+            {enabledCount === 0 && (
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-500">
+                <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                <span className="text-sm font-medium">
+                  Selecciona al menos un canal para que tus mentees puedan reservar sesiones.
+                </span>
+              </div>
             )}
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+
+            {error && (
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-destructive/10 text-destructive">
+                <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                <span className="text-sm font-medium">{error}</span>
+              </div>
+            )}
+
+            {success && (
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-green-500/10 text-green-600 dark:text-green-500">
+                <CheckCircle className="h-5 w-5 flex-shrink-0" />
+                <span className="text-sm font-medium">Preferencias guardadas correctamente.</span>
+              </div>
+            )}
+          </div>
+
+          {/* Save Button */}
+          <div className="flex justify-end">
+            <Button
+              onClick={handleSave}
+              disabled={isSaving || enabledCount === 0}
+              size="lg"
+              className="min-w-[200px]"
+            >
+              {isSaving ? (
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Guardando...
+                </>
+              ) : (
+                <>
+                  <Save className="mr-2 h-5 w-5" />
+                  Guardar Preferencias
+                </>
+              )}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   )
 }
