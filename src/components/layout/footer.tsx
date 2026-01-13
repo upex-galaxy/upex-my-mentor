@@ -17,7 +17,7 @@ export function Footer() {
                 height={32}
                 className="h-8 w-8 object-contain"
               />
-              <span className="font-[family-name:var(--font-poppins)] font-bold text-lg bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent tracking-tight">
+              <span className="font-[family-name:var(--font-poppins)] font-bold text-lg gradient-text-simple tracking-tight">
                 MyMentor
               </span>
             </div>

@@ -32,30 +32,31 @@
   }
 
   .dark {
-    --background: 240 10% 8%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 10%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 10%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 271 91% 65%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 277 91% 70%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 5% 18%;
-    --muted-foreground: 240 5% 65%;
-    --accent: 328 86% 70%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5% 20%;
-    --input: 240 5% 20%;
-    --ring: 271 91% 65%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    /* Modern dark mode - Linear/Vercel inspired */
+    --background: 224 71% 4%;        /* Deep slate-blue black */
+    --foreground: 213 31% 91%;       /* Soft white with slight warmth */
+    --card: 224 71% 6%;              /* Slightly lighter than bg */
+    --card-foreground: 213 31% 91%;
+    --popover: 224 71% 6%;
+    --popover-foreground: 213 31% 91%;
+    --primary: 263 70% 58%;          /* Refined violet - less saturated */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 215 28% 17%;        /* Muted slate for secondary */
+    --secondary-foreground: 213 31% 91%;
+    --muted: 223 47% 11%;            /* Dark slate for muted areas */
+    --muted-foreground: 215 20% 65%; /* Readable muted text */
+    --accent: 263 60% 50%;           /* Subtle violet accent */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 63% 45%;        /* Balanced red */
+    --destructive-foreground: 0 0% 100%;
+    --border: 216 34% 17%;           /* Visible but subtle borders */
+    --input: 216 34% 17%;
+    --ring: 263 70% 58%;
+    --chart-1: 221 83% 53%;
+    --chart-2: 142 71% 45%;
+    --chart-3: 38 92% 50%;
+    --chart-4: 263 70% 58%;
+    --chart-5: 339 80% 60%;
   }
 }
 
@@ -66,4 +67,79 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Glassmorphism utilities */
+@layer utilities {
+  .glass {
+    @apply bg-background/80 backdrop-blur-xl border border-border/50;
+  }
+
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-xl border border-border/50 shadow-lg;
+  }
+
+  .glass-subtle {
+    @apply bg-background/60 backdrop-blur-md;
+  }
+}
+
+/* Caustic light animation */
+@keyframes caustic-float {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate(20px, -15px) rotate(1deg);
+  }
+  66% {
+    transform: translate(-15px, 10px) rotate(-1deg);
+  }
+}
+
+.animate-caustic {
+  animation: caustic-float 20s ease-in-out infinite;
+}
+
+.animate-caustic-reverse {
+  animation: caustic-float 25s ease-in-out infinite reverse;
+}
+
+/* Gradient text that contrasts well in both modes */
+.gradient-text {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(
+    to right,
+    hsl(271 91% 65%),   /* primary */
+    hsl(328 86% 70%),   /* accent */
+    hsl(277 91% 70%)    /* secondary */
+  );
+}
+
+/* Brighter gradient for dark mode - better contrast */
+.dark .gradient-text {
+  background-image: linear-gradient(
+    to right,
+    hsl(271 91% 75%),   /* brighter primary */
+    hsl(328 86% 78%),   /* brighter accent */
+    hsl(277 91% 80%)    /* brighter secondary */
+  );
+}
+
+/* Simple two-color gradient variant */
+.gradient-text-simple {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(
+    to right,
+    hsl(271 91% 65%),   /* primary */
+    hsl(328 86% 70%)    /* accent */
+  );
+}
+
+.dark .gradient-text-simple {
+  background-image: linear-gradient(
+    to right,
+    hsl(271 91% 75%),   /* brighter primary */
+    hsl(328 86% 80%)    /* brighter accent */
+  );
 }

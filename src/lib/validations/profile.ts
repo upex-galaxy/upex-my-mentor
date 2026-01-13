@@ -66,3 +66,28 @@ export const experienceOptions = [
   { value: 15, label: '15-19 años (Director)' },
   { value: 20, label: '20+ años (Executive)' },
 ] as const
+
+/**
+ * Schema de validación para el formulario de perfil básico (estudiantes y admins)
+ * Solo incluye campos básicos: nombre, descripción y foto
+ */
+export const basicProfileSchema = z.object({
+  name: z
+    .string()
+    .min(2, 'El nombre es requerido (mínimo 2 caracteres)')
+    .max(100, 'El nombre no puede exceder 100 caracteres'),
+
+  description: z
+    .string()
+    .max(500, 'La biografía no puede exceder 500 caracteres')
+    .optional()
+    .or(z.literal('')),
+
+  photo_url: z
+    .string()
+    .url('Introduce una URL válida para la foto')
+    .optional()
+    .or(z.literal('')),
+})
+
+export type BasicProfileFormData = z.infer<typeof basicProfileSchema>

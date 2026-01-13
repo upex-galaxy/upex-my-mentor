@@ -11,7 +11,7 @@ import {
   experienceOptions,
   type MentorProfileFormData,
 } from '@/lib/validations/profile'
-import { updateMentorProfile } from '@/app/profile/edit/actions'
+import { updateMentorProfile } from '@/app/(main)/profile/edit/actions'
 import type { Database } from '@/types/supabase'
 
 import { Button } from '@/components/ui/button'

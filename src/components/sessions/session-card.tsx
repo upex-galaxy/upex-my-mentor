@@ -11,7 +11,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { Calendar, Clock, User, MessageCircle, Link as LinkIcon, ExternalLink, Star, CheckCircle2 } from 'lucide-react'
+import { Calendar, Clock, User, MessageCircle, Link as LinkIcon, ExternalLink, Star, CheckCircle2, CreditCard } from 'lucide-react'
 
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -48,7 +48,8 @@ interface SessionCardProps {
 }
 
 // Status badge configuration
-const statusConfig: Record<SessionDisplayStatus, { label: string; variant: 'default' | 'secondary' | 'outline' | 'destructive' }> = {
+const statusConfig: Record<SessionDisplayStatus, { label: string; variant: 'default' | 'secondary' | 'outline' | 'destructive'; className?: string }> = {
+  pending_payment: { label: 'Pendiente de pago', variant: 'outline', className: 'border-amber-500 text-amber-600 bg-amber-50 dark:bg-amber-950/20' },
   upcoming: { label: 'Próxima', variant: 'secondary' },
   joinable: { label: 'Unirse ahora', variant: 'default' },
   in_progress: { label: 'En curso', variant: 'default' },
@@ -133,6 +134,7 @@ export function SessionCard({
           {/* Status badge */}
           <Badge
             variant={statusInfo.variant}
+            className={statusInfo.className}
             data-testid="session_status_badge"
           >
             {statusInfo.label}
@@ -214,8 +216,32 @@ export function SessionCard({
           ) : null}
         </div>
 
-        {/* Actions */}
-        {!isPast && (
+        {/* Pending Payment Action - only for student */}
+        {displayStatus === 'pending_payment' && !isMentor && (
+          <div className="flex gap-2 pt-2">
+            <Button
+              asChild
+              variant="default"
+              className="bg-amber-500 hover:bg-amber-600 text-white"
+              data-testid="complete_payment_button"
+            >
+              <Link href={`/checkout/resume?booking_id=${booking.id}`}>
+                <CreditCard className="h-4 w-4 mr-2" />
+                Completar pago
+              </Link>
+            </Button>
+          </div>
+        )}
+
+        {/* Pending Payment Info - for mentor */}
+        {displayStatus === 'pending_payment' && isMentor && (
+          <div className="pt-2 text-sm text-amber-600 dark:text-amber-500">
+            El estudiante aún no ha completado el pago
+          </div>
+        )}
+
+        {/* Regular Actions - only for confirmed sessions */}
+        {!isPast && displayStatus !== 'pending_payment' && (
           <div className="flex gap-2 pt-2">
             <JoinCallButton
               bookingId={booking.id}

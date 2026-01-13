@@ -190,7 +190,7 @@ export interface CreateBookingResult {
   bookingId?: string
   checkoutUrl?: string
   error?: string
-  errorCode?: 'SLOT_TAKEN' | 'UNAUTHORIZED' | 'STRIPE_ERROR' | 'UNKNOWN'
+  errorCode?: 'SLOT_TAKEN' | 'UNAUTHORIZED' | 'STRIPE_ERROR' | 'MENTOR_NOT_VERIFIED' | 'UNKNOWN'
 }
 
 /**
