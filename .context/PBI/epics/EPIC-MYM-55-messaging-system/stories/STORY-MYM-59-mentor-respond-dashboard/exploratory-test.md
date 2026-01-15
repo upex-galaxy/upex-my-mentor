@@ -4,26 +4,26 @@
 
 **Feature:** Mentor Respond to Messages from Dashboard (Widget Stability)
 **Scope:** STORY-MYM-59
-**Staging URL:** https://staging.upexmymentor.com/dashboard (Mocked for Planning)
+**Staging URL:** https://staging.upexmymentor.com/dashboard
 
 ### Scenarios to Explore:
 
 1.  **Dashboard Widget Rendering & Real-time Sync:** Verify correct rendering of the "Recent Messages" widget, including empty states and real-time updates when new messages arrive without page refresh.
-2.  **Quick Reply Modal Functionality:** Test the end-to-end flow of opening the Quick Reply modal, typing a message, sending it, and verifying visual feedback (optimistic UI) and closure.
-3.  **Navigation Integrity:** Check that clicking "View All Messages" and individual conversation items correctly navigates to the inbox or deep-links to the specific conversation/profile, especially during updates.
-4.  **Edge Case: "The Ghost Effect" (Race Condition UI):** Open Quick Reply modal and receive a new message *while typing*. Verify modal updates correctly or if background widget re-ordering causes visual confusion.
-5.  **Edge Case: "The Spammer" (Stress Test):** Simulate receiving 10 messages in <5 seconds. Verify widget debouncing, preventing flicker or freeze, and correct final state.
-6.  **Edge Case: "The Dead Link" (Navigation vs Update):** Click profile link *exactly* when widget updates. Verify navigation succeeds and doesn't error out due to component unmounting.
-7.  **Edge Case: "The Sleeping Tab" (Browser Throttling):** Leave tab backgrounded for 30 mins, receive messages, then focus tab. Verify "catch-up" behavior (socket reconnection and state sync).
-8.  **Edge Case: "The Infinite Message" (Layout Break):** Receive a 200-char single-word message. Verify CSS text-overflow handles it without breaking widget layout or pushing buttons off-screen.
-
-Shall I proceed with the exploration?
+2.  **Quick Reply Modal Functionality:** Test the end-to-end flow: opening the modal, typing, sending, and verifying visual feedback and automatic closure.
+3.  **Navigation Integrity:** Check that "View all messages" links and individual profile links work correctly during data updates.
+4.  **Edge Case - "The Ghost Effect":** Receive a new message while typing in the modal. Verify no visual confusion or unexpected reordering occurs.
+5.  **Edge Case - "The Spammer":** Simulate receiving 10+ messages in <5 seconds. Verify the widget doesn't freeze or flicker (Debounce check).
+6.  **Edge Case - "The Dead Link":** Click a profile link exactly when the widget triggers a real-time update.
+7.  **Edge Case - "The Sleeping Tab":** Leave the tab backgrounded for 30 mins and verify socket reconnection and state sync upon return.
+8.  **Edge Case - "The Infinite Message":** Receive a 200-char string without spaces to check CSS text-overflow and layout stability.
+9.  **Multitasking Scenario:** Receive messages in a background conversation while another one is active in the modal.
+10. **Network Resilience:** Verify system behavior and message delivery status when simulating a network drop (Offline Mode).
 
 ---
 
 ## Phase 2: UI Exploration (Playwright MCP)
 
-### Scenario: [Name]
+### Scenario: [Scenario Name]
 
 **Steps Executed:**
 
@@ -33,7 +33,6 @@ Shall I proceed with the exploration?
 **Outcome:** [PASSED / ISSUE FOUND]
 
 **Notes:**
-
 - [Observation]
 
 ---
@@ -51,66 +50,68 @@ Shall I proceed with the exploration?
 
 ## Phase 4: Session Summary (Session Notes)
 
-# Exploratory Testing Session Notes
-
-**Date:** [Date]
-**Feature:** Mentor Respond to Messages from Dashboard (Widget Stability)
-**Staging URL:** [URL]
+**Date:** 2026-01-15
+**Feature:** Mentor Respond from Dashboard
 **Duration:** [Time spent]
 
 ---
 
 ## Executive Summary
 
-- **Overall Status:** [PASSED / ISSUES FOUND / BLOCKED]
-- **Scenarios Tested:** [X of Y]
-- **Issues Found:** [Number]
+- **Overall Status:** [ISSUES FOUND / BLOCKED]
+- **Scenarios Tested:** 1 of 10
+- **Issues Found:** 1
 
 ---
 
 ## Scenarios Tested
 
-### 1. [Scenario Name] - [PASSED/FAILED]
+### 1. Real-time Message Sync (Smoke Test Re-run) - [FAILED]
+- **Details:** Verifying the widget's automatic refresh after a student sends a message.
+- **Result:** Widget does not update (Student 21:10 vs Mentor 21:03). Confirmed after clearing cache/cookies.
 
-[Details...]
+### 2. Multitasking Scenario (Simultaneous Reception) - [PENDING]
+- **Details:** Receiving a message in a conversation that is NOT active in the modal.
+- **Objective:** Validate if the notification dot updates correctly for background conversations.
+
+### 3. Network Resilience (Offline Simulation) - [PENDING]
+- **Details:** Opening the chat and disconnecting the network via DevTools.
+- **Objective:** Verify if the system displays a clear error state or allows a retry.
 
 ---
 
 ## Issues Found
 
-### Issue 1: Bug del Indicador de Notificación Persistente
+### Issue 1: Persistent Notification Indicator (Zombie Dot)
 
 - **Severity:** Medium
 - **Steps to Reproduce:**
-  1. Recibir un mensaje nuevo (punto morado aparece).
-  2. Abrir el modal de "Quick Reply" desde el Dashboard.
-  3. Leer y responder el mensaje.
-  4. Cerrar el modal.
-- **Expected:** El indicador de notificación (punto morado) debería desaparecer al leer el mensaje.
-- **Actual:** El punto morado persiste. El usuario debe navegar a la vista completa de mensajería para limpiarlo.
-- **Evidence:** N/A (Visual observation during smoke test re-run).
+  1. Receive a new message (purple dot appears).
+  2. Open the "Quick Reply" modal from the Dashboard.
+  3. Read and respond to the message.
+  4. Close the modal.
+- **Expected:** The purple notification dot should disappear once the message is read/replied to.
+- **Actual:** The purple dot persists. It only clears after navigating to the full Messaging view.
+- **Evidence:** Visual observation during MYM-96 fix re-test.
 
 ---
 
 ## Observations & Recommendations
 
 ### Positive Findings:
-
-- [What worked well]
+- [To be completed tomorrow]
 
 ### Areas of Concern:
-
-- [Potential issues to monitor]
+- Real-time event consistency seems lower in the Dashboard widget compared to the Inbox view.
 
 ### Recommendations for Automation:
-
-- [Scenarios that should be automated]
-- [Priority suggestions]
+- Automate the "Send & Close Modal" flow using Playwright.
+- Create a regression test for the notification dot clearing logic.
 
 ---
 
 ## Next Steps
 
-- [ ] Report critical bugs (use bug-report.md)
-- [ ] Transition US status if PASSED
-- [ ] Proceed to Test Documentation phase (if applicable)
+- [ ] Report critical bugs in Jira.
+- [ ] Perform Database Testing (Supabase) to investigate the sync failure.
+- [ ] Complete pending scenarios (Multitasking & Network).
