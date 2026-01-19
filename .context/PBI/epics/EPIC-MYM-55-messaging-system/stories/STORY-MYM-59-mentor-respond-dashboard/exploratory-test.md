@@ -33,6 +33,7 @@
 **Outcome:** [PASSED / ISSUE FOUND]
 
 **Notes:**
+
 - [Observation]
 
 ---
@@ -59,24 +60,27 @@
 ## Executive Summary
 
 - **Overall Status:** [ISSUES FOUND / BLOCKED]
-- **Scenarios Tested:** 1 of 10
-- **Issues Found:** 1
+- **Scenarios Tested:** 2 of 10
+- **Issues Found:** 2
 
 ---
 
 ## Scenarios Tested
 
 ### 1. Real-time Message Sync (Smoke Test Re-run) - [FAILED]
+
 - **Details:** Verifying the widget's automatic refresh after a student sends a message.
 - **Result:** Widget does not update (Student 21:10 vs Mentor 21:03). Confirmed after clearing cache/cookies.
 
-### 2. Multitasking Scenario (Simultaneous Reception) - [PENDING]
+### 9. Multitasking Scenario (Simultaneous Reception) - [PENDING]
+
 - **Details:** Receiving a message in a conversation that is NOT active in the modal.
 - **Objective:** Validate if the notification dot updates correctly for background conversations.
 
-### 3. Network Resilience (Offline Simulation) - [PENDING]
-- **Details:** Opening the chat and disconnecting the network via DevTools.
-- **Objective:** Verify if the system displays a clear error state or allows a retry.
+### 10. Network Resilience (Offline Simulation) - [FAILED]
+
+- **Details:** Disconnected network via DevTools and attempted to send a message.
+- **Result:** The application crashed (White Screen) with "Application error: a client-side exception has occurred (see the browser console for more information)". The user must refresh to recover.
 
 ---
 
@@ -94,17 +98,30 @@
 - **Actual:** The purple dot persists. It only clears after navigating to the full Messaging view.
 - **Evidence:** Visual observation during MYM-96 fix re-test.
 
+### Issue 2: Critical Application Crash on Network Loss [MYM-132]
+
+- **Severity:** High / Critical
+- **Steps to Reproduce:**
+  1. Open the Messaging widget on the Dashboard.
+  2. Set browser network to "Offline" via DevTools.
+  3. Type a message and click "Send".
+- **Expected:** The system should show a friendly error message and keep the text.
+- **Actual:** UI crashes into a white screen (Client-side exception).
+
 ---
 
 ## Observations & Recommendations
 
 ### Positive Findings:
+
 - [To be completed tomorrow]
 
 ### Areas of Concern:
+
 - Real-time event consistency seems lower in the Dashboard widget compared to the Inbox view.
 
 ### Recommendations for Automation:
+
 - Automate the "Send & Close Modal" flow using Playwright.
 - Create a regression test for the notification dot clearing logic.
 
