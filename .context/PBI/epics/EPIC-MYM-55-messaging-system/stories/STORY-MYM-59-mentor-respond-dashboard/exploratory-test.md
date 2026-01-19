@@ -72,10 +72,11 @@
 - **Details:** Verifying the widget's automatic refresh after a student sends a message.
 - **Result:** Widget does not update (Student 21:10 vs Mentor 21:03). Confirmed after clearing cache/cookies.
 
-### 9. Multitasking Scenario (Simultaneous Reception) - [PENDING]
+### 9. Multitasking Scenario (Simultaneous Reception) - [FAILED]
 
-- **Details:** Receiving a message in a conversation that is NOT active in the modal.
-- **Objective:** Validate if the notification dot updates correctly for background conversations.
+- **Details:** Kept the Dashboard open while receiving messages from a different account.
+- **Result:** Messages do not appear in the "Recent Messages" widget in real-time. The user must manually refresh the page or exit and re-enter the conversation to see updates.
+- **Evidence:** `image_07dba1.png` shows old data (2 days ago) while `image_082dbb.png` confirms the new message exists in the DB.
 
 ### 10. Network Resilience (Offline Simulation) - [FAILED]
 
@@ -107,6 +108,15 @@
   3. Type a message and click "Send".
 - **Expected:** The system should show a friendly error message and keep the text.
 - **Actual:** UI crashes into a white screen (Client-side exception).
+
+### Issue 3: Dashboard Widget Fails to Sync Message Content in Real-Time
+
+- **Severity:** High
+- **Steps to Reproduce:**
+  1. Stay on the Dashboard page.
+  2. Receive a message from another user.
+- **Expected:** The "Recent Messages" widget should update the message preview text automatically to show the most recent content received.
+- **Actual:** While notification indicators might trigger, the message text within the conversation item remains outdated (showing the previous message) until a manual page refresh.
 
 ---
 
