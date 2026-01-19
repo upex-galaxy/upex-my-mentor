@@ -73,8 +73,15 @@
 - **Result:** Widget does not update (Student 21:10 vs Mentor 21:03). Confirmed after clearing cache/cookies.
 
 ### 3. Navigation Integrity - [PASSED]
+
 - **Details:** Tested "View all messages" link and individual conversation/profile links within the widget.
 - **Result:** Navigation works correctly. "View all messages" redirects to the full Messaging Inbox, and clicking on a user's name/avatar deep-links to the specific conversation/profile without errors.
+
+### 4. Edge Case: "The Ghost Effect" (Race Condition UI) - [PASSED]
+
+- **Details:** Started typing a draft response in the Quick Reply modal while a new message was received from the student.
+- **Result:** The draft message was preserved and not deleted when the new incoming message appeared in the chat history.
+- **Observation:** Focus remained in the text area, and no visual "flicker" was detected. However, this test further confirmed the background Dashboard widget sync issues (Issue 3).
 
 ### 9. Multitasking Scenario (Simultaneous Reception) - [FAILED]
 
