@@ -60,8 +60,8 @@
 ## Executive Summary
 
 - **Overall Status:** [ISSUES FOUND / BLOCKED]
-- **Scenarios Tested:** 7 of 10
-- **Issues Found:** 3
+- **Scenarios Tested:** 10 of 10
+- **Issues Found:** 4
 
 ---
 
@@ -95,6 +95,28 @@
 - **Result:** The system handled the load without freezing. The "Recent Messages" widget correctly updated to show the final message ("Stress Test 10") and updated the notification badge to "10".
 - **Observation:** Real-time sync worked as expected during this high-frequency burst, contrastingly to the failure in Scenario 1.
 
+### 6. "The Dead Link" (Navigation vs Update) - [PASSED]
+
+- **Details:** Attempted to click the student's name in the widget exactly when a new message was being received ("The Matrix" message from CLI).
+- **Result:** Navigation remained functional. The application correctly redirected to the conversation view without any "Dead Link" errors or UI flicker, despite the underlying data update.
+- **Observation:** High component stability during state re-renders.
+
+### 7. Edge Case: "The Sleeping Tab" (Turbo Version) - [FAILED]
+
+- **Details:** Simulated a short network disconnection (1 min) while messages were being sent by the student.
+- **Result:** Upon returning to "Online" status, the widget failed to sync the missed messages automatically. A manual page refresh was required to update the message list.
+- **Root Cause:** Lack of socket re-connection logic.
+
+### 7.1. Unread Status Persistence (Extra) - [FAILED]
+
+- **Details:** Verified if the "unread" indicator (purple dot) disappears after opening the Quick Reply modal or reading the message.
+- **Result:** The purple dot persists even after the mentor interacts with the message. This confirms a mismatch between the UI notification state and the actual message read status.
+
+### 8. Edge Case: "The Infinite Message" - [PASSED]
+
+- **Details:** Received a 200-character string without spaces ("AAAAA...") to test layout stability and CSS text-overflow.
+- **Result:** The layout remained stable. The widget correctly truncated the long string using an ellipsis (...), preventing any visual overflow or container breaking.
+
 ### 9. Multitasking Scenario (Simultaneous Reception) - [FAILED]
 
 - **Details:** Kept the Dashboard open while receiving messages from a different account.
@@ -113,6 +135,7 @@
 ### Issue 1: Persistent Notification Indicator (Zombie Dot)
 
 - **Severity:** Medium
+- **Related Scenario:** [Scenario 7.1]
 - **Steps to Reproduce:**
   1. Receive a new message (purple dot appears).
   2. Open the "Quick Reply" modal from the Dashboard.
@@ -125,6 +148,7 @@
 ### Issue 2: Critical Application Crash on Network Loss [MYM-132]
 
 - **Severity:** High / Critical
+- **Related Scenario:** [Scenario 10]
 - **Steps to Reproduce:**
   1. Open the Messaging widget on the Dashboard.
   2. Set browser network to "Offline" via DevTools.
@@ -135,11 +159,20 @@
 ### Issue 3: Dashboard Widget Fails to Sync Message Content in Real-Time
 
 - **Severity:** High
+- **Related Scenario:** [Scenario 1 & 9]
 - **Steps to Reproduce:**
   1. Stay on the Dashboard page.
   2. Receive a message from another user.
 - **Expected:** The "Recent Messages" widget should update the message preview text automatically to show the most recent content received.
 - **Actual:** While notification indicators might trigger, the message text within the conversation item remains outdated (showing the previous message) until a manual page refresh.
+
+### Issue 4: Inconsistent "Unread" Status (Notification Ghosting)
+
+- **Severity:** Medium (UX/Consistency)
+- **Related Scenario:** [Scenario 7.1]
+- **Description:** The purple notification dot persists even after the Mentor interacts with the message through the Quick Reply modal.
+- **Expected:** Opening the message or replying through the modal should trigger a 'read' status update and remove the notification indicator.
+- **Actual:** The UI state for notifications is not synced with the message interaction, leading to "ghost" notifications that only disappear after a full page refresh.
 
 ---
 
