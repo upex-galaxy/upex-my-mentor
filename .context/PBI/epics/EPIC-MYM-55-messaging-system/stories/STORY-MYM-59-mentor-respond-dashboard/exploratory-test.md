@@ -72,6 +72,10 @@
 - **Details:** Verifying the widget's automatic refresh after a student sends a message.
 - **Result:** Widget does not update (Student 21:10 vs Mentor 21:03). Confirmed after clearing cache/cookies.
 
+### 3. Navigation Integrity - [PASSED]
+- **Details:** Tested "View all messages" link and individual conversation/profile links within the widget.
+- **Result:** Navigation works correctly. "View all messages" redirects to the full Messaging Inbox, and clicking on a user's name/avatar deep-links to the specific conversation/profile without errors.
+
 ### 9. Multitasking Scenario (Simultaneous Reception) - [FAILED]
 
 - **Details:** Kept the Dashboard open while receiving messages from a different account.
