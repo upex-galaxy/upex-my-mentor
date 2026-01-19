@@ -60,8 +60,8 @@
 ## Executive Summary
 
 - **Overall Status:** [ISSUES FOUND / BLOCKED]
-- **Scenarios Tested:** 2 of 10
-- **Issues Found:** 2
+- **Scenarios Tested:** 7 of 10
+- **Issues Found:** 3
 
 ---
 
@@ -71,6 +71,12 @@
 
 - **Details:** Verifying the widget's automatic refresh after a student sends a message.
 - **Result:** Widget does not update (Student 21:10 vs Mentor 21:03). Confirmed after clearing cache/cookies.
+
+### 2. Quick Reply Modal Functionality - [PASSED]
+
+- **Details:** Tested the full flow of the Quick Reply modal: opening from the Dashboard, entering text, and clicking 'Send'.
+- **Result:** The modal closed automatically upon sending, a success toast notification appeared, and the message was delivered correctly.
+- **Note:** This confirms the modal's internal logic is functional, unlike the background widget's real-time sync.
 
 ### 3. Navigation Integrity - [PASSED]
 
@@ -82,6 +88,12 @@
 - **Details:** Started typing a draft response in the Quick Reply modal while a new message was received from the student.
 - **Result:** The draft message was preserved and not deleted when the new incoming message appeared in the chat history.
 - **Observation:** Focus remained in the text area, and no visual "flicker" was detected. However, this test further confirmed the background Dashboard widget sync issues (Issue 3).
+
+### 5. Edge Case: "The Spammer" (Stress Test) - [PASSED]
+
+- **Details:** Simulated an incoming burst of 10 messages in under 5 seconds using Playwright MCP.
+- **Result:** The system handled the load without freezing. The "Recent Messages" widget correctly updated to show the final message ("Stress Test 10") and updated the notification badge to "10".
+- **Observation:** Real-time sync worked as expected during this high-frequency burst, contrastingly to the failure in Scenario 1.
 
 ### 9. Multitasking Scenario (Simultaneous Reception) - [FAILED]
 
