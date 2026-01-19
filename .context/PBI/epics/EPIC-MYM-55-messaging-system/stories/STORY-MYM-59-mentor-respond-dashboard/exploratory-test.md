@@ -110,7 +110,7 @@
 ### 7.1. Unread Status Persistence (Extra) - [FAILED]
 
 - **Details:** Verified if the "unread" indicator (purple dot) disappears after opening the Quick Reply modal or reading the message.
-- **Result:** The purple dot persists even after the mentor interacts with the message. This confirms a mismatch between the UI notification state and the actual message read status.
+- **Result:** The purple dot persists even after the mentor interacts with the message. This confirms a mismatch between the UI notification state and the actual message read status. Logged as part of **[Issue 1]**.
 
 ### 8. Edge Case: "The Infinite Message" - [PASSED]
 
@@ -136,6 +136,7 @@
 
 - **Severity:** Medium
 - **Related Scenario:** [Scenario 7.1]
+- **Description:** The purple notification dot persists even after the Mentor interacts with the message (opening the modal, reading, or replying). This behavior was previously addressed in MYM-96 but remains inconsistent.
 - **Steps to Reproduce:**
   1. Receive a new message (purple dot appears).
   2. Open the "Quick Reply" modal from the Dashboard.
@@ -165,14 +166,6 @@
   2. Receive a message from another user.
 - **Expected:** The "Recent Messages" widget should update the message preview text automatically to show the most recent content received.
 - **Actual:** While notification indicators might trigger, the message text within the conversation item remains outdated (showing the previous message) until a manual page refresh.
-
-### Issue 4: Inconsistent "Unread" Status (Notification Ghosting)
-
-- **Severity:** Medium (UX/Consistency)
-- **Related Scenario:** [Scenario 7.1]
-- **Description:** The purple notification dot persists even after the Mentor interacts with the message through the Quick Reply modal.
-- **Expected:** Opening the message or replying through the modal should trigger a 'read' status update and remove the notification indicator.
-- **Actual:** The UI state for notifications is not synced with the message interaction, leading to "ghost" notifications that only disappear after a full page refresh.
 
 ---
 
