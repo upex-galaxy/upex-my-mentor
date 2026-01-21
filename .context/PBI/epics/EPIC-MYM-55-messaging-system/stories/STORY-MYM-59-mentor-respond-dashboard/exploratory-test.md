@@ -167,6 +167,12 @@
 - **Expected:** The "Recent Messages" widget should update the message preview text automatically to show the most recent content received.
 - **Actual:** While notification indicators might trigger, the message text within the conversation item remains outdated (showing the previous message) until a manual page refresh.
 
+**Technical Audit (Network Analysis):**
+
+- Verified that the **Network > WS** tab remains empty while on the Dashboard.
+- No active WebSocket connection was detected, confirming that the component is not subscribed to real-time events.
+- Communication is currently unidirectional (POST requests only), lacking an active listener/socket for incoming server-side updates.
+
 ---
 
 ## Observations & Recommendations
