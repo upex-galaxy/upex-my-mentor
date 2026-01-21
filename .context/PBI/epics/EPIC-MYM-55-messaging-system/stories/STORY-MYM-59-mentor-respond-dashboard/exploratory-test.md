@@ -112,7 +112,7 @@
 - **Details:** Verified if the "unread" indicator (purple dot) disappears after opening the Quick Reply modal or reading the message.
 - **Result:** The purple dot persists even after the mentor interacts with the message. This confirms a mismatch between the UI notification state and the actual message read status. Logged as part of **[Issue 1]**.
 
-### 8. Edge Case: "The Infinite Message" - [PASSED]
+### 8. Edge Case: "The Infinite Message" - [FAILED]
 
 - **Details:** Received a 200-character string without spaces ("AAAAA...") to test layout stability and CSS text-overflow.
 - **Result:** The layout remained stable. The widget correctly truncated the long string using an ellipsis (...), preventing any visual overflow or container breaking.
@@ -172,6 +172,17 @@
 - Verified that the **Network > WS** tab remains empty while on the Dashboard.
 - No active WebSocket connection was detected, confirming that the component is not subscribed to real-time events.
 - Communication is currently unidirectional (POST requests only), lacking an active listener/socket for incoming server-side updates.
+
+### Issue 4: Lack of Word-Breaking on Long Strings (Text Truncation)
+- **Severity:** Medium (UX/Visual)
+- **Related Scenario:** [Stress Test - Scenario 8]
+- **Description:** Messages containing long strings of characters without spaces (e.g., "AAAAA...") do not wrap correctly within the chat bubble container.
+- **Steps to Reproduce:**
+  1. Open the "Quick Reply" modal from the Dashboard.
+  2. Type a long string of characters without spaces (approx. 200 characters).
+  3. Send the message and observe the chat bubble in the history.
+- **Expected Behavior:** The text should automatically break and wrap into multiple lines (using `word-break: break-all` or `overflow-wrap: anywhere`) to remain fully visible.
+- **Actual Behavior:** The text is truncated or overflows the message bubble, making it impossible to read the full content.
 
 ---
 
