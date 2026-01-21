@@ -1,44 +1,47 @@
 # Smoke Test: STORY-MYM-59 - Mentor Respond to Messages from Dashboard
 
-**Staging URL:** https://upex-my-mentor-develop.vercel.app
-**Fecha:** 2025-12-23
+**Staging URL:** https://staging-upexmymentor.vercel.app/dashboard
+**Fecha Última Ejecución:** 21/01/2026
 **QA:** José Andrés Lorca
 **Asistente:** Gemini AI
-**Duración:** 5-10 minutos
+**Status General:** ❌ FAILED (Blockers detected)
 
 ---
 
 ## ✅ Smoke Test Checklist
 
-### 1. Acceso Básico
+### 1. Acceso Básico & UI
 
-- [ ] **Aplicación carga sin errores 500**
-  - URL: https://upex-my-mentor-develop.vercel.app
-  - Landing page debe cargar completamente
+- [x] **Aplicación carga sin errores 500**
+- [x] **Estabilidad Visual (Scenario 8):** El widget soporta mensajes infinitos sin romper el layout (Ellipsis funcionando).
+- [x] **Navegación (Scenario 6):** El clic en el nombre del alumno funciona incluso durante actualizaciones de estado.
 
-- [ ] **No hay errores en console (F12)**
+- [x] **No hay errores en console (F12)**
   - Console tab no debe mostrar errores rojos
   - Advertencias amarillas son aceptables
 
-- [ ] **Assets cargan correctamente**
-  - [ ] CSS carga (página tiene estilos)
-  - [ ] JavaScript carga (interacciones funcionan)
-  - [ ] Imágenes cargan (no hay placeholders rotos)
+- [x] **Assets cargan correctamente**
+  - [x] CSS carga (página tiene estilos)
+  - [x] JavaScript carga (interacciones funcionan)
+  - [x] Imágenes cargan (no hay placeholders rotos)
 
 ---
 
 ### 2. Autenticación
 
-- [ ] **Login funciona**
-  - Email: `mentor-test@example.com`
-  - Password: `Test123!`
-  - Debe redirigir a dashboard después de login
+- Email Mentor: `joseqa81@gmail.com`
+- Password: `f8N6g5agBHuv#`
 
-- [ ] **Sesión persiste al refrescar**
-  - Refrescar página (F5) → Sesión debe mantenerse
+- Email Mentee (alumno): `jose-student@hotmail.com`
+- Password: `joS123@456`
+- Deben redirigir al Dashboard después del login.
 
-- [ ] **Logout funciona**
-  - Click en logout → Debe redirigir a landing/login
+- [x] **Login funciona**
+  - Mentor y Mentee acceden al dashboard correctamente.
+- [x] **Sesión persiste al refrescar**
+  - F5 no cierra la sesión.
+- [x] **Logout funciona**
+  - Redirección correcta al landing.
 
 ---
 
@@ -48,26 +51,26 @@
 
 **Steps:**
 
-1. [ ] **Ver Widget de Mensajes Recientes**
+1. [x] **Ver Widget de Mensajes Recientes**
    - Acción: Navegar al Dashboard.
    - Validar: Se ve el widget "Recent Messages" con hasta 5 conversaciones.
    - Validar: Se muestra nombre, avatar, preview del mensaje y tiempo relativo.
 
-2. [ ] **Respuesta Rápida (Quick Reply)**
+2. [x] **Respuesta Rápida (Quick Reply)**
    - Acción: Click en una conversación del widget.
    - Validar: Se abre modal/vista de conversación.
    - Acción: Escribir "Hola, gracias por contactar" y enviar.
    - Validar: El mensaje aparece en el historial inmediatamente.
 
-3. [ ] **Ver todos los mensajes**
+3. [x] **Ver todos los mensajes**
    - Acción: Click en "View All Messages".
-   - Validar: Redirige a `/dashboard/messages`.
+   - Validar: Redirige a `/dashboard/messages` correctamente.
 
 **Validación visual:**
 
-- [ ] UI se ve consistente con Shadcn/UI (cards, botones).
-- [ ] No hay textos superpuestos en mensajes largos.
-- [ ] Estado vacío se muestra si no hay mensajes.
+- [x] UI se ve consistente con Shadcn/UI (cards, botones).
+- [x] No hay textos superpuestos en mensajes largos (Scenario 8).
+- [x] Estado vacío se muestra si no hay mensajes (Validado: muestra mensaje informativo).
 
 ---
 
@@ -75,62 +78,61 @@
 
 **Network Tab Validation:**
 
-- [ ] **API calls retornan 200 OK**
+- [x] **API calls retornan 200 OK**
   - Abrir DevTools → Network tab
   - Validar requests a `/api/conversations` o similar.
 
 - [❌] **Realtime Updates**
   - Acción: Recibir mensaje nuevo de un mentee (simulado u otro dispositivo).
   - Validar: El widget se actualiza automáticamente sin refrescar.
-  - **Nota:** FAILED. Tras limpiar caché y cookies, el widget 'Mensajes Recientes' sigue sin actualizarse automáticamente tras el envío.
+  - **Nota:** FAILED. Tras limpiar caché y cookies, el widget 'Mensajes Recientes' sigue sin actualizarse automáticamente tras el envío. Requiere F5 (Scenario 1 & 9).
 
-- [ ] **Datos del Perfil**
+- [x] **Datos del Perfil**
   - Validar: Al abrir la conversación, se puede navegar al perfil del mentee.
 
 ---
 
 ## 📊 Resultado del Smoke Test
 
-**Ejecutado por:** Gemini AI
-**Fecha:** 2025-12-23
-**Duración:** 8 min
+**Ejecutado por:** José Andrés Lorca & Gemini AI
+**Última Ejecución:** 21/01/2026
+**Estatus Final:** ❌ **FAILED** (Technical Blockers)
 
-### Resultado Final:
+### Resumen de la Situación:
 
-- [ ] **✅ PASSED:** Deployment funcional, continuar con exploratory testing
-- [x] **❌ FAILED:** Deployment roto, reportar bug crítico inmediatamente
-
----
-
-### Notas:
-
-Se han encontrado problemas críticos que impiden la validación completa de la historia.
+El componente es visualmente estable y cumple con la navegación básica (incluyendo el acceso al perfil del alumno - AC #5). Sin embargo, el despliegue no es apto para producción debido a fallos críticos en la gestión de errores de red y en la sincronización de datos en tiempo real.
 
 ---
 
-### Si FAILED:
+### 🚫 Blockers (Issues Críticos encontrados):
 
-**Blocker 1: El widget 'Recent Messages' no se actualiza en tiempo real**
-- **Descripción:** Al recibir un nuevo mensaje de prueba, el widget no muestra el cambio hasta que se refresca la página manualmente.
-- **Impacto:** Incumple la nota técnica de Realtime subscription y afecta la experiencia "viva" del dashboard.
+**1. [MYM-132] Crash Crítico por pérdida de conexión (Issue 2)**
 
-**Blocker 2: Falta el enlace al perfil del alumno en la vista de conversación**
-- **Descripción:** En la vista de "Quick Reply" (modal), se ve el nombre del mentee pero no es clickeable ni hay un enlace visible para ver su perfil completo.
-- **Impacto:** Incumple el Criterio de Aceptación #5 ("I should have a link to view their full profile").
+- **Descripción:** La aplicación lanza una excepción no controlada (pantalla en blanco) si la red falla durante el envío de un mensaje.
+- **Impacto:** Bloqueante. Riesgo de pérdida de datos y mala experiencia de usuario.
 
-**Próximo paso:**
-- Reportar a Development inmediatamente.
-- NO continuar con exploratory testing hasta que se corrijan estos issues.
+**2. Fallo de Sincronización en Tiempo Real (Issue 3)**
+
+- **Descripción:** El widget no actualiza el contenido del mensaje ni el historial de conversación del modal automáticamente tras el envío/recepción.
+- **Impacto:** Alto. Invalida la propuesta de valor de un sistema de mensajería "viva". Requiere refresco manual (F5).
+- **Nota Técnica:** Probablemente vinculado a la misma causa raíz que el Issue 1 (MYM-96): la suscripción de Sockets no está refrescando el estado del componente Dashboard.
+
+**3. Regresión de Notificaciones [Relacionado con MYM-96] (Issue 1)**
+
+- **Descripción:** El indicador de mensaje no leído (punto morado o zombie dot) persiste incluso después de interactuar con el mensaje a través del Dashboard.
+- **Impacto:** Medio (UX).
 
 ---
 
-## 🔄 Re-testing Session (08/01/2026)
+### 🔄 Historial de Re-testing (Resumen)
 
-**Status:** ❌ FAILED (Partial Fix)
+- **21/01/2026:** Se confirma que el acceso al perfil del alumno (AC #5) ha sido corregido y es funcional. No obstante, persisten problemas de sincronización profunda: el sistema de suscripciones no actualiza el historial interno del modal de respuesta rápida en tiempo real.
+- **Conclusión:** La corrección no es completa. Se recomienda NO pasar a producción hasta que los Issues 2 y 3 sean resueltos.
 
-### Observations:
-- **Real-time Sync:** Se observa una mejora parcial. El widget de "Mensajes Recientes" en el dashboard ahora recibe y muestra el mensaje nuevo sin necesidad de refrescar la página.
-- **Bug Persistente:** Sin embargo, si el mentor tiene el modal de conversación abierto (Quick Reply), el nuevo mensaje **NO** aparece automáticamente en el historial del chat. El mentor debe cerrar y volver a abrir el modal o refrescar la página para ver la respuesta completa, lo que rompe la fluidez de la comunicación.
+---
 
-### Conclusion:
-La corrección no es completa. El sistema de suscripciones parece estar conectado al widget del dashboard pero no a la vista de detalle de la conversación.
+### 🧭 Próximos Pasos:
+
+1. Validar corrección de MYM-132 (Resiliencia).
+2. Investigar si el Issue 3 es un problema de Front-end (Suscripción de React) o de Back-end (Socket/API).
+3. Iniciar fase de pruebas de API para mayor diagnóstico.
