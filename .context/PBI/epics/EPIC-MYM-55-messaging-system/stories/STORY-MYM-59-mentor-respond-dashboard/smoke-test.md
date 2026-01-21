@@ -16,9 +16,10 @@
 - [x] **Estabilidad Visual (Scenario 8):** El widget soporta mensajes infinitos sin romper el layout (Ellipsis funcionando).
 - [x] **Navegación (Scenario 6):** El clic en el nombre del alumno funciona incluso durante actualizaciones de estado.
 
-- [x] **No hay errores en console (F12)**
-  - Console tab no debe mostrar errores rojos
-  - Advertencias amarillas son aceptables
+- [⚠️] **No hay errores en console (F12)**
+  - **Nota:** Se detectan múltiples errores 404 al refrescar el Dashboard.
+  - **Diagnóstico:** Son fallos de prefetch en rutas globales (pricing, about, terms, etc.) ajenas a la mensajería.
+  - **Estado:** No bloqueante para STORY-MYM-59.
 
 - [x] **Assets cargan correctamente**
   - [x] CSS carga (página tiene estilos)
