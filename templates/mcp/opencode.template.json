@@ -23,15 +23,18 @@
       "enabled": true
     },
     "api": {
+      "type": "local",
       "command": "npx",
-      "args": ["-y", "@ivotoby/openapi-mcp-server", "--tools dynamic"],
-      "env": {
-        "API_BASE_URL": "https://{SUPABASE_URL}.supabase.co/rest/v1",
-        "OPENAPI_SPEC_PATH": "https://{SUPABASE_URL}.supabase.co/rest/v1/?apikey={SUPABASE_ANON_KEY}",
-        "API_HEADERS": "apikey:{SUPABASE_ANON_KEY}"
-      }
+      "args": ["-y", "@ivotoby/openapi-mcp-server"],
+      "environment": {
+        "API_BASE_URL": "https://api.example.com",
+        "OPENAPI_SPEC_PATH": "https://api.example.com/openapi.json",
+        "API_HEADERS": "Authorization:Bearer token123,X-API-Key:your-api-key"
+      },
+      "enabled": true
     },
     "sql": {
+      "type": "local",
       "command": "npx",
       "args": [
         "-y",
@@ -40,7 +43,8 @@
         "stdio",
         "--dsn",
         "postgresql://{USER}.{DATABASE}.{HOST}:{PORT}/{DATABASE}"
-      ]
+      ],
+      "enabled": true
     },
     "supabase": {
       "type": "local",
@@ -120,14 +124,6 @@
         "SLACK_MCP_ADD_MESSAGE_TOOL": "true",
         "SLACK_MCP_USERS_CACHE": "{env:SLACK_MCP_USERS_CACHE}",
         "SLACK_MCP_CHANNELS_CACHE": "{env:SLACK_MCP_CHANNELS_CACHE}"
-      },
-      "enabled": true
-    },
-    "memory": {
-      "type": "local",
-      "command": ["npx", "-y", "@modelcontextprotocol/server-memory"],
-      "environment": {
-        "MEMORY_FILE_PATH": "{env:MEMORY_FILE_PATH}"
       },
       "enabled": true
     }

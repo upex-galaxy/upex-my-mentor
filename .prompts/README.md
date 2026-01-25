@@ -205,13 +205,73 @@ Este directorio contiene prompts optimizados para generar documentación de proy
 
 ### **PROMPTS STANDALONE** (Utilidades)
 
-| Archivo                   | Proposito                                     |
-| ------------------------- | --------------------------------------------- |
-| `git-flow.md`             | Estrategia de branching y git workflow        |
-| `git-conflict-fix.md`     | Resolver conflictos de merge                  |
-| `us-dev-workflow.md`      | Workflow completo de desarrollo (Fases 6-9)   |
-| `us-qa-workflow.md`       | Workflow completo de QA (Fases 10-12)         |
-| `kata-framework-setup.md` | Setup inicial o refactoring de KATA framework |
+| Archivo                   | Proposito                                                      |
+| ------------------------- | -------------------------------------------------------------- |
+| `git-flow.md`             | Estrategia de branching y git workflow                         |
+| `git-conflict-fix.md`     | Resolver conflictos de merge                                   |
+| `us-dev-workflow.md`      | Workflow completo de desarrollo (Fases 6-9)                    |
+| `us-qa-workflow.md`       | Workflow completo de QA (Fases 10-12)                          |
+| `kata-framework-setup.md` | Setup inicial o refactoring de KATA framework                  |
+| `business-data-map.md`    | Mapa maestro: flujos de negocio, state machines, integraciones |
+| `project-dev-guide.md`    | Guía de desarrollo basada en el Business Data Map              |
+| `project-test-guide.md`   | Guía de testing basada en el Business Data Map                 |
+
+### **BUSINESS DATA MAP (Sistema de 3 Documentos)**
+
+Estos 3 prompts trabajan juntos para documentar y guiar el desarrollo del sistema:
+
+```
+business-data-map.md  →  .context/business-data-map.md (MAESTRO)
+                                ↓
+project-dev-guide.md  →  .context/project-dev-guide.md
+project-test-guide.md      →  .context/project-test-guide.md
+```
+
+#### `business-data-map.md` (Ejecutar primero)
+
+**Propósito:** Generar el documento MAESTRO que explica cómo funciona el sistema.
+
+**Filosofía:**
+- **Visual primero:** Diagramas ASCII para fácil comprensión
+- **Narrativa de negocio:** Explica el "por qué", no solo el "qué"
+- **No duplicar MCP:** No lista schema/RLS (eso se obtiene via MCP en tiempo real)
+- **Síntesis valiosa:** Combina código + DB + lógica
+
+**Contenido del output:**
+1. Resumen ejecutivo del sistema
+2. Mapa de entidades con roles de negocio
+3. Flujos de negocio (uno por feature) con diagramas ASCII
+4. State machines con transiciones
+5. Procesos automáticos (triggers, cron, webhooks)
+6. Integraciones externas
+
+**Output:** `.context/business-data-map.md`
+
+#### `project-dev-guide.md` (Requiere business-data-map.md)
+
+**Propósito:** Generar guía práctica para desarrolladores.
+
+**Contenido del output:**
+1. Referencia rápida del proyecto
+2. Patrones de código con ejemplos reales
+3. Cómo agregar nuevas features
+4. Guía por cada flujo de negocio
+5. Gotchas y consideraciones
+
+**Output:** `.context/project-dev-guide.md`
+
+#### `project-test-guide.md` (Requiere business-data-map.md)
+
+**Propósito:** Generar guía práctica de testing.
+
+**Contenido del output:**
+1. Escenarios por cada flujo de negocio
+2. Matrix de testing para state machines
+3. Guía de testing para procesos automáticos
+4. Mocks de integraciones externas
+5. Checklist de regresión
+
+**Output:** `.context/project-test-guide.md`
 
 ---
 
@@ -440,9 +500,9 @@ Despues de usar todos los prompts, tu directorio `.context/` debe verse asi:
 ## ESTADISTICAS
 
 - **Fases totales:** 14 (3 sincronicas + 11 asincronicas)
-- **Prompts totales:** 36 archivos
+- **Prompts totales:** 39 archivos
 - **Workflows de sesion:** 2 (us-dev-workflow.md, us-qa-workflow.md)
-- **Utilidades standalone:** 2 (git-flow.md, git-conflict-fix.md)
+- **Utilidades standalone:** 6 (git-flow, git-conflict-fix, kata-framework-setup, business-data-map, development-guide, testing-guide)
 
 ---
 

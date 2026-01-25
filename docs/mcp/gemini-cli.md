@@ -457,7 +457,7 @@ gemini mcp list
     "context7": {
       "httpUrl": "https://context7.mcp.io"
     },
-    "tavity": {
+    "tavily": {
       "command": "npx",
       "args": ["-y", "mcp-remote", "https://mcp.tavily.com/mcp/?tavilyApiKey=${TAVILY_API_KEY}"]
     }

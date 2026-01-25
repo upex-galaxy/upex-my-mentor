@@ -19,7 +19,7 @@ Traditional Approach (BAD):
 │   ✓ notion                          │
 │   ✓ context7                        │
 │   ✓ memory                          │
-│   ✓ tavity                          │
+│   ✓ tavily                          │
 │   ✓ devtools                        │
 │   ✓ sentry                          │
 │   ✓ vercel                          │
@@ -72,7 +72,7 @@ Result: 90% token reduction
 | Backend coding  | supabase, context7       | ~85%          |
 | Frontend coding | playwright, context7     | ~85%          |
 | API testing     | postman, context7        | ~90%          |
-| Documentation   | notion, context7, tavity | ~80%          |
+| Documentation   | notion, context7, tavily | ~80%          |
 
 ---
 
@@ -326,7 +326,7 @@ node scripts/mcp-builder.js full
 | `apitest`  | postman, context7                       | API testing           | ~90%          |
 | `uitest`   | playwright, devtools, context7          | UI testing            | ~80%          |
 | `report`   | github, atlassian, slack                | Project management    | ~80%          |
-| `docs`     | notion, context7, tavity                | Documentation         | ~80%          |
+| `docs`     | notion, context7, tavily                | Documentation         | ~80%          |
 | `dbtest`   | supabase, context7                      | Database testing      | ~85%          |
 | `e2etest`  | playwright, postman, supabase, context7 | Full-stack testing    | ~70%          |
 | `full`     | ALL ⚠️                                  | Debugging/exploration | 0%            |
@@ -430,7 +430,7 @@ Includes:
 - **devtools** - Chrome DevTools integration
 - **supabase** - PostgreSQL database and auth
 - **context7** - Documentation and library references
-- **tavity** - Web search and research
+- **tavily** - Web search and research
 - **postman** - API testing and collections
 - **sentry** - Error monitoring
 - **vercel** - Deployment platform
