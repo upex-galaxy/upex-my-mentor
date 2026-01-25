@@ -119,7 +119,7 @@ Responde A o B:
 ```
 .context/
 ├── database-functional-map.md  → Schema completo de DB, todas las tablas, relaciones
-├── system-architecture.md      → Todos los endpoints, flujos del sistema
+├── api-architecture.md      → Todos los endpoints, flujos del sistema
 ├── design-system.md            → Componentes UI, páginas, navegación
 └── project-overview.md         → Visión general del proyecto (si existe)
 ```
@@ -696,13 +696,13 @@ Genera objetivo de testing para @.context/
 o más específico:
 
 ```
-Genera objetivo de testing basado en el sistema de @.context/database-functional-map.md y @.context/system-architecture.md
+Genera objetivo de testing basado en el sistema de @.context/database-functional-map.md y @.context/api-architecture.md
 ```
 
 **La IA debe:**
 
 1. Preguntar: ¿Modo A (generar nuevo) o Modo B (seleccionar existente)?
-2. Analizar database-functional-map.md, system-architecture.md, design-system.md
+2. Analizar database-functional-map.md, api-architecture.md, design-system.md
 3. Revisar épicas existentes en .context/PBI/epics/
 4. Según el modo:
    - **Modo A:** Generar una Épica coherente con el sistema

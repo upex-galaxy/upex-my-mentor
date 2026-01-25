@@ -29,15 +29,15 @@ Cliente → PostgREST → PostgreSQL + RLS Policies
 - **Seguridad:** Row Level Security (RLS) policies en PostgreSQL
 
 **Tablas principales:**
-| Endpoint | Descripción |
-|----------|-------------|
-| `/profiles` | Perfiles de usuarios (mentores y estudiantes) |
-| `/bookings` | Reservas de sesiones de mentoría |
-| `/reviews` | Reseñas de mentores |
-| `/conversations` | Hilos de mensajes |
-| `/messages` | Mensajes individuales |
-| `/mentor_availability` | Disponibilidad de mentores |
-| `/transactions` | Transacciones de pago |
+| Endpoint               | Descripción                                   |
+| ---------------------- | --------------------------------------------- |
+| `/profiles`            | Perfiles de usuarios (mentores y estudiantes) |
+| `/bookings`            | Reservas de sesiones de mentoría              |
+| `/reviews`             | Reseñas de mentores                           |
+| `/conversations`       | Hilos de mensajes                             |
+| `/messages`            | Mensajes individuales                         |
+| `/mentor_availability` | Disponibilidad de mentores                    |
+| `/transactions`        | Transacciones de pago                         |
 
 ### 2. Next.js API Routes (Custom)
 
@@ -49,16 +49,16 @@ Cliente → Next.js API → Lógica de Negocio → Supabase/Stripe/Email
 - **Endpoints:** Definidos manualmente para lógica compleja
 
 **Endpoints disponibles:**
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/api/checkout/session` | Crear sesión de pago Stripe |
-| POST | `/api/bookings/[id]/cancel` | Cancelar una reserva |
-| GET | `/api/bookings/[id]/meeting-link` | Obtener link de videollamada |
-| GET | `/api/mentors/[id]/availability` | Disponibilidad de un mentor |
-| GET | `/api/messages/unread-count` | Contar mensajes no leídos |
-| POST | `/api/stripe/connect/onboard` | Onboarding de Stripe Connect |
-| GET | `/api/stripe/connect/status` | Estado de cuenta Stripe |
-| POST | `/api/stripe/webhook` | Webhook de Stripe |
+| Método | Endpoint                          | Descripción                  |
+| ------ | --------------------------------- | ---------------------------- |
+| POST   | `/api/checkout/session`           | Crear sesión de pago Stripe  |
+| POST   | `/api/bookings/[id]/cancel`       | Cancelar una reserva         |
+| GET    | `/api/bookings/[id]/meeting-link` | Obtener link de videollamada |
+| GET    | `/api/mentors/[id]/availability`  | Disponibilidad de un mentor  |
+| GET    | `/api/messages/unread-count`      | Contar mensajes no leídos    |
+| POST   | `/api/stripe/connect/onboard`     | Onboarding de Stripe Connect |
+| GET    | `/api/stripe/connect/status`      | Estado de cuenta Stripe      |
+| POST   | `/api/stripe/webhook`             | Webhook de Stripe            |
 
 ---
 
@@ -66,12 +66,12 @@ Cliente → Next.js API → Lógica de Negocio → Supabase/Stripe/Email
 
 ### Conceptos Clave
 
-| Concepto | Descripción |
-|----------|-------------|
-| **anon key** | Clave pública para acceso anónimo. Limitado por RLS. |
-| **service_role key** | Clave privada que bypasea RLS. SOLO backend. |
-| **User JWT** | Token del usuario autenticado. Contiene `user_id` y `role`. |
-| **RLS Policies** | Reglas en PostgreSQL que controlan acceso por usuario. |
+| Concepto             | Descripción                                                 |
+| -------------------- | ----------------------------------------------------------- |
+| **anon key**         | Clave pública para acceso anónimo. Limitado por RLS.        |
+| **service_role key** | Clave privada que bypasea RLS. SOLO backend.                |
+| **User JWT**         | Token del usuario autenticado. Contiene `user_id` y `role`. |
+| **RLS Policies**     | Reglas en PostgreSQL que controlan acceso por usuario.      |
 
 ### Flujo de Autenticación
 
@@ -111,25 +111,25 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 
 ### Headers Requeridos
 
-| Header | Valor | Cuándo |
-|--------|-------|--------|
-| `apikey` | `<ANON_KEY>` | Siempre (Supabase REST) |
-| `Authorization` | `Bearer <JWT>` | Operaciones autenticadas |
-| `Content-Type` | `application/json` | POST/PATCH requests |
-| `Prefer` | `return=representation` | Para recibir el objeto creado/actualizado |
+| Header          | Valor                   | Cuándo                                    |
+| --------------- | ----------------------- | ----------------------------------------- |
+| `apikey`        | `<ANON_KEY>`            | Siempre (Supabase REST)                   |
+| `Authorization` | `Bearer <JWT>`          | Operaciones autenticadas                  |
+| `Content-Type`  | `application/json`      | POST/PATCH requests                       |
+| `Prefer`        | `return=representation` | Para recibir el objeto creado/actualizado |
 
 ---
 
 ## Guías de Testing
 
-| Guía | Descripción | Archivo |
-|------|-------------|---------|
-| **System Architecture** | Visión general de las 2 APIs y 14 endpoints custom | [system-architecture.md](./system-architecture.md) |
+| Guía                     | Descripción                                             | Archivo                                              |
+| ------------------------ | ------------------------------------------------------- | ---------------------------------------------------- |
+| **System Architecture**  | Visión general de las 2 APIs y 14 endpoints custom      | [api-architecture.md](./api-architecture.md)         |
 | **Authentication Guide** | Cómo usar UN token para ambas APIs (Supabase + Next.js) | [authentication-guide.md](./authentication-guide.md) |
-| **DevTools** | Testing manual interceptando requests en el navegador | [devtools-testing.md](./devtools-testing.md) |
-| **Postman** | Testing manual con colecciones y environments | [postman-testing.md](./postman-testing.md) |
-| **MCP (IA)** | Testing asistido por IA usando MCP tools | [mcp-testing.md](./mcp-testing.md) |
-| **Playwright** | Testing automatizado con arquitectura KATA | [playwright-testing.md](./playwright-testing.md) |
+| **DevTools**             | Testing manual interceptando requests en el navegador   | [devtools-testing.md](./devtools-testing.md)         |
+| **Postman**              | Testing manual con colecciones y environments           | [postman-testing.md](./postman-testing.md)           |
+| **MCP (IA)**             | Testing asistido por IA usando MCP tools                | [mcp-testing.md](./mcp-testing.md)                   |
+| **Playwright**           | Testing automatizado con arquitectura KATA              | [playwright-testing.md](./playwright-testing.md)     |
 
 ---
 
@@ -137,20 +137,20 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 
 ### Ambientes
 
-| Ambiente | Web URL | API URL |
-|----------|---------|---------|
-| Development | `http://localhost:3000` | `http://localhost:3000/api` |
-| Staging | `https://upex-my-mentor-git-staging-upex-galaxy.vercel.app` | Mismo + `/api` |
-| Production | `https://upex-my-mentor.vercel.app` | Mismo + `/api` |
+| Ambiente    | Web URL                                                     | API URL                     |
+| ----------- | ----------------------------------------------------------- | --------------------------- |
+| Development | `http://localhost:3000`                                     | `http://localhost:3000/api` |
+| Staging     | `https://upex-my-mentor-git-staging-upex-galaxy.vercel.app` | Mismo + `/api`              |
+| Production  | `https://upex-my-mentor.vercel.app`                         | Mismo + `/api`              |
 
 ### Supabase
 
-| Recurso | URL |
-|---------|-----|
-| REST API | `https://ionevzckjyxtpmyenbxc.supabase.co/rest/v1/` |
-| Auth API | `https://ionevzckjyxtpmyenbxc.supabase.co/auth/v1/` |
-| API Docs (Redoc) | `/api-docu` (solo dev/staging) |
-| Dashboard | `https://supabase.com/dashboard/project/ionevzckjyxtpmyenbxc` |
+| Recurso          | URL                                                           |
+| ---------------- | ------------------------------------------------------------- |
+| REST API         | `https://ionevzckjyxtpmyenbxc.supabase.co/rest/v1/`           |
+| Auth API         | `https://ionevzckjyxtpmyenbxc.supabase.co/auth/v1/`           |
+| API Docs (Redoc) | `/api-docu` (solo dev/staging)                                |
+| Dashboard        | `https://supabase.com/dashboard/project/ionevzckjyxtpmyenbxc` |
 
 ### Credenciales de Prueba
 

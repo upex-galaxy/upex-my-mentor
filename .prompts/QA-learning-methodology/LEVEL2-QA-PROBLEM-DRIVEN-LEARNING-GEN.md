@@ -127,7 +127,7 @@ EPIC-[KEY]-[name]/
 ```
 .context/
 ├── database-functional-map.md  → Schema DB, tablas, relaciones
-├── system-architecture.md      → APIs, endpoints, flujos
+├── api-architecture.md      → APIs, endpoints, flujos
 └── design-system.md            → Componentes UI (si aplica)
 ```
 
@@ -471,8 +471,8 @@ Tu plan de pruebas será evaluado en base a:
 
 ### Tipos de Testing Necesarios
 
-| Tipo                | Necesario     | Justificación                      |
-| ------------------- | ------------- | ---------------------------------- |
+| Tipo                | Necesario   | Justificación                      |
+| ------------------- | ----------- | ---------------------------------- |
 | Database Testing    | ✅ Sí / ❌ No | [Explicación detallada de por qué] |
 | API Testing         | ✅ Sí / ❌ No | [Explicación detallada de por qué] |
 | UI Testing          | ✅ Sí / ❌ No | [Explicación detallada de por qué] |
@@ -578,8 +578,8 @@ SELECT ... FROM ... WHERE ...
 
 ## Mapeo: Casos de Prueba ↔ Acceptance Criteria
 
-| AC  | Casos que lo verifican | Cobertura   |
-| --- | ---------------------- | ----------- |
+| AC  | Casos que lo verifican | Cobertura  |
+| --- | ---------------------- | ---------- |
 | AC1 | DB-01, API-01, UI-01   | ✅ Completa |
 | AC2 | API-02, API-03, UI-02  | ✅ Completa |
 | AC3 | DB-02, API-04          | ✅ Completa |
