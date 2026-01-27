@@ -104,7 +104,7 @@ Cuando el usuario solicite generar consignas para un problema, sigue este proces
 
 ```
 .context/
-├── database-functional-map.md  → Schema DB, tablas, relaciones, RLS
+├── business-data-map.md  → Schema DB, tablas, relaciones, RLS
 ├── api-architecture.md      → APIs, endpoints, flujos
 └── design-system.md            → Componentes UI (si aplica)
 ```
@@ -492,7 +492,7 @@ Genera consignas de Database Testing para @.context/PBI/epics/EPIC-MYM-18/storie
 **La IA debe:**
 
 1. Leer story.md, test-cases.md (si existe), implementation-plan.md
-2. Consultar database-functional-map.md y api-architecture.md
+2. Consultar business-data-map.md y api-architecture.md
 3. Generar los 3 archivos en la carpeta de la story:
    - `db-testing-analisis.md`
    - `db-testing-consignas.md`
