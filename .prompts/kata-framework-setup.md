@@ -27,14 +27,14 @@ Set up the complete KATA test automation framework by downloading core files fro
 All core KATA files are available at:
 
 ```
-https://github.com/upex-galaxy/kata-playwright-boilerplate
+https://github.com/upex-galaxy/ai-driven-test-automation-boilerplate
 Branch: template
 ```
 
 **Download method:**
 
 ```bash
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/[PATH]" -o [PATH]
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/[PATH]" -o [PATH]
 ```
 
 ---
@@ -143,17 +143,17 @@ touch api/.gitkeep
 ```bash
 # Decorators - @atc pattern implementation
 [ ! -f tests/utils/decorators.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/tests/utils/decorators.ts" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/utils/decorators.ts" \
   -o tests/utils/decorators.ts
 
 # Kata Reporter - Allure integration
 [ ! -f tests/utils/KataReporter.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/tests/utils/KataReporter.ts" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/utils/KataReporter.ts" \
   -o tests/utils/KataReporter.ts
 
 # TMS Sync - Jira/X-Ray integration
 [ ! -f tests/utils/tmsSync.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/tests/utils/tmsSync.ts" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/utils/tmsSync.ts" \
   -o tests/utils/tmsSync.ts
 ```
 
@@ -162,17 +162,17 @@ curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerpl
 ```bash
 # TestContext - Core utilities layer
 [ ! -f tests/components/TestContext.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/tests/components/TestContext.ts" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/components/TestContext.ts" \
   -o tests/components/TestContext.ts
 
 # ApiBase - HTTP client wrapper
 [ ! -f tests/components/api/ApiBase.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/tests/components/api/ApiBase.ts" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/components/api/ApiBase.ts" \
   -o tests/components/api/ApiBase.ts
 
 # UiBase - Playwright page wrapper
 [ ! -f tests/components/ui/UiBase.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/tests/components/ui/UiBase.ts" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/components/ui/UiBase.ts" \
   -o tests/components/ui/UiBase.ts
 ```
 
@@ -181,17 +181,17 @@ curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerpl
 ```bash
 # TestFixture - Extended test object
 [ ! -f tests/components/TestFixture.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/tests/components/TestFixture.ts" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/components/TestFixture.ts" \
   -o tests/components/TestFixture.ts
 
 # ApiFixture - API DI container
 [ ! -f tests/components/ApiFixture.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/tests/components/ApiFixture.ts" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/components/ApiFixture.ts" \
   -o tests/components/ApiFixture.ts
 
 # UiFixture - UI DI container
 [ ! -f tests/components/UiFixture.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/tests/components/UiFixture.ts" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/components/UiFixture.ts" \
   -o tests/components/UiFixture.ts
 ```
 
@@ -199,11 +199,11 @@ curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerpl
 
 ```bash
 [ ! -f tests/globalSetup.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/tests/globalSetup.ts" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/globalSetup.ts" \
   -o tests/globalSetup.ts
 
 [ ! -f tests/globalTeardown.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/tests/globalTeardown.ts" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/globalTeardown.ts" \
   -o tests/globalTeardown.ts
 ```
 
@@ -214,42 +214,42 @@ curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerpl
 ```bash
 # Playwright configuration
 [ ! -f playwright.config.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/playwright.config.ts" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/playwright.config.ts" \
   -o playwright.config.ts
 
 # TypeScript configuration
 [ ! -f tsconfig.json ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/tsconfig.json" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tsconfig.json" \
   -o tsconfig.json
 
 # ESLint configuration
 [ ! -f eslint.config.js ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/eslint.config.js" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/eslint.config.js" \
   -o eslint.config.js
 
 # Environment variables
 [ ! -f config/variables.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/config/variables.ts" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/config/variables.ts" \
   -o config/variables.ts
 
 # Environment example
 [ ! -f .env.example ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/.env.example" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.env.example" \
   -o .env.example
 
 # Prettier configuration
 [ ! -f .prettierrc ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/.prettierrc" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.prettierrc" \
   -o .prettierrc
 
 # Prettier ignore
 [ ! -f .prettierignore ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/.prettierignore" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.prettierignore" \
   -o .prettierignore
 
 # EditorConfig
 [ ! -f .editorconfig ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/.editorconfig" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.editorconfig" \
   -o .editorconfig
 ```
 
@@ -298,42 +298,42 @@ echo "bunx lint-staged" > .husky/pre-commit
 ```bash
 # Main AI guide
 [ ! -f .context/guidelines/TAE/KATA-AI-GUIDE.md ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/.context/guidelines/TAE/KATA-AI-GUIDE.md" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.context/guidelines/TAE/KATA-AI-GUIDE.md" \
   -o .context/guidelines/TAE/KATA-AI-GUIDE.md
 
 # Architecture documentation
 [ ! -f .context/guidelines/TAE/kata-architecture.md ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/.context/guidelines/TAE/kata-architecture.md" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.context/guidelines/TAE/kata-architecture.md" \
   -o .context/guidelines/TAE/kata-architecture.md
 
 # Automation standards
 [ ! -f .context/guidelines/TAE/automation-standards.md ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/.context/guidelines/TAE/automation-standards.md" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.context/guidelines/TAE/automation-standards.md" \
   -o .context/guidelines/TAE/automation-standards.md
 
 # API setup guide
 [ ! -f .context/guidelines/TAE/api-setup-guide.md ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/.context/guidelines/TAE/api-setup-guide.md" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.context/guidelines/TAE/api-setup-guide.md" \
   -o .context/guidelines/TAE/api-setup-guide.md
 
 # Test data management
 [ ! -f .context/guidelines/TAE/test-data-management.md ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/.context/guidelines/TAE/test-data-management.md" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.context/guidelines/TAE/test-data-management.md" \
   -o .context/guidelines/TAE/test-data-management.md
 
 # TMS integration
 [ ! -f .context/guidelines/TAE/tms-integration.md ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/.context/guidelines/TAE/tms-integration.md" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.context/guidelines/TAE/tms-integration.md" \
   -o .context/guidelines/TAE/tms-integration.md
 
 # CI/CD integration
 [ ! -f .context/guidelines/TAE/ci-cd-integration.md ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/.context/guidelines/TAE/ci-cd-integration.md" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.context/guidelines/TAE/ci-cd-integration.md" \
   -o .context/guidelines/TAE/ci-cd-integration.md
 
 # TAE README
 [ ! -f .context/guidelines/TAE/README.md ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/.context/guidelines/TAE/README.md" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.context/guidelines/TAE/README.md" \
   -o .context/guidelines/TAE/README.md
 ```
 
@@ -345,12 +345,12 @@ curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerpl
 # KATA Manifest - Extracts ATCs from codebase
 [ ! -f scripts/kata-manifest.ts ] && \
 mkdir -p scripts && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/scripts/kata-manifest.ts" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/scripts/kata-manifest.ts" \
   -o scripts/kata-manifest.ts
 
 # OpenAPI Sync - Generates API types
 [ ! -f scripts/sync-openapi.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/scripts/sync-openapi.ts" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/scripts/sync-openapi.ts" \
   -o scripts/sync-openapi.ts
 ```
 
@@ -361,32 +361,32 @@ curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerpl
 ```bash
 # Main Playwright workflow
 [ ! -f .github/workflows/playwright.yml ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/.github/workflows/playwright.yml" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.github/workflows/playwright.yml" \
   -o .github/workflows/playwright.yml
 
 # E2E Tests workflow
 [ ! -f .github/workflows/e2e.yml ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/.github/workflows/e2e.yml" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.github/workflows/e2e.yml" \
   -o .github/workflows/e2e.yml
 
 # Integration Tests workflow
 [ ! -f .github/workflows/integration.yml ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/.github/workflows/integration.yml" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.github/workflows/integration.yml" \
   -o .github/workflows/integration.yml
 
 # Smoke Tests workflow
 [ ! -f .github/workflows/smoke.yml ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/.github/workflows/smoke.yml" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.github/workflows/smoke.yml" \
   -o .github/workflows/smoke.yml
 
 # Sanity Tests workflow
 [ ! -f .github/workflows/sanity.yml ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/.github/workflows/sanity.yml" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.github/workflows/sanity.yml" \
   -o .github/workflows/sanity.yml
 
 # Regression Tests workflow
 [ ! -f .github/workflows/regression.yml ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/.github/workflows/regression.yml" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.github/workflows/regression.yml" \
   -o .github/workflows/regression.yml
 ```
 
@@ -399,33 +399,33 @@ curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerpl
 ```bash
 # Example API component
 [ ! -f tests/components/api/ExampleApi.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/tests/components/api/ExampleApi.ts" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/components/api/ExampleApi.ts" \
   -o tests/components/api/ExampleApi.ts
 
 # Example UI component
 [ ! -f tests/components/ui/ExamplePage.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/tests/components/ui/ExamplePage.ts" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/components/ui/ExamplePage.ts" \
   -o tests/components/ui/ExamplePage.ts
 
 # Example preconditions
 [ ! -f tests/components/preconditions/ExampleFlows.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/tests/components/preconditions/ExampleFlows.ts" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/components/preconditions/ExampleFlows.ts" \
   -o tests/components/preconditions/ExampleFlows.ts
 
 # Example E2E test
 mkdir -p tests/e2e/example && \
 [ ! -f tests/e2e/example/example.test.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/tests/e2e/example/example.test.ts" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/e2e/example/example.test.ts" \
   -o tests/e2e/example/example.test.ts
 
 # Example Integration test
 [ ! -f tests/integration/example.test.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/tests/integration/example.test.ts" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/integration/example.test.ts" \
   -o tests/integration/example.test.ts
 
 # Example fixture data
 [ ! -f tests/data/fixtures/example.json ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template/tests/data/fixtures/example.json" \
+curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/data/fixtures/example.json" \
   -o tests/data/fixtures/example.json
 ```
 
@@ -611,7 +611,7 @@ bun run test --grep "@smoke" || bun run test tests/e2e/example
 #!/bin/bash
 # kata-setup.sh - Run this to set up KATA framework
 
-REPO="https://raw.githubusercontent.com/upex-galaxy/kata-playwright-boilerplate/template"
+REPO="https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template"
 
 # Create directories
 mkdir -p tests/{components/{api,ui,preconditions},e2e,integration,data/{fixtures,downloads,uploads},utils}

@@ -100,6 +100,15 @@ Este directorio contiene prompts optimizados para generar documentación de proy
 
 **Orden critico:** Backend → Frontend (tipos generados del backend se importan en frontend)
 
+**Features adicionales (opcionales):**
+
+| Archivo                                                  | Proposito                           |
+| -------------------------------------------------------- | ----------------------------------- |
+| `fase-3-infrastructure/features/supabase-types-setup.md` | Tipado auto-generado desde Supabase |
+| `fase-3-infrastructure/features/env-url-setup.md`        | Sistema de URLs multi-ambiente      |
+| `fase-3-infrastructure/features/openapi-setup.md`        | OpenAPI + Zod + UI Redoc            |
+| `fase-3-infrastructure/features/api-routes-setup.md`     | Estructura de custom API endpoints  |
+
 ---
 
 ### **FASES ASINCRONICAS** (iterativas, por sprint/epica)
@@ -153,11 +162,13 @@ Este directorio contiene prompts optimizados para generar documentación de proy
 
 #### **Fase 10: Exploratory Testing** (Testing manual)
 
-| Archivo                                           | Proposito                               |
-| ------------------------------------------------- | --------------------------------------- |
-| `fase-10-exploratory-testing/smoke-test.md`       | Smoke test post-deploy (5-10 min)       |
-| `fase-10-exploratory-testing/exploratory-test.md` | Exploracion profunda con Playwright MCP |
-| `fase-10-exploratory-testing/bug-report.md`       | Reportar bugs encontrados               |
+| Archivo                                               | Proposito                               |
+| ----------------------------------------------------- | --------------------------------------- |
+| `fase-10-exploratory-testing/smoke-test.md`           | Smoke test post-deploy (5-10 min)       |
+| `fase-10-exploratory-testing/exploratory-test.md`     | Exploracion profunda con Playwright MCP |
+| `fase-10-exploratory-testing/exploratory-api-test.md` | Testing exploratorio de API endpoints   |
+| `fase-10-exploratory-testing/exploratory-db-test.md`  | Testing exploratorio de base de datos   |
+| `fase-10-exploratory-testing/bug-report.md`           | Reportar bugs encontrados               |
 
 **IMPORTANTE:** Esta fase viene ANTES de Test Automation. No automatices funcionalidad rota.
 
@@ -215,6 +226,8 @@ Este directorio contiene prompts optimizados para generar documentación de proy
 | `business-data-map.md`    | Mapa maestro: flujos de negocio, state machines, integraciones |
 | `project-dev-guide.md`    | Guía de desarrollo basada en el Business Data Map              |
 | `project-test-guide.md`   | Guía de testing basada en el Business Data Map                 |
+| `api-architecture.md`     | Catálogo completo de API: endpoints, auth, guía de testing     |
+| `project-doc-setup.md`    | README profesional + System Prompt para AI coding agents       |
 
 ### **BUSINESS DATA MAP (Sistema de 3 Documentos)**
 
@@ -232,12 +245,14 @@ project-test-guide.md      →  .context/project-test-guide.md
 **Propósito:** Generar el documento MAESTRO que explica cómo funciona el sistema.
 
 **Filosofía:**
+
 - **Visual primero:** Diagramas ASCII para fácil comprensión
 - **Narrativa de negocio:** Explica el "por qué", no solo el "qué"
 - **No duplicar MCP:** No lista schema/RLS (eso se obtiene via MCP en tiempo real)
 - **Síntesis valiosa:** Combina código + DB + lógica
 
 **Contenido del output:**
+
 1. Resumen ejecutivo del sistema
 2. Mapa de entidades con roles de negocio
 3. Flujos de negocio (uno por feature) con diagramas ASCII
@@ -252,6 +267,7 @@ project-test-guide.md      →  .context/project-test-guide.md
 **Propósito:** Generar guía práctica para desarrolladores.
 
 **Contenido del output:**
+
 1. Referencia rápida del proyecto
 2. Patrones de código con ejemplos reales
 3. Cómo agregar nuevas features
@@ -265,6 +281,7 @@ project-test-guide.md      →  .context/project-test-guide.md
 **Propósito:** Generar guía práctica de testing.
 
 **Contenido del output:**
+
 1. Escenarios por cada flujo de negocio
 2. Matrix de testing para state machines
 3. Guía de testing para procesos automáticos
@@ -272,6 +289,81 @@ project-test-guide.md      →  .context/project-test-guide.md
 5. Checklist de regresión
 
 **Output:** `.context/project-test-guide.md`
+
+---
+
+### **API ARCHITECTURE** (Documentación de API para QA)
+
+Este prompt genera documentación completa de la API del sistema, optimizada para testing.
+
+```
+api-architecture.md  →  .context/api-architecture.md
+```
+
+#### `api-architecture.md`
+
+**Propósito:** Generar catálogo completo de endpoints con guía de testing.
+
+**Filosofía:**
+
+- **Stack agnóstico:** Detecta Next.js, Express, FastAPI, Django, NestJS
+- **Visual primero:** Diagramas ASCII de arquitectura y flujos
+- **Testing-oriented:** Incluye ejemplos de cURL, DevTools, Postman, Playwright
+- **CREATE/UPDATE pattern:** Re-ejecutable para mantener actualizado
+
+**Contenido del output:**
+
+1. Resumen ejecutivo (stack, estadísticas)
+2. Arquitectura completa (diagrama ASCII)
+3. Catálogo de endpoints agrupados por dominio
+4. Autenticación por tipo (Public/Protected/Admin)
+5. Guía de testing (DevTools, Postman, cURL, Playwright)
+6. Flujos de datos complejos
+7. Tabla resumen para QA
+
+**Complementa:** Usa `business-data-map.md` si existe para comprender flujos de negocio.
+
+**Output:** `.context/api-architecture.md`
+
+---
+
+### **QA LEARNING METHODOLOGY** (Sistema de Aprendizaje Progresivo)
+
+Sistema de aprendizaje para QA basado en **4 niveles** de complejidad. Genera material educativo adaptado al nivel del estudiante.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                 JERARQUÍA DE APRENDIZAJE                    │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  LEVEL 3: OBJECTIVE-DRIVEN    ← Sistema / Arquitectura     │
+│           ↑                                                 │
+│  LEVEL 2: PROBLEM-DRIVEN      ← Feature / User Story       │
+│           ↑                                                 │
+│  LEVEL 1: PROMPT-DRIVEN       ← Consigna específica        │
+│           ↑                                                 │
+│  LEVEL 0: CONCEPT-DRIVEN      ← Consigna específica        │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+| Nivel | Prompt                                       | Input         | Output                    |
+| ----- | -------------------------------------------- | ------------- | ------------------------- |
+| 0     | `LEVEL0-QA-CONCEPT-DRIVEN-LEARNING-GEN.md`   | Consigna      | Conceptos y fundamentos   |
+| 1     | `LEVEL1-QA-PROMPT-DRIVEN-LEARNING-GEN.md`    | Consigna      | Ejercicios paso a paso    |
+| 2     | `LEVEL2-QA-PROBLEM-DRIVEN-LEARNING-GEN.md`   | Feature/Story | Problemas reales          |
+| 3     | `LEVEL3-QA-OBJECTIVE-DRIVEN-LEARNING-GEN.md` | Sistema       | Objetivos de arquitectura |
+
+**Ubicación:** `.prompts/QA-learning-methodology/`
+
+**Cuándo usar cada nivel:**
+
+- **LEVEL 0:** Estudiante necesita fundamentos teóricos
+- **LEVEL 1:** Estudiante entiende teoría, necesita práctica guiada
+- **LEVEL 2:** Estudiante domina técnicas, necesita contexto real
+- **LEVEL 3:** QA Senior, necesita pensar a nivel arquitectura
+
+Ver `.prompts/QA-learning-methodology/README.md` para documentación completa.
 
 ---
 
@@ -500,9 +592,11 @@ Despues de usar todos los prompts, tu directorio `.context/` debe verse asi:
 ## ESTADISTICAS
 
 - **Fases totales:** 14 (3 sincronicas + 11 asincronicas)
-- **Prompts totales:** 39 archivos
+- **Prompts totales:** 50 archivos
 - **Workflows de sesion:** 2 (us-dev-workflow.md, us-qa-workflow.md)
-- **Utilidades standalone:** 6 (git-flow, git-conflict-fix, kata-framework-setup, business-data-map, development-guide, testing-guide)
+- **Utilidades standalone:** 8 (git-flow, git-conflict-fix, kata-framework-setup, business-data-map, project-dev-guide, project-test-guide, api-architecture, project-doc-setup)
+- **QA Learning Methodology:** 4 niveles (LEVEL0-3)
+- **Fase 3 features:** 4 prompts modulares opcionales
 
 ---
 
@@ -523,6 +617,6 @@ Si tienes dudas sobre como usar estos prompts:
 
 ---
 
-**Version:** 5.0 (14 Fases: 3 Sincronicas + 11 Asincronicas)
-**Ultima actualizacion:** 2025-12-18
+**Version:** 5.1 (14 Fases: 3 Sincronicas + 11 Asincronicas)
+**Ultima actualizacion:** 2025-01-25
 **Autor:** UPEX Galaxy - DOJO AI-Powered Quality Engineer

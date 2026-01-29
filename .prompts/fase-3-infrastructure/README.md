@@ -26,11 +26,12 @@ La **Fase 3: Infrastructure** implementa la base técnica del proyecto ANTES de 
 
 | #   | Archivo             | Descripción                                                 | Duración   | MCP Requerido         |
 | --- | ------------------- | ----------------------------------------------------------- | ---------- | --------------------- |
-| 1   | `cloud-services.md` | Configurar cloud provider (Supabase, Vercel, Railway)       | 15-30 min  | ❌ Ninguno            |
-| 2   | `backend-setup.md`  | Crear DB schemas, Auth, API layer, seed data                | 45-90 min  | ✅ Supabase, Context7 |
-| 3   | `frontend-setup.md` | Design System, Layout, páginas demo, integrar tipos backend | 60-120 min | ✅ Context7           |
+| 1   | `backend-setup.md`  | Crear DB schemas, Auth, API layer, seed data                | 45-90 min  | ✅ Supabase, Context7 |
+| 2   | `frontend-setup.md` | Design System, Layout, páginas demo, integrar tipos backend | 60-120 min | ✅ Context7           |
 
-**Total estimado:** 2-4 horas (depende de complejidad del proyecto)
+**Total estimado:** 2-3.5 horas (depende de complejidad del proyecto)
+
+> **Tip:** Para documentación del proyecto (README + System Prompt para AI), usa el prompt standalone `project-doc-setup.md` ubicado en `.prompts/`.
 
 ---
 
@@ -39,20 +40,12 @@ La **Fase 3: Infrastructure** implementa la base técnica del proyecto ANTES de 
 ### **⚠️ ORDEN CRÍTICO - NO ALTERAR**
 
 ```
-1. cloud-services.md       (PRIMERO - Setup de infraestructura cloud)
+1. backend-setup.md        (PRIMERO - Schemas + API + Tipos)
                            ↓
-2. backend-setup.md        (SEGUNDO - Schemas + API + Tipos)
-                           ↓
-3. frontend-setup.md       (TERCERO - UI + Integración de tipos)
+2. frontend-setup.md       (SEGUNDO - UI + Integración de tipos)
 ```
 
 ### **Por qué este orden:**
-
-**🔹 Cloud Services primero:**
-
-- Crea los proyectos en Supabase/Vercel
-- Obtiene credenciales (URLs, API keys)
-- Sin esto, backend-setup no puede conectar a la DB
 
 **🔹 Backend antes que Frontend:**
 
@@ -187,15 +180,18 @@ Al finalizar esta fase tendrás:
 
 **Situación:** Estás empezando un proyecto completamente nuevo.
 
+**Pre-requisito:** Configura manualmente tu proyecto en Supabase/Vercel antes de comenzar.
+
 **Flujo:**
 
-1. Ejecuta `cloud-services.md` → Crea proyectos en Supabase/Vercel
-2. Ejecuta `backend-setup.md` → Crea DB schemas, auth, seed data
-3. Ejecuta `frontend-setup.md` → Crea proyecto frontend, integra tipos
+1. Ejecuta `backend-setup.md` → Crea DB schemas, auth, seed data, genera tipos
+2. Ejecuta `frontend-setup.md` → Crea proyecto frontend, integra tipos del backend
 
-**Duración:** 2-4 horas
+**Duración:** 2-3.5 horas
 
 **Output:** Stack completo funcional, listo para implementar features en Fase 7.
+
+> **Opcional:** Usa `.prompts/project-doc-setup.md` para generar README + System Prompt.
 
 ---
 
@@ -205,9 +201,8 @@ Al finalizar esta fase tendrás:
 
 **Flujo:**
 
-1. Ejecuta `cloud-services.md` → Configura Supabase/Vercel
-2. Ejecuta `backend-setup.md` → Crea DB, genera tipos, conecta frontend
-3. **Salta `frontend-setup.md`** o úsalo solo como referencia para:
+1. Ejecuta `backend-setup.md` → Crea DB, genera tipos, conecta frontend
+2. **Salta `frontend-setup.md`** o úsalo solo como referencia para:
    - Importar tipos generados (`src/types/supabase.ts`)
    - Crear `lib/types.ts` helper
    - Reemplazar mock data con queries reales
@@ -224,12 +219,10 @@ Al finalizar esta fase tendrás:
 
 **Flujo:**
 
-1. Ejecuta `cloud-services.md` → **Adapta para tu stack**
-   - El prompt te guiará a configurar el provider elegido en el SRS
-2. Ejecuta `backend-setup.md` → **Adapta para tu stack**
+1. Ejecuta `backend-setup.md` → **Adapta para tu stack**
    - Si no usas Supabase, adapta queries al ORM que uses (Prisma, Drizzle, etc.)
    - Genera tipos según tu stack
-3. Ejecuta `frontend-setup.md` → **Integra tipos de tu backend**
+2. Ejecuta `frontend-setup.md` → **Integra tipos de tu backend**
 
 **Duración:** 3-5 horas (requiere más adaptación manual)
 
@@ -343,13 +336,6 @@ Fase 7 (implementando story "Ver [recursos de negocio]"):
 
 ### **Checklist de Validación:**
 
-**Después de `cloud-services.md`:**
-
-- [ ] Proyecto Supabase creado y accesible
-- [ ] Proyecto Vercel desplegado
-- [ ] URLs documentadas en `.context/infrastructure-setup.md`
-- [ ] Credenciales agregadas a `.env`
-
 **Después de `backend-setup.md`:**
 
 - [ ] Tablas fundacionales visibles en Supabase Dashboard
@@ -443,12 +429,12 @@ Type 'User' is not assignable to type 'UserInsert'
 
 ### **1. Ejecuta en orden estricto**
 
-- ❌ NO saltes de `cloud-services` a `frontend-setup`
-- ✅ Sigue: cloud → backend → frontend
+- ❌ NO saltes `backend-setup` para ir directo a `frontend-setup`
+- ✅ Sigue: backend → frontend
 
 ### **2. Documenta todo**
 
-- Los 3 prompts crean archivos en `.context/`
+- Los 2 prompts crean archivos en `.context/`
 - Esta documentación es crítica para el equipo
 
 ### **3. Valida después de cada prompt**
@@ -460,9 +446,6 @@ Type 'User' is not assignable to type 'UserInsert'
 ### **4. Commitea después de cada prompt**
 
 ```bash
-# Después de cloud-services.md
-git add . && git commit -m "feat: cloud infrastructure setup"
-
 # Después de backend-setup.md
 git add . && git commit -m "feat: backend schemas + auth + types"
 

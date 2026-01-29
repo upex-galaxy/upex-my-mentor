@@ -2,11 +2,9 @@
 
 > **Uso**: Copiar este contenido a tu archivo de configuración de IA:
 >
-> - Claude Code: `./CLAUDE.md (en el root)`
-> - Gemini CLI: `.gemini/gemini.md`
-> - GitHub Copilot: `.github/copilot-instructions.md`
-> - Cursor: `.cursor/rules`
-> - Otros: Según documentación de la herramienta
+> - Claude Code: `CLAUDE.md` (en el root)
+> - Gemini CLI: `GEMINI.md` (en el root)
+> - OpenCode: `AGENTS.md` (en el root)
 
 ---
 
@@ -208,10 +206,9 @@ Ver `.context/guidelines/MCP/` para detalles de cada uno.
 
 1. **Copia** el contenido de este archivo
 2. **Pega** en tu archivo de configuración de IA:
-   - Claude Code: `.CLAUDE.md`
-   - Gemini CLI: `.gemini/GEMINI.md`
-   - GitHub Copilot: `.github/copilot-instructions.md`
-   - Cursor: `.cursor/rules`
+   - Claude Code: `CLAUDE.md` (en el root)
+   - Gemini CLI: `GEMINI.md` (en el root)
+   - OpenCode: `AGENTS.md` (en el root)
 3. **Inicia** una nueva sesión con tu IA
 4. La IA ahora sabrá cómo cargar contexto correctamente
 
