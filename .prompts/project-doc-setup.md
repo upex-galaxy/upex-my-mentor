@@ -1,8 +1,8 @@
 # Project Documentation Setup
 
-> **Fase:** 3 - Infrastructure (Paso Final)
+> **Tipo:** Prompt Standalone (Reutilizable)
 > **Objetivo:** Crear README profesional + System Prompt para AI Coding Agents
-> **Pre-requisito:** Backend y Frontend setup completados
+> **Pre-requisito:** Proyecto con estructura básica definida (recomendado: después de Fase 3 Infrastructure)
 > **Output:** `README.md` + archivo de system prompt (`CLAUDE.md` / `GEMINI.md` / `AGENTS.md`)
 
 ---
@@ -810,7 +810,7 @@ Archivos creados:
 
 1.  Revisa y ajusta el README según necesites
 2.  Inicia una nueva sesión con tu AI agent para que cargue el system prompt
-3.  Continúa con Fase 4 (Specification) para crear el product backlog
+3.  Continúa con la siguiente fase de tu proyecto según el flujo UPEX
 
 ```
 
