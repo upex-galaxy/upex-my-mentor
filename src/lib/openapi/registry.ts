@@ -161,7 +161,7 @@ For comprehensive guides including Postman collections and Playwright integratio
 - **authentication-guide.md** - Complete auth guide with examples
 - **postman-guide.md** - Ready-to-use Postman collection
 - **playwright-integration.md** - Automated testing setup
-- **system-architecture.md** - Full system architecture diagrams
+- **api-architecture.md** - Full system architecture diagrams
 
 ---
 

@@ -20,11 +20,11 @@
     },
     "api": {
       "command": "npx",
-      "args": ["-y", "@ivotoby/openapi-mcp-server", "--tools dynamic"],
+      "args": ["-y", "@ivotoby/openapi-mcp-server"],
       "env": {
-        "API_BASE_URL": "https://{SUPABASE_URL}.supabase.co/rest/v1",
-        "OPENAPI_SPEC_PATH": "https://{SUPABASE_URL}.supabase.co/rest/v1/?apikey={SUPABASE_ANON_KEY}",
-        "API_HEADERS": "apikey:{SUPABASE_ANON_KEY}"
+        "API_BASE_URL": "https://api.example.com",
+        "OPENAPI_SPEC_PATH": "https://api.example.com/openapi.json",
+        "API_HEADERS": "Authorization:Bearer token123,X-API-Key:your-api-key"
       }
     },
     "sql": {
@@ -53,7 +53,7 @@
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp"]
     },
-    "tavity": {
+    "tavily": {
       "command": "npx",
       "args": ["-y", "mcp-remote", "https://mcp.tavily.com/mcp/?tavilyApiKey=${TAVILY_API_KEY}"]
     },
@@ -95,13 +95,6 @@
         "SLACK_MCP_ADD_MESSAGE_TOOL": "true",
         "SLACK_MCP_USERS_CACHE": "~/.gemini/mcp/slack/",
         "SLACK_MCP_CHANNELS_CACHE": "~/.gemini/mcp/slack/"
-      }
-    },
-    "memory": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-memory"],
-      "env": {
-        "MEMORY_FILE_PATH": "~/.gemini/mcp/memory.jsonl"
       }
     }
   }

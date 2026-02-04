@@ -23,7 +23,7 @@ const PROFILES = {
   backend: ['supabase', 'context7'],
   frontend: ['playwright', 'context7'],
   report: ['github', 'atlassian', 'slack'],
-  docs: ['notion', 'context7', 'tavity'],
+  docs: ['notion', 'context7', 'tavily'],
   uitest: ['playwright', 'devtools', 'context7'],
   apitest: ['postman', 'context7'], // Add @ivotoby/openapi-mcp-server MCP when project has openapi.json
   dbtest: ['supabase', 'context7'], // or use @bytebase/dbhub for SQL testing alternative.

@@ -43,7 +43,7 @@ SUPABASE_ACCESS_TOKEN = "${SUPABASE_ACCESS_TOKEN}"
 command = "npx"
 args = ["-y", "@upstash/context7-mcp"]
 
-[mcp_servers.tavity]
+[mcp_servers.tavily]
 command = "npx"
 args = [
     "-y",

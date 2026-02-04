@@ -477,6 +477,32 @@ git add . && git commit -m "feat: design system + frontend integration"
 
 ---
 
+## 🔧 Features Adicionales (Opcionales)
+
+Además de los prompts principales, esta fase incluye **prompts modulares** en la subcarpeta `features/` para complementar la infraestructura base:
+
+| Prompt                    | Descripción                            | Cuándo Usar                       |
+| ------------------------- | -------------------------------------- | --------------------------------- |
+| `supabase-types-setup.md` | Tipado auto-generado desde Supabase DB | Siempre (mejora type-safety)      |
+| `env-url-setup.md`        | Sistema de URLs multi-ambiente         | Si tienes staging + production    |
+| `openapi-setup.md`        | OpenAPI + Zod + UI Redoc               | Si necesitas documentación de API |
+| `api-routes-setup.md`     | Estructura de custom API endpoints     | Si necesitas endpoints custom     |
+
+**Orden de ejecución recomendado:**
+
+```
+1. supabase-types-setup.md  → Tipado base
+2. env-url-setup.md         → URLs multi-ambiente
+3. openapi-setup.md         → Sistema de documentación
+4. api-routes-setup.md      → Endpoints custom
+```
+
+**Nota:** Estos prompts son **opcionales** y se pueden ejecutar después de los prompts principales o cuando los necesites.
+
+Ver `.prompts/fase-3-infrastructure/features/README.md` para documentación detallada.
+
+---
+
 ## 🔄 Próximos Pasos
 
 **Después de completar Fase 3:**
