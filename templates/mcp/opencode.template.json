@@ -15,27 +15,28 @@
         "--viewport-size",
         "1920x1080"
       ],
-      "enabled": false
+      "enabled": true
     },
     "devtools": {
       "type": "local",
       "command": ["npx", "-y", "chrome-devtools-mcp"],
-      "enabled": false
+      "enabled": true
     },
     "api": {
       "type": "local",
-      "command": ["npx", "-y", "@ivotoby/openapi-mcp-server"],
+      "command": "npx",
+      "args": ["-y", "@ivotoby/openapi-mcp-server"],
       "environment": {
         "API_BASE_URL": "https://api.example.com",
         "OPENAPI_SPEC_PATH": "https://api.example.com/openapi.json",
         "API_HEADERS": "Authorization:Bearer token123,X-API-Key:your-api-key"
       },
-      "enabled": false
+      "enabled": true
     },
     "sql": {
       "type": "local",
-      "command": [
-        "npx",
+      "command": "npx",
+      "args": [
         "-y",
         "@bytebase/dbhub",
         "--transport",
@@ -43,7 +44,7 @@
         "--dsn",
         "postgresql://{USER}.{DATABASE}.{HOST}:{PORT}/{DATABASE}"
       ],
-      "enabled": false
+      "enabled": true
     },
     "supabase": {
       "type": "local",
@@ -51,17 +52,17 @@
       "environment": {
         "SUPABASE_ACCESS_TOKEN": "{env:SUPABASE_ACCESS_TOKEN}"
       },
-      "enabled": false
+      "enabled": true
     },
     "shadcn": {
       "type": "local",
       "command": ["npx", "shadcn@latest", "mcp"],
-      "enabled": false
+      "enabled": true
     },
     "context7": {
       "type": "remote",
       "url": "https://mcp.context7.com/mcp",
-      "enabled": false
+      "enabled": true
     },
     "tavily": {
       "type": "remote",
@@ -70,7 +71,7 @@
       "headers": {
         "Authorization": "Bearer {env:TAVILY_API_KEY}"
       },
-      "enabled": false
+      "enabled": true
     },
     "postman": {
       "type": "remote",
@@ -84,17 +85,17 @@
     "sentry": {
       "type": "remote",
       "url": "https://mcp.sentry.dev/mcp/{env:SENTRY_PROJECT_NAME}/{env:SENTRY_PROJECT_LANGUAGE}",
-      "enabled": false
+      "enabled": true
     },
     "vercel": {
       "type": "remote",
       "url": "https://mcp.vercel.com/",
-      "enabled": false
+      "enabled": true
     },
     "notion": {
       "type": "remote",
       "url": "https://mcp.notion.com/mcp",
-      "enabled": false
+      "enabled": true
     },
     "atlassian": {
       "type": "local",
@@ -113,7 +114,7 @@
       "headers": {
         "Authorization": "Bearer {env:GITHUB_TOKEN}"
       },
-      "enabled": false
+      "enabled": true
     },
     "slack": {
       "type": "local",
@@ -124,7 +125,7 @@
         "SLACK_MCP_USERS_CACHE": "{env:SLACK_MCP_USERS_CACHE}",
         "SLACK_MCP_CHANNELS_CACHE": "{env:SLACK_MCP_CHANNELS_CACHE}"
       },
-      "enabled": false
+      "enabled": true
     }
   }
 }
