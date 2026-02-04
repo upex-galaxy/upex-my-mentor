@@ -85,7 +85,7 @@ Crear la **infraestructura de backend base** (Database + Auth + API Layer) que s
 - ✅ Integración de Auth real (reemplazar mock)
 - ✅ API Layer (Supabase clients + tipados)
 - ✅ Seed data realista (replicar UX del frontend mockeado)
-- ✅ Documentación (`.context/backend-setup.md`, `.context/api-auth.md`)
+- ✅ Documentación (`.context/backend-setup.md`, `.context/api-documentation.md`)
 
 **NO incluye:**
 
@@ -124,7 +124,7 @@ Crear la **infraestructura de backend base** (Database + Auth + API Layer) que s
 ### Documentación:
 
 - ✅ `.context/backend-setup.md` - Setup completo documentado
-- ✅ `.context/api-auth.md` - Autenticación y autorización para APIs
+- ✅ `.context/api-documentation.md` - Endpoints y ejemplos de uso
 
 ### Database (en Supabase):
 
@@ -1276,60 +1276,17 @@ type [Entity] = Database['public']['Tables']['[table_name]']['Row']
 
 ---
 
-### Paso 6.2: Crear api-auth.md
+### Paso 6.2: Crear api-documentation.md
 
-**Archivo:** `.context/api-auth.md`
+**Archivo:** `.context/api-documentation.md`
 
-**Contenido (estructura):**
+**Contenido:**
 
-```markdown
-# API Authentication - [Proyecto]
-
-## Métodos de Autenticación
-
-- Supabase Auth (cookie-based sessions)
-- Flujo de autenticación (signup → login → session)
-
-## Para Desarrolladores
-
-### Acceder al usuario autenticado en API routes
-
-[Código de ejemplo con getAuthenticatedUser()]
-
-### Proteger endpoints
-
-[Uso de middleware y RLS]
-
-### AuthContext en componentes
-
-[Cómo usar el contexto de auth]
-
-## Para QA/Testing
-
-### Autenticación al probar APIs
-
-- Las APIs protegidas requieren cookies de sesión válidas
-- Login via web → Las cookies se setean automáticamente
-- Para Postman: Copiar cookies desde DevTools
-
-### Obtener tokens para testing manual
-
-1. Hacer login en la aplicación web
-2. Abrir DevTools → Application → Cookies
-3. Copiar cookies `sb-*` relevantes
-
-### Testing con DevTools
-
-[Instrucciones para Network tab]
-
-## Consideraciones de Seguridad
-
-- RLS policies aplicadas a todas las tablas
-- NUNCA exponer service_role key en frontend
-- Validar permisos en cada endpoint
-```
-
-**Nota:** La documentación de endpoints (rutas, parámetros, respuestas) se maneja via OpenAPI/Redoc UI si se ejecutó `openapi-setup.md`.
+- Endpoints REST de Supabase
+- Headers necesarios
+- Ejemplos de requests
+- Testing con Postman/Insomnia
+- Recomendación: Usar cliente JS en lugar de fetch directo
 
 ---
 
@@ -1415,7 +1372,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ### 7. Documentación
 
 - .context/backend-setup.md
-- .context/api-auth.md
+- .context/api-documentation.md
 - .env.example actualizado
 
 ---
@@ -1507,7 +1464,7 @@ git commit -m "feat: Supabase backend setup
 ## 📚 Documentación
 
 - .context/backend-setup.md
-- .context/api-auth.md
+- .context/api-documentation.md
 - .env.example
 - src/lib/config.ts
 
@@ -1583,7 +1540,7 @@ Ahora implementa features con:
 
 ### Documentación:
 - ✅ backend-setup.md creado
-- ✅ api-auth.md creado
+- ✅ api-documentation.md creado
 - ✅ .env.example descriptivo
 - ✅ Troubleshooting incluido
 

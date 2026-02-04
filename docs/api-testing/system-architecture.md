@@ -6,7 +6,7 @@
 ---
 
 ## Los 14 Endpoints Custom de Next.js
-```
+
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                         ENDPOINTS CUSTOM (Next.js API Routes)               │
 ├─────────────────────────────────────────────────────────────────────────────┤
@@ -36,12 +36,11 @@
 │  └── POST   /api/testing/trigger-confirmation → QA: trigger email test     │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
-```
+
 ---
 
 ## Arquitectura Completa del Proyecto
 
-```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
 │                                    NAVEGADOR / CLIENTE                                  │
 └───────────────────────────────────────────┬─────────────────────────────────────────────┘
@@ -109,14 +108,13 @@
 │  • Resend (emails)                    │   │  POST /api/cron/process-payouts           │
 │                                       │   │                                           │
 └───────────────────────────────────────┘   └───────────────────────────────────────────┘
-```
+
 ---
 
 ## ¿Dónde Están Documentadas las APIs?
 
 **Ambas APIs están documentadas en `/api-docu`** con selector para elegir entre ellas.
 
-```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                        DOCUMENTACIÓN INTERACTIVA                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
@@ -136,14 +134,13 @@
 │  └── playwright-integration.md - Testing automatizado                       │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
-```
+
 ---
 
 ## Cómo Testear los Endpoints Custom
 
 ### Diferencia Clave: Autenticación
 
-```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                         AUTENTICACIÓN POR TIPO                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
@@ -167,7 +164,7 @@
 │  └─────────────────────────────────────────────────────────────────────┘    │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
-```
+
 ### Testing en DevTools
 
 ```javascript
@@ -183,7 +180,7 @@ fetch('/api/messages/unread-count')
 
 ### Testing en Postman
 
-```
+```bash
 # PROBLEMA: Postman no tiene las cookies de sesión
 
 # SOLUCIÓN 1: Copiar cookies del navegador
@@ -204,7 +201,7 @@ Body:
 ---
 
 ## Tabla de Requisitos por Endpoint
-```
+
 | Endpoint                               | Método  | Auth             | Requisitos Especiales           |
 | -------------------------------------- | ------- | ---------------- | ------------------------------- |
 | /api/checkout/session                  | POST    | Cookie           | Body: { booking_id }            |
@@ -221,7 +218,7 @@ Body:
 | /api/email/booking-confirmation        | POST    | X-API-Key        | dev-api-key                     |
 | /api/cron/process-payouts              | POST    | Authorization    | CRON_SECRET                     |
 | /api/testing/trigger-confirmation      | POST    | X-API-Key        | Solo en dev/staging             |
-```
+
 ---
 
 ## Diagrama de Flujo: Ejemplo Completo de Booking
