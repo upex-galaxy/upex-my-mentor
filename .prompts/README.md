@@ -122,10 +122,10 @@ Este directorio contiene prompts optimizados para generar documentación de proy
 
 #### **Fase 5: Shift-Left Testing** (QA temprano)
 
-| Archivo                                          | Proposito                       |
-| ------------------------------------------------ | ------------------------------- |
-| `fase-5-shift-left-testing/feature-test-plan.md` | Plan de pruebas a nivel epica   |
-| `fase-5-shift-left-testing/story-test-cases.md`  | Test cases detallados por story |
+| Archivo                                             | Proposito                      |
+| --------------------------------------------------- | ------------------------------ |
+| `fase-5-shift-left-testing/feature-test-plan.md`    | Plan de pruebas a nivel epica  |
+| `fase-5-shift-left-testing/acceptance-test-plan.md` | Acceptance test plan por story |
 
 #### **Fase 6: Planning** (Planificacion tecnica)
 
@@ -547,7 +547,7 @@ Despues de usar todos los prompts, tu directorio `.context/` debe verse asi:
 │           └── stories/
 │               └── STORY-XXX-nombre/
 │                   ├── story.md            [Fase 4]
-│                   ├── test-cases.md       [Fase 5]
+│                   ├── acceptance-test-plan.md [Fase 5]
 │                   └── implementation-plan.md [Fase 6]
 │
 ├── deployment/                    [Fases 9, 13]

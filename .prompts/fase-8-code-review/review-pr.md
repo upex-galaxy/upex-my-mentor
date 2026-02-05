@@ -87,7 +87,7 @@ Puedo continuar, pero la revisión se basará en conocimiento interno (puede est
 
 - [ ] Todos los AC de `story.md` se cumplen
 - [ ] Funcionalidad implementada correctamente
-- [ ] Edge cases considerados (según `test-cases.md`)
+- [ ] Edge cases considerados (según `acceptance-test-plan.md`)
 
 **Si algún AC no se cumple:**
 

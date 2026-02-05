@@ -17,7 +17,7 @@ Crear planes técnicos de implementación **ANTES** de escribir código. Define 
 
 - Fase 5 completada:
   - `feature-test-plan.md` (Epic level)
-  - `test-cases.md` (Story level)
+  - `acceptance-test-plan.md` (Story level)
 - Contexto técnico:
   - `.context/SRS/*.md`
   - `.context/design-system.md` (si hay UI)
@@ -131,7 +131,7 @@ Test Plans (Fase 5)
     └── stories/
         └── STORY-{KEY}-{NUM}-{nombre}/
             ├── story.md
-            ├── test-cases.md
+            ├── acceptance-test-plan.md
             └── implementation-plan.md    # ← Generado por story-implementation-plan.md
 ```
 

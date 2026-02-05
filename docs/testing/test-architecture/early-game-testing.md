@@ -64,8 +64,13 @@ Entender los requerimientos y finalizar los acceptance criteria de la US antes d
 **Actividades Clave:**
 
 - QA discute ambigüedades con los stakeholders
-- QA crea un Feature Test Plan (FTP) que describe los escenarios iniciales
+- QA crea un Feature Test Plan (FTP) a nivel Epic que describe los escenarios iniciales
 - El subtask 'QA: AC Review' y 'QA: Feature Test Plan' pasa de Open → In Progress → Done
+
+**Artefactos Generados:**
+
+- **FTP (Feature Test Plan):** Estrategia de testing a nivel Epic
+- **AC refinados:** Acceptance Criteria claros y verificables
 
 **Resultado Esperado:**
 Un conjunto claro de acceptance criteria y un FTP para guiar el testing específico en la US.
@@ -104,6 +109,11 @@ Validar rápidamente la US usando Feature Test Execution (FTX) definido en el FT
 - El subtask 'QA: Feature Testing' pasa de Open → In Progress → Done
 - QA realiza pruebas exploratorias dirigidas en áreas críticas o de alto riesgo
 - Se reportan hallazgos y defectos inmediatamente
+- QA crea el **Acceptance Test Plan (ATP)** para la Story
+
+**Artefacto Generado:**
+
+- **ATP (Acceptance Test Plan):** Plan que define CÓMO validar cada Acceptance Criteria de la Story
 
 **Resultado Esperado:**
 La User Story puede desplegarse a producción una vez que QA lo aprueba. La US se cierra en Jira.
@@ -116,16 +126,22 @@ La User Story puede desplegarse a producción una vez que QA lo aprueba. La US s
 
 **TMLC - Test Manual Life Cycle (3rd Stage) - Risk-Based**
 
-Decidir qué escenarios del FTP merecen test cases formales vs mantenerse como exploratorios.
+Decidir qué escenarios del ATP merecen test cases formales vs mantenerse como exploratorios.
 
 **Actividades Clave:**
 
-- QA evalúa el impacto potencial y probabilidad de defectos de cada escenario
-- Los escenarios de alto valor se seleccionan para convertirse en Test Case
+- QA evalúa el impacto potencial y probabilidad de defectos de cada escenario del ATP
+- Los escenarios de alto valor se seleccionan para convertirse en ATCs (Acceptance Test Cases)
 - Decisiones se registran en un Test Repository (Epic en Jira)
 
+**Transición a Mid-Game:**
+
+- El ATP refinado contiene los escenarios priorizados
+- Cada escenario priorizado se convierte en un **ATC** (Acceptance Test Case) en el Step 5
+- Los ATCs son la entrada para el framework **KATA** de automatización
+
 **Resultado Esperado:**
-Lista refinada de escenarios listos para convertirse en test cases scriptados.
+ATP refinado con escenarios listos para convertirse en ATCs scriptados en Mid-Game.
 
 **Herramientas:** Xray, Jira, Confluence
 

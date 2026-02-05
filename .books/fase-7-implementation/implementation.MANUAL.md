@@ -78,7 +78,7 @@ Aprender a **implementar código funcional paso a paso** siguiendo un plan técn
 **Antes de implementar, asegúrate de tener:**
 
 - [ ] `implementation-plan.md` completo (Fase 6: Planning)
-- [ ] `test-cases.md` definido (Fase 5: Shift-Left Testing)
+- [ ] `acceptance-test-plan.md` definido (Fase 5: Shift-Left Testing)
 - [ ] Design system configurado (si hay UI)
 - [ ] Entorno de desarrollo funcionando (`npm run dev`)
 - [ ] Testing framework instalado (Jest o Vitest)
@@ -89,7 +89,7 @@ Aprender a **implementar código funcional paso a paso** siguiendo un plan técn
 .context/PBI/epics/EPIC-.../stories/STORY-.../
 ├── story.md                # Qué implementar
 ├── implementation-plan.md  # Cómo implementar
-└── test-cases.md           # Qué validar
+└── acceptance-test-plan.md # Qué validar
 
 .context/guidelines/DEV/
 ├── code-standards.md       # Estándares de código
@@ -141,7 +141,7 @@ Aprender a **implementar código funcional paso a paso** siguiendo un plan técn
 
 ### 1.2 Revisar los Test Cases
 
-**Abre `test-cases.md` y observa:**
+**Abre `acceptance-test-plan.md` y observa:**
 
 - Qué escenarios deben funcionar
 - Qué edge cases considerar

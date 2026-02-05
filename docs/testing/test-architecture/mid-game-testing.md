@@ -55,100 +55,155 @@ La **segunda fase del Integrated Quality Lifecycle** donde el **QA Automation En
 
 > _"Transición del TMLC (Test Manual Life Cycle) al TALC (Test Automation Life Cycle) con enfoque en automatización y CI/CD."_
 
-### Step 5: Documentación de Casos de Prueba Asíncrono
+### Step 5: Documentación de ATCs (Acceptance Test Cases)
 
 **TMLC - Test Manual Life Cycle (4th Stage)**
 
-Crear 'Test' tickets formales para cada escenario scriptado priorizado, sin bloquear la entrega de la US.
+Crear 'Test' tickets (ATCs) formales para cada escenario del ATP priorizado, sin bloquear la entrega de la US.
 
 **Actividades Clave:**
 
-- El estado normalmente comienza como 'Draft'
-- QA documenta los pasos de prueba, datos y resultados esperados en los 'Test' tickets
-- Cada ticket se enlaza al Epic Test Repository en Jira para una gestión centralizada
+- Los escenarios del ATP se convierten en **ATCs** (Acceptance Test Cases)
+- El estado del ATC normalmente comienza como 'Draft'
+- QA documenta los pasos de prueba, datos y resultados esperados en cada ATC
+- Cada ATC se enlaza al Epic Test Repository en Jira (mapeo 1:1 con tickets)
+
+**Conexión con KATA Framework:**
+
+- Cada ATC es la unidad base para automatización en KATA
+- El decorador `@atc('PROJECT-XXX')` vincula el código con el ticket Jira
+- La trazabilidad fluye: Story → AC → ATP → ATC → KATA automation
 
 **Resultado Esperado:**
-Un backlog sano de test cases de alto valor, listo para ejecución manual o automatizada.
+Un backlog sano de ATCs de alto valor, listo para ejecución manual o automatización con KATA.
 
 **Herramientas:** Jira, Xray, Confluence
 
 ---
 
-### Step 6: Evaluación de Pruebas Candidatas a Automatización
+### Step 6: Evaluación de ATCs Candidatos a Automatización
 
 **TALC - Test Automation Life Cycle (1st Stage)**
 
-Revisar los test cases recién documentados para determinar si deben automatizarse.
+Revisar los ATCs recién documentados para determinar si deben automatizarse con KATA.
 
 **Actividades Clave:**
 
-- El test pasa a estado 'In Review'
-- QA Automation inspecciona cada 'Test' ticket para comprobar su factibilidad
-- Si es viable, se marca como 'Candidate'; de lo contrario, permanece 'Manual'
-- Se actualiza el Automation Backlog en consecuencia
+- El ATC pasa a estado 'In Review'
+- QA Automation inspecciona cada ATC para comprobar su factibilidad de automatización
+- Si es viable para KATA, se marca como 'Candidate'; de lo contrario, permanece 'Manual'
+- Se actualiza el Automation Backlog con los ATCs candidatos
+
+**Criterios de Evaluación para KATA:**
+
+- ¿El ATC es repetible y determinístico?
+- ¿El flujo es estable (no sujeto a cambios frecuentes)?
+- ¿Existe cobertura de UI, API, o DB verificable?
 
 **Resultado Esperado:**
-Diferenciación clara entre tests manuales y candidatos a automatizar.
+Diferenciación clara entre ATCs manuales y ATCs candidatos para automatización con KATA.
 
 **Herramientas:** Jira, Xray, Claude Code
 
 ---
 
-### Step 7: Automatización de Casos de Pruebas Candidatas
+### Step 7: Automatización de ATCs con KATA Framework
 
-**TALC - Test Automation Life Cycle (2nd Stage) - TAUS Model**
+**TALC - Test Automation Life Cycle (2nd Stage) - KATA Model**
 
-Convertir los tests candidatos en scripts automatizados para CI usando el modelo TAUS.
+Convertir los ATCs candidatos en scripts automatizados usando el framework KATA.
 
 **Actividades Clave:**
 
 - Transiciones de estado: Candidate → In Automation
-- Se crea una nueva rama, se implementan los scripts de prueba
-- Se hace push de los cambios siguiendo el patrón TAUS
+- Se crea una nueva rama, se implementan los ATCs como scripts KATA
+- Cada ATC usa el decorador `@atc('PROJECT-XXX')` para trazabilidad
+- Se hace push de los cambios siguiendo la arquitectura KATA
+
+**Estructura KATA para ATCs:**
+
+```typescript
+@atc('PROJECT-123')
+test('should validate user login flow', async ({ page }) => {
+  // ATC automatizado con trazabilidad a Jira
+});
+```
 
 **Resultado Esperado:**
-Los tests scriptados quedan listos para la integración continua.
+Los ATCs automatizados quedan listos para la integración continua.
 
-**Herramientas:** GitHub, Playwright, Cypress, Docker
+**Herramientas:** GitHub, Playwright (KATA), Docker
 
 ---
 
-### Step 8: Verificación de Pruebas Automatizadas en CI
+### Step 8: Verificación de ATCs Automatizados en CI
 
 **TALC - Test Automation Life Cycle (3rd Stage)**
 
-Validar los nuevos tests automatizados en la pipeline de Continuous Integration.
+Validar los ATCs automatizados con KATA en la pipeline de Continuous Integration.
 
 **Actividades Clave:**
 
-- Se ejecuta el conjunto de tests automatizados en CI (nightly builds o cada commit)
-- Se confirma que los tests pasen de forma estable (sin flakiness)
-- Cualquier fallo o problema en los scripts se corrige de forma rápida
+- Se ejecuta la suite KATA de ATCs en CI (nightly builds o cada commit)
+- Se confirma que los ATCs pasen de forma estable (sin flakiness)
+- Cualquier fallo en los ATCs se corrige de forma rápida
+- Los reportes muestran trazabilidad ATC → Jira ticket
 
 **Resultado Esperado:**
-Tests automatizados estables e integrados de manera confiable en CI/CD.
+ATCs automatizados con KATA estables e integrados de manera confiable en CI/CD.
 
 **Herramientas:** GitHub Actions, Docker, Slack
 
 ---
 
-### Step 9: Revisión de Código de Pruebas (Pull Request)
+### Step 9: Revisión de Código de ATCs (Pull Request)
 
 **TALC - Test Automation Life Cycle (4th Stage)**
 
-Crear un Pull Request detallado para revisión y aprobación de los nuevos tests automatizados.
+Crear un Pull Request detallado para revisión y aprobación de los ATCs automatizados con KATA.
 
 **Actividades Clave:**
 
 - Transiciones de Estado: Merge Request → Automated
-- Se crea un Pull Request detallando los nuevos cambios del Repositorio
-- Se revisa y se aprueba el Pull Request por otro QA/Dev
+- Se crea un Pull Request detallando los nuevos ATCs implementados
+- Se revisa arquitectura KATA y trazabilidad de ATCs
 - Se realiza el merge una vez aprobado
 
+**Verificación en PR:**
+
+- ¿Los ATCs siguen la arquitectura KATA?
+- ¿Cada ATC tiene su decorador `@atc()` con el ticket correcto?
+- ¿Los ATCs son mantenibles y siguen los estándares?
+
 **Resultado Esperado:**
-Pull Request MERGED. Tests automatizados estables e integrados de manera confiable en CI/CD.
+Pull Request MERGED. ATCs automatizados con KATA estables e integrados en CI/CD.
 
 **Herramientas:** GitHub, Visual Studio Code, Cursor
+
+---
+
+## KATA Framework: Arquitectura de Automatización
+
+**KATA** (Komponent Action Test Architecture) es el **framework de automatización** usado en Mid-Game para convertir ATCs en scripts ejecutables.
+
+### Conexión ATP → ATC → KATA
+
+```
+Story Level (Early-Game):
+├── Acceptance Criteria (AC)
+└── Acceptance Test Plan (ATP)
+    └── Escenarios priorizados
+
+Mid-Game (Steps 5-9):
+├── ATC (Acceptance Test Case) → Ticket en Jira
+└── KATA Script → Código que implementa el ATC
+    └── @atc('PROJECT-XXX') → Trazabilidad
+```
+
+**Ver documentación completa de KATA:**
+
+- [KATA Fundamentals](./kata-fundamentals.md) - Conceptos y arquitectura
+- [KATA Architecture Guide](/.context/guidelines/TAE/kata-architecture.md) - Configuración del proyecto
 
 ---
 

@@ -2,22 +2,26 @@
 
 ## Purpose
 
-Implement automated tests for documented test cases using the KATA framework.
+Implement automated tests for documented **ATCs (Acceptance Test Cases)** using the KATA framework.
 
 **IMPORTANT:** This phase comes AFTER:
 
 - Fase 10: Exploratory Testing (feature validated)
-- Fase 11: Test Documentation (tests documented in Jira)
+- Fase 11: Test Documentation (ATCs documented in Jira)
 
 Only automate functionality that has been validated manually and documented.
+
+**Conexión IQL:** Esta fase corresponde a los **Steps 7-9 del Mid-Game Testing** - donde los ATCs se convierten en scripts automatizados con KATA.
 
 ---
 
 ## Prerequisites
 
-- Tests documented in Jira (Fase 11 completed)
-- Tests marked as "automation-candidate"
+- ATCs documented in Jira (Fase 11 completed)
+- ATCs marked as "automation-candidate" (CANDIDATE status)
 - KATA framework configured (or use kata-framework-setup.md)
+
+**Trazabilidad:** Cada ATC usa el decorador `@atc('PROJECT-XXX')` para vincular código con Jira.
 
 ---
 
@@ -77,13 +81,21 @@ Layer 4: Fixtures (TestFixture, ApiFixture, UiFixture)
     └── Dependency injection, test extension
         ↓
 Layer 3: Components (AuthApi, LoginPage)
-    └── ATCs with @atc decorator
+    └── ATCs with @atc('PROJECT-XXX') decorator ← Trazabilidad Jira
         ↓
 Layer 2: Base Classes (ApiBase, UiBase)
     └── HTTP helpers, Playwright helpers
         ↓
 Layer 1: TestContext
     └── Configuration, data generation
+```
+
+**Flujo IQL completo:**
+
+```
+ATP (Fase 5) → ATCs en Jira (Fase 11) → KATA Scripts (Fase 12)
+                                              ↓
+                                    @atc('PROJECT-XXX')
 ```
 
 ---
@@ -122,7 +134,9 @@ Layer 1: TestContext
 - Test files in appropriate directories
 - Components registered in fixtures
 - Tests passing in CI/CD pipeline
-- Jira tests marked as "Automated"
+- Jira ATCs marked as "Automated"
+
+**Estado IQL:** Al completar esta fase, los ATCs transitan a status AUTOMATED en Jira (Step 9 del Mid-Game).
 
 ---
 

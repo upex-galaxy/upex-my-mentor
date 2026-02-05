@@ -82,7 +82,7 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 ```
 .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/story.md
 .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/implementation-plan.md
-.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/test-cases.md
+.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/acceptance-test-plan.md
 ```
 
 **Propósito:**
@@ -159,7 +159,7 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
    - Identifica user value
    - Entiende el "por qué"
 
-3. **Revisa `test-cases.md`**
+3. **Revisa `acceptance-test-plan.md`**
    - Entiende qué se espera que funcione
    - Identifica edge cases a considerar
    - (NO implementes tests ahora - eso es Fase 8)

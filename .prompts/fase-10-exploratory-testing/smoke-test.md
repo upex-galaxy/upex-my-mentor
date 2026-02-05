@@ -32,7 +32,7 @@ Validar que el deployment en staging es funcional ANTES de comenzar exploratory 
 **Leer:**
 
 - `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/story.md` - **CRÍTICO** - Acceptance criteria
-- `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/test-cases.md` - Test cases definidos (Fase 5)
+- `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/acceptance-test-plan.md` - Test cases definidos (Fase 5)
 
 **Qué identificar:**
 
@@ -185,7 +185,7 @@ Crear smoke test checklist para validar deployment funcional:
 
 ### Paso 1.2: Leer Test Cases
 
-**Acción:** Leer `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/test-cases.md`
+**Acción:** Leer `.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/acceptance-test-plan.md`
 
 **Identificar:**
 

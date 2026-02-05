@@ -575,7 +575,7 @@ Antes de codear, leer:
 │
 ├── .context/PBI/epics/.../stories/.../
 │ ├── story.md # User story + AC
-│ ├── test-cases.md # Test cases esperados
+│ ├── acceptance-test-plan.md # Test cases esperados
 │ └── implementation-plan.md # Plan técnico
 │
 └── MCPs relevantes:
@@ -597,7 +597,7 @@ Antes de testear, leer:
 │
 ├── .context/PBI/epics/.../stories/.../
 │ ├── story.md # User story + AC
-│ └── test-cases.md # Test cases a ejecutar
+│ └── acceptance-test-plan.md # Test cases a ejecutar
 │
 ├── .prompts/fase-10-exploratory-testing/
 │ ├── exploratory-test.md # UI Testing
@@ -624,7 +624,7 @@ Antes de automatizar, leer:
 │ └── test-data-management.md # Manejo de datos
 │
 ├── .context/PBI/epics/.../stories/.../
-│ └── test-cases.md # Test cases a automatizar
+│ └── acceptance-test-plan.md # Test cases a automatizar
 │
 └── MCPs relevantes:
 ├── Playwright → Tests E2E UI

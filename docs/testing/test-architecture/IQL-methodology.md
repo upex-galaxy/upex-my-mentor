@@ -157,28 +157,56 @@ El **Integrated Quality Lifecycle** integra 8 enfoques complementarios que se ap
 
 ---
 
+## Jerarquía de Artefactos de Testing
+
+El IQL utiliza una **jerarquía clara de artefactos** que conecta requerimientos con automatización:
+
+```
+Epic Level:
+├── Feature Test Plan (FTP) → Estrategia de testing para el Epic
+
+Story Level:
+├── Acceptance Criteria (AC) → Define CUÁNDO la story está lista
+└── Acceptance Test Plan (ATP) → Define CÓMO validar cada AC
+    └── Acceptance Test Cases (ATC) → Casos de prueba individuales
+        └── KATA Framework → Automatiza los ATCs en Mid-Game
+```
+
+### Terminología Clave
+
+| Artefacto                      | Nivel     | Descripción                                   | Fase IQL   |
+| ------------------------------ | --------- | --------------------------------------------- | ---------- |
+| **FTP** (Feature Test Plan)    | Epic      | Estrategia y alcance de testing del Epic      | Early-Game |
+| **ATP** (Acceptance Test Plan) | Story     | Plan para validar cada Acceptance Criteria    | Early-Game |
+| **ATC** (Acceptance Test Case) | Test      | Caso de prueba individual, mapea 1:1 con Jira | Mid-Game   |
+| **KATA**                       | Framework | Arquitectura de automatización para ATCs      | Mid-Game   |
+
+> _"La trazabilidad fluye de arriba hacia abajo: Epic → FTP → Story → AC → ATP → ATC → KATA automation"_
+
+---
+
 ## El Flujo Completo: 15 Steps del IQL
 
 Desde el análisis de requerimientos hasta el monitoreo en producción: **la metodología completa** en una vista unificada.
 
 ### Early-Game Testing (Steps 1-4: Prevención)
 
-| Step | Nombre                          | Etapa          |
-| ---- | ------------------------------- | -------------- |
-| 1    | Análisis de Requerimientos      | TMLC 1st Stage |
-| 2    | Desarrollo e Implementación     | Parallel Work  |
-| 3    | Pruebas Exploratorias Tempranas | TMLC 2nd Stage |
-| 4    | Priorización Risk-Based         | TMLC 3rd Stage |
+| Step | Nombre                          | Etapa          | Artefacto         |
+| ---- | ------------------------------- | -------------- | ----------------- |
+| 1    | Análisis de Requerimientos      | TMLC 1st Stage | FTP (Epic level)  |
+| 2    | Desarrollo e Implementación     | Parallel Work  | -                 |
+| 3    | Pruebas Exploratorias Tempranas | TMLC 2nd Stage | ATP (Story level) |
+| 4    | Priorización Risk-Based         | TMLC 3rd Stage | ATP refinado      |
 
 ### Mid-Game Testing (Steps 5-9: Detección)
 
-| Step | Nombre                         | Etapa          |
-| ---- | ------------------------------ | -------------- |
-| 5    | Documentación de Test Cases    | TMLC 4th Stage |
-| 6    | Evaluación para Automatización | TALC 1st Stage |
-| 7    | Automatización TAUS            | TALC 2nd Stage |
-| 8    | Verificación en CI             | TALC 3rd Stage |
-| 9    | Pull Request Review            | TALC 4th Stage |
+| Step | Nombre                         | Etapa          | Artefacto           |
+| ---- | ------------------------------ | -------------- | ------------------- |
+| 5    | Documentación de ATCs          | TMLC 4th Stage | ATC tickets en Jira |
+| 6    | Evaluación para Automatización | TALC 1st Stage | ATC → Candidate     |
+| 7    | Automatización KATA            | TALC 2nd Stage | ATCs automatizados  |
+| 8    | Verificación en CI             | TALC 3rd Stage | KATA en pipeline    |
+| 9    | Pull Request Review            | TALC 4th Stage | ATCs integrados     |
 
 ### Late-Game Testing (Steps 10-15: Observación)
 
@@ -278,14 +306,14 @@ Define cómo las **User Stories fluyen** desde la concepción hasta la implement
 
 ### Test Delivery Cycle (TDC)
 
-Define cómo **QA Analysts documentan** casos críticos que **QA Automation convierte** en pruebas automatizadas.
+Define cómo **QA Analysts documentan** casos críticos que **QA Automation convierte** en pruebas automatizadas usando el **framework KATA**.
 
 **Fases del TDC:**
 
 - **Exploración:** Testing manual y descubrimiento
-- **Documentación:** Casos priorizados por riesgo
-- **Automatización:** Scripts para casos críticos
-- **Mantenimiento:** Monitoreo y refinamiento
+- **Documentación:** ATP → ATCs priorizados por riesgo
+- **Automatización:** ATCs convertidos a scripts KATA
+- **Mantenimiento:** Monitoreo y refinamiento de ATCs
 
 > **SDC** y **TDC** trabajan en **simbiosis perfecta**: mientras SDC asegura calidad desde el diseño, TDC optimiza la ejecución y automatización de pruebas para máxima eficiencia.
 
@@ -404,9 +432,9 @@ Calidad como **ciclo continuo** integrado en todo el SDLC.
 
 ### Mid-Game Testing
 
-- Playwright
+- Playwright (KATA framework)
 - Cypress
-- Xray
+- Xray (ATC management)
 
 ### Late-Game Testing
 

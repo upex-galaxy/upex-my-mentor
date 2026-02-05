@@ -24,16 +24,16 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 
 ### Leer segun la US en trabajo
 
-| Archivo                                                                                                 | Cuando leer                        |
-| ------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/feature-test-plan.md`                                 | Paso 0: Verificar precondiciones   |
-| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/feature-implementation-plan.md`                       | Paso 0: Verificar precondiciones   |
-| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/stories/STORY-{PROJECT_KEY}-{N}-{name}/story.md`      | Antes de planificar                |
-| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/stories/STORY-{PROJECT_KEY}-{N}-{name}/test-cases.md` | Durante planificacion              |
-| `.context/backend-setup.md`                                                                             | Durante implementacion con DB/Auth |
-| `.context/api-auth.md`                                                                                  | Durante implementacion con auth    |
-| `.context/design-system.md`                                                                             | Durante implementacion UI          |
-| `.context/guidelines/code-standards.md`                                                                 | Durante code review                |
+| Archivo                                                                                                           | Cuando leer                        |
+| ----------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/feature-test-plan.md`                                           | Paso 0: Verificar precondiciones   |
+| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/feature-implementation-plan.md`                                 | Paso 0: Verificar precondiciones   |
+| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/stories/STORY-{PROJECT_KEY}-{N}-{name}/story.md`                | Antes de planificar                |
+| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/stories/STORY-{PROJECT_KEY}-{N}-{name}/acceptance-test-plan.md` | Durante planificacion              |
+| `.context/backend-setup.md`                                                                                       | Durante implementacion con DB/Auth |
+| `.context/api-auth.md`                                                                                            | Durante implementacion con auth    |
+| `.context/design-system.md`                                                                                       | Durante implementacion UI          |
+| `.context/guidelines/code-standards.md`                                                                           | Durante code review                |
 
 ### Prompts a ejecutar (leer UNO a la vez, cuando toque)
 
@@ -102,7 +102,7 @@ El Epic {EPIC-{PROJECT_KEY}-N} no tiene los siguientes artefactos:
 **Acciones:**
 
 1. Leer el prompt `.prompts/fase-6-planning/story-implementation-plan.md`
-2. Leer la story (`story.md`) y test cases (`test-cases.md`)
+2. Leer la story (`story.md`) y acceptance test plan (`acceptance-test-plan.md`)
 3. **Usar como contexto** el `feature-implementation-plan.md` del Epic (verificado en Paso 0)
 4. Crear rama local: `git checkout -b feat/{PROJECT_KEY}-{N}/{short-name}`
 5. Generar `implementation-plan.md` en la carpeta de la story

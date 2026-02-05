@@ -3,7 +3,7 @@ Actúa como Senior Full-Stack Developer + UI/UX Designer.
 **Input:**
 
 - Story: [usar .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/story.md]
-- Test Cases: [usar .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/test-cases.md]
+- Test Cases: [usar .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/acceptance-test-plan.md]
 - Feature Implementation Plan: [usar .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/feature-implementation-plan.md]
 - SRS relevante: [usar secciones relacionadas de .context/SRS/]
 - **Design System:** [usar .context/design-system.md - para decisiones de UI/UX]
@@ -415,7 +415,7 @@ Textos que reflejan el contexto específico del proyecto, usando vocabulario del
   - [ ] [Componente específico 2]
 - [ ] Tests de integración pasando
   - [ ] [Escenario específico]
-- [ ] Tests E2E pasando (referencia: test-cases.md)
+- [ ] Tests E2E pasando (referencia: acceptance-test-plan.md)
   - [ ] TC-001: [nombre]
   - [ ] TC-002: [nombre]
   - [ ] ...

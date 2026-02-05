@@ -96,7 +96,7 @@ Cuando el usuario solicite generar consignas para un problema, sigue este proces
 ```
 [STORY_PATH]/
 ├── story.md              → Acceptance Criteria, descripción, User Story
-├── test-cases.md         → Casos de prueba existentes (si hay)
+├── acceptance-test-plan.md         → Casos de prueba existentes (si hay)
 └── implementation-plan.md → Detalles técnicos de implementación
 ```
 
@@ -120,7 +120,7 @@ Cuando el usuario solicite generar consignas para un problema, sigue este proces
 Antes de generar consignas, realiza este análisis interno:
 
 1. **Extracción de Acceptance Criteria** → Lista todos los ACs de la historia
-2. **Extracción de Test Cases** → Lista los TCs del archivo test-cases.md (si existe)
+2. **Extracción de Test Cases** → Lista los TCs del archivo acceptance-test-plan.md (si existe)
 3. **Mapeo AC → Escenario Técnico** → Qué se debe verificar técnicamente para cada AC
 4. **Mapeo Escenario → Consigna** → Cómo convertir cada escenario en una instrucción ejecutable
 
@@ -491,7 +491,7 @@ Genera consignas de Database Testing para @.context/PBI/epics/EPIC-MYM-18/storie
 
 **La IA debe:**
 
-1. Leer story.md, test-cases.md (si existe), implementation-plan.md
+1. Leer story.md, acceptance-test-plan.md (si existe), implementation-plan.md
 2. Consultar business-data-map.md y api-architecture.md
 3. Generar los 3 archivos en la carpeta de la story:
    - `db-testing-analisis.md`

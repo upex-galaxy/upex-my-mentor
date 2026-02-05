@@ -387,7 +387,7 @@ Los siguientes tests entran en la **Regresión Manual**:
 ```
 .context/PBI/epics/EPIC-XXX-{nombre}/stories/STORY-YYY-{nombre}/
 ├── story.md                    # (existente)
-├── test-cases.md               # (existente - de Fase 5)
+├── acceptance-test-plan.md               # (existente - de Fase 5)
 ├── implementation-plan.md      # (existente)
 └── tests/                      # ← NUEVO directorio
     ├── {TEST-ID}-{nombre}.md
