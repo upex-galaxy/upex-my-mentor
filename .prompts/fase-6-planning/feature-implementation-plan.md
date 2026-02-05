@@ -436,6 +436,59 @@ Todas las stories de esta feature usan vocabulario consistente del dominio, refl
 
 ---
 
+## 📤 SINCRONIZACIÓN CON JIRA (Condicional - UPEX Workspace)
+
+### Custom Field para Feature Implementation Plan
+
+| Field ID            | Nombre                              | Tipo     | Nivel |
+| ------------------- | ----------------------------------- | -------- | ----- |
+| `customfield_10043` | Feature Implementation Plan (Dev)🛠️ | Textarea | Epic  |
+
+### Instrucciones de Sincronización
+
+**DESPUÉS de generar el archivo `feature-implementation-plan.md` localmente:**
+
+1. **Verificar si el Epic tiene el custom field:**
+   - Usar MCP de Atlassian para obtener el Epic
+   - Verificar si `customfield_10043` existe y está disponible
+
+2. **Si el campo existe:**
+   - Copiar el contenido COMPLETO del `feature-implementation-plan.md` generado
+   - Actualizar el Epic en Jira usando MCP:
+     ```
+     jira_update_issue(
+       issue_key: "{EPIC_JIRA_KEY}",
+       fields: {
+         "customfield_10043": "{CONTENIDO_COMPLETO_DEL_PLAN}"
+       }
+     )
+     ```
+   - Agregar label: `implementation-plan-ready`
+
+3. **Si el campo NO existe (Workspace non-UPEX):**
+   - Buscar campo equivalente: `jira_search_fields(keyword: "implementation plan")`
+   - Si se encuentra alternativa, usar ese field ID
+   - Si no existe ningún campo equivalente:
+     - Agregar el plan como **comentario** en el Epic
+     - Formato del comentario:
+
+       ```
+       ## 🛠️ Feature Implementation Plan
+
+       [CONTENIDO COMPLETO DEL PLAN]
+
+       ---
+       📄 Full document: .context/PBI/epics/EPIC-{...}/feature-implementation-plan.md
+       ```
+
+### Output Esperado
+
+- ✅ Archivo local `feature-implementation-plan.md` generado
+- ✅ Epic en Jira actualizado con el plan (campo o comentario)
+- ✅ Label `implementation-plan-ready` agregado al Epic
+
+---
+
 **Formato:** Markdown estructurado, listo para copiar a .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/feature-implementation-plan.md
 
 **Restricciones:**
@@ -444,3 +497,4 @@ Todas las stories de esta feature usan vocabulario consistente del dominio, refl
 - Dependencias compartidas claras
 - Orden de implementación lógico
 - Riesgos identificados con mitigaciones
+- **Sincronizar con Jira después de generar archivo local**

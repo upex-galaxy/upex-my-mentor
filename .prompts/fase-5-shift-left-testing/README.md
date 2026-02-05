@@ -93,10 +93,11 @@ Epic en Jira + Local
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    SHIFT-LEFT TESTING                        │
+│                    Step 1: Análisis de Requerimientos        │
 ├─────────────────────────────────────────────────────────────┤
 │                                                              │
-│   NIVEL EPIC (Feature)          NIVEL STORY                 │
-│   ────────────────────          ────────────                │
+│   [1a] NIVEL EPIC (Primero)     [1b] NIVEL STORY (Después)  │
+│   ────────────────────────      ─────────────────────────   │
 │                                                              │
 │   FTP (Feature Test Plan)       ATP (Acceptance Test Plan)  │
 │   - Riesgos                     - Escenarios por AC         │
@@ -106,15 +107,18 @@ Epic en Jira + Local
 │                                                              │
 │   feature-test-plan.md          acceptance-test-plan.md     │
 │   (1 por Epic)                  (1 por Story)               │
+│   Provee CONTEXTO para →        ← Informado por FTP         │
 │                                                              │
 │                                        ↓                     │
-│                              ATCs (Mid-Game Step 5)          │
+│                              ATCs (Mid-Game Step 6)          │
 │                              Documentados en Jira            │
 │                                        ↓                     │
-│                              KATA Automation (Steps 7-9)     │
+│                              KATA Automation (Steps 8-10)    │
 │                                                              │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+> **Orden importante:** FTP se crea PRIMERO (contexto macro), ATP se crea DESPUÉS (informado por el FTP). Ambos ocurren ANTES del sprint durante refinamiento.
 
 **Trazabilidad completa:** FTP (Epic) → ATP (Story) → ATCs (Jira) → KATA (Automation)
 
@@ -184,11 +188,11 @@ Epic en Jira + Local
 
 ## Conexión con Mid-Game Testing
 
-Los artefactos de esta fase alimentan directamente al **Mid-Game Testing (Steps 5-9)**:
+Los artefactos de esta fase alimentan directamente al **Mid-Game Testing (Steps 6-10)**:
 
 | Artefacto Fase 5    | → Mid-Game        | Propósito                          |
 | ------------------- | ----------------- | ---------------------------------- |
-| ATP (Story-level)   | → ATCs (Step 5)   | Escenarios se formalizan en Jira   |
+| ATP (Story-level)   | → ATCs (Step 6)   | Escenarios se formalizan en Jira   |
 | Escenarios críticos | → Candidates      | Priorizados para automatización    |
 | Acceptance Criteria | → KATA decorators | Trazabilidad `@atc('PROJECT-XXX')` |
 

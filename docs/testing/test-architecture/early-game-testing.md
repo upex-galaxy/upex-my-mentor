@@ -27,7 +27,7 @@ La **primera fase del Integrated Quality Lifecycle** donde el **QA Analyst** lid
 │  │  EARLY-GAME     │──▶│   MID-GAME      │──▶│   LATE-GAME     ││
 │  │  ✅ FASE ACTUAL │   │   Siguiente     │   │   Futuro        ││
 │  │                 │   │                 │   │                 ││
-│  │  Steps 1-4      │   │   Steps 5-9     │   │   Steps 10-15   ││
+│  │  Steps 1-5      │   │   Steps 6-10    │   │   Steps 11-16   ││
 │  │  QA Analyst     │   │   QA Automation │   │   QA + DevOps   ││
 │  └─────────────────┘   └─────────────────┘   └─────────────────┘│
 │                                                                 │
@@ -38,7 +38,7 @@ La **primera fase del Integrated Quality Lifecycle** donde el **QA Analyst** lid
 
 | Aspecto           | Detalle                     |
 | ----------------- | --------------------------- |
-| **Steps**         | 1-4 del IQL                 |
+| **Steps**         | 1-5 del IQL                 |
 | **Enfoques**      | Shift-Left, BDD, Risk-Based |
 | **Rol Principal** | QA Analyst                  |
 | **Herramientas**  | Jira, Confluence, Postman   |
@@ -49,9 +49,9 @@ La **primera fase del Integrated Quality Lifecycle** donde el **QA Analyst** lid
 
 ---
 
-## Los 4 Pasos del Early-Game Testing
+## Los 5 Pasos del Early-Game Testing
 
-**Early-Game Testing** se ejecuta a través de **4 pasos específicos** que corresponden a los Steps 1-4 del IQL.
+**Early-Game Testing** se ejecuta a través de **5 pasos específicos** que corresponden a los Steps 1-5 del IQL.
 
 > _"Cada paso tiene un objetivo específico dentro del TMLC (Test Manual Life Cycle) y se integra perfectamente con el workflow de desarrollo."_
 
@@ -59,21 +59,44 @@ La **primera fase del Integrated Quality Lifecycle** donde el **QA Analyst** lid
 
 **TMLC - Test Manual Life Cycle (1st Stage)**
 
-Entender los requerimientos y finalizar los acceptance criteria de la US antes de empezar la implementación.
+Entender los requerimientos y crear los planes de testing **ANTES** del sprint (durante refinamiento).
+
+**Flujo del Step 1 (Orden específico):**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│   [1a] ANÁLISIS DE EPIC (Contexto Macro)                       │
+│   ├── Revisar la Epic completa                                 │
+│   ├── Entender el scope del módulo/feature                     │
+│   ├── Identificar TODAS las Stories relacionadas               │
+│   └── Generar: FTP (Feature Test Plan)                         │
+│                    ↓                                            │
+│   [1b] ANÁLISIS DE STORY (Con contexto de Epic)                │
+│   ├── Analizar cada Story CON el contexto del FTP              │
+│   ├── Refinar Acceptance Criteria                              │
+│   ├── Identificar escenarios (happy path, edge cases)          │
+│   └── Generar: ATP (Acceptance Test Plan) por cada Story       │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**¿Por qué este orden?**
+El tester DEBE analizar primero la Epic para entender el scope completo del módulo. Si solo analiza la Story aislada, puede introducir pruebas fuera de scope o perder integraciones importantes.
 
 **Actividades Clave:**
 
 - QA discute ambigüedades con los stakeholders
-- QA crea un Feature Test Plan (FTP) a nivel Epic que describe los escenarios iniciales
-- El subtask 'QA: AC Review' y 'QA: Feature Test Plan' pasa de Open → In Progress → Done
+- QA crea el **FTP** a nivel Epic (contexto macro)
+- QA crea el **ATP** por cada Story (informado por el FTP)
+- El subtask 'QA: AC Review' y 'QA: Test Planning' pasa de Open → In Progress → Done
 
 **Artefactos Generados:**
 
 - **FTP (Feature Test Plan):** Estrategia de testing a nivel Epic
+- **ATP (Acceptance Test Plan):** Plan de pruebas por cada Story, basado en el contexto del FTP
 - **AC refinados:** Acceptance Criteria claros y verificables
 
 **Resultado Esperado:**
-Un conjunto claro de acceptance criteria y un FTP para guiar el testing específico en la US.
+Un FTP que provee contexto macro y un ATP por cada Story con escenarios de prueba completos.
 
 **Herramientas:** Jira, Confluence, Slack, Claude Code
 
@@ -102,18 +125,16 @@ Un entorno funcional donde el equipo de QA puede comenzar con las pruebas.
 
 **TMLC - Test Manual Life Cycle (2nd Stage) - Early-Gank**
 
-Validar rápidamente la US usando Feature Test Execution (FTX) definido en el FTP.
+Ejecutar el ATP creado en Step 1 para validar la US implementada.
 
 **Actividades Clave:**
 
 - El subtask 'QA: Feature Testing' pasa de Open → In Progress → Done
+- QA ejecuta los escenarios del **ATP** (creado en Step 1)
 - QA realiza pruebas exploratorias dirigidas en áreas críticas o de alto riesgo
 - Se reportan hallazgos y defectos inmediatamente
-- QA crea el **Acceptance Test Plan (ATP)** para la Story
 
-**Artefacto Generado:**
-
-- **ATP (Acceptance Test Plan):** Plan que define CÓMO validar cada Acceptance Criteria de la Story
+**Nota:** El ATP ya fue creado en Step 1 durante el análisis de requerimientos. Step 3 es la **ejecución** de ese plan.
 
 **Resultado Esperado:**
 La User Story puede desplegarse a producción una vez que QA lo aprueba. La US se cierra en Jira.
@@ -122,9 +143,40 @@ La User Story puede desplegarse a producción una vez que QA lo aprueba. La US s
 
 ---
 
-### Step 4: Priorización basada en Riesgo
+### Step 4: Reporte de Defectos y Verificación
 
-**TMLC - Test Manual Life Cycle (3rd Stage) - Risk-Based**
+**TMLC - Test Manual Life Cycle (3rd Stage) - Bug Lifecycle**
+
+Gestionar el ciclo de vida de los defectos encontrados durante testing exploratorio, incluyendo reporte y retesting.
+
+**Actividades Clave:**
+
+- QA documenta los defectos encontrados usando el template de Bug Report
+- Se crea el Bug en Jira con toda la información necesaria para reproducción
+- El Bug se vincula a la User Story correspondiente
+- Cuando Dev marca el fix como "Ready for QA", QA ejecuta retesting
+- Si el bug persiste, se reabre; si está corregido, se cierra
+
+**Ciclo del Bug (Síncrono + Asíncrono):**
+
+```
+[Bug Encontrado] → [Reporte en Jira] → (Espera Dev Fix) → [Retesting] → [Cerrado/Reabierto]
+```
+
+**Artefacto Generado:**
+
+- **Bug Report:** Documentación completa del defecto con pasos de reproducción, evidencia y severidad
+
+**Resultado Esperado:**
+Todos los defectos críticos y bloqueantes están resueltos y verificados antes de pasar a priorización.
+
+**Herramientas:** Jira, Browser DevTools, Loom/Screenshots
+
+---
+
+### Step 5: Priorización basada en Riesgo
+
+**TMLC - Test Manual Life Cycle (4th Stage) - Risk-Based**
 
 Decidir qué escenarios del ATP merecen test cases formales vs mantenerse como exploratorios.
 
@@ -137,7 +189,7 @@ Decidir qué escenarios del ATP merecen test cases formales vs mantenerse como e
 **Transición a Mid-Game:**
 
 - El ATP refinado contiene los escenarios priorizados
-- Cada escenario priorizado se convierte en un **ATC** (Acceptance Test Case) en el Step 5
+- Cada escenario priorizado se convierte en un **ATC** (Acceptance Test Case) en el Step 6
 - Los ATCs son la entrada para el framework **KATA** de automatización
 
 **Resultado Esperado:**

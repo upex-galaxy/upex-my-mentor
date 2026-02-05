@@ -445,3 +445,48 @@ Textos que reflejan el contexto específico del proyecto, usando vocabulario del
 - Estimated time realista
 - Total debe match story points
 - Testing strategy por cada step
+
+---
+
+## 📤 SINCRONIZACIÓN CON JIRA (Condicional - UPEX Workspace)
+
+### Custom Field para Story Implementation Plan
+
+| Field ID            | Nombre                           | Tipo     | Nivel |
+| ------------------- | -------------------------------- | -------- | ----- |
+| `customfield_12401` | Spec Implementation Plan (Dev)🛠️ | Textarea | Story |
+
+### Instrucciones de Sincronización
+
+**DESPUÉS de generar el archivo `implementation-plan.md` localmente:**
+
+1. **Verificar si la Story tiene el custom field:**
+   - Usar MCP de Atlassian para obtener la Story: `jira_get_issue`
+   - Verificar si `customfield_12401` existe y está disponible en el response
+
+2. **Si el campo existe:**
+   - Copiar el contenido COMPLETO del `implementation-plan.md` generado
+   - Actualizar la Story en Jira usando MCP `jira_update_issue`:
+     ```
+     fields: {
+       "customfield_12401": "[contenido del implementation-plan.md]"
+     }
+     ```
+   - Agregar label: `implementation-plan-ready`
+
+3. **Si el campo NO existe (Workspace non-UPEX):**
+   - Buscar campo equivalente con nombre similar ("Implementation Plan", "Dev Plan", "Technical Plan")
+   - Si no existe ningún campo equivalente, agregar como **comentario** en la Story:
+
+     ```
+     📋 **Spec Implementation Plan (Dev)**
+
+     [contenido del implementation-plan.md]
+     ```
+
+### Output Esperado
+
+- [ ] Archivo `implementation-plan.md` creado en `.context/PBI/epics/.../stories/.../`
+- [ ] Custom field `customfield_12401` actualizado en Jira (si existe)
+- [ ] Label `implementation-plan-ready` agregado a la Story
+- [ ] Comentario agregado como fallback (si campo no existe)

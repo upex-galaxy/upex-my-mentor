@@ -11,7 +11,7 @@ Implement automated tests for documented **ATCs (Acceptance Test Cases)** using 
 
 Only automate functionality that has been validated manually and documented.
 
-**Conexión IQL:** Esta fase corresponde a los **Steps 7-9 del Mid-Game Testing** - donde los ATCs se convierten en scripts automatizados con KATA.
+**Conexión IQL:** Esta fase corresponde a los **Steps 7-10 del Mid-Game Testing** - donde los ATCs se evalúan, automatizan con KATA, verifican en CI, y se aprueban via PR.
 
 ---
 
@@ -136,7 +136,7 @@ ATP (Fase 5) → ATCs en Jira (Fase 11) → KATA Scripts (Fase 12)
 - Tests passing in CI/CD pipeline
 - Jira ATCs marked as "Automated"
 
-**Estado IQL:** Al completar esta fase, los ATCs transitan a status AUTOMATED en Jira (Step 9 del Mid-Game).
+**Estado IQL:** Al completar esta fase, los ATCs transitan a status AUTOMATED en Jira (Step 10 del Mid-Game).
 
 ---
 

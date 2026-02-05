@@ -13,7 +13,7 @@ Documentación asincrónica de **ATCs (Acceptance Test Cases)** en Jira **DESPU�
 - Decisiones de automatización basadas en ROI
 
 **Conexión IQL:**
-Esta fase corresponde al **Step 5 del Mid-Game Testing** - donde los escenarios del ATP se convierten en ATCs formales.
+Esta fase corresponde al **Step 6 del Mid-Game Testing** - donde los escenarios del ATP se convierten en ATCs formales.
 
 ---
 
@@ -184,7 +184,7 @@ Para ATCs marcados como **Candidate**:
 - Implementar ATCs siguiendo arquitectura KATA
 - Cada ATC se vincula con `@atc('PROJECT-XXX')` para trazabilidad
 
-**Conexión IQL:** Esta transición corresponde a los Steps 6-9 del Mid-Game Testing.
+**Conexión IQL:** Esta transición corresponde a los Steps 7-10 del Mid-Game Testing (evaluación, automatización, CI y PR).
 
 ---
 

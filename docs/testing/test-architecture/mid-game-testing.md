@@ -27,7 +27,7 @@ La **segunda fase del Integrated Quality Lifecycle** donde el **QA Automation En
 │  │  EARLY-GAME     │──▶│   MID-GAME      │──▶│   LATE-GAME     ││
 │  │  Completado     │   │   ✅ FASE ACTUAL│   │   Siguiente     ││
 │  │                 │   │                 │   │                 ││
-│  │  Steps 1-4      │   │   Steps 5-9     │   │   Steps 10-15   ││
+│  │  Steps 1-5      │   │   Steps 6-10    │   │   Steps 11-16   ││
 │  │  QA Analyst     │   │   QA Automation │   │   QA + DevOps   ││
 │  └─────────────────┘   └─────────────────┘   └─────────────────┘│
 │                                                                 │
@@ -38,7 +38,7 @@ La **segunda fase del Integrated Quality Lifecycle** donde el **QA Automation En
 
 | Aspecto           | Detalle                      |
 | ----------------- | ---------------------------- |
-| **Steps**         | 5-9 del IQL                  |
+| **Steps**         | 6-10 del IQL                 |
 | **Enfoques**      | Continuous, Agile, AI-Driven |
 | **Rol Principal** | QA Automation Engineer       |
 | **Herramientas**  | Playwright, Jenkins, CI/CD   |
@@ -51,13 +51,13 @@ La **segunda fase del Integrated Quality Lifecycle** donde el **QA Automation En
 
 ## Los 5 Pasos del Mid-Game Testing
 
-**Mid-Game Testing** se ejecuta a través de **5 pasos específicos** que corresponden a los Steps 5-9 del IQL.
+**Mid-Game Testing** se ejecuta a través de **5 pasos específicos** que corresponden a los Steps 6-10 del IQL.
 
 > _"Transición del TMLC (Test Manual Life Cycle) al TALC (Test Automation Life Cycle) con enfoque en automatización y CI/CD."_
 
-### Step 5: Documentación de ATCs (Acceptance Test Cases)
+### Step 6: Documentación de ATCs (Acceptance Test Cases)
 
-**TMLC - Test Manual Life Cycle (4th Stage)**
+**TMLC - Test Manual Life Cycle (5th Stage)**
 
 Crear 'Test' tickets (ATCs) formales para cada escenario del ATP priorizado, sin bloquear la entrega de la US.
 
@@ -81,7 +81,7 @@ Un backlog sano de ATCs de alto valor, listo para ejecución manual o automatiza
 
 ---
 
-### Step 6: Evaluación de ATCs Candidatos a Automatización
+### Step 7: Evaluación de ATCs Candidatos a Automatización
 
 **TALC - Test Automation Life Cycle (1st Stage)**
 
@@ -107,7 +107,7 @@ Diferenciación clara entre ATCs manuales y ATCs candidatos para automatización
 
 ---
 
-### Step 7: Automatización de ATCs con KATA Framework
+### Step 8: Automatización de ATCs con KATA Framework
 
 **TALC - Test Automation Life Cycle (2nd Stage) - KATA Model**
 
@@ -136,7 +136,7 @@ Los ATCs automatizados quedan listos para la integración continua.
 
 ---
 
-### Step 8: Verificación de ATCs Automatizados en CI
+### Step 9: Verificación de ATCs Automatizados en CI
 
 **TALC - Test Automation Life Cycle (3rd Stage)**
 
@@ -156,7 +156,7 @@ ATCs automatizados con KATA estables e integrados de manera confiable en CI/CD.
 
 ---
 
-### Step 9: Revisión de Código de ATCs (Pull Request)
+### Step 10: Revisión de Código de ATCs (Pull Request)
 
 **TALC - Test Automation Life Cycle (4th Stage)**
 
@@ -194,7 +194,7 @@ Story Level (Early-Game):
 └── Acceptance Test Plan (ATP)
     └── Escenarios priorizados
 
-Mid-Game (Steps 5-9):
+Mid-Game (Steps 6-10):
 ├── ATC (Acceptance Test Case) → Ticket en Jira
 └── KATA Script → Código que implementa el ATC
     └── @atc('PROJECT-XXX') → Trazabilidad

@@ -1476,36 +1476,47 @@ Una vez que PO/Dev han clarificado todas las preguntas y la story está refinada
 
 Este prompt genera artefactos que siguen la jerarquía del **Integrated Quality Lifecycle**:
 
-| Artefacto                      | Nivel     | Descripción                             | Fase IQL               |
-| ------------------------------ | --------- | --------------------------------------- | ---------------------- |
-| **FTP** (Feature Test Plan)    | Epic      | Estrategia y alcance de testing         | Early-Game (Step 1)    |
-| **ATP** (Acceptance Test Plan) | Story     | Este documento - plan para validar ACs  | Early-Game (Steps 3-4) |
-| **ATC** (Acceptance Test Case) | Test      | Casos individuales documentados en Jira | Mid-Game (Step 5)      |
-| **KATA**                       | Framework | Automatización de ATCs                  | Mid-Game (Steps 7-9)   |
+### Artefactos del IQL
 
-**Trazabilidad ATP → ATC → KATA:**
+| Artefacto                      | Nivel | Descripción                             | Fase IQL          |
+| ------------------------------ | ----- | --------------------------------------- | ----------------- |
+| **FTP** (Feature Test Plan)    | Epic  | Estrategia y alcance de testing         | Early-Game Step 1 |
+| **ATP** (Acceptance Test Plan) | Story | Este documento - plan para validar ACs  | Early-Game Step 1 |
+| **ATC** (Acceptance Test Case) | Test  | Casos individuales documentados en Jira | Mid-Game Step 6   |
+
+> **Nota:** FTP y ATP se crean AMBOS en el Step 1 (Análisis de Requerimientos). Primero se analiza la Epic para crear el FTP (contexto macro), luego se analizan las Stories para crear ATPs informados por el FTP.
+
+### KATA: Arquitectura de Automatización
+
+**KATA** (Komponent Action Test Architecture) **no es un artefacto del IQL**, sino la arquitectura nativa de automatización:
+
+- Se usa en Mid-Game (Steps 8-10) para automatizar ATCs
+- El decorador `@atc('PROJECT-XXX')` vincula scripts con tickets Jira
+- Provee trazabilidad bidireccional entre código y gestión de tests
+
+**Trazabilidad completa:**
 
 ```
 Epic (Jira)
-  ↓ FTP (Feature Test Plan) → Step 1
+  ↓ [Step 1a] FTP (Feature Test Plan) → Contexto macro
 Story (Jira + .md)
-  ↓ ATP (Acceptance Test Plan) → Este documento → Steps 3-4
+  ↓ [Step 1b] ATP (Acceptance Test Plan) → Este documento (informado por FTP)
   ↓ AC → Acceptance Criteria refinados
-ATCs (Acceptance Test Cases) → Step 5
+ATCs (Acceptance Test Cases) → Step 6
   ↓ Documentados en Jira como tickets Test
   ↓ Cada ATC mapea 1:1 con ticket Jira
-KATA Automation → Steps 7-9
+KATA Automation → Steps 8-10
   ↓ @atc('PROJECT-XXX') decorator
   ↓ Scripts automatizados con trazabilidad
 ```
 
 **Conexión con Mid-Game:**
 
-Los "Test Outlines" generados en este ATP se convierten en **ATCs formales** durante el Step 5 del Mid-Game. Cada ATC:
+Los "Test Outlines" generados en este ATP se convierten en **ATCs formales** durante el Step 6 del Mid-Game. Cada ATC:
 
 - Se documenta como ticket 'Test' en Jira/Xray
-- Se evalúa para automatización (Step 6)
-- Se automatiza con KATA framework (Steps 7-9)
+- Se evalúa para automatización (Step 7)
+- Se automatiza con arquitectura KATA (Steps 8-10)
 
 Ver documentación:
 
@@ -1515,8 +1526,8 @@ Ver documentación:
 
 ---
 
-**Versión:** 3.2 - Git Branch Naming Convention + Paso 0
-**Última actualización:** 2025-12-06
+**Versión:** 3.3 - Git Branch Naming Convention + Paso 0 + Custom Field Sync
+**Última actualización:** 2025-02-05
 **Cambios principales:**
 
 - ✅ Agregado flujo Jira-First (Pasos 5-8)
@@ -1535,3 +1546,49 @@ Ver documentación:
 - ✅ **Branch Naming Convention para Git** - formato `test/{JIRA_KEY}/{short-description}`
 - ✅ **Paso 0: Crear rama de trabajo** - checkout desde `staging` antes de generar test cases
 - ✅ **Paso 9: Commit del archivo** - commit del `acceptance-test-plan.md` en la rama de trabajo
+- ✅ **Sincronización condicional con custom field de Jira**
+
+---
+
+## 📤 SINCRONIZACIÓN CON JIRA (Condicional - UPEX Workspace)
+
+### Custom Field para Acceptance Test Plan
+
+| Field ID            | Nombre                      | Tipo     | Nivel |
+| ------------------- | --------------------------- | -------- | ----- |
+| `customfield_12400` | Acceptance Test Plan (QA)🧪 | Textarea | Story |
+
+### Instrucciones de Sincronización
+
+**DESPUÉS de generar el archivo `acceptance-test-plan.md` localmente:**
+
+1. **Verificar si la Story tiene el custom field:**
+   - Usar MCP de Atlassian para obtener la Story: `jira_get_issue`
+   - Verificar si `customfield_12400` existe y está disponible en el response
+
+2. **Si el campo existe:**
+   - Copiar el contenido COMPLETO del `acceptance-test-plan.md` generado
+   - Actualizar la Story en Jira usando MCP `jira_update_issue`:
+     ```
+     fields: {
+       "customfield_12400": "[contenido del acceptance-test-plan.md]"
+     }
+     ```
+   - Agregar label: `test-plan-ready`
+
+3. **Si el campo NO existe (Workspace non-UPEX):**
+   - Buscar campo equivalente con nombre similar ("Test Plan", "QA Plan", "Acceptance Tests")
+   - Si no existe ningún campo equivalente, agregar como **comentario** en la Story:
+
+     ```
+     🧪 **Acceptance Test Plan (QA)**
+
+     [contenido del acceptance-test-plan.md]
+     ```
+
+### Output Esperado
+
+- [ ] Archivo `acceptance-test-plan.md` creado en `.context/PBI/epics/.../stories/.../`
+- [ ] Custom field `customfield_12400` actualizado en Jira (si existe)
+- [ ] Label `test-plan-ready` agregado a la Story
+- [ ] Comentario agregado como fallback (si campo no existe)

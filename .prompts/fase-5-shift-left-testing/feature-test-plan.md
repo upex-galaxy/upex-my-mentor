@@ -1215,8 +1215,8 @@ Epic Path: .context/PBI/epics/EPIC-UPEX-13-nombre-feature/
 
 ---
 
-**Versión:** 3.0 - Jira-First + MCP Atlassian + Shift-Left Philosophy
-**Última actualización:** 2025-01-05
+**Versión:** 3.1 - Jira-First + MCP Atlassian + Shift-Left Philosophy + Custom Field Sync
+**Última actualización:** 2025-02-05
 **Cambios principales:**
 
 - ✅ Agregado flujo Jira-First (Pasos 5-8)
@@ -1224,3 +1224,49 @@ Epic Path: .context/PBI/epics/EPIC-UPEX-13-nombre-feature/
 - ✅ Test plan en comentarios (no artefactos separados)
 - ✅ Refinamiento automático de epic en Jira
 - ✅ Consistencia con `acceptance-test-plan.md` prompt
+- ✅ **Sincronización condicional con custom field de Jira**
+
+---
+
+## 📤 SINCRONIZACIÓN CON JIRA (Condicional - UPEX Workspace)
+
+### Custom Field para Feature Test Plan
+
+| Field ID            | Nombre                   | Tipo     | Nivel |
+| ------------------- | ------------------------ | -------- | ----- |
+| `customfield_10045` | Feature Test Plan (QA)🧪 | Textarea | Epic  |
+
+### Instrucciones de Sincronización
+
+**DESPUÉS de generar el archivo `feature-test-plan.md` localmente:**
+
+1. **Verificar si el Epic tiene el custom field:**
+   - Usar MCP de Atlassian para obtener el Epic: `jira_get_issue`
+   - Verificar si `customfield_10045` existe y está disponible en el response
+
+2. **Si el campo existe:**
+   - Copiar el contenido COMPLETO del `feature-test-plan.md` generado
+   - Actualizar el Epic en Jira usando MCP `jira_update_issue`:
+     ```
+     fields: {
+       "customfield_10045": "[contenido del feature-test-plan.md]"
+     }
+     ```
+   - Agregar label: `test-plan-ready`
+
+3. **Si el campo NO existe (Workspace non-UPEX):**
+   - Buscar campo equivalente con nombre similar ("Test Plan", "QA Plan", "Testing Strategy")
+   - Si no existe ningún campo equivalente, agregar como **comentario** en el Epic:
+
+     ```
+     🧪 **Feature Test Plan (QA)**
+
+     [contenido del feature-test-plan.md]
+     ```
+
+### Output Esperado
+
+- [ ] Archivo `feature-test-plan.md` creado en `.context/PBI/epics/.../`
+- [ ] Custom field `customfield_10045` actualizado en Jira (si existe)
+- [ ] Label `test-plan-ready` agregado al Epic
+- [ ] Comentario agregado como fallback (si campo no existe)
