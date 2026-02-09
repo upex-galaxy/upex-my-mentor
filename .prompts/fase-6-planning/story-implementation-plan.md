@@ -3,10 +3,16 @@ Actúa como Senior Full-Stack Developer + UI/UX Designer.
 **Input:**
 
 - Story: [usar .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/story.md]
-- Test Cases: [usar .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/acceptance-test-plan.md]
+- **Test Cases (Acceptance Test Plan):** Usar el siguiente orden de descubrimiento:
+  1. **Jira Comments** (preferido): Buscar en comentarios de la US usando `mcp__atlassian__jira_get_issue` con `comment_limit: 50`. Buscar comentarios que contengan "Test Case", "TC-", "Scenario:", o tablas de test cases.
+  2. **Jira Custom Field**: Campo `customfield_12400` ("Acceptance Test Plan (QA)🧪") usando `fields: "*all"`
+  3. **Archivo Local** (fallback): `.context/PBI/epics/.../stories/.../test-cases.md` o `acceptance-test-plan.md`
 - Feature Implementation Plan: [usar .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/feature-implementation-plan.md]
 - SRS relevante: [usar secciones relacionadas de .context/SRS/]
 - **Design System:** [usar .context/design-system.md - para decisiones de UI/UX]
+
+**⚠️ IMPORTANTE - Jira es la fuente de verdad para Test Cases:**
+Los test cases del Acceptance Test Plan definen los escenarios que la implementación DEBE cubrir. Cada test case debe mapearse a un step de implementación para garantizar cobertura completa. NO omitir ningún test case.
 
 **Genera archivo: implementation-plan.md** (dentro de .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/)
 
@@ -415,7 +421,7 @@ Textos que reflejan el contexto específico del proyecto, usando vocabulario del
   - [ ] [Componente específico 2]
 - [ ] Tests de integración pasando
   - [ ] [Escenario específico]
-- [ ] Tests E2E pasando (referencia: acceptance-test-plan.md)
+- [ ] Tests E2E pasando (referencia: Acceptance Test Plan de Jira o test-cases.md)
   - [ ] TC-001: [nombre]
   - [ ] TC-002: [nombre]
   - [ ] ...
