@@ -405,3 +405,60 @@
 **Expected Result:**
 
 * **Performance:** El valor de LCP es ≤ 2.5 segundos.
+
+---
+
+## Exploratory Session Notes (UI) - 2026-02-10
+
+**Duración:** 20 min
+**URL:** https://staging-upexmymentor.vercel.app/mentors
+
+### Escenarios Probados
+
+1) **Carga de galería y contenido de tarjetas** - PASSED
+- Acción: cargar `/mentors` en staging.
+- Esperado: grid de tarjetas con datos mínimos (foto/fallback, nombre, especialidad, rating, reviews, tarifa).
+- Actual: se renderizan 20 tarjetas con los campos esperados.
+
+2) **Orden por rating descendente** - PASSED
+- Acción: leer ratings visibles en orden.
+- Esperado: orden descendente (con empates).
+- Actual: 5, 4.9, 4.8, 4.8, 0, 0... en orden descendente.
+
+3) **Paginación "Siguiente"** - FAILED
+- Acción: click en "Siguiente".
+- Esperado: si hay más mentores, mostrar nuevos resultados y actualizar indicador de página; si no hay, deshabilitar el botón.
+- Actual: request a `/mentors?cursor=...&page=2` responde 200 OK, pero la lista no cambia y el indicador permanece en "Página 1".
+
+4) **Avatar de fallback con imagen rota** - PASSED
+- Acción: forzar error de carga en imagen del avatar.
+- Esperado: mostrar fallback con iniciales.
+- Actual: el fallback aparece correctamente.
+
+5) **Responsive móvil** - PASSED (observación visual)
+- Acción: viewport 375x667.
+- Esperado: layout en una columna sin overflow.
+- Actual: cards en columna, sin solapamientos ni overflow horizontal.
+
+6) **Empty state sin mentores** - OBSERVATION
+- Acción: no verificable en staging (hay mentores verificados).
+- Esperado: mensaje de empty state sin tarjetas.
+- Actual: no aplica por data existente.
+
+### Issues Encontrados
+
+1) **MentorDiscovery: Galería: Paginación mantiene "Siguiente" activo pero no actualiza resultados**
+   - Severidad: Moderada
+   - Pasos: ir a `/mentors` → click en "Siguiente" → observar que la lista no cambia.
+   - Evidencia: request 200 OK en Network; UI no cambia.
+
+### Observaciones Generales
+
+- En consola se observan 404 de prefetch en enlaces del footer (pricing/about/blog/etc.). No bloquea la galería, pero genera ruido en consola.
+
+### Candidatos para Automatización
+
+- Orden por rating descendente (top 5).
+- Render de campos mínimos en tarjeta.
+- Paginación (habilitación/deshabilitación y cambio de resultados).
+- Fallback avatar en imagen rota.
