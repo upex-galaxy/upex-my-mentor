@@ -1,48 +1,48 @@
-# Database Exploratory Testing Session Notes
+# Notas de sesion de testing exploratorio de base de datos
 
-Date: 2026-02-12
-Feature: MYM-14 - View All Available Mentors
-Database: Supabase (staging, shared across envs)
-Session Type: DB exploratory testing (read-only)
-
----
-
-## Executive Summary
-
-- Overall Status: ISSUES FOUND
-- Tables Tested: profiles, reviews
-- Constraints Verified: 5 (PK/UK/FK/CHECK)
-- Triggers Verified: 4 (rating update + mentor vetting notifications)
-- Data Integrity Issues: 2
+Fecha: 2026-02-12
+Feature: MYM-14 - Ver todos los mentores disponibles
+Base de datos: Supabase (staging, compartida entre entornos)
+Tipo de sesion: testing exploratorio de BD (solo lectura)
 
 ---
 
-## Database Exploration Plan
+## Resumen ejecutivo
 
-Feature: Mentor gallery (verified mentors only, rating-based ordering)
+- Estado general: SE ENCONTRARON PROBLEMAS
+- Tablas evaluadas: profiles, reviews
+- Restricciones verificadas: 5 (PK/UK/FK/CHECK)
+- Disparadores verificados: 4 (actualizacion de rating + notificaciones de vetting de mentores)
+- Problemas de integridad de datos: 2
+
+---
+
+## Plan de exploracion de base de datos
+
+Feature: galeria de mentores (solo verificados, orden por rating)
 Scope: MYM-14
 
-Tables involved:
+Tablas involucradas:
 
-| Table     | Role in Feature               | Key Columns |
-| --------- | ----------------------------- | ----------- |
-| profiles  | Mentor catalog                | id, role, is_verified, name, specialties, hourly_rate, average_rating, total_reviews |
-| reviews   | Rating/Review source of truth | id, subject_id, rating, booking_id |
+| Tabla     | Rol en la feature        | Columnas clave |
+| --------- | ------------------------ | -------------- |
+| profiles  | Catalogo de mentores     | id, role, is_verified, name, specialties, hourly_rate, average_rating, total_reviews |
+| reviews   | Fuente de rating/reviews | id, subject_id, rating, booking_id |
 
-Verification points:
+Puntos de verificacion:
 
-1) Only verified mentors surface (`role = 'mentor'`, `is_verified = true`).
-2) Rating + review count reflect reviews table (trigger integrity).
-3) Primary specialty and hourly rate exist for verified mentors.
-4) Sorting by average_rating desc is feasible with current data.
+1) Solo aparecen mentores verificados (`role = 'mentor'`, `is_verified = true`).
+2) El rating y total_reviews reflejan la tabla reviews (integridad del trigger).
+3) Especialidad principal y tarifa por hora existen para mentores verificados.
+4) El orden por average_rating desc es viable con los datos actuales.
 
 ---
 
-## Schema Verification
+## Verificacion de esquema
 
 ### profiles
 
-Columns (key subset):
+Columnas (subset clave):
 
 - id (uuid, PK, FK -> auth.users.id)
 - email (varchar, UNIQUE, NOT NULL)
@@ -53,19 +53,19 @@ Columns (key subset):
 - average_rating (numeric)
 - total_reviews (integer)
 
-Constraints:
+Restricciones:
 
 - PK: profiles_pkey (id)
 - FK: profiles_id_fkey -> auth.users(id)
 - UNIQUE: profiles_email_key (email)
 
-Triggers:
+Disparadores:
 
 - on_mentor_vetting_change (AFTER UPDATE) -> notify_mentor_vetting_change()
 
 ### reviews
 
-Columns (key subset):
+Columnas (subset clave):
 
 - id (uuid, PK)
 - reviewer_id (uuid, FK -> profiles.id)
@@ -73,7 +73,7 @@ Columns (key subset):
 - booking_id (uuid, nullable)
 - rating (integer, NOT NULL)
 
-Constraints:
+Restricciones:
 
 - PK: reviews_pkey (id)
 - FK: fk_reviewer -> profiles(id)
@@ -81,7 +81,7 @@ Constraints:
 - CHECK: reviews_rating_check (rating between 1 and 5)
 - UNIQUE: unique_review_per_booking_reviewer (booking_id, reviewer_id)
 
-Triggers:
+Disparadores:
 
 - trigger_update_profile_rating_insert (AFTER INSERT) -> update_profile_rating()
 - trigger_update_profile_rating_update (AFTER UPDATE) -> update_profile_rating()
@@ -89,9 +89,9 @@ Triggers:
 
 ---
 
-## Data State Verification
+## Verificacion de estado de datos
 
-### Mentor availability for listing
+### Disponibilidad de mentores para el listado
 
 Query:
 
@@ -106,9 +106,9 @@ Actual:
 - verified_mentors: 22
 - unverified_mentors: 1
 
-Status: VERIFIED
+Estado: VERIFICADO
 
-### No verified mentors with null name
+### Mentores verificados sin nombre
 
 Query:
 
@@ -118,10 +118,10 @@ from profiles
 where role = 'mentor' and is_verified = true and (name is null or trim(name) = '');
 ```
 
-Actual: 0 rows
-Status: VERIFIED
+Actual: 0 filas
+Estado: VERIFICADO
 
-### Rating bounds
+### Rangos de rating
 
 Query:
 
@@ -131,10 +131,10 @@ from profiles
 where average_rating is not null and (average_rating < 0 or average_rating > 5);
 ```
 
-Actual: 0 rows
-Status: VERIFIED
+Actual: 0 filas
+Estado: VERIFICADO
 
-### Sorting viability (average_rating desc)
+### Viabilidad de orden (average_rating desc)
 
 Query:
 
@@ -146,21 +146,21 @@ order by average_rating desc nulls last, id asc
 limit 10;
 ```
 
-Actual: top mentors sorted as expected (rating-desc, nulls last)
-Status: VERIFIED
+Actual: top de mentores ordenado como se espera (rating desc, nulls al final)
+Estado: VERIFICADO
 
 ---
 
-## Constraint Testing
+## Testing de restricciones
 
-Write-based constraint tests were skipped to avoid mutating shared staging data.
-Validation was performed by schema inspection + data integrity checks.
+Se omitieron pruebas de escritura para evitar mutar datos de staging compartido.
+La validacion se realizo por inspeccion de esquema + checks de integridad.
 
 ---
 
-## Data Integrity Checks
+## Comprobaciones de integridad de datos
 
-### Check A: Rating consistency between profiles and reviews
+### Check A: Consistencia entre profiles y reviews
 
 Query:
 
@@ -176,11 +176,11 @@ having (p.total_reviews is not null and p.total_reviews > 0 and count(r.id) = 0)
 
 Actual:
 
-- 1 mentor with stored rating/count but 0 reviews: profile id `81dce8b2-c2c6-486e-856c-b5645b2e68e9`
+- 1 mentor con rating/contador almacenado pero 0 reviews: profile id `81dce8b2-c2c6-486e-856c-b5645b2e68e9`
 
-Status: FAILED
+Estado: FALLA
 
-### Check B: Reviews linked to mentors only
+### Check B: Reviews solo asociados a mentores
 
 Query:
 
@@ -191,10 +191,10 @@ left join profiles p on p.id = r.subject_id
 where p.id is null or p.role <> 'mentor';
 ```
 
-Actual: 0 rows
-Status: PASSED
+Actual: 0 filas
+Estado: APROBADO
 
-### Check C: Reviews linked to bookings
+### Check C: Reviews asociados a bookings
 
 Query:
 
@@ -209,9 +209,9 @@ Actual:
 - total_reviews: 16
 - reviews_without_booking: 16
 
-Status: WARN (likely seed data, but breaks lineage)
+Estado: ADVERTENCIA (probables datos semilla, pero rompen trazabilidad)
 
-### Check D: Verified mentors missing primary specialty or hourly_rate
+### Check D: Mentores verificados sin especialidad o tarifa
 
 Query:
 
@@ -229,60 +229,60 @@ where role = 'mentor' and is_verified = true
 
 Actual:
 
-- 4 verified mentors missing specialties
-- 4 verified mentors missing hourly_rate (same set)
+- 4 mentores verificados sin specialties
+- 4 mentores verificados sin hourly_rate (mismo set)
 
-Status: WARN (may violate AC requirement for primary specialty and hourly rate)
-
----
-
-## Issues Found
-
-### Issue 1: Rating and review count out of sync
-
-- Severity: Medium
-- Table(s): profiles, reviews
-- Evidence: profile id `81dce8b2-c2c6-486e-856c-b5645b2e68e9` has total_reviews=12, average_rating=4.9, but 0 reviews.
-- Expected: reviews table should have 12 rows for that subject_id, or profile totals should be 0/null.
-- Actual: profile totals populated without review rows.
-- Impact: mentor list displays rating/reviews not backed by review data; affects trust and ordering accuracy.
-
-### Issue 2: Verified mentors missing core display fields
-
-- Severity: Low
-- Table(s): profiles
-- Evidence: 4 verified mentors have null specialties and null hourly_rate.
-- Expected: verified mentors should have at least 1 specialty and a positive hourly_rate to meet card requirements.
-- Actual: fields missing, UI shows 0/hr and no primary specialty.
-- Impact: violates AC expectations for mentor card content; weakens discovery UX.
+Estado: ADVERTENCIA (puede violar el AC de especialidad y tarifa)
 
 ---
 
-## Observations & Recommendations
+## Issues encontrados
 
-Positive Findings:
+### Issue 1: Rating y total_reviews fuera de sincronizacion
 
-- No verified mentors with null name.
-- Rating values are within 1-5.
-- Sorting by average_rating desc works with current data.
+- Severidad: Media
+- Tabla(s): profiles, reviews
+- Evidencia: profile id `81dce8b2-c2c6-486e-856c-b5645b2e68e9` tiene total_reviews=12, average_rating=4.9, pero 0 reviews.
+- Esperado: reviews debe tener 12 filas para ese subject_id o profiles debe mostrar 0/null.
+- Actual: profiles tiene valores sin respaldo en reviews.
+- Impacto: la lista muestra rating/reviews no sustentados; afecta confianza y orden.
 
-Areas of Concern:
+### Issue 2: Mentores verificados sin campos base de tarjeta
 
-- All reviews lack booking_id (lineage gap).
-
-Recommendations:
-
-1) Backfill or reconcile profile rating fields from reviews.
-2) Enforce `hourly_rate > 0` and `specialties` non-empty for verified mentors (constraint or verification rule).
-3) Ensure reviews created via booking flow always set booking_id.
+- Severidad: Baja
+- Tabla(s): profiles
+- Evidencia: 4 mentores verificados con specialties y hourly_rate null.
+- Esperado: mentores verificados deben tener al menos 1 specialty y hourly_rate positivo.
+- Actual: campos ausentes, UI muestra 0/hr y sin especialidad.
+- Impacto: viola expectativas del AC de la tarjeta; UX debil.
 
 ---
 
-## Decision Point
+## Observaciones y recomendaciones
 
-Result: INTEGRITY ISSUES
+Hallazgos positivos:
 
-Action:
+- No hay mentores verificados sin nombre.
+- Los ratings estan dentro de 1-5.
+- El orden por average_rating desc funciona con los datos actuales.
 
-- Log Issue 1 as data integrity bug (rating mismatch).
-- Log Issue 2 as data quality/UX issue (missing specialty/hourly_rate).
+Areas de preocupacion:
+
+- Todas las reviews carecen de booking_id (gap de trazabilidad).
+
+Recomendaciones:
+
+1) Recalcular o reconciliar ratings en profiles desde reviews.
+2) Enforzar `hourly_rate > 0` y `specialties` no vacio para mentores verificados (constraint o regla de verificacion).
+3) Asegurar que reviews creadas por booking seteen booking_id.
+
+---
+
+## Punto de decision
+
+Resultado: PROBLEMAS DE INTEGRIDAD
+
+Accion:
+
+- Reportar Issue 1 como bug de integridad (rating inconsistente).
+- Reportar Issue 2 como problema de calidad de datos/UX (specialties/hourly_rate faltante).
