@@ -49,6 +49,9 @@ bun.lockb
 .mcp.json
 opencode.json
 
+# Local OpenAPI specs
+/openapi.json
+
 # add more mcp assets
 
 # Sentry Config File
