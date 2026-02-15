@@ -17,6 +17,7 @@ Priorizar los candidatos de test con enfoque **Risk-Based Testing**, siendo **mu
 **⚠️ CONTEXTO CRÍTICO:**
 
 La User Story ya está **QA Approved**:
+
 - ✅ TODAS las pruebas YA PASARON
 - ✅ Los bugs YA SE CERRARON
 - ✅ NO estamos diseñando tests para ejecutar
@@ -59,6 +60,7 @@ Leer: .context/guidelines/QA/jira-test-management.md
 ```
 
 **Indicadores de "NO protege":**
+
 - Error fue typo o implementación inicial incorrecta
 - Área del código muy estable, nadie la toca
 - Edge case extremadamente raro (< 1% de usuarios)
@@ -85,6 +87,7 @@ Leer: .context/guidelines/QA/jira-test-management.md
 ```
 
 **Validaciones a nivel APP (NO son tests por feature):**
+
 - XSS prevention → Suite de seguridad global
 - Error handling → Tests de resiliencia globales
 - Mobile responsive → Ejecutar tests en múltiples viewports
@@ -142,15 +145,16 @@ DEPENDENCIAS (¿Cuántas integraciones?)
 
 **Interpretación del ROI (Umbrales ESTRICTOS):**
 
-| ROI Score | Decisión | Acción |
-| --------- | -------- | ------ |
-| > 5.0     | **Automatizar** | ROI excelente, incluir en regresión |
+| ROI Score | Decisión                    | Acción                                |
+| --------- | --------------------------- | ------------------------------------- |
+| > 5.0     | **Automatizar**             | ROI excelente, incluir en regresión   |
 | 3.0 - 5.0 | **Automatizar con cautela** | Evaluar si hay alternativa más simple |
-| 1.5 - 3.0 | **Evaluar caso por caso** | ¿Hay bug previo? ¿Es flujo crítico? |
-| 0.5 - 1.5 | **Probablemente diferir** | Solo incluir si hay bug previo |
-| < 0.5     | **Diferir** | No vale la pena mantener en regresión |
+| 1.5 - 3.0 | **Evaluar caso por caso**   | ¿Hay bug previo? ¿Es flujo crítico?   |
+| 0.5 - 1.5 | **Probablemente diferir**   | Solo incluir si hay bug previo        |
+| < 0.5     | **Diferir**                 | No vale la pena mantener en regresión |
 
 **⚠️ Cambio vs versión anterior:** Los umbrales son más altos porque:
+
 - Cada test tiene costo de mantenimiento
 - La mayoría de bugs no vuelven a ocurrir tras la primera corrección
 - Menos tests bien elegidos > muchos tests de bajo valor
@@ -295,10 +299,10 @@ SI (ROI < 0.5):
 
 ## Fase 0: Filtro de Preguntas Críticas
 
-| # | Escenario | ¿Protege futuro? | ¿Bug previo? | ¿Nivel feature? | ¿Pasa filtro? |
-|---|-----------|-----------------|--------------|-----------------|---------------|
-| 1 | [Nombre con nomenclatura] | SÍ/NO | SÍ/NO | SÍ/NO | ✅/❌ |
-| 2 | [Nombre con nomenclatura] | SÍ/NO | SÍ/NO | SÍ/NO | ✅/❌ |
+| #   | Escenario                 | ¿Protege futuro? | ¿Bug previo? | ¿Nivel feature? | ¿Pasa filtro? |
+| --- | ------------------------- | ---------------- | ------------ | --------------- | ------------- |
+| 1   | [Nombre con nomenclatura] | SÍ/NO            | SÍ/NO        | SÍ/NO           | ✅/❌         |
+| 2   | [Nombre con nomenclatura] | SÍ/NO            | SÍ/NO        | SÍ/NO           | ✅/❌         |
 
 **Resultado:** [X] de [N] candidatos pasan el filtro inicial.
 
@@ -306,11 +310,11 @@ SI (ROI < 0.5):
 
 ## Análisis ROI (Solo candidatos que pasaron filtro)
 
-| # | Escenario (Nomenclatura) | Freq | Impact | Stab | Effort | Deps | ROI | Bug Previo | Decisión |
-|---|--------------------------|------|--------|------|--------|------|-----|------------|----------|
-| 1 | Validar X cuando Y | 4 | 5 | 4 | 2 | 2 | 5.0 | BUG-XXX | ✅ AUTO |
-| 2 | Validar A cuando B | 3 | 3 | 5 | 2 | 1 | 4.5 | - | ✅ AUTO |
-| 3 | Validar C cuando D | 2 | 2 | 4 | 3 | 2 | 1.3 | - | ❌ DIFERIR |
+| #   | Escenario (Nomenclatura) | Freq | Impact | Stab | Effort | Deps | ROI | Bug Previo | Decisión   |
+| --- | ------------------------ | ---- | ------ | ---- | ------ | ---- | --- | ---------- | ---------- |
+| 1   | Validar X cuando Y       | 4    | 5      | 4    | 2      | 2    | 5.0 | BUG-XXX    | ✅ AUTO    |
+| 2   | Validar A cuando B       | 3    | 3      | 5    | 2      | 1    | 4.5 | -          | ✅ AUTO    |
+| 3   | Validar C cuando D       | 2    | 2      | 4    | 3      | 2    | 1.3 | -          | ❌ DIFERIR |
 
 ---
 
@@ -318,19 +322,19 @@ SI (ROI < 0.5):
 
 ### ✅ Para Regresión Automatizada
 
-| # | Escenario | ROI | Justificación |
-|---|-----------|-----|---------------|
-| 1 | [Nombre completo con nomenclatura] | X.X | [Flujo principal / Bug previo / ROI alto] |
+| #   | Escenario                          | ROI | Justificación                             |
+| --- | ---------------------------------- | --- | ----------------------------------------- |
+| 1   | [Nombre completo con nomenclatura] | X.X | [Flujo principal / Bug previo / ROI alto] |
 
 **Total:** [N] tests (objetivo: 1-3 por feature simple, 3-5 por feature compleja)
 
 ### ❌ Diferidos (NO entran en regresión)
 
-| # | Escenario | ROI | Razón para diferir |
-|---|-----------|-----|-------------------|
-| X | [Nombre] | X.X | Ya se validó, muy improbable que falle |
-| Y | [Nombre] | X.X | Edge case raro, one-time validation |
-| Z | [Nombre] | X.X | Se valida a nivel APP, no por feature |
+| #   | Escenario | ROI | Razón para diferir                     |
+| --- | --------- | --- | -------------------------------------- |
+| X   | [Nombre]  | X.X | Ya se validó, muy improbable que falle |
+| Y   | [Nombre]  | X.X | Edge case raro, one-time validation    |
+| Z   | [Nombre]  | X.X | Se valida a nivel APP, no por feature  |
 
 **Total diferidos:** [M] (debería ser mayoría)
 
@@ -339,14 +343,14 @@ SI (ROI < 0.5):
 ## Resumen
 
 | Métrica | Antes (candidatos) | Después (regresión) | Reducción |
-|---------|-------------------|---------------------|-----------|
-| Total | [N] | [M] | [X]% |
+| ------- | ------------------ | ------------------- | --------- |
+| Total   | [N]                | [M]                 | [X]%      |
 
-| Track | Count | Justificación |
-|-------|-------|---------------|
-| Automated Regression | [1-3] | Solo lo esencial |
-| Manual Regression | [0-1] | Casi nunca necesario |
-| Deferred | [N-M] | Mayoría |
+| Track                | Count | Justificación        |
+| -------------------- | ----- | -------------------- |
+| Automated Regression | [1-3] | Solo lo esencial     |
+| Manual Regression    | [0-1] | Casi nunca necesario |
+| Deferred             | [N-M] | Mayoría              |
 
 ---
 
@@ -354,17 +358,17 @@ SI (ROI < 0.5):
 
 **Tests a documentar en Jira:**
 
-| Escenario | Path | Nomenclatura Final |
-|-----------|------|-------------------|
-| [Nombre] | → Candidate | `{US_ID}: TC1: Validar <CORE> <CONDITIONAL>` |
+| Escenario | Path        | Nomenclatura Final                           |
+| --------- | ----------- | -------------------------------------------- |
+| [Nombre]  | → Candidate | `{US_ID}: TC1: Validar <CORE> <CONDITIONAL>` |
 
 **Características transversales (NO son tests):**
 
-| Característica | Cómo se valida |
-|---------------|----------------|
+| Característica    | Cómo se valida                    |
+| ----------------- | --------------------------------- |
 | Mobile responsive | Ejecutar tests en viewport mobile |
-| XSS prevention | Incluir en test data |
-| Performance | Assertions de tiempo |
+| XSS prevention    | Incluir en test data              |
+| Performance       | Assertions de tiempo              |
 ```
 
 ---
