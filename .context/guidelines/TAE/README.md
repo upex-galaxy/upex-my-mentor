@@ -10,7 +10,7 @@
 
 Quick orientation, critical rules, and task-based navigation.
 
-**For implementing ATCs**: See **`.prompts/stage-4-automation/`**
+**For implementing ATCs**: See **`.prompts/fase-12-test-automation/`**
 
 ---
 
@@ -52,14 +52,14 @@ Generate with: `bun run kata:manifest`
 ### For AI Agents
 
 1. Read `kata-ai-index.md` for orientation
-2. Follow `.prompts/stage-4-automation/` prompts for implementation
+2. Follow `.prompts/fase-12-test-automation/` prompts for implementation
 3. Run `bun run kata:manifest` to see existing components
 
 ### For QA Engineers
 
 1. Read `kata-architecture.md` to understand KATA
 2. Read `automation-standards.md` for coding rules
-3. Follow `.prompts/stage-4-automation/` prompts to create components
+3. Follow `.prompts/fase-12-test-automation/` prompts to create components
 4. Reference `tms-integration.md` for Jira/Xray setup
 5. Reference `ci-cd-integration.md` for CI/CD
 
@@ -68,8 +68,8 @@ Generate with: `bun run kata:manifest`
 ## References
 
 - **AI Guide**: `kata-ai-index.md`
-- **AI Workflow**: `.prompts/stage-4-automation/`
-- **Framework Adaptation**: `.prompts/setup/kata-framework-adaptation.md`
+- **AI Workflow**: `.prompts/fase-12-test-automation/`
+- **Framework Adaptation**: `.prompts/kata-framework-setup.md`
 - **Fundamentals**: `docs/methodology/kata-fundamentals.md` (conceptual reference only)
 - **DI Strategy**: `docs/testing/automation/dependency-injection.md` (Playwright lazy loading)
 - **Component Catalog**: `kata-manifest.json` (run `bun run kata:manifest`)

@@ -29,6 +29,10 @@
  * // Actualizar por rol
  * bun up prompts --rol qa
  *
+ * @example
+ * // Actualizar configuración de desarrollo
+ * bun up vscode husky tooling
+ *
  * @see docs/workflows/update-template-guide.md - Guía completa de uso
  *
  * @author UPEX Galaxy
@@ -85,7 +89,14 @@ const ROLE_PHASES = {
   setup: { phases: [1, 2, 3], description: 'Fases sincronicas iniciales' },
 };
 
-// NOTE: No hardcoded file lists - all directories use mergeDirectory() for full sync
+// Tooling files - universal framework configuration files
+// NOTE: Excludes project-specific files (tsconfig.json, eslint.config.js, .gitignore)
+const TOOLING_FILES = ['.editorconfig', '.prettierrc', '.prettierignore'];
+
+// Example/template files for user configuration
+const EXAMPLE_FILES = ['.env.example'];
+
+// NOTE: No hardcoded file lists for directories - all use mergeDirectory() for full sync
 // This ensures any new files/folders in the template are automatically included
 
 // ============================================================================
@@ -304,6 +315,10 @@ ${colors.bold}COMANDOS:${colors.reset}
   context       Actualiza .context/ (merge completo del directorio)
   templates     Actualiza templates/mcp/ (merge completo del directorio)
   scripts       Actualiza scripts/ (merge completo del directorio)
+  vscode        Actualiza .vscode/ (extensions.json, settings.json)
+  husky         Actualiza .husky/ (git hooks)
+  tooling       Actualiza archivos de configuracion del framework
+  examples      Actualiza archivos de ejemplo (.env.example, etc.)
   help          Muestra esta ayuda
 
 ${colors.bold}FLAGS PARA 'prompts' y 'books':${colors.reset}
@@ -336,6 +351,8 @@ ${colors.bold}EJEMPLOS:${colors.reset}
   bun up books --all            ${colors.dim}# Todos los manuales${colors.reset}
   bun up books --rol qa         ${colors.dim}# Manuales de QA${colors.reset}
   bun up docs context           ${colors.dim}# Multiples componentes${colors.reset}
+  bun up vscode husky           ${colors.dim}# Config de VS Code y git hooks${colors.reset}
+  bun up tooling examples       ${colors.dim}# Archivos de configuracion${colors.reset}
 `);
 }
 
@@ -357,6 +374,10 @@ async function showMainMenu() {
       { name: 'Context (.context/)', value: 'context' },
       { name: 'Templates MCP (templates/mcp/)', value: 'templates' },
       { name: 'Scripts de actualizacion', value: 'scripts' },
+      { name: 'VS Code (.vscode/)', value: 'vscode' },
+      { name: 'Husky (.husky/) - Git hooks', value: 'husky' },
+      { name: 'Tooling - Archivos de configuracion', value: 'tooling' },
+      { name: 'Examples - Archivos de ejemplo', value: 'examples' },
     ],
   });
 }
@@ -445,6 +466,10 @@ function parseArgs(args) {
     'guidelines',
     'templates',
     'scripts',
+    'vscode',
+    'husky',
+    'tooling',
+    'examples',
     'help',
   ];
 
@@ -565,6 +590,8 @@ function createBackup(components) {
     context: { src: '.context', dest: '.context' },
     templates: { src: 'templates/mcp', dest: 'templates/mcp' },
     scripts: { src: 'scripts', dest: 'scripts' },
+    vscode: { src: '.vscode', dest: '.vscode' },
+    husky: { src: '.husky', dest: '.husky' },
   };
 
   for (const comp of components) {
@@ -573,6 +600,24 @@ function createBackup(components) {
       const destPath = path.join(backupDir, mapping.dest);
       fs.mkdirSync(path.dirname(destPath), { recursive: true });
       fs.cpSync(mapping.src, destPath, { recursive: true });
+    }
+  }
+
+  // Backup tooling files
+  if (components.includes('tooling')) {
+    for (const file of TOOLING_FILES) {
+      if (fs.existsSync(file)) {
+        fs.cpSync(file, path.join(backupDir, file));
+      }
+    }
+  }
+
+  // Backup example files
+  if (components.includes('examples')) {
+    for (const file of EXAMPLE_FILES) {
+      if (fs.existsSync(file)) {
+        fs.cpSync(file, path.join(backupDir, file));
+      }
     }
   }
 
@@ -869,6 +914,76 @@ function updateScripts() {
 }
 
 /**
+ * Update .vscode/ directory using merge strategy.
+ * Merges entire directory - syncs extensions.json, settings.json, etc.
+ */
+function updateVscode() {
+  logStep('Actualizando .vscode/ (merge)...');
+
+  const vscodePath = path.join(TEMP_DIR, '.vscode');
+  if (!fs.existsSync(vscodePath)) {
+    logWarning('No se encontro directorio .vscode en el template');
+    return;
+  }
+
+  logMerge('Sincronizando directorio completo...');
+  mergeDirectory(vscodePath, '.vscode');
+}
+
+/**
+ * Update .husky/ directory using merge strategy.
+ * Merges entire directory - syncs git hooks (pre-commit, etc.)
+ */
+function updateHusky() {
+  logStep('Actualizando .husky/ (merge)...');
+
+  const huskyPath = path.join(TEMP_DIR, '.husky');
+  if (!fs.existsSync(huskyPath)) {
+    logWarning('No se encontro directorio .husky en el template');
+    return;
+  }
+
+  logMerge('Sincronizando directorio completo...');
+  mergeDirectory(huskyPath, '.husky');
+}
+
+/**
+ * Update tooling files - universal framework configuration.
+ * Copies individual config files from the template root.
+ */
+function updateTooling() {
+  logStep('Actualizando archivos de tooling...');
+
+  for (const file of TOOLING_FILES) {
+    const srcPath = path.join(TEMP_DIR, file);
+    if (fs.existsSync(srcPath)) {
+      fs.cpSync(srcPath, file);
+      logSuccess(file);
+    } else {
+      logWarning(`${file} no encontrado en template`);
+    }
+  }
+}
+
+/**
+ * Update example files - template files for user configuration.
+ * Copies individual example files from the template root.
+ */
+function updateExamples() {
+  logStep('Actualizando archivos de ejemplo...');
+
+  for (const file of EXAMPLE_FILES) {
+    const srcPath = path.join(TEMP_DIR, file);
+    if (fs.existsSync(srcPath)) {
+      fs.cpSync(srcPath, file);
+      logSuccess(file);
+    } else {
+      logWarning(`${file} no encontrado en template`);
+    }
+  }
+}
+
+/**
  * Auto-actualiza este script antes de cualquier operación.
  * Compara el script actual con la versión del template y lo actualiza si hay diferencias.
  *
@@ -946,7 +1061,7 @@ async function main() {
 
     // Determine which components to backup and update
     const components = selected.includes('all')
-      ? ['prompts', 'books', 'docs', 'context', 'templates', 'scripts']
+      ? ['prompts', 'books', 'docs', 'context', 'templates', 'scripts', 'vscode', 'husky', 'tooling', 'examples']
       : selected;
 
     createBackup(components);
@@ -962,6 +1077,10 @@ async function main() {
       updateContext();
       updateTemplates();
       updateScripts();
+      updateVscode();
+      updateHusky();
+      updateTooling();
+      updateExamples();
       updateContextEngineering();
     } else {
       for (const cmd of selected) {
@@ -979,6 +1098,14 @@ async function main() {
           updateTemplates();
         } else if (cmd === 'scripts') {
           updateScripts();
+        } else if (cmd === 'vscode') {
+          updateVscode();
+        } else if (cmd === 'husky') {
+          updateHusky();
+        } else if (cmd === 'tooling') {
+          updateTooling();
+        } else if (cmd === 'examples') {
+          updateExamples();
         }
       }
     }
@@ -1007,7 +1134,7 @@ async function main() {
 
   // Expand 'all' command
   if (parsed.commands.includes('all')) {
-    parsed.commands = ['prompts', 'books', 'docs', 'context', 'templates', 'scripts'];
+    parsed.commands = ['prompts', 'books', 'docs', 'context', 'templates', 'scripts', 'vscode', 'husky', 'tooling', 'examples'];
     parsed.all = true;
   }
 
@@ -1063,6 +1190,18 @@ async function main() {
         break;
       case 'scripts':
         updateScripts();
+        break;
+      case 'vscode':
+        updateVscode();
+        break;
+      case 'husky':
+        updateHusky();
+        break;
+      case 'tooling':
+        updateTooling();
+        break;
+      case 'examples':
+        updateExamples();
         break;
     }
   }

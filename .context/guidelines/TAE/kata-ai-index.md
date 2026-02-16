@@ -33,11 +33,11 @@ KATA (Komponent Action Test Architecture) is a test automation framework where:
 | ---------------------------------- | ------------------------------------------------------------------- |
 | Understand KATA concepts           | `kata-architecture.md` or `docs/kata-fundamentals.md`               |
 | **Understand DI and lazy loading** | `docs/testing/automation/dependency-injection.md`                   |
-| Create a new UI component          | `.prompts/stage-4-automation/e2e-test-automation-coding.md`         |
-| Create a new API component         | `.prompts/stage-4-automation/integration-test-automation-coding.md` |
+| Create a new UI component          | `.prompts/fase-12-test-automation/e2e/e2e-coding.md`         |
+| Create a new API component         | `.prompts/fase-12-test-automation/integration/integration-coding.md` |
 | Know naming conventions            | `automation-standards.md` (section 2)                               |
 | See anti-patterns (what NOT to do) | `automation-standards.md` (section 11)                              |
-| Adapt KATA to your project         | `.prompts/setup/kata-framework-adaptation.md`                       |
+| Adapt KATA to your project         | `.prompts/kata-framework-setup.md`                       |
 | Review ATC fundamental rules       | `automation-standards.md` (section 1)                               |
 | Understand test data strategy      | `test-data-management.md`                                           |
 | Learn about Flows module           | `automation-standards.md` (section 1.7)                             |
@@ -335,8 +335,8 @@ TEST_USER_PASSWORD=secret123
 
 For implementing ATCs from User Stories using the Playwright MCP, see:
 
-- **E2E Tests**: `.prompts/stage-4-automation/e2e-test-automation-coding.md`
-- **API Tests**: `.prompts/stage-4-automation/integration-test-automation-coding.md`
+- **E2E Tests**: `.prompts/fase-12-test-automation/e2e/e2e-coding.md`
+- **API Tests**: `.prompts/fase-12-test-automation/integration/integration-coding.md`
 
 ### Workflow Phases Overview
 
