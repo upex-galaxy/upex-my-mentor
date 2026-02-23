@@ -16,7 +16,6 @@
 
 | Key | Summary | Priority | Status |
 |-----|---------|----------|--------|
-| **MYM-126** | CancelAPI: No actualiza transactions a refunded | High | OPEN |
 | **MYM-96** | Widget de Mensajes Recientes no se actualiza | High | OPEN |
 | MYM-142 | URL de staging incorrecta en api-contracts.yaml | Medium | OPEN |
 | MYM-139 | Rating y total_reviews desincronizados | Medium | OPEN |
