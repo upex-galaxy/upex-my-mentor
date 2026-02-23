@@ -66,7 +66,8 @@
 - [x] MYM-141 - **FIXED** - Creado endpoint GET /api/mentors (commit 6c0f750)
 - [x] MYM-126 - **FIXED** - Añadido stripe_refund_id a transactions (commit 058521d)
 - [x] MYM-96 - **FIXED** - Añadido polling fallback para widget (commit e881d53)
-- [ ] Bugs Medium - En proceso
+- [x] MYM-142 - **FIXED** - Corregidas URLs de staging/prod en documentación (commit 160b0a9)
+- [ ] Bugs Medium restantes - En proceso
 
 ---
 
