@@ -94,29 +94,34 @@ export function QuickReplyModal({
     setError(null);
 
     startTransition(async () => {
-      const result = await sendReplyToConversation(conversationId, content);
+      try {
+        const result = await sendReplyToConversation(conversationId, content);
 
-      if (result.success) {
-        // Optimistic UI: add message immediately
-        const newMessage: MessageWithSender = {
-          id: result.messageId || crypto.randomUUID(),
-          conversation_id: conversationId,
-          sender_id: currentUserId,
-          content: content.trim(),
-          is_read: false,
-          created_at: new Date().toISOString(),
-          sender: {
-            id: currentUserId,
-            name: 'Tú',
-            photo_url: null,
-          },
-        };
+        if (result.success) {
+          // Optimistic UI: add message immediately
+          const newMessage: MessageWithSender = {
+            id: result.messageId || crypto.randomUUID(),
+            conversation_id: conversationId,
+            sender_id: currentUserId,
+            content: content.trim(),
+            is_read: false,
+            created_at: new Date().toISOString(),
+            sender: {
+              id: currentUserId,
+              name: 'Tú',
+              photo_url: null,
+            },
+          };
 
-        setMessages((prev) => [...prev, newMessage]);
-        setContent('');
-        onMessageSent?.();
-      } else {
-        setError(result.error || 'Error al enviar el mensaje');
+          setMessages((prev) => [...prev, newMessage]);
+          setContent('');
+          onMessageSent?.();
+        } else {
+          setError(result.error || 'Error al enviar el mensaje');
+        }
+      } catch {
+        // MYM-132: Handle network errors gracefully
+        setError('Error de conexión. Verifica tu red e intenta de nuevo.');
       }
     });
   };
