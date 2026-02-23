@@ -16,7 +16,6 @@
 
 | Key | Summary | Priority | Status |
 |-----|---------|----------|--------|
-| **MYM-96** | Widget de Mensajes Recientes no se actualiza | High | OPEN |
 | MYM-142 | URL de staging incorrecta en api-contracts.yaml | Medium | OPEN |
 | MYM-139 | Rating y total_reviews desincronizados | Medium | OPEN |
 | MYM-132 | Critical Application Crash on Network Loss | Medium | OPEN |
@@ -65,7 +64,9 @@
 - [x] Exploración del panorama completo (PRs, Bugs, Stories)
 - [x] Creación de archivo de tracking
 - [x] MYM-141 - **FIXED** - Creado endpoint GET /api/mentors (commit 6c0f750)
-- [ ] MYM-126 - En proceso
+- [x] MYM-126 - **FIXED** - Añadido stripe_refund_id a transactions (commit 058521d)
+- [x] MYM-96 - **FIXED** - Añadido polling fallback para widget (commit e881d53)
+- [ ] Bugs Medium - En proceso
 
 ---
 
