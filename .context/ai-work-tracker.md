@@ -16,7 +16,6 @@
 
 | Key | Summary | Priority | Status |
 |-----|---------|----------|--------|
-| **MYM-141** | API: GET /api/mentors retorna 404 en staging | Highest | OPEN |
 | **MYM-126** | CancelAPI: No actualiza transactions a refunded | High | OPEN |
 | **MYM-96** | Widget de Mensajes Recientes no se actualiza | High | OPEN |
 | MYM-142 | URL de staging incorrecta en api-contracts.yaml | Medium | OPEN |
@@ -56,7 +55,7 @@
 
 ## Trabajo en Progreso
 
-**Bug actual:** Ninguno
+**Bug actual:** MYM-126
 **US actual:** Ninguna
 
 ---
@@ -66,7 +65,8 @@
 ### Sesión 2026-02-23
 - [x] Exploración del panorama completo (PRs, Bugs, Stories)
 - [x] Creación de archivo de tracking
-- [ ] MYM-141 - En proceso
+- [x] MYM-141 - **FIXED** - Creado endpoint GET /api/mentors (commit 6c0f750)
+- [ ] MYM-126 - En proceso
 
 ---
 
