@@ -2,74 +2,129 @@
 
 This directory contains **pre-configured MCP server templates** for different AI CLI tools.
 
-## 📋 Available Templates
+## Available Templates
 
-| File                   | For Tool    | Description                          |
-| ---------------------- | ----------- | ------------------------------------ |
-| `gemini.template.json` | Gemini CLI  | Template with Gemini-specific format |
-| `claude.template.json` | Claude Code | Template with Claude-specific format |
+| File                     | For Tool    | Format | Description                         |
+| ------------------------ | ----------- | ------ | ----------------------------------- |
+| `claude.template.json`   | Claude Code | JSON   | `.mcp.json` in project root         |
+| `opencode.template.json` | OpenCode    | JSON   | `opencode.json` in project root     |
+| `codex.template.toml`    | Codex CLI   | TOML   | `~/.codex/config.toml` or `.codex/` |
+| `gemini.template.json`   | Gemini CLI  | JSON   | `~/.gemini/settings.json`           |
+| `dbhub.example.toml`     | DBHub (SQL) | TOML   | `dbhub.toml` in project root        |
 
-## 🎯 What's Included
+## Variable Format
 
-Each template contains popular MCP servers:
+Templates use `{{VARIABLE}}` as universal placeholder format for sensitive data:
 
-- **playwright** - E2E browser testing
-- **devtools** - Chrome DevTools
-- **supabase** - PostgreSQL database
-- **context7** - Documentation lookup
-- **postman** - API testing
-- **github** - Repository management
-- **atlassian** - Jira/Confluence
-- **slack** - Team communication
-- **notion** - Documentation
-- **memory** - Persistent sessions
-- And more...
+- `{{API_BEARER_TOKEN}}` - Replace with your API bearer token
+- `{{POSTMAN_API_KEY}}` - Replace with your Postman API key
+- `{{JIRA_API_TOKEN}}` - Replace with your Jira API token
+- etc.
 
-## 🚀 How to Use
+Non-sensitive values (URLs, paths) use real examples from SoloQ project.
+
+## MCP Servers Included
+
+| Server         | Type   | Description                                 |
+| -------------- | ------ | ------------------------------------------- |
+| **playwright** | stdio  | E2E browser testing with vision/PDF/tracing |
+| **devtools**   | stdio  | Chrome DevTools integration                 |
+| **openapi**    | stdio  | REST API testing via OpenAPI spec           |
+| **sql**        | stdio  | Database testing via DBHub                  |
+| **supabase**   | stdio  | Supabase database management                |
+| **context7**   | stdio  | Developer documentation lookup              |
+| **tavily**     | remote | Web search                                  |
+| **postman**    | remote | API collections & testing                   |
+| **sentry**     | remote | Error monitoring                            |
+| **vercel**     | remote | Deployment management                       |
+| **notion**     | remote | Documentation                               |
+| **atlassian**  | stdio  | Jira/Confluence                             |
+| **github**     | remote | Repository management                       |
+| **slack**      | stdio  | Team communication                          |
+
+## Quick Start
 
 ### 1. Copy Template
-
-**For Gemini CLI**:
-
-```bash
-mkdir -p .gemini
-cp templates/mcp/gemini.template.json .gemini/settings.catalog.json
-```
 
 **For Claude Code**:
 
 ```bash
-cp templates/mcp/claude.template.json .mcp.catalog.json
+cp templates/mcp/claude.template.json .mcp.json
 ```
 
-### 2. Add Your API Keys
+**For OpenCode**:
 
-Open your new catalog file and replace placeholders:
+```bash
+cp templates/mcp/opencode.template.json opencode.json
+```
+
+**For Codex CLI**:
+
+```bash
+mkdir -p ~/.codex
+cp templates/mcp/codex.template.toml ~/.codex/config.toml
+```
+
+**For Gemini CLI**:
+
+```bash
+mkdir -p ~/.gemini
+cp templates/mcp/gemini.template.json ~/.gemini/settings.json
+```
+
+### 2. Create DBHub Config (for SQL testing)
+
+```bash
+cp templates/mcp/dbhub.example.toml dbhub.toml
+# Edit with your database credentials
+```
+
+### 3. Replace Variables
+
+Open your config file and replace `{{VARIABLE}}` placeholders with real values:
 
 ```json
-"SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}"
+"API_HEADERS": "Authorization:Bearer {{API_BEARER_TOKEN}}"
 ```
 
 ↓
 
 ```json
-"SUPABASE_ACCESS_TOKEN": "sbp_your_real_token_here"
+"API_HEADERS": "Authorization:Bearer eyJhbGciOiJIUzI1NiIs..."
 ```
 
-### 3. Configure & Run
+### 4. Verify Setup
 
-See main documentation: [`docs/mcp-builder-strategy.md`](../../docs/mcp-builder-strategy.md)
+Run your agent and verify with:
 
-## 🔒 Security
+```
+/mcp
+```
 
-- **Templates** (this folder) = Safe for git, no secrets
-- **Catalogs** (your copies) = NOT in git, contains your API keys
-- All `*.catalog.json` files are in `.gitignore`
+## Key Differences by Tool
 
-## 📝 Note
+| Feature        | Claude         | OpenCode         | Codex          | Gemini       |
+| -------------- | -------------- | ---------------- | -------------- | ------------ |
+| Root key       | `mcpServers`   | `mcp`            | `mcp_servers`  | `mcpServers` |
+| Command        | string         | array            | string         | string       |
+| Env vars       | `env`          | `environment`    | `[server.env]` | `env`        |
+| Remote type    | `type: "http"` | `type: "remote"` | `url`          | `httpUrl`    |
+| Enable/disable | N/A            | `enabled`        | `enabled`      | N/A          |
 
-Variables in templates use `${VARIABLE_NAME}` format. These are **placeholders** - you must replace them with actual values in your catalog file.
+## Security
 
----
+- **Templates** (this folder) = Safe for git, uses `{{VAR}}` placeholders
+- **Catalog files** (your copies) = NOT in git, contain real API keys
+- All `*.catalog.json` and `dbhub.toml` are in `.gitignore`
 
-For complete setup guide, see: [`docs/mcp-builder-strategy.md`](../../docs/mcp-builder-strategy.md)
+## Documentation
+
+For complete setup guide, see: [`mcp-configuration-guide.md`](./mcp-configuration-guide.md)
+
+This includes:
+
+- Step-by-step configuration for each tool
+- DBHub (SQL) setup with connection strings
+- OpenAPI setup with authentication flow
+- Postman API key generation
+- Troubleshooting guide
