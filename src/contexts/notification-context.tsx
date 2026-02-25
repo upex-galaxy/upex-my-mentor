@@ -164,12 +164,34 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
         },
         handleNewMessage
       )
-      .subscribe()
+      .subscribe((status) => {
+        // MYM-96: Log subscription status for debugging
+        if (status === 'SUBSCRIBED') {
+          console.log('[Realtime] Subscribed to message notifications')
+        } else if (status === 'CHANNEL_ERROR') {
+          console.error('[Realtime] Channel error - falling back to polling')
+        }
+      })
 
     return () => {
       supabase.removeChannel(channel)
     }
   }, [user, supabase, handleNewMessage])
+
+  // MYM-96: Fallback polling for environments where Realtime may not work
+  // Polls every 10 seconds when tab is visible for better responsiveness
+  useEffect(() => {
+    if (!user) return
+
+    const pollInterval = setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        refreshUnreadCount()
+        setConversationsRefreshKey((prev) => prev + 1)
+      }
+    }, 10000) // 10 seconds for better UX
+
+    return () => clearInterval(pollInterval)
+  }, [user, refreshUnreadCount])
 
   // Refetch count when tab becomes visible (handle offline/background scenarios)
   useEffect(() => {

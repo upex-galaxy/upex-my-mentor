@@ -144,7 +144,7 @@ Todas las stories deben seguir el mismo Design System.
 - [ ] `.context/SRS/functional-specs.md` - Requerimientos funcionales
 - [ ] `.context/design-system.md` - Design System del proyecto
 - [ ] `feature-test-plan.md` - Plan de testing de la épica
-- [ ] `test-cases.md` - Test cases de cada story
+- [ ] `acceptance-test-plan.md` - Acceptance test plan de cada story
 
 ### Conocimiento del Stack
 
@@ -659,7 +659,7 @@ Elige la story a planificar (según el orden definido).
 ### 11.1 Lee la story completa
 
 - `story.md` - User story, acceptance criteria
-- `test-cases.md` - Test cases a cumplir
+- `acceptance-test-plan.md` - Acceptance test plan a cumplir
 - `feature-implementation-plan.md` - Decisiones de la feature
 
 ### 11.2 Lista Acceptance Criteria

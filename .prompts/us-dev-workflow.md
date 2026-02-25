@@ -24,16 +24,57 @@ Este documento define la estrategia completa de desarrollo por User Story (US), 
 
 ### Leer segun la US en trabajo
 
-| Archivo                                                                                                 | Cuando leer                         |
-| ------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/feature-test-plan.md`                                 | Paso 0: Verificar precondiciones    |
-| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/feature-implementation-plan.md`                       | Paso 0: Verificar precondiciones    |
-| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/stories/STORY-{PROJECT_KEY}-{N}-{name}/story.md`      | Antes de planificar                 |
-| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/stories/STORY-{PROJECT_KEY}-{N}-{name}/test-cases.md` | Durante planificacion               |
-| `.context/backend-setup.md`                                                                             | Durante implementacion con DB/Auth  |
-| `.context/api-documentation.md`                                                                         | Durante implementacion de API calls |
-| `.context/design-system.md`                                                                             | Durante implementacion UI           |
-| `.context/guidelines/code-standards.md`                                                                 | Durante code review                 |
+| Archivo                                                                                            | Cuando leer                        |
+| -------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/feature-test-plan.md`                            | Paso 0: Verificar precondiciones   |
+| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/feature-implementation-plan.md`                  | Paso 0: Verificar precondiciones   |
+| `.context/PBI/epics/EPIC-{PROJECT_KEY}-{N}-{name}/stories/STORY-{PROJECT_KEY}-{N}-{name}/story.md` | Antes de planificar                |
+| **Acceptance Test Plan** (ver orden de descubrimiento abajo)                                       | Durante planificacion              |
+| `.context/backend-setup.md`                                                                        | Durante implementacion con DB/Auth |
+| `.context/api-auth.md`                                                                             | Durante implementacion con auth    |
+| `.context/design-system.md`                                                                        | Durante implementacion UI          |
+| `.context/guidelines/code-standards.md`                                                            | Durante code review                |
+
+### Orden de Descubrimiento del Acceptance Test Plan (IMPORTANTE)
+
+El Acceptance Test Plan contiene los **test cases** que validan cada Acceptance Criterion. **Jira es la fuente de verdad**, no los archivos locales.
+
+**Orden de busqueda (usar el primero que exista):**
+
+1. **Jira Comments** - Buscar en comentarios de la US usando `mcp__atlassian__jira_get_issue` con `comment_limit: 50`
+   - Buscar comentarios que contengan "Test Case", "TC-", "Scenario:", o tablas de test cases
+   - Los QA suelen dejar el acceptance test plan como comentario durante Shift-Left
+
+2. **Jira Custom Field** - Campo `customfield_12400` ("Acceptance Test Plan (QA)🧪")
+   - Usar `mcp__atlassian__jira_get_issue` con `fields: "*all"` para obtener custom fields
+   - Este campo contiene el plan de pruebas aprobado por QA
+
+3. **Archivo Local** (fallback) - Solo si Jira no tiene la informacion:
+   - `.context/PBI/epics/.../stories/.../test-cases.md`
+   - `.context/PBI/epics/.../stories/.../acceptance-test-plan.md`
+
+**Ejemplo de obtencion desde Jira:**
+
+```javascript
+// Primero obtener issue con comentarios
+const issue = await mcp__atlassian__jira_get_issue({
+  issue_key: 'SQ-15',
+  fields: '*all',
+  comment_limit: 50,
+});
+
+// Buscar en comentarios primero
+const testPlanComment = issue.comments?.find(
+  c => c.body.includes('Test Case') || c.body.includes('TC-')
+);
+
+// Si no hay en comentarios, buscar en custom field
+const testPlanField = issue.fields?.customfield_12400;
+
+// Si ninguno existe, usar archivo local como fallback
+```
+
+**Nota:** Los test cases deben usarse como checklist durante la implementacion (PASO 3) para verificar que cada escenario esta cubierto.
 
 ### Prompts a ejecutar (leer UNO a la vez, cuando toque)
 
@@ -102,15 +143,21 @@ El Epic {EPIC-{PROJECT_KEY}-N} no tiene los siguientes artefactos:
 **Acciones:**
 
 1. Leer el prompt `.prompts/fase-6-planning/story-implementation-plan.md`
-2. Leer la story (`story.md`) y test cases (`test-cases.md`)
-3. **Usar como contexto** el `feature-implementation-plan.md` del Epic (verificado en Paso 0)
-4. Crear rama local: `git checkout -b feat/{PROJECT_KEY}-{N}/{short-name}`
-5. Generar `implementation-plan.md` en la carpeta de la story
-6. Commit del plan
+2. Leer la story (`story.md`) de la carpeta local
+3. **Obtener el Acceptance Test Plan desde Jira** (ver "Orden de Descubrimiento" arriba):
+   - Primero: Buscar en comentarios de la US en Jira
+   - Segundo: Buscar en `customfield_12400` de la US en Jira
+   - Tercero (fallback): Leer `test-cases.md` o `acceptance-test-plan.md` local
+4. **Usar como contexto** el `feature-implementation-plan.md` del Epic (verificado en Paso 0)
+5. Crear rama local: `git checkout -b feat/{PROJECT_KEY}-{N}/{short-name}`
+6. Generar `implementation-plan.md` en la carpeta de la story
+7. Commit del plan
 
 **Nota:** El plan de la story debe alinearse con las decisiones tecnicas del `feature-implementation-plan.md` del Epic.
 
-**Criterio de exito:** Archivo `implementation-plan.md` creado y commiteado
+**IMPORTANTE:** Los test cases del Acceptance Test Plan son la especificacion de comportamiento esperado. Cada test case debe mapearse a un step de implementacion para garantizar cobertura completa.
+
+**Criterio de exito:** Archivo `implementation-plan.md` creado y commiteado, con todos los test cases mapeados
 
 ---
 
@@ -125,13 +172,17 @@ El Epic {EPIC-{PROJECT_KEY}-N} no tiene los siguientes artefactos:
 3. Implementar codigo respetando:
    - Frontend Design System (`.context/design-system.md`)
    - Backend Setup (`.context/backend-setup.md`)
-   - API Documentation (`.context/api-documentation.md`)
+   - API Auth (`.context/api-auth.md`)
    - Code standards (`.context/guidelines/code-standards.md`)
    - Types del backend (`src/lib/types.ts`)
-4. Verificar que pasa linting y build: `bun run lint && bun run build`
-5. Commits atomicos por cada step completado
+4. **Verificar cada test case del Acceptance Test Plan:**
+   - Usar los test cases obtenidos en PASO 2 como checklist
+   - Marcar mentalmente cada escenario cubierto por la implementacion
+   - Si un test case no esta cubierto, ajustar la implementacion
+5. Verificar que pasa linting y build: `bun run lint && bun run build`
+6. Commits atomicos por cada step completado
 
-**Criterio de exito:** Codigo implementado, linting y build pasan
+**Criterio de exito:** Codigo implementado, linting y build pasan, **todos los test cases del Acceptance Test Plan estan cubiertos**
 
 ---
 

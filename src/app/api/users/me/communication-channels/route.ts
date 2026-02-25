@@ -115,6 +115,35 @@ export async function PUT(request: NextRequest): Promise<NextResponse<ApiRespons
       )
     }
 
+    // MYM-129: Validate user is a mentor (only mentors can have communication channels)
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    if (profileError || !profile) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'PROFILE_NOT_FOUND',
+          message: 'No se encontró el perfil del usuario',
+        },
+        { status: 404 }
+      )
+    }
+
+    if (profile.role !== 'mentor') {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'FORBIDDEN',
+          message: 'Solo los mentores pueden configurar canales de comunicación',
+        },
+        { status: 403 }
+      )
+    }
+
     // Parse request body
     let body: { channels: ChannelInput[] }
     try {

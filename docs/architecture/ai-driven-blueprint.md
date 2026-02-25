@@ -164,7 +164,7 @@ Decisión:
 │                   │
 │                   ├── story.md       [FASE 4] User story + acceptance criteria (Gherkin)
 │                   │
-│                   ├── test-cases.md  [FASE 5] Test cases detallados (6+ test cases)
+│                   ├── acceptance-test-plan.md  [FASE 5] Acceptance test plan
 │                   │                  - Refined criteria, positive/negative/boundary tests
 │                   │
 │                   ├── implementation-plan.md  [FASE 6] Plan específico de esta story
@@ -229,7 +229,7 @@ Decisión:
 
 - **Directorios principales en MAYÚSCULAS**: `PRD/`, `SRS/`, `PBI/` (siglas)
 - **Directorios secundarios en minúsculas**: `idea/`, `infrastructure/`, `deployment/`, `testing/`, `guidelines/`, `epics/`, `stories/`, `TAE/`
-- **Archivos siempre en minúsculas con guiones**: `epic-tree.md`, `test-cases.md`
+- **Archivos siempre en minúsculas con guiones**: `epic-tree.md`, `acceptance-test-plan.md`
 
 ---
 
@@ -378,7 +378,7 @@ interface UserProfileProps {
 1. Leer `story.md` + PRD + SRS relacionado
 2. Refinar acceptance criteria
 3. Identificar edge cases
-4. Crear `test-cases.md` (6+ test cases)
+4. Crear `acceptance-test-plan.md`
 5. Sincronizar con Jira/Xray
 
 **Prompts:** Ver `.prompts/fase-5-shift-left-testing/`
@@ -397,7 +397,7 @@ interface UserProfileProps {
 
 **Por cada story (antes de codear):**
 
-1. Leer `story.md` + `test-cases.md` + `feature-implementation-plan.md`
+1. Leer `story.md` + `acceptance-test-plan.md` + `feature-implementation-plan.md`
 2. Crear `implementation-plan.md` detallado
 3. IA decide si necesita archivos auxiliares (components.md, api-details.md, etc.)
 
@@ -753,7 +753,7 @@ Archivo `story.md`:
 
 Archivos generados en fases posteriores:
 
-- `test-cases.md` (Fase 5)
+- `acceptance-test-plan.md` (Fase 5)
 - `implementation-plan.md` (Fase 6)
 - Opcionales: `components.md`, `api-details.md`, `database-changes.md` (IA decide)
 
@@ -776,7 +776,7 @@ Archivo `feature-test-plan.md`:
 
 #### **Test Cases (story level)**
 
-Archivo `test-cases.md`:
+Archivo `acceptance-test-plan.md`:
 
 - **Refined Acceptance Criteria**: Escenarios refinados con datos específicos
 - **Test Cases**: Mínimo 6 test cases (3 positive, 2 negative, 1 boundary)
@@ -1107,7 +1107,7 @@ Todos los guidelines están en `.context/guidelines/` para fases 7-8-11:
 
 ### **Sincronización de Test Cases (Xray)**
 
-- Crear test cases en Xray después de generar `test-cases.md`
+- Crear test cases en Xray después de generar `acceptance-test-plan.md`
 - Mapear TC-001, TC-002... con IDs de Xray
 - Sincronización automática de resultados (ver TAE/tms-integration.md)
 

@@ -81,11 +81,11 @@ Cada manual corresponde a un prompt en `.prompts/`:
 
 **Ejemplos:**
 
-| Prompt (IA)           | Manual (Humano)              |
-| --------------------- | ---------------------------- |
-| `exploratory-test.md` | `exploratory-test.MANUAL.md` |
-| `backend-setup.md`    | `backend-setup.MANUAL.md`    |
-| `story-test-cases.md` | `story-test-cases.MANUAL.md` |
+| Prompt (IA)               | Manual (Humano)                  |
+| ------------------------- | -------------------------------- |
+| `exploratory-test.md`     | `exploratory-test.MANUAL.md`     |
+| `backend-setup.md`        | `backend-setup.MANUAL.md`        |
+| `acceptance-test-plan.md` | `acceptance-test-plan.MANUAL.md` |
 
 **¿Por qué `.MANUAL.md`?**
 

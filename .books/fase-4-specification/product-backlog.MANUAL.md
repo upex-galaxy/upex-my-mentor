@@ -955,7 +955,7 @@ Con el Product Backlog completo, puedes proceder a:
 Los archivos creados en esta fase se expandirán en fases posteriores:
 
 - `feature-test-plan.md` → Fase 5
-- `story-xxx/test-cases.md` → Fase 5
+- `story-xxx/acceptance-test-plan.md` → Fase 5
 - `feature-implementation-plan.md` → Fase 6
 - `story-xxx/implementation-plan.md` → Fase 6
 

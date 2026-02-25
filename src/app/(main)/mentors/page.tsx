@@ -161,13 +161,19 @@ export default async function MentorsPage({
       const [cursorRating, cursorId] = cursor.split(":");
       const ratingNum = parseFloat(cursorRating);
 
-      if (ratingNum === 0 || isNaN(ratingNum)) {
-        // Cursor is from NULL rating - only get NULLs with higher id
+      // MYM-124: Fixed pagination logic for 0-rated mentors
+      if (isNaN(ratingNum) || cursorRating === 'null') {
+        // True NULL rating - only get NULLs with higher id
         searchQuery = searchQuery
           .is("average_rating", null)
           .gt("id", cursorId);
+      } else if (ratingNum === 0) {
+        // Rating is 0 - get 0-rated with higher id, or NULLs
+        searchQuery = searchQuery.or(
+          `and(average_rating.eq.0,id.gt.${cursorId}),average_rating.is.null`
+        );
       } else {
-        // Non-NULL rating - get lower ratings, same rating with higher id, or all NULLs
+        // Non-zero rating - get lower ratings, same rating with higher id, or all NULLs
         searchQuery = searchQuery.or(
           `average_rating.lt.${cursorRating},and(average_rating.eq.${cursorRating},id.gt.${cursorId}),average_rating.is.null`
         );
@@ -197,13 +203,19 @@ export default async function MentorsPage({
       const [cursorRating, cursorId] = cursor.split(":");
       const ratingNum = parseFloat(cursorRating);
 
-      if (ratingNum === 0 || isNaN(ratingNum)) {
-        // Cursor is from NULL rating - only get NULLs with higher id
+      // MYM-124: Fixed pagination logic for 0-rated mentors
+      if (isNaN(ratingNum) || cursorRating === 'null') {
+        // True NULL rating - only get NULLs with higher id
         mentorQuery = mentorQuery
           .is("average_rating", null)
           .gt("id", cursorId);
+      } else if (ratingNum === 0) {
+        // Rating is 0 - get 0-rated with higher id, or NULLs
+        mentorQuery = mentorQuery.or(
+          `and(average_rating.eq.0,id.gt.${cursorId}),average_rating.is.null`
+        );
       } else {
-        // Non-NULL rating - get lower ratings, same rating with higher id, or all NULLs
+        // Non-zero rating - get lower ratings, same rating with higher id, or all NULLs
         mentorQuery = mentorQuery.or(
           `average_rating.lt.${cursorRating},and(average_rating.eq.${cursorRating},id.gt.${cursorId}),average_rating.is.null`
         );

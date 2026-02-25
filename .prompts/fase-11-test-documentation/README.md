@@ -2,15 +2,18 @@
 
 ## Propósito
 
-Documentación asincrónica de casos de prueba en Jira **DESPUÉS** de que la funcionalidad ha pasado exploratory testing.
+Documentación asincrónica de **ATCs (Acceptance Test Cases)** en Jira **DESPUÉS** de que la funcionalidad ha pasado exploratory testing.
 
 **Por qué existe esta fase:**
 
 - Las features se validan primero (feedback rápido)
 - La documentación ocurre cuando la feature es estable
-- Los tests se documentan para regresión (manual o automatizada)
-- Trazabilidad clara entre requirements y tests
+- Los ATCs se documentan para regresión (manual o automatizada)
+- Trazabilidad clara: **ATP (Fase 5) → ATCs (Fase 11) → KATA (Fase 12)**
 - Decisiones de automatización basadas en ROI
+
+**Conexión IQL:**
+Esta fase corresponde al **Step 6 del Mid-Game Testing** - donde los escenarios del ATP se convierten en ATCs formales.
 
 ---
 
@@ -91,15 +94,17 @@ Output:
 
 ---
 
-## Workflow de Test
+## Workflow de ATCs
 
 ```
 DRAFT → IN DESIGN → READY → [MANUAL | IN REVIEW → CANDIDATE]
 
 Estados finales de regresión:
-- MANUAL: Prueba de regresión manual
-- AUTOMATED: Prueba automatizada (después de Fase 12)
+- MANUAL: ATC para regresión manual
+- AUTOMATED: ATC automatizado con KATA (después de Fase 12)
 ```
+
+**Trazabilidad KATA:** Cada ATC marcado como CANDIDATE usa el decorador `@atc('PROJECT-XXX')` en Fase 12.
 
 Referencia visual completa en: `.context/guidelines/QA/jira-test-management.md`
 
@@ -173,10 +178,13 @@ bun xray test list --project PROJ
 
 ## Siguiente Fase
 
-Para tests marcados como **Candidate**:
+Para ATCs marcados como **Candidate**:
 
 - Proceder a **Fase 12: Test Automation**
 - Implementar ATCs siguiendo arquitectura KATA
+- Cada ATC se vincula con `@atc('PROJECT-XXX')` para trazabilidad
+
+**Conexión IQL:** Esta transición corresponde a los Steps 7-10 del Mid-Game Testing (evaluación, automatización, CI y PR).
 
 ---
 

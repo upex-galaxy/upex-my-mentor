@@ -8,6 +8,50 @@ Actúa como Scrum Master y Product Owner.
 
 ---
 
+## 📋 CUSTOM FIELDS SCHEMA - USER STORIES (UPEX Workspace)
+
+### Campos Disponibles en Jira
+
+| Field ID            | Nombre                           | Tipo     | Requerido | Uso                                        |
+| ------------------- | -------------------------------- | -------- | --------- | ------------------------------------------ |
+| `customfield_10201` | ✅ Acceptance Criteria (Gherkin) | Textarea | ✅ Sí     | Criterios de aceptación en formato Gherkin |
+| `customfield_10202` | 🚩BUSINESS RULES SPEC            | Textarea | Opcional  | Reglas de negocio específicas              |
+| `customfield_10401` | ⛳SCOPE                          | Textarea | ✅ Sí     | Alcance de la historia (In/Out scope)      |
+| `customfield_10400` | 🎴MOCKUP                         | Textarea | Opcional  | Referencias a mockups/wireframes (URLs)    |
+| `customfield_10500` | 🧬WORKFLOW                       | Textarea | Opcional  | Descripción del flujo de trabajo           |
+| `customfield_10028` | Story Points🎲                   | Number   | ✅ Sí     | Estimación en Fibonacci (1,2,3,5,8,13)     |
+| `customfield_11600` | 🌍️ WEBLINK                       | URL      | ⚠️ Cond.  | URL de la app/feature (ver nota abajo)     |
+
+### Nota sobre WEBLINK (customfield_11600)
+
+**IMPORTANTE:** Este campo es OPCIONAL y solo debe llenarse si:
+
+- La IA conoce PERFECTAMENTE el dominio de la aplicación bajo prueba
+- El dominio está definido en el system prompt o contexto del proyecto
+- El usuario ha proporcionado explícitamente la URL
+
+**Si hay duda sobre la URL correcta:** NO llenar el campo. Es preferible dejarlo vacío que poner una URL incorrecta.
+
+### Estrategia de Fallback (Workspaces Non-UPEX)
+
+Si el MCP de Jira indica que los custom fields no existen:
+
+1. **Buscar equivalente:** Usar `jira_search_fields` para buscar campos similares por nombre
+2. **Preguntar al usuario:** Si no se encuentra, solicitar el Field ID correcto
+3. **Fallback a Description:** Incluir la información en el campo Description con formato claro:
+
+   ```
+   ## Acceptance Criteria (Gherkin)
+   [contenido]
+
+   ## Scope
+   [contenido]
+
+   ## Story Points: X
+   ```
+
+---
+
 ## 🎯 FLUJO DE TRABAJO: JIRA-FIRST → LOCAL
 
 **IMPORTANTE:** Este prompt trabaja de forma incremental para optimizar tokens y mantener contexto definido.
@@ -466,30 +510,52 @@ See: `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{nombre}/feature-implementatio
 
 **Acción:** Por cada user story de la épica, créala en Jira usando las herramientas MCP disponibles.
 
+**Criterios INVEST para validar cada Story:**
+
+| Criterio        | Validación                                                |
+| --------------- | --------------------------------------------------------- |
+| **I**ndependent | ¿Puede completarse sin depender de otras stories?         |
+| **N**egotiable  | ¿Hay flexibilidad en la implementación?                   |
+| **V**aluable    | ¿El "so that" aporta valor claro al usuario?              |
+| **E**stimable   | ¿El equipo puede dar story points con la info disponible? |
+| **S**mall       | ¿Es menor a 8 SP? Si no, dividir la story                 |
+| **T**estable    | ¿Los criterios de aceptación son verificables?            |
+
 **Datos necesarios para crear cada story:**
 
 - **Proyecto:** {PROJECT_KEY obtenido en PASO 0} (mismo que la épica)
 - **Tipo de issue:** Story
 - **Título (Summary):** As a [user], I want to [action] so that [benefit]
-- **Descripción:** Descripción detallada + acceptance criteria en formato Gherkin
+- **Descripción:** Descripción detallada de la historia
 - **Epic Link:** Jira Key de la épica padre (el que obtuviste en paso 2.1)
   - Ejemplo: MYM-13, SHOP-5, BLOG-1, etc.
 - **Prioridad:** High | Medium | Low
-- **Story Points:** 1, 2, 3, 5, 8, o 13 (escala Fibonacci)
 - **Labels:** mvp, sprint-1 (ajustar según corresponda)
+
+**Custom Fields (UPEX Workspace):**
+
+| Campo                                       | Valor                                           |
+| ------------------------------------------- | ----------------------------------------------- |
+| `customfield_10201` (Acceptance Criteria)   | Escenarios en formato Gherkin (Given/When/Then) |
+| `customfield_10401` (Scope)                 | In Scope + Out of Scope claramente separados    |
+| `customfield_10028` (Story Points)          | Número: 1, 2, 3, 5, 8, o 13                     |
+| `customfield_10202` (Business Rules) - Opc. | Reglas de negocio si aplica                     |
+| `customfield_10400` (Mockup) - Opcional     | URLs a Figma/diseños si existen                 |
+| `customfield_10500` (Workflow) - Opcional   | Descripción del flujo si es complejo            |
+| `customfield_11600` (WebLink) - Condicional | URL de la app SOLO si se conoce con certeza     |
 
 **Instrucciones:**
 
 1. Usa las herramientas MCP para crear un issue de tipo "Story" en Jira
 2. Vincula la story a la épica usando el epic link
-3. Completa todos los campos requeridos
+3. Llena los custom fields según la tabla anterior
 4. **IMPORTANTE:** Captura el **Issue Number** que Jira asigna a cada story
    - Formato del key: `{PROJECT_KEY}-{ISSUE_NUM}`
    - Ejemplo: Si PROJECT_KEY es "MYM" y Jira asigna números 14, 15, 16... → Keys: "MYM-14", "MYM-15", "MYM-16"
 
 **Resultado esperado:**
 
-- Story creada exitosamente en Jira
+- Story creada exitosamente en Jira con todos los custom fields
 - Story vinculada a su épica padre
 - Obtener y guardar el **Jira Key completo** de cada story (ej: MYM-14, SHOP-46, BLOG-2)
 - Extraer el **ISSUE_NUM** para usarlo en nomenclatura de carpeta
@@ -525,7 +591,7 @@ Crear carpeta:
 
 **Acción:** Generar archivo `story.md` dentro de cada carpeta de story.
 
-**Estructura del archivo:**
+**Estructura del archivo (con mapeo a Custom Fields):**
 
 ```markdown
 # [Story Title]
@@ -541,40 +607,83 @@ Crear carpeta:
 
 ## User Story
 
-**As a** [tipo de usuario]
-**I want to** [acción/funcionalidad]
-**So that** [beneficio/valor]
+**As a** [tipo de usuario específico]
+**I want to** [acción clara y concreta]
+**So that** [beneficio medible para el usuario]
 
 ---
 
-## Description
+## Scope
 
-[Descripción detallada de la user story - 2-3 párrafos]
-[Contexto adicional, problema que resuelve, valor que aporta]
+<!-- Jira Field: customfield_10401 (⛳SCOPE) -->
+
+### In Scope
+
+- [Funcionalidad incluida 1]
+- [Funcionalidad incluida 2]
+- [Funcionalidad incluida 3]
+
+### Out of Scope
+
+- [Lo que NO está incluido en esta story]
+- [Features para futuras iteraciones]
 
 ---
 
 ## Acceptance Criteria (Gherkin format)
 
-### Scenario 1: [Happy path scenario name]
+<!-- Jira Field: customfield_10201 (✅ Acceptance Criteria) -->
 
-- **Given:** [Contexto inicial / precondiciones]
-- **When:** [Acción del usuario]
-- **Then:** [Resultado esperado]
+### Scenario 1: [Happy path - nombre descriptivo]
 
-### Scenario 2: [Error/edge case scenario name]
+- **Given:** [Contexto inicial / precondiciones claras]
+- **When:** [Acción específica del usuario]
+- **Then:** [Resultado esperado verificable]
 
-- **Given:** [Contexto inicial]
-- **When:** [Acción del usuario]
-- **Then:** [Resultado esperado / manejo del error]
-
-### Scenario 3: [Additional scenario if needed]
+### Scenario 2: [Validación/Error - nombre descriptivo]
 
 - **Given:** [Contexto inicial]
+- **When:** [Acción que genera error o validación]
+- **Then:** [Comportamiento esperado del sistema]
+
+### Scenario 3: [Edge case - nombre descriptivo]
+
+- **Given:** [Contexto límite o especial]
 - **When:** [Acción del usuario]
 - **Then:** [Resultado esperado]
 
 **Mínimo:** 3 scenarios por story (1 happy path + 2 edge/error cases)
+
+---
+
+## Business Rules
+
+<!-- Jira Field: customfield_10202 (🚩BUSINESS RULES SPEC) - Opcional -->
+
+- [Regla de negocio 1 que aplica a esta story]
+- [Regla de negocio 2]
+- [Validaciones específicas del dominio]
+
+---
+
+## Workflow
+
+<!-- Jira Field: customfield_10500 (🧬WORKFLOW) - Opcional -->
+
+[Descripción del flujo de trabajo si es complejo]
+
+1. Usuario hace X
+2. Sistema responde Y
+3. Usuario confirma Z
+
+---
+
+## Mockups/Wireframes
+
+<!-- Jira Field: customfield_10400 (🎴MOCKUP) - Opcional -->
+
+- [URL a Figma/diseño si existe]
+- [Descripción de componentes UI si no hay diseño]
 
 ---
 
@@ -591,7 +700,6 @@ Crear carpeta:
 ### Database
 
 [Tablas afectadas, queries relevantes]
-
 **IMPORTANTE:** NO hardcodear SQL. Usar Supabase MCP.
 
 ### External Services
@@ -616,13 +724,6 @@ Crear carpeta:
 
 ---
 
-## UI/UX Considerations
-
-[Mockups, wireframes, design system components a usar]
-[Interacciones, flujos de navegación]
-
----
-
 ## Definition of Done
 
 - [ ] Código implementado y funcionando
@@ -640,7 +741,7 @@ Crear carpeta:
 
 ## Testing Strategy
 
-See: `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{NUM}-{nombre}/test-cases.md` (se crea en Fase 5)
+See: `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{NUM}-{nombre}/acceptance-test-plan.md` (se crea en Fase 5)
 
 **Test Cases Expected:** 6+ detailed test cases covering:
 
@@ -648,20 +749,6 @@ See: `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{nombre}/stories/STORY-{PROJEC
 - Error scenarios
 - Edge cases
 - Security validations
-
----
-
-## Implementation Plan
-
-See: `.context/PBI/epics/EPIC-{PROJECT_KEY}-{NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{NUM}-{nombre}/implementation-plan.md` (se crea en Fase 6)
-
-**Implementation Steps Expected:**
-
-- Step-by-step technical plan
-- File structure
-- Function signatures
-- API endpoints
-- Database operations
 
 ---
 
@@ -830,7 +917,7 @@ Al completar este prompt para todo el MVP (todas las épicas), tendrás:
 **Archivos que se crean en fases posteriores:**
 
 - `feature-test-plan.md` - Fase 4 (Shift-Left Testing)
-- `story-xxx/test-cases.md` - Fase 4
+- `story-xxx/acceptance-test-plan.md` - Fase 4
 - `feature-implementation-plan.md` - Fase 5 (Planning)
 - `story-xxx/implementation-plan.md` - Fase 5
 
@@ -847,5 +934,13 @@ Al completar este prompt para todo el MVP (todas las épicas), tendrás:
 
 ---
 
-**Versión:** 4.0 - Jira-First Incremental Flow
-**Última actualización:** 2025-11-04
+**Versión:** 5.0 - Jira-First Incremental Flow + Custom Fields
+**Última actualización:** 2026-02-04
+
+**Changelog v5.0:**
+
+- Agregado schema de Custom Fields para UPEX Workspace
+- Agregado criterios INVEST para validación de User Stories
+- Agregada estrategia de Fallback para workspaces non-UPEX
+- Mapeo de campos entre story.md local y custom fields de Jira
+- Removida sección Implementation Plan del template (se maneja en otro prompt)

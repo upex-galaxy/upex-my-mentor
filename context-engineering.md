@@ -46,7 +46,7 @@ aicode-starter/
 │   │               └── STORY-{PROYECTO}-{NUM}-{nombre}/  Para: Una story (ej: STORY-MYM-14-view-mentors)
 │   │                   │
 │   │                   ├── story.md       Para: FASE 4 - User story + acceptance criteria
-│   │                   ├── test-cases.md  Para: FASE 5 - 6+ test cases detallados
+│   │                   ├── acceptance-test-plan.md  Para: FASE 5 - Acceptance test plan
 │   │                   └── implementation-plan.md  Para: FASE 6 - Plan tecnico step-by-step
 │   │
 │   └── guidelines/                     Para: FASES 7-14 - Reference material para la IA
@@ -95,7 +95,7 @@ aicode-starter/
 │   │
 │   ├── fase-5-shift-left-testing/      Para: Generar docs de testing
 │   │   ├── feature-test-plan.md        Para: Prompt de plan de pruebas (epica)
-│   │   └── story-test-cases.md         Para: Prompt de test cases (story)
+│   │   └── acceptance-test-plan.md     Para: Prompt de acceptance test plan (story)
 │   │
 │   ├── fase-6-planning/                Para: Generar planes de implementacion
 │   │   ├── feature-implementation-plan.md Para: Prompt de plan tecnico (epica)
@@ -248,7 +248,7 @@ Input: .context/PBI/ (epicas y stories especificas)
 Usar: .prompts/fase-5-shift-left-testing/
 Output:
   - .context/PBI/epics/EPIC-XXX/feature-test-plan.md
-  - .context/PBI/epics/EPIC-XXX/stories/STORY-XXX/test-cases.md
+  - .context/PBI/epics/EPIC-XXX/stories/STORY-XXX/acceptance-test-plan.md
 Quien: QA Engineer, Test Lead
 ```
 
@@ -434,7 +434,7 @@ Quien: SRE, DevOps
 ```
 .context/PBI/epics/EPIC-MYM-13-mentor-discovery/stories/STORY-MYM-14-view-mentors/
 ├── story.md                    (Fase 4: Que hacer)
-├── test-cases.md               (Fase 5: Como probar)
+├── acceptance-test-plan.md     (Fase 5: Como probar)
 └── implementation-plan.md      (Fase 6: Como implementar)
 ```
 

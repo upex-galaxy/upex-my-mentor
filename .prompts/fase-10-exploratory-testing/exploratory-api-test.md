@@ -51,7 +51,7 @@ If the project has Shift-Left Testing documentation:
 
 ```
 Provide:
-- Path to test-cases.md file
+- Path to acceptance-test-plan.md file
 - OR Jira issue with test cases in comments
 - OR test cases directly in the prompt
 ```

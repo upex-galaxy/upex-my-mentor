@@ -27,7 +27,7 @@ La **tercera fase del Integrated Quality Lifecycle** donde **ambos roles QA + De
 │  │  EARLY-GAME     │──▶│   MID-GAME      │──▶│   LATE-GAME     ││
 │  │  Completado     │   │   Completado    │   │   ✅ FASE ACTUAL││
 │  │                 │   │                 │   │                 ││
-│  │  Steps 1-4      │   │   Steps 5-9     │   │   Steps 10-15   ││
+│  │  Steps 1-5      │   │   Steps 6-10    │   │   Steps 11-16   ││
 │  │  QA Analyst     │   │   QA Automation │   │   QA + DevOps   ││
 │  └─────────────────┘   └─────────────────┘   └─────────────────┘│
 │                                                                 │
@@ -38,7 +38,7 @@ La **tercera fase del Integrated Quality Lifecycle** donde **ambos roles QA + De
 
 | Aspecto          | Detalle                        |
 | ---------------- | ------------------------------ |
-| **Steps**        | 10-15 del IQL                  |
+| **Steps**        | 11-16 del IQL                  |
 | **Enfoques**     | Shift-Right, Chaos Engineering |
 | **Roles**        | QA + DevOps + SRE              |
 | **Herramientas** | Sentry, Grafana, k6            |
@@ -51,11 +51,11 @@ La **tercera fase del Integrated Quality Lifecycle** donde **ambos roles QA + De
 
 ## Los 6 Pasos del Late-Game Testing
 
-**Late-Game Testing** expande el Step 10 original del IQL y agrega **5 pasos adicionales** enfocados en producción y observabilidad.
+**Late-Game Testing** expande el Step 11 original del IQL y agrega **5 pasos adicionales** enfocados en producción y observabilidad.
 
 > _"La transición hacia Shift-Right Testing con enfoque en observabilidad, resilencia y mejora continua."_
 
-### Step 10: Continuous Maintenance & Monitoring
+### Step 11: Continuous Maintenance & Monitoring
 
 **TMLC + TALC Combined - Production Operations**
 
@@ -75,7 +75,7 @@ Lanzamiento de User Stories a producción con confianza y detección temprana de
 
 ---
 
-### Step 11: Canary Release Monitoring
+### Step 12: Canary Release Monitoring
 
 **Shift-Right Testing - Controlled Deployment**
 
@@ -95,7 +95,7 @@ Validación segura de nuevas funcionalidades en producción con riesgo mínimo.
 
 ---
 
-### Step 12: A/B Testing & Experimentation
+### Step 13: A/B Testing & Experimentation
 
 **Production Testing - User Behavior Analysis**
 
@@ -115,7 +115,7 @@ Optimización continua del producto basada en datos reales de usuarios.
 
 ---
 
-### Step 13: Real User Monitoring (RUM)
+### Step 14: Real User Monitoring (RUM)
 
 **Production Observability - Performance & UX**
 
@@ -135,7 +135,7 @@ Visibilidad completa de la experiencia real del usuario y optimización proactiv
 
 ---
 
-### Step 14: Chaos Engineering & Resilience Testing
+### Step 15: Chaos Engineering & Resilience Testing
 
 **Production Reliability - System Resilience**
 
@@ -155,7 +155,7 @@ Sistema más robusto con capacidad validada de recuperación ante fallas.
 
 ---
 
-### Step 15: Feedback Loop & Continuous Improvement
+### Step 16: Feedback Loop & Continuous Improvement
 
 **Data-Driven QA - Learning & Optimization**
 

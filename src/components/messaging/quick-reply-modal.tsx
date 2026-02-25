@@ -34,6 +34,7 @@ export function QuickReplyModal({
   otherParticipant,
   currentUserId,
   onMessageSent,
+  onConversationRead,
 }: QuickReplyModalProps) {
   const [messages, setMessages] = useState<MessageWithSender[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -66,9 +67,11 @@ export function QuickReplyModal({
         .then((data) => {
           if (data) {
             setMessages(data.messages);
-            // Mark as read
+            // Mark as read and notify widget to update unread dot
             markConversationAsRead(conversationId).then(() => {
               refreshUnreadCount();
+              // MYM-96: Notify widget to refresh conversations (clears unread dot)
+              onConversationRead?.();
             });
           }
         })
@@ -76,13 +79,26 @@ export function QuickReplyModal({
           setIsLoading(false);
         });
     }
-  }, [open, conversationId, refreshUnreadCount]);
+  }, [open, conversationId, refreshUnreadCount, onConversationRead]);
 
   // Scroll to bottom when messages change
+  // Note: We access the Viewport element (data-radix-scroll-area-viewport)
+  // because ScrollArea Root has overflow-hidden and doesn't scroll
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    // MYM-155: Use requestAnimationFrame to ensure DOM has updated
+    const scrollToBottom = () => {
+      if (scrollRef.current) {
+        const viewport = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
+        if (viewport) {
+          viewport.scrollTop = viewport.scrollHeight;
+        }
+      }
+    };
+
+    // Schedule after paint for reliable scroll position
+    requestAnimationFrame(() => {
+      requestAnimationFrame(scrollToBottom);
+    });
   }, [messages]);
 
   const handleSubmit = () => {
@@ -94,29 +110,34 @@ export function QuickReplyModal({
     setError(null);
 
     startTransition(async () => {
-      const result = await sendReplyToConversation(conversationId, content);
+      try {
+        const result = await sendReplyToConversation(conversationId, content);
 
-      if (result.success) {
-        // Optimistic UI: add message immediately
-        const newMessage: MessageWithSender = {
-          id: result.messageId || crypto.randomUUID(),
-          conversation_id: conversationId,
-          sender_id: currentUserId,
-          content: content.trim(),
-          is_read: false,
-          created_at: new Date().toISOString(),
-          sender: {
-            id: currentUserId,
-            name: 'Tú',
-            photo_url: null,
-          },
-        };
+        if (result.success) {
+          // Optimistic UI: add message immediately
+          const newMessage: MessageWithSender = {
+            id: result.messageId || crypto.randomUUID(),
+            conversation_id: conversationId,
+            sender_id: currentUserId,
+            content: content.trim(),
+            is_read: false,
+            created_at: new Date().toISOString(),
+            sender: {
+              id: currentUserId,
+              name: 'Tú',
+              photo_url: null,
+            },
+          };
 
-        setMessages((prev) => [...prev, newMessage]);
-        setContent('');
-        onMessageSent?.();
-      } else {
-        setError(result.error || 'Error al enviar el mensaje');
+          setMessages((prev) => [...prev, newMessage]);
+          setContent('');
+          onMessageSent?.();
+        } else {
+          setError(result.error || 'Error al enviar el mensaje');
+        }
+      } catch {
+        // MYM-132: Handle network errors gracefully
+        setError('Error de conexión. Verifica tu red e intenta de nuevo.');
       }
     });
   };

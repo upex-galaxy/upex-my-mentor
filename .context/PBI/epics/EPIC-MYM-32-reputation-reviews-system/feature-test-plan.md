@@ -1133,7 +1133,7 @@ Based on user personas (Laura, Carlos, Sofía) and realistic review scenarios:
 
 **Staging Environment:**
 
-* **URL:** https://staging.upexmymentor.com (from api-contracts.yaml)
+* **URL:** https://staging-upexmymentor.vercel.app (from api-contracts.yaml)
 * **Database:** Staging PostgreSQL (Supabase staging project)
 * **Email Service:** Use email testing service (Mailtrap, MailHog, or Resend test mode)
 * **Video Service:** Daily.co test room URLs (no actual video calls needed)
@@ -1151,7 +1151,7 @@ Based on user personas (Laura, Carlos, Sofía) and realistic review scenarios:
 
 **Production Environment:**
 
-* **URL:** https://api.upexmymentor.com (from api-contracts.yaml)
+* **URL:** https://upexmymentor.vercel.app (from api-contracts.yaml)
 * **Purpose:** **ONLY smoke tests post-deployment** (no comprehensive testing)
 * **Restrictions:**
   * ❌ NO destructive tests (don't delete real reviews)

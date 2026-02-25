@@ -12,14 +12,14 @@ PBI/
 ├── ALIGNMENT-REPORT.md             [Opcional] Mapeo PRD → Jira
 └── epics/
     └── EPIC-{PROYECTO}-{NUM}-{nombre-descriptivo}/
-        ├── epic.md                 [FASE 3] Descripción de la épica
-        ├── feature-test-plan.md    [FASE 4] Plan de pruebas
-        ├── feature-implementation-plan.md  [FASE 5] Plan técnico
+        ├── epic.md                 [FASE 4] Descripción de la épica
+        ├── feature-test-plan.md    [FASE 5] Plan de pruebas
+        ├── feature-implementation-plan.md  [FASE 6] Plan técnico
         └── stories/
             └── STORY-{PROYECTO}-{NUM}-{nombre-descriptivo}/
-                ├── story.md        [FASE 3] User story
-                ├── test-cases.md   [FASE 4] Test cases
-                └── implementation-plan.md  [FASE 5] Plan de implementación
+                ├── story.md        [FASE 4] User story
+                ├── acceptance-test-plan.md   [FASE 5] Acceptance test plan
+                └── implementation-plan.md  [FASE 6] Plan de implementación
 ```
 
 **Ejemplo real:**
@@ -35,7 +35,7 @@ PBI/
         └── stories/
             ├── STORY-MYM-14-view-all-mentors/
             │   ├── story.md
-            │   ├── test-cases.md
+            │   ├── acceptance-test-plan.md
             │   └── implementation-plan.md
             ├── STORY-MYM-15-search-mentors-keyword/
             │   └── ...
@@ -139,13 +139,13 @@ Input: "Sistema completo de suscripciones mensuales con planes y billing"
 - ✅ Seguro: Previene crear features complejas de una vez
 - ✅ Incremental: Mismo flujo Jira-First que setup inicial
 
-### FASE 4: Shift-Left Testing (QA) 🔍 **CRITICAL ANALYSIS + TEST DESIGN**
+### FASE 5: Shift-Left Testing (QA) 🔍 **CRITICAL ANALYSIS + TEST DESIGN**
 
 **NUEVO ENFOQUE V2.0:** QA como analista crítico, no solo ejecutor de test cases.
 
 **Por cada épica (una vez):**
 
-- Usa `.prompts/fase-4-shift-left-testing/feature-test-plan.md`
+- Usa `.prompts/fase-5-shift-left-testing/feature-test-plan.md`
 - Genera `epics/EPIC-XXX/feature-test-plan.md`
 - **Incluye:**
   - Business context analysis (valor de negocio, KPIs, user personas afectadas)
@@ -157,8 +157,8 @@ Input: "Sistema completo de suscripciones mensuales con planes y billing"
 
 **Por cada story:**
 
-- Usa `.prompts/fase-4-shift-left-testing/story-test-cases.md`
-- Genera `epics/EPIC-XXX/stories/STORY-XXX/test-cases.md`
+- Usa `.prompts/fase-5-shift-left-testing/acceptance-test-plan.md`
+- Genera `epics/EPIC-XXX/stories/STORY-XXX/acceptance-test-plan.md`
 - **Trabaja en 5 FASES:**
   1. **Critical Analysis** - Business + technical context de la story
   2. **Story Quality Analysis** - Identificar ambiguities, gaps, edge cases NO cubiertos
@@ -203,7 +203,7 @@ Input: "Sistema completo de suscripciones mensuales con planes y billing"
 Al completar todas las fases para una story tendrás:
 
 - Definición clara (story.md)
-- Test cases detallados (test-cases.md)
+- Acceptance test plan (acceptance-test-plan.md)
 - Plan de implementación (implementation-plan.md)
 - **TODO en una carpeta** → Context Engineering optimizado
 

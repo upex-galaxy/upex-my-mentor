@@ -125,7 +125,7 @@ Usa el spec descargado con `@ivotoby/openapi-mcp-server`:
 }
 ```
 
-Ver: [Configuracion MCP OpenAPI](../testing/database-guide/mcp-openapi.md)
+Ver: [Configuracion MCP OpenAPI](../setup/mcp-openapi.md)
 
 ### Opcion B: Usar tipos en tests Playwright
 
@@ -137,7 +137,7 @@ type UserResponse = paths['/users/{id}']['get']['responses']['200']['content']['
 
 ### Opcion C: Contract testing con Zod
 
-Ver: [OpenAPI + Zod Contract Testing](../testing/api-guide/openapi-zod-contract-testing.md)
+Ver: [OpenAPI + Zod Contract Testing](../testing/api/openapi-contract-testing.md)
 
 ---
 
@@ -179,15 +179,15 @@ gh api /repos/owner/repo/contents/path/to/openapi.yaml
 
 ## Flujos relacionados
 
-| Flujo               | Cuando usarlo                 | Documento                                                                               |
-| ------------------- | ----------------------------- | --------------------------------------------------------------------------------------- |
-| **sync-openapi.ts** | Backend externo tiene el spec | Este documento                                                                          |
-| **Zod-to-OpenAPI**  | Tu defines schemas con Zod    | [openapi-zod-contract-testing.md](../testing/api-guide/openapi-zod-contract-testing.md) |
-| **MCP OpenAPI**     | AI testing con cualquier spec | [mcp-openapi.md](../testing/database-guide/mcp-openapi.md)                              |
+| Flujo               | Cuando usarlo                 | Documento                                                                 |
+| ------------------- | ----------------------------- | ------------------------------------------------------------------------- |
+| **sync-openapi.ts** | Backend externo tiene el spec | Este documento                                                            |
+| **Zod-to-OpenAPI**  | Tu defines schemas con Zod    | [openapi-contract-testing.md](../testing/api/openapi-contract-testing.md) |
+| **MCP OpenAPI**     | AI testing con cualquier spec | [mcp-openapi.md](../setup/mcp-openapi.md)                                 |
 
 ---
 
 **Ver tambien:**
 
-- [MCP Builder Strategy](../mcp/builder-strategy.md)
-- [Update Prompts Guide](./update-prompts-guide.md)
+- [MCP Builder Strategy](../setup/mcp/builder-strategy.md)
+- [Update Template Guide](./update-template-guide.md)

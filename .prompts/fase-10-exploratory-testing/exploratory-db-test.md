@@ -64,7 +64,7 @@ If test cases specify data validations:
 
 ```
 Provide:
-- Path to test-cases.md file
+- Path to acceptance-test-plan.md file
 - Data validation requirements from test cases
 ```
 

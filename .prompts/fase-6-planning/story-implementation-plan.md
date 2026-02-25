@@ -3,10 +3,16 @@ Actúa como Senior Full-Stack Developer + UI/UX Designer.
 **Input:**
 
 - Story: [usar .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/story.md]
-- Test Cases: [usar .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/test-cases.md]
+- **Test Cases (Acceptance Test Plan):** Usar el siguiente orden de descubrimiento:
+  1. **Jira Comments** (preferido): Buscar en comentarios de la US usando `mcp__atlassian__jira_get_issue` con `comment_limit: 50`. Buscar comentarios que contengan "Test Case", "TC-", "Scenario:", o tablas de test cases.
+  2. **Jira Custom Field**: Campo `customfield_12400` ("Acceptance Test Plan (QA)🧪") usando `fields: "*all"`
+  3. **Archivo Local** (fallback): `.context/PBI/epics/.../stories/.../test-cases.md` o `acceptance-test-plan.md`
 - Feature Implementation Plan: [usar .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/feature-implementation-plan.md]
 - SRS relevante: [usar secciones relacionadas de .context/SRS/]
 - **Design System:** [usar .context/design-system.md - para decisiones de UI/UX]
+
+**⚠️ IMPORTANTE - Jira es la fuente de verdad para Test Cases:**
+Los test cases del Acceptance Test Plan definen los escenarios que la implementación DEBE cubrir. Cada test case debe mapearse a un step de implementación para garantizar cobertura completa. NO omitir ningún test case.
 
 **Genera archivo: implementation-plan.md** (dentro de .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/)
 
@@ -415,7 +421,7 @@ Textos que reflejan el contexto específico del proyecto, usando vocabulario del
   - [ ] [Componente específico 2]
 - [ ] Tests de integración pasando
   - [ ] [Escenario específico]
-- [ ] Tests E2E pasando (referencia: test-cases.md)
+- [ ] Tests E2E pasando (referencia: Acceptance Test Plan de Jira o test-cases.md)
   - [ ] TC-001: [nombre]
   - [ ] TC-002: [nombre]
   - [ ] ...
@@ -445,3 +451,48 @@ Textos que reflejan el contexto específico del proyecto, usando vocabulario del
 - Estimated time realista
 - Total debe match story points
 - Testing strategy por cada step
+
+---
+
+## 📤 SINCRONIZACIÓN CON JIRA (Condicional - UPEX Workspace)
+
+### Custom Field para Story Implementation Plan
+
+| Field ID            | Nombre                           | Tipo     | Nivel |
+| ------------------- | -------------------------------- | -------- | ----- |
+| `customfield_12401` | Spec Implementation Plan (Dev)🛠️ | Textarea | Story |
+
+### Instrucciones de Sincronización
+
+**DESPUÉS de generar el archivo `implementation-plan.md` localmente:**
+
+1. **Verificar si la Story tiene el custom field:**
+   - Usar MCP de Atlassian para obtener la Story: `jira_get_issue`
+   - Verificar si `customfield_12401` existe y está disponible en el response
+
+2. **Si el campo existe:**
+   - Copiar el contenido COMPLETO del `implementation-plan.md` generado
+   - Actualizar la Story en Jira usando MCP `jira_update_issue`:
+     ```
+     fields: {
+       "customfield_12401": "[contenido del implementation-plan.md]"
+     }
+     ```
+   - Agregar label: `implementation-plan-ready`
+
+3. **Si el campo NO existe (Workspace non-UPEX):**
+   - Buscar campo equivalente con nombre similar ("Implementation Plan", "Dev Plan", "Technical Plan")
+   - Si no existe ningún campo equivalente, agregar como **comentario** en la Story:
+
+     ```
+     📋 **Spec Implementation Plan (Dev)**
+
+     [contenido del implementation-plan.md]
+     ```
+
+### Output Esperado
+
+- [ ] Archivo `implementation-plan.md` creado en `.context/PBI/epics/.../stories/.../`
+- [ ] Custom field `customfield_12401` actualizado en Jira (si existe)
+- [ ] Label `implementation-plan-ready` agregado a la Story
+- [ ] Comentario agregado como fallback (si campo no existe)

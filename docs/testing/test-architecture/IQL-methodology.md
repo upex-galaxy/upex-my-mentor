@@ -23,7 +23,7 @@ IQL integra **testing estratégico** desde el inicio hasta la operación continu
 │                 │    │                 │    │                 │
 │  ► Prevención   │    │  ► Detección    │    │  ► Observación  │
 │  ► QA Analyst   │    │  ► QA Automation│    │  ► QA + DevOps  │
-│  ► Steps 1-4    │    │  ► Steps 5-9    │    │  ► Steps 10-15  │
+│  ► Steps 1-5    │    │  ► Steps 6-10   │    │  ► Steps 11-16  │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
@@ -157,39 +157,123 @@ El **Integrated Quality Lifecycle** integra 8 enfoques complementarios que se ap
 
 ---
 
-## El Flujo Completo: 15 Steps del IQL
+## Jerarquía de Artefactos de Testing
+
+El IQL utiliza una **jerarquía clara de artefactos** que conecta requerimientos con automatización.
+
+### Step 1: Flujo de Análisis (Shift-Left Testing)
+
+El análisis de requerimientos en Step 1 sigue un **orden específico** para asegurar contexto completo:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    STEP 1: ANÁLISIS DE REQUERIMIENTOS           │
+│                    (Shift-Left Testing - Prevención)            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   [1a] ANÁLISIS DE EPIC (Contexto Macro)                       │
+│   ├── Revisar la Epic completa                                 │
+│   ├── Entender el scope del módulo/feature                     │
+│   ├── Identificar TODAS las Stories relacionadas               │
+│   ├── Identificar dependencias e integraciones                 │
+│   └── Generar: FTP (Feature Test Plan)                         │
+│                    ↓                                            │
+│   [1b] ANÁLISIS DE STORY (Con contexto de Epic)                │
+│   ├── Analizar cada Story CON el contexto de la Epic           │
+│   ├── Refinar Acceptance Criteria                              │
+│   ├── Identificar escenarios (happy path, edge cases)          │
+│   ├── Evitar pruebas fuera de scope                            │
+│   └── Generar: ATP (Acceptance Test Plan) por cada Story       │
+│                                                                 │
+│   Timing: ANTES del Sprint (durante refinamiento)              │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**¿Por qué este orden importa?**
+
+| Sin contexto de Epic             | Con contexto de Epic (IQL)         |
+| -------------------------------- | ---------------------------------- |
+| Tester ve solo la Story aislada  | Tester entiende el módulo completo |
+| Riesgo de pruebas fuera de scope | Scope claro y definido             |
+| Puede omitir integraciones       | Ve todas las dependencias          |
+| ATP incompleto                   | ATP informado por FTP              |
+
+### Jerarquía Completa de Artefactos
+
+```
+Epic (Jira)
+  │
+  ├── [Step 1a] FTP (Feature Test Plan) ← Contexto macro
+  │       └── Estrategia de testing para TODO el Epic
+  │
+  └── Stories (Jira)
+        │
+        └── [Step 1b] ATP (Acceptance Test Plan) ← Por cada Story
+                └── Plan de pruebas INFORMADO por el FTP
+                      │
+                      └── [Mid-Game Step 6] ATCs (Acceptance Test Cases)
+                              └── Casos individuales en Jira
+```
+
+### Artefactos del IQL
+
+| Artefacto                      | Nivel | Descripción                                   | Fase IQL   |
+| ------------------------------ | ----- | --------------------------------------------- | ---------- |
+| **FTP** (Feature Test Plan)    | Epic  | Estrategia y alcance de testing del Epic      | Early-Game |
+| **ATP** (Acceptance Test Plan) | Story | Plan para validar cada Acceptance Criteria    | Early-Game |
+| **ATC** (Acceptance Test Case) | Test  | Caso de prueba individual, mapea 1:1 con Jira | Mid-Game   |
+
+### KATA: Arquitectura de Automatización
+
+**KATA** (Komponent Action Test Architecture) **no es un artefacto del IQL**, sino la **arquitectura nativa de automatización** que implementa los ATCs como scripts ejecutables.
+
+- Los ATCs documentados en Jira se automatizan usando KATA en Mid-Game (Steps 8-10)
+- El decorador `@atc('PROJECT-XXX')` vincula cada script con su ticket Jira
+- KATA provee trazabilidad bidireccional entre código y gestión de tests
+
+> **Ver documentación completa:** [KATA Fundamentals](./kata-fundamentals.md)
+
+> _"La trazabilidad fluye de arriba hacia abajo: Epic → FTP → Story → AC → ATP → ATC → KATA automation"_
+
+---
+
+## El Flujo Completo: 16 Steps del IQL
 
 Desde el análisis de requerimientos hasta el monitoreo en producción: **la metodología completa** en una vista unificada.
 
-### Early-Game Testing (Steps 1-4: Prevención)
+### Early-Game Testing (Steps 1-5: Prevención)
 
-| Step | Nombre                          | Etapa          |
-| ---- | ------------------------------- | -------------- |
-| 1    | Análisis de Requerimientos      | TMLC 1st Stage |
-| 2    | Desarrollo e Implementación     | Parallel Work  |
-| 3    | Pruebas Exploratorias Tempranas | TMLC 2nd Stage |
-| 4    | Priorización Risk-Based         | TMLC 3rd Stage |
+| Step | Nombre                             | Etapa          | Artefacto             |
+| ---- | ---------------------------------- | -------------- | --------------------- |
+| 1    | Análisis de Requerimientos         | TMLC 1st Stage | FTP + ATP (ver abajo) |
+| 2    | Desarrollo e Implementación        | Parallel Work  | -                     |
+| 3    | Pruebas Exploratorias Tempranas    | TMLC 2nd Stage | Validación del ATP    |
+| 4    | Reporte de Defectos y Verificación | TMLC 3rd Stage | Bug Reports           |
+| 5    | Priorización Risk-Based            | TMLC 4th Stage | ATP refinado          |
 
-### Mid-Game Testing (Steps 5-9: Detección)
+> **Step 1 detallado:** Primero se analiza la Epic generando el FTP (contexto macro), luego se analizan las Stories generando un ATP por cada una (informado por el FTP). Ambos ocurren ANTES del sprint.
 
-| Step | Nombre                         | Etapa          |
-| ---- | ------------------------------ | -------------- |
-| 5    | Documentación de Test Cases    | TMLC 4th Stage |
-| 6    | Evaluación para Automatización | TALC 1st Stage |
-| 7    | Automatización TAUS            | TALC 2nd Stage |
-| 8    | Verificación en CI             | TALC 3rd Stage |
-| 9    | Pull Request Review            | TALC 4th Stage |
+### Mid-Game Testing (Steps 6-10: Detección)
 
-### Late-Game Testing (Steps 10-15: Observación)
+| Step | Nombre                         | Etapa          | Artefacto           |
+| ---- | ------------------------------ | -------------- | ------------------- |
+| 6    | Documentación de ATCs          | TMLC 5th Stage | ATC tickets en Jira |
+| 7    | Evaluación para Automatización | TALC 1st Stage | ATC → Candidate     |
+| 8    | Automatización KATA            | TALC 2nd Stage | ATCs automatizados  |
+| 9    | Verificación en CI             | TALC 3rd Stage | KATA en pipeline    |
+| 10   | Pull Request Review            | TALC 4th Stage | ATCs integrados     |
+
+### Late-Game Testing (Steps 11-16: Observación)
 
 | Step | Nombre                    | Etapa               |
 | ---- | ------------------------- | ------------------- |
-| 10   | Continuous Maintenance    | Production Ops      |
-| 11   | Canary Release Monitoring | Shift-Right         |
-| 12   | A/B Testing               | Experimentation     |
-| 13   | Real User Monitoring      | Observability       |
-| 14   | Chaos Engineering         | Resilience          |
-| 15   | Feedback Loop             | Continuous Learning |
+| 11   | Continuous Maintenance    | Production Ops      |
+| 12   | Canary Release Monitoring | Shift-Right         |
+| 13   | A/B Testing               | Experimentation     |
+| 14   | Real User Monitoring      | Observability       |
+| 15   | Chaos Engineering         | Resilience          |
+| 16   | Feedback Loop             | Continuous Learning |
 
 ---
 
@@ -278,14 +362,14 @@ Define cómo las **User Stories fluyen** desde la concepción hasta la implement
 
 ### Test Delivery Cycle (TDC)
 
-Define cómo **QA Analysts documentan** casos críticos que **QA Automation convierte** en pruebas automatizadas.
+Define cómo **QA Analysts documentan** casos críticos que **QA Automation convierte** en pruebas automatizadas usando el **framework KATA**.
 
 **Fases del TDC:**
 
 - **Exploración:** Testing manual y descubrimiento
-- **Documentación:** Casos priorizados por riesgo
-- **Automatización:** Scripts para casos críticos
-- **Mantenimiento:** Monitoreo y refinamiento
+- **Documentación:** ATP → ATCs priorizados por riesgo
+- **Automatización:** ATCs convertidos a scripts KATA
+- **Mantenimiento:** Monitoreo y refinamiento de ATCs
 
 > **SDC** y **TDC** trabajan en **simbiosis perfecta**: mientras SDC asegura calidad desde el diseño, TDC optimiza la ejecución y automatización de pruebas para máxima eficiencia.
 
@@ -404,9 +488,9 @@ Calidad como **ciclo continuo** integrado en todo el SDLC.
 
 ### Mid-Game Testing
 
-- Playwright
+- Playwright (KATA framework)
 - Cypress
-- Xray
+- Xray (ATC management)
 
 ### Late-Game Testing
 

@@ -30,7 +30,7 @@ En esta fase **NO generas documentación**. En su lugar, **implementas código r
 **Prerequisitos:**
 
 - ✅ Story tiene `implementation-plan.md` completo (Fase 6: Planning)
-- ✅ Test cases definidos en `test-cases.md` (Fase 5: Shift-Left Testing)
+- ✅ Test cases definidos en `acceptance-test-plan.md` (Fase 5: Shift-Left Testing)
 - ✅ Design system configurado (Fase 3: Infrastructure - si hay UI)
 - ✅ Architecture specs claras (Fase 2: Architecture)
 

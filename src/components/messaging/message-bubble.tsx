@@ -54,7 +54,7 @@ export function MessageBubble({ message, isOwn }: MessageBubbleProps) {
             : 'bg-muted text-foreground rounded-bl-none'
         )}
       >
-        <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+        <p className="text-sm whitespace-pre-wrap break-all">{message.content}</p>
       </div>
 
       {/* Timestamp */}

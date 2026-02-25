@@ -14,7 +14,7 @@
 Ejecutar **testing antes de que exista código**:
 
 1. **Feature Test Plan:** Análisis y estrategia de testing a nivel épica
-2. **Story Test Cases:** Test cases específicos por cada user story
+2. **Acceptance Test Plan:** Test cases específicos por cada user story
 3. **Feedback Temprano:** Identificar problemas, ambigüedades y riesgos ANTES de implementar
 
 El principio fundamental: **encontrar defectos es más barato cuanto antes los encuentres**.
@@ -53,7 +53,7 @@ El principio fundamental: **encontrar defectos es más barato cuanto antes los e
 - **Costo 10x:** Encontrar bug en desarrollo
 - **Costo 100x:** Encontrar bug en producción
 
-### 🔑 Feature Test Plan vs Story Test Cases
+### 🔑 Feature Test Plan vs Acceptance Test Plan
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -85,7 +85,7 @@ El principio fundamental: **encontrar defectos es más barato cuanto antes los e
 ```
 
 - **Feature Test Plan:** Vista macro, riesgos globales, estrategia general
-- **Story Test Cases:** Vista micro, test cases específicos, datos concretos
+- **Acceptance Test Plan:** Vista micro, test cases específicos, datos concretos
 
 ### 🔑 Tipos de Test Cases
 
@@ -640,7 +640,7 @@ Agrega un comentario a la épica con:
 
 ---
 
-# PARTE 2: STORY TEST CASES (Nivel Story)
+# PARTE 2: ACCEPTANCE TEST PLAN (Nivel Story)
 
 ## Paso 8: Select Story
 
@@ -992,10 +992,10 @@ HTTP 201 Created
 
 ## Paso 13: Document and Share Test Cases
 
-### 13.1 Create test-cases.md
+### 13.1 Create acceptance-test-plan.md
 
 ```
-.context/PBI/epics/EPIC-MYM-2-.../stories/STORY-MYM-3-.../test-cases.md
+.context/PBI/epics/EPIC-MYM-2-.../stories/STORY-MYM-3-.../acceptance-test-plan.md
 ```
 
 Incluye:
@@ -1059,7 +1059,7 @@ Agrega comentario con test cases completos y taggea al equipo.
 - [ ] Epic updated in Jira
 - [ ] Team notified
 
-### Story Test Cases ✅
+### Acceptance Test Plan ✅
 
 - [ ] Story analyzed for ambiguities
 - [ ] Missing information identified
@@ -1068,7 +1068,7 @@ Agrega comentario con test cases completos y taggea al equipo.
 - [ ] Test cases designed (positive, negative, boundary)
 - [ ] Integration tests designed (if applicable)
 - [ ] Parametrization used where beneficial
-- [ ] `test-cases.md` created
+- [ ] `acceptance-test-plan.md` created
 - [ ] Story updated in Jira
 - [ ] Team notified
 
