@@ -26,7 +26,7 @@ import {
  * The component waits for client-side mount to avoid hydration mismatch.
  */
 export function ThemeToggle() {
-  const { theme, setTheme, resolvedTheme } = useTheme()
+  const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   // Prevent hydration mismatch by only rendering after mount
