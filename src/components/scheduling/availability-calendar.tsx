@@ -35,13 +35,15 @@ function formatTime(time: string): string {
 
 /**
  * Convert MentorAvailability[] to AvailabilitySlot[] for local state
+ * Normalizes time format from DB (HH:MM:SS) to UI format (HH:MM)
  */
 function toSlots(data: MentorAvailability[]): AvailabilitySlot[] {
   return data.map((item) => ({
     id: item.id,
     day_of_week: item.day_of_week,
-    start_time: item.start_time,
-    end_time: item.end_time,
+    // Normalize "09:00:00" -> "09:00" (remove seconds if present)
+    start_time: item.start_time.substring(0, 5),
+    end_time: item.end_time.substring(0, 5),
   }))
 }
 
