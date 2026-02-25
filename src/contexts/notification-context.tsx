@@ -179,7 +179,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
   }, [user, supabase, handleNewMessage])
 
   // MYM-96: Fallback polling for environments where Realtime may not work
-  // Polls every 30 seconds when tab is visible
+  // Polls every 10 seconds when tab is visible for better responsiveness
   useEffect(() => {
     if (!user) return
 
@@ -188,7 +188,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
         refreshUnreadCount()
         setConversationsRefreshKey((prev) => prev + 1)
       }
-    }, 30000) // 30 seconds
+    }, 10000) // 10 seconds for better UX
 
     return () => clearInterval(pollInterval)
   }, [user, refreshUnreadCount])

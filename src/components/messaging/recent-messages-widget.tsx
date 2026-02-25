@@ -216,8 +216,15 @@ export function RecentMessagesWidget({
     });
   }, []);
 
-  const handleModalClose = useCallback(() => {
+  const handleModalClose = useCallback(async () => {
     setSelectedConversation(null);
+    // MYM-96: Refresh conversations when modal closes to update read status
+    try {
+      const freshConversations = await getConversations();
+      setConversations(freshConversations);
+    } catch {
+      // Silently fail - the next poll will refresh
+    }
   }, []);
 
   const handleMessageSent = useCallback(async () => {
