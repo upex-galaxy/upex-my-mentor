@@ -5,10 +5,10 @@
 
 ---
 
-## Estado Actual (2026-02-23)
+## Estado Actual (2026-02-24)
 
 **Rama actual:** `staging`
-**Última actualización:** 2026-02-23
+**Última actualización:** 2026-02-24
 
 ---
 
@@ -16,24 +16,36 @@
 
 | Key | Summary | Priority | Status |
 |-----|---------|----------|--------|
-| MYM-142 | URL de staging incorrecta en api-contracts.yaml | Medium | OPEN |
-| MYM-139 | Rating y total_reviews desincronizados | Medium | OPEN |
-| MYM-132 | Critical Application Crash on Network Loss | Medium | OPEN |
-| MYM-129 | Estudiantes pueden crear registros innecesarios | Medium | OPEN |
-| MYM-127 | CancelAPI: No envía emails de cancelación | Medium | OPEN |
-| MYM-125 | CancelModal: No muestra toast de éxito | Medium | OPEN |
-| MYM-124 | Paginación mantiene "Siguiente" activo | Medium | OPEN |
+| MYM-140 | Mentores verificados sin especialidad ni tarifa | Low | OPEN |
+| MYM-128 | Sesión a 24h+1min es rechazada (> vs >=) | Low | OPEN |
+
+---
+
+## Bugs Ready For QA (Completados esta sesión)
+
+| Key | Summary | Priority | Fixed |
+|-----|---------|----------|-------|
+| MYM-141 | API /api/mentors 404 | Highest | ✅ |
+| MYM-126 | CancelAPI transactions no refunded | High | ✅ |
+| MYM-96 | Widget realtime crash | High | ✅ |
+| MYM-142 | URLs staging incorrectas | Medium | ✅ |
+| MYM-139 | Rating/reviews desync | Medium | ✅ |
+| MYM-132 | App crash on network loss | Medium | ✅ |
+| MYM-129 | Students creating channels | Medium | ✅ |
+| MYM-127 | Emails cancelación (config) | Medium | ✅ |
+| MYM-125 | Toast de éxito cancelar | Medium | ✅ |
+| MYM-124 | Paginación "Siguiente" | Medium | ✅ |
 
 ---
 
 ## Stories Pendientes
 
-| Key | Summary | Status |
-|-----|---------|--------|
-| MYM-72 | Detect system theme preference | Ready For Dev |
-| MYM-31 | Cancel session up to 24 hours | BLOCKED |
-| MYM-14 | See gallery of all mentors | BLOCKED |
-| MYM-26 | See record of earnings | Shift-Left QA |
+| Key | Summary | Status | Assignee |
+|-----|---------|--------|----------|
+| MYM-72 | Detect system theme preference | Ready For Dev | - |
+| MYM-31 | Cancel session up to 24 hours | Ready For QA | Maria Agustina Tramanzoli |
+| MYM-14 | See gallery of all mentors | Ready For QA | yxsinell acosta zambrano |
+| MYM-26 | See record of earnings | Shift-Left QA | - |
 
 ---
 
@@ -53,12 +65,22 @@
 
 ## Trabajo en Progreso
 
-**Bug actual:** MYM-126
-**US actual:** Ninguna
+**Bug actual:** Ninguno
+**US actual:** MYM-72 (pendiente)
 
 ---
 
 ## Historial de Sesión
+
+### Sesión 2026-02-24 (Continuación)
+- [x] MYM-139 - **FIXED** - Migration para recalcular ratings desde reviews reales
+- [x] MYM-132 - **FIXED** - Try/catch en sendReplyToConversation y getConversations
+- [x] MYM-129 - **FIXED** - Validación de rol mentor en PUT /api/users/me/communication-channels
+- [x] MYM-127 - **CONFIG** - Requiere RESEND_API_KEY (usuario configuró en Vercel)
+- [x] MYM-125 - **FIXED** - Cambio de useToast (shadcn) a toast (sonner)
+- [x] MYM-124 - **FIXED** - Lógica de paginación para rating=0 vs NULL
+- [x] **MYM-14 DESBLOQUEADA** → Ready For QA (assignee: yxsinell)
+- [x] **MYM-31 DESBLOQUEADA** → Ready For QA (assignee: Maria Agustina)
 
 ### Sesión 2026-02-23
 - [x] Exploración del panorama completo (PRs, Bugs, Stories)
@@ -67,7 +89,6 @@
 - [x] MYM-126 - **FIXED** - Añadido stripe_refund_id a transactions (commit 058521d)
 - [x] MYM-96 - **FIXED** - Añadido polling fallback para widget (commit e881d53)
 - [x] MYM-142 - **FIXED** - Corregidas URLs de staging/prod en documentación (commit 160b0a9)
-- [ ] Bugs Medium restantes - En proceso
 
 ---
 
@@ -81,4 +102,4 @@
 
 ---
 
-*Última modificación: 2026-02-23*
+*Última modificación: 2026-02-24*
