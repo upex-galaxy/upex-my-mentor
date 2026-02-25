@@ -34,6 +34,7 @@ export function QuickReplyModal({
   otherParticipant,
   currentUserId,
   onMessageSent,
+  onConversationRead,
 }: QuickReplyModalProps) {
   const [messages, setMessages] = useState<MessageWithSender[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -66,9 +67,11 @@ export function QuickReplyModal({
         .then((data) => {
           if (data) {
             setMessages(data.messages);
-            // Mark as read
+            // Mark as read and notify widget to update unread dot
             markConversationAsRead(conversationId).then(() => {
               refreshUnreadCount();
+              // MYM-96: Notify widget to refresh conversations (clears unread dot)
+              onConversationRead?.();
             });
           }
         })
@@ -76,18 +79,26 @@ export function QuickReplyModal({
           setIsLoading(false);
         });
     }
-  }, [open, conversationId, refreshUnreadCount]);
+  }, [open, conversationId, refreshUnreadCount, onConversationRead]);
 
   // Scroll to bottom when messages change
   // Note: We access the Viewport element (data-radix-scroll-area-viewport)
   // because ScrollArea Root has overflow-hidden and doesn't scroll
   useEffect(() => {
-    if (scrollRef.current) {
-      const viewport = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
-      if (viewport) {
-        viewport.scrollTop = viewport.scrollHeight;
+    // MYM-155: Use requestAnimationFrame to ensure DOM has updated
+    const scrollToBottom = () => {
+      if (scrollRef.current) {
+        const viewport = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
+        if (viewport) {
+          viewport.scrollTop = viewport.scrollHeight;
+        }
       }
-    }
+    };
+
+    // Schedule after paint for reliable scroll position
+    requestAnimationFrame(() => {
+      requestAnimationFrame(scrollToBottom);
+    });
   }, [messages]);
 
   const handleSubmit = () => {

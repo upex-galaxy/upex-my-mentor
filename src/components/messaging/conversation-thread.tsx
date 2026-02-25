@@ -56,12 +56,20 @@ export function ConversationThread({
   // Note: We access the Viewport element (data-radix-scroll-area-viewport)
   // because ScrollArea Root has overflow-hidden and doesn't scroll
   useEffect(() => {
-    if (scrollRef.current) {
-      const viewport = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
-      if (viewport) {
-        viewport.scrollTop = viewport.scrollHeight;
+    // MYM-155: Use requestAnimationFrame to ensure DOM has updated
+    const scrollToBottom = () => {
+      if (scrollRef.current) {
+        const viewport = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
+        if (viewport) {
+          viewport.scrollTop = viewport.scrollHeight;
+        }
       }
-    }
+    };
+
+    // Schedule after paint for reliable scroll position
+    requestAnimationFrame(() => {
+      requestAnimationFrame(scrollToBottom);
+    });
   }, [messages]);
 
   // MYM-85: Handle sending a reply

@@ -126,19 +126,53 @@ Continua con el IMPLEMENTATION-ROADMAP.md siguiendo .prompts/us-dev-workflow.md
 | ------ | -------------------------- | ------------ | -------- | ---------------------------- | ------- |
 | MYM-70 | Toggle light/dark mode     | QA Approved  | Medium   | Jescer Alejandro Fleitas     | MYM-69  |
 | MYM-71 | Persist theme in storage   | In Test      | Medium   | Sol Farina                   | MYM-69  |
-| MYM-72 | Detect system preference   | Ready For Dev| Medium   | Noelia Magali Gomez          | MYM-69  |
+| MYM-72 | Detect system preference   | Ready For QA | Medium   | Noelia Magali Gomez          | MYM-69  |
+
+---
+
+## PRs de Implementacion (Referencia)
+
+### PRs Merged (Implementacion)
+
+| PR  | Branch                            | Jira Key(s)      | Status |
+| --- | --------------------------------- | ---------------- | ------ |
+| #90 | feat/MYM-72/system-theme-detection| MYM-72           | MERGED |
+| #82 | fix/MYM-121/multiple-channels-500 | MYM-121          | MERGED |
+| #80 | fix/MYM-100/shadcn-select         | MYM-100          | MERGED |
+| #79 | fix/MYM-99/rating-percentage      | MYM-99           | MERGED |
+| #77 | feat/MYM-19/set-mentor-availability| MYM-19          | MERGED |
+| #76 | fix/MYM-85-MYM-87                 | MYM-85, MYM-87   | MERGED |
+| #70 | fix/pagination-and-kata-framework | MYM-83           | MERGED |
+| #69 | fix/MYM-81/mentors-gallery-photos-v2| MYM-81         | MERGED |
+| #65 | feat/MYM-70-71/dark-mode-theme    | MYM-70, MYM-71   | MERGED |
+| #64 | feat/MYM-59/mentor-respond-dashboard| MYM-59         | MERGED |
+| #63 | feat/MYM-58/message-notifications | MYM-58           | MERGED |
+| #62 | feat/MYM-57/conversation-history  | MYM-57           | MERGED |
+| #61 | feat/MYM-56/send-message          | MYM-56           | MERGED |
+
+### PRs Open (Shift-Left Documentation)
+
+| PR  | Branch                            | Jira Key(s)      | Type       |
+| --- | --------------------------------- | ---------------- | ---------- |
+| #89 | test/MYM-14/api-exploratory-testing| MYM-14          | Shift-Left |
+| #88 | test/MYM-14/exploratory-db        | MYM-14           | Shift-Left |
+| #87 | feat/MYM-14/qa-exploratory-notes  | MYM-14           | Shift-Left |
+| #86 | docs/MYM-59-clean-smoke-exploratory-db| MYM-59       | Shift-Left |
+| #84 | docs/MYM-57/fase-10-documentation | MYM-57           | Shift-Left |
+| #81 | docs/MYM-58/User-Messaging        | MYM-58           | Shift-Left |
+| #78 | autotest/MYM-35-view-profiles-reviews| MYM-35        | Shift-Left |
 
 ---
 
 ## Lista Estrategica de Implementacion
 
-### FASE 1: Dark Mode Completion (1 US pendiente)
+### ✅ FASE 1: Dark Mode Completion - COMPLETADA
 
-| Orden | Key    | Story                    | Status       | Assignee              |
-| ----- | ------ | ------------------------ | ------------ | --------------------- |
-| 1     | MYM-72 | Detect system preference | Ready For Dev| Noelia Magali Gomez   |
+| Orden | Key    | Story                    | Status       | PR Impl |
+| ----- | ------ | ------------------------ | ------------ | ------- |
+| 1     | MYM-72 | Detect system preference | Ready For QA | #90 ✅  |
 
-**Nota:** MYM-70 y MYM-71 ya estan QA Approved/In Test. Solo falta MYM-72 para completar Dark Mode.
+**Nota:** MYM-70, MYM-71, MYM-72 - Dark Mode Epic completamente implementado!
 
 ### FASE 2: Features en Shift-Left QA (esperando PRs)
 
@@ -150,15 +184,15 @@ Continua con el IMPLEMENTATION-ROADMAP.md siguiendo .prompts/us-dev-workflow.md
 
 ## Metricas (2026-02-25)
 
-- **Total US implementadas:** 29 (PRs mergeados en staging)
+- **Total US implementadas:** 30 (PRs mergeados en staging)
 - **US en QA Approved:** 6 (MYM-6, MYM-30, MYM-35, MYM-57, MYM-58, MYM-70)
 - **US en In Test:** 4 (MYM-3, MYM-59, MYM-71, MYM-131)
-- **US en Ready For QA:** 21 (listas para testing)
+- **US en Ready For QA:** 22 (listas para testing, incluye MYM-72)
 - **US en Shift-Left QA:** 1 (MYM-26)
-- **US en Ready For Dev:** 1 (MYM-72)
+- **US en Ready For Dev:** 0 ✅
 - **US en Backlog:** 1 (MYM-84)
-- **Bugs OPEN:** 5 (1 High, 4 Low/Medium)
-- **Bugs Ready For QA:** 15 (fixeados, pendientes de testing)
+- **Bugs OPEN:** 0 ✅ (todos fixeados!)
+- **Bugs Ready For QA:** 24 (fixeados, pendientes de testing)
 
 ---
 
@@ -166,53 +200,37 @@ Continua con el IMPLEMENTATION-ROADMAP.md siguiendo .prompts/us-dev-workflow.md
 
 > **Ver:** [BUGFIX-ROADMAP.md](./BUGFIX-ROADMAP.md) para tracking completo de bugs
 
-### User Stories SIN Bloqueos Activos
+### ✅ User Stories SIN Bloqueos Activos
 
-Actualmente no hay User Stories BLOQUEADAS. Los bugs reportados estan siendo resueltos.
+**No hay bugs OPEN.** Todas las User Stories pueden avanzar sin bloqueos de desarrollo.
 
-### Bugs OPEN (Sin Fix)
+### Bugs Ready For QA (Pendientes de Testing)
+
+Los siguientes bugs fueron fixeados y esperan validacion de QA:
 
 | Bug     | Summary                                    | Priority | Afecta a |
 | ------- | ------------------------------------------ | -------- | -------- |
+| MYM-133 | Availability slots no persisten            | Highest  | MYM-131  |
 | MYM-155 | Messages not displayed in thread           | High     | MYM-59   |
 | MYM-96  | Widget no realtime update                  | High     | MYM-59   |
 | MYM-140 | Mentores sin especialidad ni tarifa        | Low      | MYM-14   |
 | MYM-137 | Chat bubbles text wrap issue               | Low      | MYM-59   |
 | MYM-128 | Sesion 24h+1min rechazada (> vs >=)        | Low      | MYM-31   |
 
-### Bugs Ready For QA (Fixeados)
-
-| Bug     | Summary                                    | Priority | Fixeado |
-| ------- | ------------------------------------------ | -------- | ------- |
-| MYM-141 | API /api/mentors 404                       | Highest  | ✅      |
-| MYM-75  | Password validation issue                  | Highest  | ✅      |
-| MYM-126 | Cancel API transactions not refunded       | High     | ✅      |
-| MYM-83  | Pagination NULL rating                     | High     | ✅      |
-| MYM-139 | Rating/reviews desync                      | Medium   | ✅      |
-| MYM-142 | Staging URLs incorrectas                   | Medium   | ✅      |
-| MYM-129 | Students creating channels                 | Medium   | ✅      |
-| MYM-127 | Emails cancelacion (config)                | Medium   | ✅      |
-| MYM-125 | Toast de exito cancelar                    | Medium   | ✅      |
-| MYM-124 | Paginacion "Siguiente"                     | Medium   | ✅      |
-| MYM-123 | Navegacion inconsistente                   | Medium   | ✅      |
-| MYM-85  | Send message button                        | Medium   | ✅      |
-| MYM-79  | Flujo recuperacion password                | Medium   | ✅      |
-| MYM-77  | Imagenes no cargan                         | Medium   | ✅      |
-| MYM-46  | Search input trim spaces                   | Medium   | ✅      |
-
 ---
 
 ## US en Trabajo Actual
 
-**US actual:** MYM-72 - Detect system theme preference
-**Status:** Ready For Dev
-**Asignada a:** Noelia Magali Gomez (Shift-Left) - Ely (Dev)
+**Status:** ✅ Sin US pendientes de implementacion
+
+Todas las User Stories Ready For Dev han sido implementadas:
+- MYM-72 (ultima US implementada) - PR #90 MERGED
 
 ### Proximos Pasos:
-1. Buscar Test Cases en comentarios de Jira (MYM-72)
-2. Seguir workflow de `.prompts/us-dev-workflow.md`
-3. Crear rama `feat/MYM-72/detect-system-theme`
-4. Implementar deteccion de `prefers-color-scheme`
+
+1. **Esperar QA testing** de las 24 US en Ready For QA
+2. **MYM-26** esta en Shift-Left QA - esperar que avance a Ready For Dev
+3. **MYM-84** (Backlog) - pendiente de priorizacion
 
 ---
 
@@ -220,8 +238,9 @@ Actualmente no hay User Stories BLOQUEADAS. Los bugs reportados estan siendo res
 
 | Fecha      | Cambios                                                                                     |
 | ---------- | ------------------------------------------------------------------------------------------- |
-| 2026-02-25 | **Documento creado** - Snapshot inicial del estado de MyMentor                              |
-| 2026-02-25 | 10 bugs fixeados en sesion anterior, 2 US desbloqueadas (MYM-14, MYM-31)                   |
+| 2026-02-25 | MYM-72 implementado (PR #90) - Dark Mode Epic completado                                   |
+| 2026-02-25 | 6 bugs fixeados (MYM-133, MYM-155, MYM-96, MYM-137, MYM-128, MYM-140) - 0 bugs OPEN        |
+| 2026-02-25 | **Documento actualizado** - Snapshot actual del estado de MyMentor                         |
 | 2026-02-24 | MYM-139 (ratings desync) fixeado con migration para recalcular                             |
 | 2026-02-24 | MYM-132 (network crash) fixeado con try/catch                                               |
 | 2026-02-24 | MYM-129 (students channels) fixeado con validacion de rol                                   |

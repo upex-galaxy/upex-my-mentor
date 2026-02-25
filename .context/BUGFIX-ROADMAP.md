@@ -1,6 +1,7 @@
 # Bugfix & Improvements Roadmap - MyMentor
 
 > **Documento provisional** - Generado: 2026-02-25
+> **Ultima actualizacion:** 2026-02-25
 > **Proposito:** Tracking de defects, bugs e improvements encontrados durante QA
 
 ---
@@ -45,26 +46,29 @@ Continua con el BUGFIX-ROADMAP.md - trabaja en MYM-XX
 
 ## Estado Actual de Defects (2026-02-25)
 
-### Defects OPEN (Sin Fix)
+### ✅ Defects OPEN (Sin Fix) - NINGUNO
 
-| Key     | Summary                                        | Priority | Afecta a | Assignee |
-| ------- | ---------------------------------------------- | -------- | -------- | -------- |
-| MYM-155 | Messages not displayed in thread               | High     | MYM-59   | Ely      |
-| MYM-96  | Widget de mensajes no actualiza realtime       | High     | MYM-59   | Ely      |
-| MYM-140 | Mentores verificados sin especialidad/tarifa   | Low      | MYM-14   | Ely      |
-| MYM-137 | Chat bubbles text wrap issue                   | Low      | MYM-59   | Ely      |
-| MYM-128 | Sesion 24h+1min rechazada (> vs >=)            | Low      | MYM-31   | Ely      |
+**¡Todos los bugs han sido fixeados!** No hay defects OPEN pendientes.
 
 ### Defects Ready For QA (Fixeados - Pendientes de Testing)
 
 | Key     | Summary                                        | Priority | Fixeado Por | Fecha Fix  |
 | ------- | ---------------------------------------------- | -------- | ----------- | ---------- |
+| MYM-133 | Availability slots no persisten cambios        | Highest  | Ely         | 2026-02-25 |
+| MYM-155 | Messages not displayed in thread               | High     | Ely         | 2026-02-25 |
+| MYM-96  | Widget mensajes no actualiza realtime          | High     | Ely         | 2026-02-25 |
+| MYM-92  | Notificaciones Toast no se muestran            | Medium   | Ely         | 2025-12-28 |
+| MYM-91  | Inconsistencia contador mensajes Realtime      | Medium   | Ely         | 2025-12-28 |
+| MYM-86  | Defectos visuales Light/Dark Mode              | Medium   | Ely         | 2025-12-28 |
 | MYM-141 | API GET /api/mentors retorna 404               | Highest  | Ely         | 2026-02-23 |
 | MYM-75  | Password validation no permite crear usuario   | Highest  | Ely         | 2026-02-23 |
 | MYM-126 | Cancel API no actualiza transactions refunded  | High     | Ely         | 2026-02-24 |
 | MYM-83  | Pagination fails with NULL rating              | High     | Ely         | 2026-02-24 |
 | MYM-142 | URLs staging incorrectas en docs               | Medium   | Ely         | 2026-02-23 |
 | MYM-139 | Rating/reviews desincronizados                 | Medium   | Ely         | 2026-02-24 |
+| MYM-140 | Mentores verificados sin especialidad/tarifa   | Low      | Ely         | 2026-02-25 |
+| MYM-137 | Chat bubbles text wrap issue                   | Low      | Ely         | 2026-02-25 |
+| MYM-128 | Sesion 24h+1min rechazada (> vs >=)            | Low      | Ely         | 2026-02-25 |
 | MYM-129 | Estudiantes pueden crear canales comunicacion  | Medium   | Ely         | 2026-02-24 |
 | MYM-127 | Emails cancelacion no enviados (config)        | Medium   | Config      | 2026-02-24 |
 | MYM-125 | No muestra toast de exito al cancelar          | Medium   | Ely         | 2026-02-24 |
@@ -90,6 +94,8 @@ Continua con el BUGFIX-ROADMAP.md - trabaja en MYM-XX
 | MYM-89  | No navegacion a canales comunicacion           | Medium   | 2026-02-23 |
 | MYM-88  | Stripe Connect onboarding Error 500            | Highest  | 2026-02-22 |
 | MYM-87  | PUT /api/users/me/communication-channels 500   | Highest  | 2026-02-22 |
+| MYM-81  | Mentors photos not displayed in gallery        | High     | 2025-12-16 |
+| MYM-74  | Login mentor bloqueado en carga                | Highest  | 2025-12-11 |
 
 ### Defects REJECTED / Cannot Reproduce / Duplicated
 
@@ -103,140 +109,83 @@ Continua con el BUGFIX-ROADMAP.md - trabaja en MYM-XX
 | MYM-118 | Solo un slot tras vaciar calendario            | Cannot Reproduce |
 | MYM-117 | Boton guardar no persiste                      | Cannot Reproduce |
 | MYM-64  | Missing availability page                      | Duplicated       |
+| MYM-48  | Filters client-side only                       | REJECTED         |
+| MYM-47  | Skill filtering OR vs AND                      | REJECTED         |
 
 ---
 
-## User Stories Afectadas por Defects
+## Tracking de Fixes Recientes (Sesion 2026-02-25)
 
-### Con Defects OPEN (Potencialmente Bloqueantes)
-
-| Story  | Summary                    | Defects OPEN      | Impacto                        |
-| ------ | -------------------------- | ----------------- | ------------------------------ |
-| MYM-59 | Mentor responds from dash  | MYM-155, MYM-96, MYM-137 | Mensajeria parcialmente rota |
-| MYM-31 | Cancel session 24h         | MYM-128           | Edge case (Low priority)       |
-| MYM-14 | Gallery of mentors         | MYM-140           | Datos incompletos (Low)        |
-
-**Nota:** MYM-31 y MYM-14 fueron desbloqueadas (Ready For QA). Los bugs OPEN son Low priority edge cases.
-
-### Con Defects Fixeados (Ready For QA)
-
-| Story  | Summary                    | Defects Fixeados  | Estado US    |
-| ------ | -------------------------- | ----------------- | ------------ |
-| MYM-14 | Gallery of mentors         | MYM-141, MYM-124, MYM-139 | Ready For QA |
-| MYM-31 | Cancel session 24h         | MYM-125, MYM-126, MYM-127 | Ready For QA |
-
----
-
-## Orden de Prioridad para Fixes
-
-### Prioridad 1 - OPEN Alta Prioridad
-
-1. **MYM-155** (High) - Messages not displayed in thread
-   - **Problema:** Mensajes enviados solo aparecen en preview "Tu: ..." pero no en el hilo
-   - **Impacto:** Feature de mensajeria inutilizable
-   - **Afecta:** MYM-59 (Mentor responds from dashboard)
-   - **Estado:** OPEN - Pendiente investigacion
-
-2. **MYM-96** (High) - Widget no realtime update
-   - **Problema:** Widget de mensajes recientes no actualiza automaticamente
-   - **Impacto:** UX degradada, requiere refresh manual
-   - **Afecta:** MYM-59 (Messaging)
-   - **Estado:** OPEN - Pendiente fix (ya tiene fallback polling implementado)
-
-### Prioridad 2 - OPEN Baja Prioridad (Edge Cases)
-
-3. **MYM-140** (Low) - Mentores sin especialidad/tarifa
-   - **Problema:** Algunos mentores verificados no tienen datos completos
-   - **Impacto:** Datos inconsistentes, bajo impacto visual
-   - **Estado:** OPEN - Data quality issue
-
-4. **MYM-137** (Low) - Chat bubbles text wrap
-   - **Problema:** Texto largo sin espacios no hace wrap
-   - **Impacto:** Visual, bajo impacto funcional
-   - **Estado:** OPEN - CSS fix pendiente
-
-5. **MYM-128** (Low) - Sesion 24h+1min rechazada
-   - **Problema:** Comparacion `>` en lugar de `>=` para 24 horas
-   - **Impacto:** Edge case boundary, bajo impacto
-   - **Estado:** OPEN - Decision de producto pendiente
-
----
-
-## Tracking de Fixes Recientes (Sesion 2026-02-24)
-
-### MYM-139 - Rating/reviews desincronizados
+### MYM-133 - Availability slots no persisten
 
 | Paso | Estado     | Notas                                         |
 | ---- | ---------- | --------------------------------------------- |
-| 1    | Completado | Causa: average_rating no calculado de reviews |
-| 2    | Completado | Fix: Migration para recalcular desde reviews  |
+| 1    | Completado | Causa: Time format mismatch (HH:MM:SS vs HH:MM) |
+| 2    | Completado | Fix: Normalize time format in toSlots()       |
 | 3    | Completado | Push directo a staging                        |
 | 4    | Completado | Transicionado a Ready For QA                  |
 
-### MYM-132 - App crash on network loss
+### MYM-155 - Messages not displayed in thread
 
 | Paso | Estado     | Notas                                         |
 | ---- | ---------- | --------------------------------------------- |
-| 1    | Completado | Causa: Error no manejado en fetch             |
-| 2    | Completado | Fix: try/catch en sendReplyToConversation     |
-| 3    | Completado | Push directo a staging                        |
-| 4    | Completado | CLOSED - Verificado                           |
-
-### MYM-129 - Estudiantes pueden crear canales
-
-| Paso | Estado     | Notas                                         |
-| ---- | ---------- | --------------------------------------------- |
-| 1    | Completado | Causa: Sin validacion de rol en endpoint      |
-| 2    | Completado | Fix: Validacion role === 'mentor' en PUT      |
+| 1    | Completado | Causa: ScrollArea ref on Root not Viewport    |
+| 2    | Completado | Fix: Access Viewport via data-radix attribute |
 | 3    | Completado | Push directo a staging                        |
 | 4    | Completado | Transicionado a Ready For QA                  |
 
-### MYM-125 - No muestra toast de exito
+### MYM-96 - Widget no realtime update
 
 | Paso | Estado     | Notas                                         |
 | ---- | ---------- | --------------------------------------------- |
-| 1    | Completado | Causa: useToast (shadcn) vs toast (sonner)    |
-| 2    | Completado | Fix: Cambio a toast.success de sonner         |
+| 1    | Completado | Causa: Polling 30s too slow, no refresh on close |
+| 2    | Completado | Fix: 10s polling + refresh on modal close     |
 | 3    | Completado | Push directo a staging                        |
 | 4    | Completado | Transicionado a Ready For QA                  |
 
-### MYM-124 - Paginacion "Siguiente" no actualiza
+### MYM-137 - Chat bubbles text wrap
 
 | Paso | Estado     | Notas                                         |
 | ---- | ---------- | --------------------------------------------- |
-| 1    | Completado | Causa: Logica para rating=0 vs NULL           |
-| 2    | Completado | Fix: Separar logica para 0-rated y NULL       |
+| 1    | Completado | Causa: Missing break-all for long strings     |
+| 2    | Completado | Fix: Added break-all class to message-bubble  |
 | 3    | Completado | Push directo a staging                        |
+| 4    | Completado | Transicionado a Ready For QA                  |
+
+### MYM-128 - Sesion 24h+1min rechazada
+
+| Paso | Estado     | Notas                                         |
+| ---- | ---------- | --------------------------------------------- |
+| 1    | Completado | Causa: > instead of >= for 24h boundary       |
+| 2    | Completado | Fix: Changed to >= in canCancelSession()      |
+| 3    | Completado | Push directo a staging                        |
+| 4    | Completado | Transicionado a Ready For QA                  |
+
+### MYM-140 - Mentores sin especialidad/tarifa
+
+| Paso | Estado     | Notas                                         |
+| ---- | ---------- | --------------------------------------------- |
+| 1    | Completado | Causa: Data quality - incomplete profiles     |
+| 2    | Completado | Fix: Migration to set is_verified=false       |
+| 3    | Completado | Applied via Supabase MCP                      |
 | 4    | Completado | Transicionado a Ready For QA                  |
 
 ---
 
 ## Metricas
 
-- **Total Defects OPEN:** 5 (2 High, 3 Low)
-- **Defects Ready For QA:** 15 (pendientes de testing)
-- **Defects CLOSED:** 11 (verificados)
-- **Defects REJECTED/Cannot Reproduce:** 8
-- **User Stories potencialmente afectadas:** 3 (MYM-59, MYM-31, MYM-14)
+- **Total Defects OPEN:** 0 ✅ (todos fixeados!)
+- **Defects Ready For QA:** 24 (pendientes de testing)
+- **Defects CLOSED:** 13 (verificados)
+- **Defects REJECTED/Cannot Reproduce:** 10
 
 ---
 
 ## Proximos Pasos
 
-1. **Investigar MYM-155** (Messages not displayed)
-   - Revisar logica de fetch en conversation view
-   - Verificar que mensajes se persisten correctamente
-
-2. **QA debe re-testear:**
-   - MYM-141 (API mentors 404) - Asignada a yxsinell
-   - MYM-126 (Cancel API refund) - Asignada a Maria Agustina
-   - MYM-125 (Toast cancelar) - Asignada a Maria Agustina
-   - MYM-124 (Paginacion) - Asignada a yxsinell
-   - MYM-139 (Ratings desync) - Asignada a yxsinell
-
-3. **Una vez QA valide los fixes:**
-   - MYM-14 puede pasar a QA Approved
-   - MYM-31 puede pasar a QA Approved
+1. **QA debe re-testear todos los bugs Ready For QA**
+2. **Sin bugs OPEN** - podemos continuar con feature development
+3. **Feature pendiente:** MYM-26 (Earnings record) en Shift-Left QA
 
 ---
 

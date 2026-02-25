@@ -227,6 +227,16 @@ export function RecentMessagesWidget({
     }
   }, []);
 
+  // MYM-96: Refresh conversations when messages are marked as read (while modal is open)
+  const handleConversationRead = useCallback(async () => {
+    try {
+      const freshConversations = await getConversations();
+      setConversations(freshConversations);
+    } catch {
+      // Silently fail - optimistic UI can handle this
+    }
+  }, []);
+
   const handleMessageSent = useCallback(async () => {
     // MYM-96: Refresh the conversation list after sending a message
     // MYM-132: Handle network errors gracefully
@@ -309,6 +319,7 @@ export function RecentMessagesWidget({
           otherParticipant={selectedConversation.participant}
           currentUserId={userId}
           onMessageSent={handleMessageSent}
+          onConversationRead={handleConversationRead}
         />
       )}
     </>
