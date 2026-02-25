@@ -79,9 +79,14 @@ export function QuickReplyModal({
   }, [open, conversationId, refreshUnreadCount]);
 
   // Scroll to bottom when messages change
+  // Note: We access the Viewport element (data-radix-scroll-area-viewport)
+  // because ScrollArea Root has overflow-hidden and doesn't scroll
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      const viewport = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (viewport) {
+        viewport.scrollTop = viewport.scrollHeight;
+      }
     }
   }, [messages]);
 
