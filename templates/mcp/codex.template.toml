@@ -17,28 +17,31 @@
 [mcp_servers.playwright]
 command = "npx"
 args = [
-    "@playwright/mcp@latest",
-    "--caps",
-    "vision,pdf,testing,tracing,tabs",
-    "--timeout-action",
-    "10000",
-    "--timeout-navigation",
-    "30000",
-    "--viewport-size",
-    "1920x1080"
+  "@playwright/mcp@latest",
+  "--caps",
+  "vision,pdf,testing,tracing,tabs",
+  "--timeout-action",
+  "10000",
+  "--timeout-navigation",
+  "30000",
+  "--viewport-size",
+  "1920x1080"
 ]
 
 [mcp_servers.devtools]
 command = "npx"
-args = ["-y", "chrome-devtools-mcp"]
+args = [
+  "-y",
+  "chrome-devtools-mcp"
+]
 
 [mcp_servers.openapi]
 command = "npx"
 args = [
-    "-y",
-    "@ivotoby/openapi-mcp-server",
-    "--tools",
-    "dynamic"
+  "-y",
+  "@ivotoby/openapi-mcp-server",
+  "--tools",
+  "dynamic"
 ]
 
 [mcp_servers.openapi.env]
@@ -49,42 +52,52 @@ API_HEADERS = "Authorization:Bearer {{API_BEARER_TOKEN}}"
 [mcp_servers.sql]
 command = "npx"
 args = [
-    "-y",
-    "@bytebase/dbhub@latest",
-    "--config",
-    "dbhub.toml"
+  "-y",
+  "@bytebase/dbhub@latest",
+  "--config",
+  "dbhub.toml"
 ]
 
 [mcp_servers.shadcn]
 command = "npx"
-args = ["-y", "shadcn@latest", "mcp"]
+args = [
+  "-y",
+  "shadcn@latest",
+  "mcp"
+]
 
 [mcp_servers.supabase]
 command = "npx"
-args = ["-y", "@supabase/mcp-server-supabase@latest"]
+args = [
+  "-y",
+  "@supabase/mcp-server-supabase@latest"
+]
 
 [mcp_servers.supabase.env]
 SUPABASE_ACCESS_TOKEN = "{{SUPABASE_ACCESS_TOKEN}}"
 
 [mcp_servers.context7]
 command = "npx"
-args = ["-y", "@upstash/context7-mcp"]
+args = [
+  "-y",
+  "@upstash/context7-mcp"
+]
 
 [mcp_servers.tavily]
 command = "npx"
 args = [
-    "-y",
-    "mcp-remote",
-    "https://mcp.tavily.com/mcp/?tavilyApiKey={{TAVILY_API_KEY}}"
+  "-y",
+  "mcp-remote",
+  "https://mcp.tavily.com/mcp/?tavilyApiKey={{TAVILY_API_KEY}}"
 ]
 
 [mcp_servers.slack]
 command = "npx"
 args = [
-    "-y",
-    "slack-mcp-server@latest",
-    "--transport",
-    "stdio"
+  "-y",
+  "slack-mcp-server@latest",
+  "--transport",
+  "stdio"
 ]
 
 [mcp_servers.slack.env]
@@ -95,7 +108,10 @@ SLACK_MCP_CHANNELS_CACHE = "$HOME/.codex/mcp-cache/slack/"
 
 [mcp_servers.memory]
 command = "npx"
-args = ["-y", "@modelcontextprotocol/server-memory"]
+args = [
+  "-y",
+  "@modelcontextprotocol/server-memory"
+]
 
 [mcp_servers.memory.env]
 MEMORY_FILE_PATH = "$HOME/.codex/mcp-data/memory.jsonl"
@@ -107,7 +123,11 @@ MEMORY_FILE_PATH = "$HOME/.codex/mcp-data/memory.jsonl"
 
 [mcp_servers.atlassian]
 command = "npx"
-args = ["-y", "mcp-remote", "https://mcp.atlassian.com/v1/sse"]
+args = [
+  "-y",
+  "mcp-remote",
+  "https://mcp.atlassian.com/v1/sse"
+]
 
 # ============================================
 # SERVIDORES HTTP STREAMABLE (REMOTOS)

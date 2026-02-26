@@ -584,6 +584,7 @@ async function getValidToken(): Promise<string> {
 // GRAPHQL CLIENT
 // ============================================================================
 
+// eslint-disable-next-line ts/no-explicit-any
 async function graphql<T = any>(query: string, variables?: Record<string, unknown>): Promise<T> {
   const token = await getValidToken();
 
@@ -615,6 +616,7 @@ async function graphql<T = any>(query: string, variables?: Record<string, unknow
 // REST API CLIENT (for imports)
 // ============================================================================
 
+// eslint-disable-next-line ts/no-explicit-any
 async function restApi<T = any>(
   endpoint: string,
   options: {
@@ -726,7 +728,6 @@ async function findTestByKey(key: string, assumeExists = false): Promise<Existin
       testType: { name: string }
       steps?: Array<{ id: string }>
       jira: { key: string }
-    // eslint-disable-next-line ts/no-use-before-define
     }> } }>(QUERIES.getTest, { jql: `key = ${key}` });
 
     if (result.getTests.results && result.getTests.results.length > 0) {
@@ -792,7 +793,6 @@ async function syncTestSteps(
 ): Promise<void> {
   // Add each step
   for (const step of steps) {
-    // eslint-disable-next-line ts/no-use-before-define
     await graphql(MUTATIONS.addTestStep, {
       issueId,
       step: {
