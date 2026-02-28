@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "ai": "bun scripts/mcp-builder.js",
     "up": "bun scripts/update-template.js",
+    "xray": "bun cli/xray/index.ts",
     "prepare": "husky"
   },
   "dependencies": {
