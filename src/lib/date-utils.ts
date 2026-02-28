@@ -164,7 +164,8 @@ export function canCancelSession(sessionDate: Date | string): boolean {
 
   const hoursUntilSession = differenceInMinutes(session, now) / 60
 
-  return hoursUntilSession > 24
+  // MYM-128: Use >= to allow cancellation at exactly 24 hours
+  return hoursUntilSession >= 24
 }
 
 /**

@@ -23,7 +23,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { useToast } from '@/hooks/use-toast'
+import { toast } from 'sonner'
 import { formatSessionDateShortInTimezone } from '@/lib/date-utils'
 import { useTimezone } from '@/hooks/use-timezone'
 import type { CancelSessionResponse } from '@/types/sessions'
@@ -52,7 +52,6 @@ export function CancelSessionModal({
   onCancelSuccess,
 }: CancelSessionModalProps) {
   const [isLoading, setIsLoading] = useState(false)
-  const { toast } = useToast()
   const { timezone } = useTimezone()
 
   const formattedDate = timezone
@@ -79,10 +78,9 @@ export function CancelSessionModal({
       const data: CancelSessionResponse = await response.json()
 
       if (data.success) {
-        toast({
-          title: 'Sesión cancelada',
+        // MYM-125: Use Sonner toast (consistent with rest of app)
+        toast.success('Sesión cancelada', {
           description: data.message,
-          variant: 'default',
         })
         onOpenChange(false)
         onCancelSuccess?.()
@@ -102,18 +100,14 @@ export function CancelSessionModal({
             break
         }
 
-        toast({
-          title: 'Error al cancelar',
+        toast.error('Error al cancelar', {
           description: errorMessage,
-          variant: 'destructive',
         })
       }
     } catch (error) {
       console.error('[CancelSessionModal] Error:', error)
-      toast({
-        title: 'Error de conexión',
+      toast.error('Error de conexión', {
         description: 'No se pudo conectar con el servidor. Inténtalo de nuevo.',
-        variant: 'destructive',
       })
     } finally {
       setIsLoading(false)

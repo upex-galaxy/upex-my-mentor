@@ -1589,7 +1589,7 @@ For load/performance tests:
 
 **Staging Environment:**
 
-- **URL:** `https://staging.upexmymentor.com`
+- **URL:** `https://staging-upexmymentor.vercel.app`
 - **Database:** Supabase staging instance (separate from production)
 - **External Services:**
   - Stripe: Test mode (publishable_key_test, secret_key_test)

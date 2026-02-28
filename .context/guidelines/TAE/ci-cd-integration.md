@@ -1,6 +1,6 @@
 # CI/CD Integration - GitHub Actions
 
-Complete guide for integrating KATA tests with GitHub Actions for continuous testing.
+Guide for integrating KATA tests with GitHub Actions for continuous testing.
 
 ---
 
@@ -11,18 +11,17 @@ Complete guide for integrating KATA tests with GitHub Actions for continuous tes
 - **Fast Feedback**: Catch bugs before they reach production
 - **Consistent Environment**: Same test results every time
 - **Parallel Execution**: Run tests faster across multiple machines
-- **Automated Reporting**: Results synced to Jira automatically
+- **Automated Reporting**: Results synced to TMS automatically
 - **Quality Gates**: Block PRs that break tests
 
 ### CI/CD Strategy
 
-| Trigger               | Tests to Run                        | Duration  | Purpose                               |
-| --------------------- | ----------------------------------- | --------- | ------------------------------------- |
-| **On Commit** (local) | Unit tests only                     | < 30s     | Quick feedback while coding           |
-| **On Pull Request**   | Unit + Integration                  | 2-5 min   | Verify PR doesn't break functionality |
-| **On Push to Main**   | Unit + Integration + E2E (critical) | 5-10 min  | Ensure main branch is stable          |
-| **Nightly**           | Full E2E suite                      | 20-60 min | Comprehensive regression testing      |
-| **On Release**        | Smoke tests                         | 2-3 min   | Verify deployment succeeded           |
+| Trigger             | Tests to Run                 | Duration  | Purpose                               |
+| ------------------- | ---------------------------- | --------- | ------------------------------------- |
+| **On Pull Request** | Integration                  | 2-5 min   | Verify PR doesn't break functionality |
+| **On Push to Main** | Integration + E2E (critical) | 5-10 min  | Ensure main branch is stable          |
+| **Nightly**         | Full E2E suite               | 20-60 min | Comprehensive regression testing      |
+| **On Release**      | Smoke tests                  | 2-3 min   | Verify deployment succeeded           |
 
 ---
 
@@ -50,14 +49,14 @@ on:
   pull_request:
     branches: [main, develop]
     paths:
-      - 'src/**'
       - 'tests/**'
+      - 'config/**'
       - 'package.json'
       - 'playwright.config.ts'
 
 jobs:
-  unit-integration:
-    name: Unit + Integration Tests
+  integration:
+    name: Integration Tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -65,11 +64,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
         run: bun install
@@ -86,9 +82,10 @@ jobs:
       - name: Run integration tests
         run: bun run test:integration
         env:
-          SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.TEST_SUPABASE_KEY }}
-          NODE_ENV: test
+          TEST_ENV: ${{ vars.TEST_ENV }}
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
 
       - name: Upload test results
         if: always()
@@ -119,19 +116,16 @@ on:
     branches: [main]
 
 jobs:
-  unit-integration:
-    name: Unit + Integration Tests
+  integration:
+    name: Integration Tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
         run: bun install
@@ -142,22 +136,23 @@ jobs:
       - name: Run integration tests
         run: bun run test:integration
         env:
-          SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.TEST_SUPABASE_KEY }}
-          NODE_ENV: test
+          TEST_ENV: ${{ vars.TEST_ENV }}
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
 
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-unit-integration
+          name: test-results-integration
           path: test-results/
           retention-days: 7
 
   e2e-critical:
     name: E2E - Critical Flows
     runs-on: ubuntu-latest
-    needs: unit-integration # Run only if unit/integration pass
+    needs: integration
     timeout-minutes: 15
 
     strategy:
@@ -168,11 +163,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
         run: bun install
@@ -183,10 +175,11 @@ jobs:
       - name: Run critical E2E tests
         run: bun run test:e2e:critical
         env:
-          SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.TEST_SUPABASE_KEY }}
-          PLAYWRIGHT_BROWSER: ${{ matrix.browser }}
-          NODE_ENV: test
+          TEST_ENV: ${{ vars.TEST_ENV }}
+          BASE_URL: ${{ secrets.BASE_URL }}
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
 
       - name: Upload Playwright report
         if: always()
@@ -201,28 +194,26 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-failures-${{ matrix.browser }}
-          path: |
-            test-results/
+          path: test-results/
           retention-days: 7
 
   sync-results:
-    name: Sync Results to Jira
+    name: Sync Results to TMS
     runs-on: ubuntu-latest
-    needs: [unit-integration, e2e-critical]
+    needs: [integration, e2e-critical]
     if: always()
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Sync to TMS
         run: bun run test:sync
         env:
           AUTO_SYNC: true
+          TMS_PROVIDER: xray
           XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
           XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
           BUILD_ID: ${{ github.run_id }}
@@ -250,16 +241,13 @@ jobs:
       fail-fast: false
       matrix:
         browser: [chromium, firefox, webkit]
-        shard: [1/4, 2/4, 3/4, 4/4] # Parallel sharding
+        shard: [1/4, 2/4, 3/4, 4/4]
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
         run: bun install
@@ -270,16 +258,17 @@ jobs:
       - name: Run full E2E suite (shard ${{ matrix.shard }})
         run: bun run test:e2e -- --shard=${{ matrix.shard }}
         env:
-          SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.TEST_SUPABASE_KEY }}
-          PLAYWRIGHT_BROWSER: ${{ matrix.browser }}
-          NODE_ENV: test
+          TEST_ENV: ${{ vars.TEST_ENV }}
+          BASE_URL: ${{ secrets.BASE_URL }}
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
 
       - name: Upload shard report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ matrix.browser }}-${{ matrix.shard }}
+          name: playwright-report-${{ matrix.browser }}-${{ strategy.job-index }}
           path: playwright-report/
           retention-days: 14
 
@@ -320,7 +309,7 @@ jobs:
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
           payload: |
             {
-              "text": "🚨 Nightly tests failed!",
+              "text": "Nightly tests failed!",
               "blocks": [
                 {
                   "type": "section",
@@ -347,14 +336,14 @@ const isCI = !!process.env.CI;
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
-  forbidOnly: isCI, // Fail CI if test.only is left in
-  retries: isCI ? 2 : 0, // Retry flaky tests in CI
-  workers: isCI ? 1 : undefined, // Single worker in CI (memory constraints)
+  forbidOnly: isCI,
+  retries: isCI ? 2 : 0,
+  workers: isCI ? 1 : undefined,
   reporter: [
     ['html', { outputFolder: 'playwright-report' }],
     ['json', { outputFile: 'test-results.json' }],
     ['junit', { outputFile: 'junit-results.xml' }],
-    isCI ? ['github'] : ['list'], // GitHub Actions annotations
+    isCI ? ['github'] : ['list'],
   ],
 
   use: {
@@ -378,35 +367,21 @@ export default defineConfig({
       use: { ...devices['Desktop Safari'] },
     },
   ],
-
-  // Web server for E2E tests
-  webServer: isCI
-    ? undefined
-    : {
-        command: 'npm run dev',
-        url: 'http://localhost:3000',
-        reuseExistingServer: !isCI,
-        timeout: 120 * 1000,
-      },
 });
 ```
 
 ---
 
-## 4. Bun Scripts
-
-Add to `package.json`:
+## 4. Scripts Reference
 
 ```json
 {
   "scripts": {
     "test": "playwright test",
-    "test:integration": "playwright test tests/integration",
-    "test:e2e": "playwright test tests/e2e",
-    "test:e2e:critical": "playwright test tests/e2e --grep @critical",
-    "test:sync": "bun run tests/utils/tmsSync.ts",
-    "test:ui": "playwright test --ui",
-    "test:debug": "playwright test --debug",
+    "test:integration": "playwright test --project=integration",
+    "test:e2e": "playwright test --project=e2e",
+    "test:e2e:critical": "playwright test --project=e2e --grep @critical",
+    "test:sync": "bun run tests/utils/jiraSync.ts",
     "lint": "eslint .",
     "type-check": "tsc --noEmit"
   }
@@ -419,13 +394,21 @@ Add to `package.json`:
 
 Go to **Repository Settings → Secrets → Actions** and add:
 
-| Secret Name          | Description                       | Example                            |
-| -------------------- | --------------------------------- | ---------------------------------- |
-| `TEST_SUPABASE_URL`  | Supabase URL for test environment | `https://test-project.supabase.co` |
-| `TEST_SUPABASE_KEY`  | Supabase anon key for tests       | `eyJhb...`                         |
-| `XRAY_CLIENT_ID`     | Xray Cloud Client ID              | `abc123...`                        |
-| `XRAY_CLIENT_SECRET` | Xray Cloud Client Secret          | `xyz789...`                        |
-| `SLACK_WEBHOOK_URL`  | Slack webhook for notifications   | `https://hooks.slack.com/...`      |
+| Secret Name          | Description                     | Example                           |
+| -------------------- | ------------------------------- | --------------------------------- |
+| `BASE_URL`           | Application base URL            | `https://staging.example.com`     |
+| `API_BASE_URL`       | API base URL                    | `https://api.staging.example.com` |
+| `TEST_USER_EMAIL`    | Test account email              | `test@example.com`                |
+| `TEST_USER_PASSWORD` | Test account password           | `SecurePassword123!`              |
+| `XRAY_CLIENT_ID`     | Xray Cloud client ID            | `abc123...`                       |
+| `XRAY_CLIENT_SECRET` | Xray Cloud client secret        | `xyz789...`                       |
+| `SLACK_WEBHOOK_URL`  | Slack webhook for notifications | `https://hooks.slack.com/...`     |
+
+**Variables (non-secret):**
+
+| Variable Name | Description          | Example   |
+| ------------- | -------------------- | --------- |
+| `TEST_ENV`    | Environment selector | `staging` |
 
 ---
 
@@ -455,10 +438,6 @@ steps:
 Cache `node_modules` and Playwright browsers:
 
 ```yaml
-- uses: actions/setup-node@v4
-  with:
-    node-version: '20'
-
 - uses: oven-sh/setup-bun@v2
 
 - uses: actions/cache@v4
@@ -475,7 +454,7 @@ Stop all jobs if one critical test fails:
 
 ```yaml
 strategy:
-  fail-fast: true # Stop all if one fails
+  fail-fast: true
   matrix:
     browser: [chromium, firefox, webkit]
 ```
@@ -488,9 +467,9 @@ Run tests only when relevant files change:
 on:
   pull_request:
     paths:
-      - 'src/**'
       - 'tests/**'
-      - '!docs/**' # Ignore docs changes
+      - 'config/**'
+      - '!docs/**'
 ```
 
 ---
@@ -501,36 +480,9 @@ on:
 
 In **Repository Settings → Branches → Branch Protection Rules**:
 
-- ✅ Require status checks to pass before merging
-- ✅ Select: `Test - Pull Request / unit-integration`
-- ✅ Require branches to be up to date before merging
-
-### 7.2 Coverage Threshold
-
-Fail build if coverage drops:
-
-```yaml
-- name: Check coverage
-  run: bun run test:coverage
-  # Fails if < 80% coverage
-```
-
-In `vitest.config.ts`:
-
-```typescript
-export default defineConfig({
-  test: {
-    coverage: {
-      provider: 'istanbul',
-      reporter: ['text', 'json', 'html'],
-      lines: 80,
-      functions: 80,
-      branches: 80,
-      statements: 80,
-    },
-  },
-});
-```
+- Require status checks to pass before merging
+- Select: `Test - Pull Request / integration`
+- Require branches to be up to date before merging
 
 ---
 
@@ -548,7 +500,7 @@ Send test results to Slack:
     webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
     payload: |
       {
-        "text": "❌ Tests failed on main branch",
+        "text": "Tests failed on main branch",
         "blocks": [
           {
             "type": "section",
@@ -568,7 +520,6 @@ Use **GitHub Actions Dashboard** or **Allure Reports** for trends:
 - Pass rate over time
 - Flaky tests identification
 - Average execution time
-- Coverage trends
 
 ---
 
@@ -619,7 +570,7 @@ workers: process.env.CI ? 1 : undefined;
 
 ```yaml
 - name: Upload artifacts
-  if: always() # Run even if tests fail
+  if: always()
   uses: actions/upload-artifact@v4
 ```
 
@@ -627,9 +578,9 @@ workers: process.env.CI ? 1 : undefined;
 
 ## 10. Best Practices
 
-✅ **DO:**
+### DO
 
-- Run unit tests on every PR (fast feedback)
+- Run integration tests on every PR (fast feedback)
 - Run E2E tests only on main branch and nightly
 - Use sharding for large E2E suites
 - Cache dependencies and browsers
@@ -637,7 +588,7 @@ workers: process.env.CI ? 1 : undefined;
 - Set up notifications for failures
 - Use quality gates (block PRs with failures)
 
-❌ **DON'T:**
+### DON'T
 
 - Run full E2E suite on every PR (too slow)
 - Ignore flaky tests (fix them!)
@@ -649,7 +600,7 @@ workers: process.env.CI ? 1 : undefined;
 
 ## 11. References
 
-- **GitHub Actions**: <https://docs.github.com/en/actions>
-- **Playwright CI**: <https://playwright.dev/docs/ci>
-- **Sharding**: <https://playwright.dev/docs/test-sharding>
-- **GitHub Actions Marketplace**: <https://github.com/marketplace?type=actions>
+- **GitHub Actions**: https://docs.github.com/en/actions
+- **Playwright CI**: https://playwright.dev/docs/ci
+- **Sharding**: https://playwright.dev/docs/test-sharding
+- **Bun Setup Action**: https://github.com/oven-sh/setup-bun
