@@ -2,11 +2,9 @@
 
 > **Uso**: Copiar este contenido a tu archivo de configuración de IA:
 >
-> - Claude Code: `.claude/claude.md`
-> - Gemini CLI: `.gemini/gemini.md`
-> - GitHub Copilot: `.github/copilot-instructions.md`
-> - Cursor: `.cursor/rules`
-> - Otros: Según documentación de la herramienta
+> - Claude Code: `CLAUDE.md` (en el root)
+> - Gemini CLI: `GEMINI.md` (en el root)
+> - OpenCode: `AGENTS.md` (en el root)
 
 ---
 
@@ -56,7 +54,7 @@ Antes de codear, leer:
 │
 ├── .context/PBI/epics/.../stories/.../
 │   ├── story.md                   # User story + AC
-│   ├── test-cases.md              # Test cases esperados
+│   ├── acceptance-test-plan.md              # Test cases esperados
 │   └── implementation-plan.md     # Plan técnico
 │
 └── MCPs relevantes:
@@ -71,16 +69,23 @@ Antes de codear, leer:
 Antes de testear, leer:
 ├── .context/guidelines/QA/
 │   ├── spec-driven-testing.md     # Principio SDT
-│   ├── exploratory-testing.md     # Técnicas
+│   ├── exploratory-testing.md     # Técnicas + Trifuerza
 │   └── jira-test-management.md    # Gestión en Jira
 │
 ├── .context/PBI/epics/.../stories/.../
 │   ├── story.md                   # User story + AC
-│   └── test-cases.md              # Test cases a ejecutar
+│   └── acceptance-test-plan.md              # Test cases a ejecutar
 │
-└── MCPs relevantes:
-    ├── Atlassian → Gestión de tests
-    └── Playwright → Exploración automatizada
+├── .prompts/fase-10-exploratory-testing/
+│   ├── exploratory-test.md        # UI Testing
+│   ├── exploratory-api-test.md    # API Testing
+│   └── exploratory-db-test.md     # Database Testing
+│
+└── MCPs relevantes (Trifuerza):
+    ├── Playwright → UI Testing
+    ├── Postman/OpenAPI → API Testing
+    ├── DBHub → Database Testing
+    └── Atlassian → Gestión de tests
 ```
 
 ### Si estás haciendo TAE (Test Automation)
@@ -94,13 +99,15 @@ Antes de automatizar, leer:
 │   └── test-data-management.md    # Manejo de datos
 │
 ├── .context/PBI/epics/.../stories/.../
-│   └── test-cases.md              # Test cases a automatizar
+│   └── acceptance-test-plan.md              # Test cases a automatizar
 │
 └── MCPs relevantes:
-    ├── Atlassian → Gestión de tests
-    ├── Playwright → Tests E2E
+    ├── Playwright → Tests E2E UI
     ├── DevTools → Debugging
-    └── Context7 → Docs de testing
+    ├── Postman/OpenAPI → Tests de API
+    ├── DBHub → Verificación de datos
+    ├── Context7 → Docs de testing
+    └── Atlassian → Gestión de tests
 
 Nota: Usa gh (CLI de GitHub) para crear PR, hacer reviews, y todo lo relacionado con git.
 ```
@@ -157,19 +164,29 @@ Nota: Usa gh (CLI de GitHub) para crear PR, hacer reviews, y todo lo relacionado
 
 ## MCPs Disponibles
 
-| MCP        | Cuándo usar                      |
-| ---------- | -------------------------------- |
-| Supabase   | Schema, datos, policies de DB    |
-| Context7   | Docs oficiales de bibliotecas    |
-| Tavily     | Búsqueda web, foros, errores     |
-| Playwright | Tests E2E, interacciones UI      |
-| DevTools   | Debug de tests, network, console |
-| Postman    | API testing, endpoints           |
-| Sentry     | Errores en producción            |
-| Atlassian  | Jira, Confluence                 |
-| GitHub     | Issues, PRs, código              |
-| Slack      | Notificaciones                   |
-| Memory     | Contexto entre sesiones          |
+| MCP        | Cuándo usar                        |
+| ---------- | ---------------------------------- |
+| Supabase   | Schema, datos, policies de DB      |
+| Context7   | Docs oficiales de bibliotecas      |
+| Tavily     | Búsqueda web, foros, errores       |
+| Playwright | Tests E2E, interacciones UI        |
+| DevTools   | Debug de tests, network, console   |
+| Postman    | API testing con colecciones        |
+| OpenAPI    | API testing via spec (requests)    |
+| DBHub      | SQL queries, verificación de datos |
+| Sentry     | Errores en producción              |
+| Atlassian  | Jira, Confluence                   |
+| GitHub     | Issues, PRs, código                |
+| Slack      | Notificaciones                     |
+| Memory     | Contexto entre sesiones            |
+
+### Trifuerza Testing (QA)
+
+| Capa | MCPs                 |
+| ---- | -------------------- |
+| UI   | `playwright`         |
+| API  | `postman`, `openapi` |
+| DB   | `dbhub`              |
 
 Ver `.context/guidelines/MCP/` para detalles de cada uno.
 
@@ -189,14 +206,13 @@ Ver `.context/guidelines/MCP/` para detalles de cada uno.
 
 1. **Copia** el contenido de este archivo
 2. **Pega** en tu archivo de configuración de IA:
-   - Claude Code: `.claude/claude.md`
-   - Gemini CLI: `.gemini/gemini.md`
-   - GitHub Copilot: `.github/copilot-instructions.md`
-   - Cursor: `.cursor/rules`
+   - Claude Code: `CLAUDE.md` (en el root)
+   - Gemini CLI: `GEMINI.md` (en el root)
+   - OpenCode: `AGENTS.md` (en el root)
 3. **Inicia** una nueva sesión con tu IA
 4. La IA ahora sabrá cómo cargar contexto correctamente
 
 ---
 
-**Última actualización**: 2025-12-21
+**Última actualización**: 2025-12-26
 **Ver también**: `.context/guidelines/` para guidelines detallados por rol

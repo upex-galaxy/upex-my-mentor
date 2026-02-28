@@ -432,4 +432,4 @@ Bloquea endpoints para testear error handling:
 ## Siguiente Paso
 
 Si quieres crear requests reutilizables y organizados, continua con:
---> [04-testing-postman.md](./04-testing-postman.md)
+--> [postman-testing.md](./postman-testing.md)

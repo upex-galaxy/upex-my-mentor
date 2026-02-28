@@ -832,7 +832,7 @@ Epic is considered "Done" from QA perspective when:
 
 1. Team discusses critical questions and ambiguities in refinement
 2. PO/Dev provide answers and clarifications
-3. QA begins test case design per story (use story-test-cases.md prompt)
+3. QA begins test case design per story (use acceptance-test-plan.md prompt)
 4. Team validates entry/exit criteria before sprint starts
 5. Dev starts implementation ONLY after critical questions resolved
 
@@ -1017,7 +1017,7 @@ Epic is considered "Done" from QA perspective when:
 
 5. **All:** Ensure all critical questions are answered
 6. **PO:** Approve or provide feedback on suggested improvements
-7. **QA:** Begin test case design for each story using `story-test-cases.md` prompt
+7. **QA:** Begin test case design for each story using `acceptance-test-plan.md` prompt
 8. **Team:** Validate entry criteria can be met for each story
 
 **During Epic Implementation:**
@@ -1187,7 +1187,7 @@ Epic Path: .context/PBI/epics/EPIC-UPEX-13-nombre-feature/
    - Revisar test strategy y estimates
    - Esperar respuestas de PO/Dev antes de empezar test case design
    - Preparar test environments y tools
-   - Comenzar test case design por story usando `story-test-cases.md` prompt
+   - Comenzar test case design por story usando `acceptance-test-plan.md` prompt
 
 4. **Usuario (quien ejecutó el prompt) debe:**
    - Compartir link de Jira epic con equipo
@@ -1202,7 +1202,7 @@ Epic Path: .context/PBI/epics/EPIC-UPEX-13-nombre-feature/
 
 1. ✅ **Ejecutar `feature-test-plan.md` prompt** para el epic completo
 2. ⏸️ **Esperar feedback** de PO/Dev sobre critical questions
-3. ✅ **Ejecutar `story-test-cases.md` prompt** para cada story individual
+3. ✅ **Ejecutar `acceptance-test-plan.md` prompt** para cada story individual
 4. ⏸️ **Esperar feedback** de PO/Dev sobre cada story
 5. ✅ **Comenzar sprint** solo cuando todas las preguntas estén resueltas
 
@@ -1215,12 +1215,58 @@ Epic Path: .context/PBI/epics/EPIC-UPEX-13-nombre-feature/
 
 ---
 
-**Versión:** 3.0 - Jira-First + MCP Atlassian + Shift-Left Philosophy
-**Última actualización:** 2025-01-05
+**Versión:** 3.1 - Jira-First + MCP Atlassian + Shift-Left Philosophy + Custom Field Sync
+**Última actualización:** 2025-02-05
 **Cambios principales:**
 
 - ✅ Agregado flujo Jira-First (Pasos 5-8)
 - ✅ Integración con MCP de Atlassian
 - ✅ Test plan en comentarios (no artefactos separados)
 - ✅ Refinamiento automático de epic en Jira
-- ✅ Consistencia con `story-test-cases.md` prompt
+- ✅ Consistencia con `acceptance-test-plan.md` prompt
+- ✅ **Sincronización condicional con custom field de Jira**
+
+---
+
+## 📤 SINCRONIZACIÓN CON JIRA (Condicional - UPEX Workspace)
+
+### Custom Field para Feature Test Plan
+
+| Field ID            | Nombre                   | Tipo     | Nivel |
+| ------------------- | ------------------------ | -------- | ----- |
+| `customfield_10045` | Feature Test Plan (QA)🧪 | Textarea | Epic  |
+
+### Instrucciones de Sincronización
+
+**DESPUÉS de generar el archivo `feature-test-plan.md` localmente:**
+
+1. **Verificar si el Epic tiene el custom field:**
+   - Usar MCP de Atlassian para obtener el Epic: `jira_get_issue`
+   - Verificar si `customfield_10045` existe y está disponible en el response
+
+2. **Si el campo existe:**
+   - Copiar el contenido COMPLETO del `feature-test-plan.md` generado
+   - Actualizar el Epic en Jira usando MCP `jira_update_issue`:
+     ```
+     fields: {
+       "customfield_10045": "[contenido del feature-test-plan.md]"
+     }
+     ```
+   - Agregar label: `test-plan-ready`
+
+3. **Si el campo NO existe (Workspace non-UPEX):**
+   - Buscar campo equivalente con nombre similar ("Test Plan", "QA Plan", "Testing Strategy")
+   - Si no existe ningún campo equivalente, agregar como **comentario** en el Epic:
+
+     ```
+     🧪 **Feature Test Plan (QA)**
+
+     [contenido del feature-test-plan.md]
+     ```
+
+### Output Esperado
+
+- [ ] Archivo `feature-test-plan.md` creado en `.context/PBI/epics/.../`
+- [ ] Custom field `customfield_10045` actualizado en Jira (si existe)
+- [ ] Label `test-plan-ready` agregado al Epic
+- [ ] Comentario agregado como fallback (si campo no existe)

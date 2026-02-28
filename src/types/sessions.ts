@@ -91,6 +91,7 @@ export type CancelSessionResponse = CancelSuccessResponse | CancelErrorResponse
 // =============================================================================
 // Session status for display
 export type SessionDisplayStatus =
+  | 'pending_payment' // Awaiting payment completion
   | 'upcoming'      // Future session, confirmed
   | 'joinable'      // Within 15 min window
   | 'in_progress'   // Currently happening
@@ -105,6 +106,7 @@ export function getSessionDisplayStatus(
 ): SessionDisplayStatus {
   if (bookingStatus === 'cancelled') return 'cancelled'
   if (bookingStatus === 'completed') return 'completed'
+  if (bookingStatus === 'pending_payment') return 'pending_payment'
 
   const now = new Date()
   const start = new Date(sessionDate)

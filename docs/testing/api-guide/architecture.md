@@ -284,5 +284,5 @@
 
 ## Siguiente Paso
 
-- Para entender el flujo de autenticacion: [02-authentication.md](./02-authentication.md)
-- Para empezar a testear manualmente: [03-testing-devtools.md](./03-testing-devtools.md)
+- Para entender el flujo de autenticacion: [authentication.md](./authentication.md)
+- Para empezar a testear manualmente: [devtools-testing.md](./devtools-testing.md)

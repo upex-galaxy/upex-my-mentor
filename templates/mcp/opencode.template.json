@@ -15,121 +15,108 @@
         "--viewport-size",
         "1920x1080"
       ],
-      "enabled": true
+      "enabled": false
     },
     "devtools": {
       "type": "local",
       "command": ["npx", "-y", "chrome-devtools-mcp"],
-      "enabled": true
+      "enabled": false
     },
-    "api": {
-      "command": "npx",
-      "args": ["-y", "@ivotoby/openapi-mcp-server", "--tools dynamic"],
-      "env": {
-        "API_BASE_URL": "https://{SUPABASE_URL}.supabase.co/rest/v1",
-        "OPENAPI_SPEC_PATH": "https://{SUPABASE_URL}.supabase.co/rest/v1/?apikey={SUPABASE_ANON_KEY}",
-        "API_HEADERS": "apikey:{SUPABASE_ANON_KEY}"
-      }
+    "openapi": {
+      "type": "local",
+      "command": ["npx", "-y", "@ivotoby/openapi-mcp-server", "--tools", "dynamic"],
+      "environment": {
+        "API_BASE_URL": "https://staging-upexsoloq.vercel.app/api",
+        "OPENAPI_SPEC_PATH": "https://staging-upexsoloq.vercel.app/api/openapi",
+        "API_HEADERS": "Authorization:Bearer {{API_BEARER_TOKEN}}"
+      },
+      "enabled": false
     },
     "sql": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@bytebase/dbhub",
-        "--transport",
-        "stdio",
-        "--dsn",
-        "postgresql://{USER}.{DATABASE}.{HOST}:{PORT}/{DATABASE}"
-      ]
+      "type": "local",
+      "command": ["npx", "-y", "@bytebase/dbhub@latest", "--config", "dbhub.toml"],
+      "enabled": false
     },
     "supabase": {
       "type": "local",
       "command": ["npx", "-y", "@supabase/mcp-server-supabase@latest"],
       "environment": {
-        "SUPABASE_ACCESS_TOKEN": "{env:SUPABASE_ACCESS_TOKEN}"
+        "SUPABASE_ACCESS_TOKEN": "{{SUPABASE_ACCESS_TOKEN}}"
       },
-      "enabled": true
+      "enabled": false
     },
     "shadcn": {
       "type": "local",
       "command": ["npx", "shadcn@latest", "mcp"],
-      "enabled": true
+      "enabled": false
     },
     "context7": {
-      "type": "remote",
-      "url": "https://mcp.context7.com/mcp",
-      "enabled": true
+      "type": "local",
+      "command": ["npx", "-y", "@upstash/context7-mcp"],
+      "enabled": false
     },
     "tavily": {
       "type": "remote",
       "url": "https://mcp.tavily.com/mcp",
       "oauth": false,
       "headers": {
-        "Authorization": "Bearer {env:TAVILY_API_KEY}"
+        "Authorization": "Bearer {{TAVILY_API_KEY}}"
       },
-      "enabled": true
+      "enabled": false
     },
     "postman": {
       "type": "remote",
       "url": "https://mcp.postman.com/mcp",
       "oauth": false,
       "headers": {
-        "Authorization": "Bearer {env:POSTMAN_API_KEY}"
+        "Authorization": "Bearer {{POSTMAN_API_KEY}}"
       },
-      "enabled": true
+      "enabled": false
     },
     "sentry": {
       "type": "remote",
-      "url": "https://mcp.sentry.dev/mcp/{env:SENTRY_PROJECT_NAME}/{env:SENTRY_PROJECT_LANGUAGE}",
-      "enabled": true
+      "url": "https://mcp.sentry.dev/mcp/soloq/typescript",
+      "enabled": false
     },
     "vercel": {
       "type": "remote",
       "url": "https://mcp.vercel.com/",
-      "enabled": true
+      "enabled": false
     },
     "notion": {
       "type": "remote",
       "url": "https://mcp.notion.com/mcp",
-      "enabled": true
+      "enabled": false
     },
     "atlassian": {
       "type": "local",
       "command": ["uvx", "mcp-atlassian"],
       "environment": {
-        "JIRA_URL": "{env:JIRA_URL}",
-        "JIRA_USERNAME": "{env:JIRA_USERNAME}",
-        "JIRA_API_TOKEN": "{env:JIRA_API_TOKEN}"
+        "JIRA_URL": "https://upexgalaxy62.atlassian.net",
+        "JIRA_USERNAME": "tu.email@ejemplo.com",
+        "JIRA_API_TOKEN": "{{JIRA_API_TOKEN}}"
       },
-      "enabled": true
+      "enabled": false
     },
     "github": {
       "type": "remote",
       "url": "https://api.githubcopilot.com/mcp",
       "oauth": false,
       "headers": {
-        "Authorization": "Bearer {env:GITHUB_TOKEN}"
+        "Authorization": "Bearer {{GITHUB_TOKEN}}"
       },
-      "enabled": true
+      "enabled": false
     },
     "slack": {
       "type": "local",
       "command": ["npx", "-y", "slack-mcp-server@latest", "--transport", "stdio"],
       "environment": {
-        "SLACK_MCP_XOXP_TOKEN": "{env:SLACK_MCP_XOXP_TOKEN}",
+        "SLACK_MCP_XOXP_TOKEN": "{{SLACK_MCP_XOXP_TOKEN}}",
         "SLACK_MCP_ADD_MESSAGE_TOOL": "true",
-        "SLACK_MCP_USERS_CACHE": "{env:SLACK_MCP_USERS_CACHE}",
-        "SLACK_MCP_CHANNELS_CACHE": "{env:SLACK_MCP_CHANNELS_CACHE}"
+        "SLACK_MCP_USERS_CACHE": "./context/mcp/outputs/slack/",
+        "SLACK_MCP_CHANNELS_CACHE": "./context/mcp/outputs/slack/"
       },
-      "enabled": true
-    },
-    "memory": {
-      "type": "local",
-      "command": ["npx", "-y", "@modelcontextprotocol/server-memory"],
-      "environment": {
-        "MEMORY_FILE_PATH": "{env:MEMORY_FILE_PATH}"
-      },
-      "enabled": true
+      "enabled": false
     }
   }
 }

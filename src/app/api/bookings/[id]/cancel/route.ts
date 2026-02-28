@@ -20,6 +20,7 @@ import { createServer } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/server'
 import { resend, EMAIL_CONFIG, isEmailServiceConfigured } from '@/lib/email/resend'
 import { canCancelSession } from '@/lib/date-utils'
+import { getBaseUrl } from '@/lib/urls'
 import type { CancelSessionResponse, CancelErrorCode } from '@/types/sessions'
 
 function errorResponse(
@@ -133,11 +134,12 @@ export async function POST(
         })
         refundId = refund.id
 
-        // Update transaction status to refunded
+        // MYM-126: Update transaction status to refunded with refund_id
         await supabase
           .from('transactions')
           .update({
             status: 'refunded',
+            stripe_refund_id: refundId,
             updated_at: new Date().toISOString(),
           })
           .eq('id', transaction.id)
@@ -206,7 +208,7 @@ export async function POST(
               </div>
               ${refundId ? '<p style="color: #059669;"><strong>Se ha procesado un reembolso completo.</strong></p>' : ''}
               <p>Puedes buscar otro mentor y agendar una nueva sesión en cualquier momento.</p>
-              <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://upexmymentor.com'}/mentors"
+              <a href="${getBaseUrl()}/mentors"
                  style="display: inline-block; background: #7c3aed; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin-top: 16px;">
                 Buscar Mentores
               </a>

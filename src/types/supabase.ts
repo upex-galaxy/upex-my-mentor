@@ -16,19 +16,19 @@ export type Database = {
     Tables: {
       bookings: {
         Row: {
-          cancellation_reason: string | null  // MYM-31: Optional reason for cancellation
-          cancelled_at: string | null  // MYM-31: Timestamp when cancelled
-          cancelled_by: string | null  // MYM-31: User who initiated cancellation
-          communication_channels: Json | null  // MYM-30: Agreed communication channels for the session
-          completed_at: string | null  // MYM-27: Session completion timestamp for 24h payout grace period
-          confirmation_sent_at: string | null  // MYM-22: Email confirmation timestamp
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          cancelled_by: string | null
+          communication_channels: Json | null
+          completed_at: string | null
+          confirmation_sent_at: string | null
           created_at: string | null
           duration_minutes: number
           id: string
           mentor_id: string
           notes: string | null
           session_date: string
-          session_meeting_link: string | null  // MYM-30: Mentor-provided meeting link for the session
+          session_meeting_link: string | null
           status: string
           student_id: string
           total_cost: number
@@ -36,19 +36,19 @@ export type Database = {
           videocall_url: string | null
         }
         Insert: {
-          cancellation_reason?: string | null  // MYM-31: Optional reason for cancellation
-          cancelled_at?: string | null  // MYM-31: Timestamp when cancelled
-          cancelled_by?: string | null  // MYM-31: User who initiated cancellation
-          communication_channels?: Json | null  // MYM-30: Agreed communication channels
-          completed_at?: string | null  // MYM-27: Session completion timestamp
-          confirmation_sent_at?: string | null  // MYM-22: Email confirmation timestamp
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          communication_channels?: Json | null
+          completed_at?: string | null
+          confirmation_sent_at?: string | null
           created_at?: string | null
           duration_minutes?: number
           id?: string
           mentor_id: string
           notes?: string | null
           session_date: string
-          session_meeting_link?: string | null  // MYM-30: Mentor-provided meeting link
+          session_meeting_link?: string | null
           status?: string
           student_id: string
           total_cost: number
@@ -56,19 +56,19 @@ export type Database = {
           videocall_url?: string | null
         }
         Update: {
-          cancellation_reason?: string | null  // MYM-31: Optional reason for cancellation
-          cancelled_at?: string | null  // MYM-31: Timestamp when cancelled
-          cancelled_by?: string | null  // MYM-31: User who initiated cancellation
-          communication_channels?: Json | null  // MYM-30: Agreed communication channels
-          completed_at?: string | null  // MYM-27: Session completion timestamp
-          confirmation_sent_at?: string | null  // MYM-22: Email confirmation timestamp
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          communication_channels?: Json | null
+          completed_at?: string | null
+          confirmation_sent_at?: string | null
           created_at?: string | null
           duration_minutes?: number
           id?: string
           mentor_id?: string
           notes?: string | null
           session_date?: string
-          session_meeting_link?: string | null  // MYM-30: Mentor-provided meeting link
+          session_meeting_link?: string | null
           status?: string
           student_id?: string
           total_cost?: number
@@ -76,6 +76,13 @@ export type Database = {
           videocall_url?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "bookings_cancelled_by_fkey"
+            columns: ["cancelled_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "bookings_mentor_id_fkey"
             columns: ["mentor_id"]
@@ -92,7 +99,6 @@ export type Database = {
           },
         ]
       }
-      // MYM-30: Communication channel preferences for mentors
       communication_channels: {
         Row: {
           channel_type: string
@@ -125,6 +131,269 @@ export type Database = {
           {
             foreignKeyName: "communication_channels_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          created_at: string | null
+          id: string
+          participant_1_id: string
+          participant_2_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          participant_1_id: string
+          participant_2_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          participant_1_id?: string
+          participant_2_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_participant_1_id_fkey"
+            columns: ["participant_1_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversations_participant_2_id_fkey"
+            columns: ["participant_2_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      failed_payouts: {
+        Row: {
+          booking_id: string
+          created_at: string | null
+          error_details: Json | null
+          id: string
+          mentor_id: string
+          reason: string
+          resolved_at: string | null
+          transaction_id: string | null
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string | null
+          error_details?: Json | null
+          id?: string
+          mentor_id: string
+          reason: string
+          resolved_at?: string | null
+          transaction_id?: string | null
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string | null
+          error_details?: Json | null
+          id?: string
+          mentor_id?: string
+          reason?: string
+          resolved_at?: string | null
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "failed_payouts_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "failed_payouts_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "failed_payouts_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mentor_availability: {
+        Row: {
+          created_at: string | null
+          day_of_week: number
+          end_time: string
+          id: string
+          is_active: boolean
+          mentor_id: string
+          start_time: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          day_of_week: number
+          end_time: string
+          id?: string
+          is_active?: boolean
+          mentor_id: string
+          start_time: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          day_of_week?: number
+          end_time?: string
+          id?: string
+          is_active?: boolean
+          mentor_id?: string
+          start_time?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentor_availability_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payout_items: {
+        Row: {
+          created_at: string | null
+          id: string
+          payout_id: string
+          transaction_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          payout_id: string
+          transaction_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          payout_id?: string
+          transaction_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payout_items_payout_id_fkey"
+            columns: ["payout_id"]
+            isOneToOne: false
+            referencedRelation: "payouts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payout_items_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: true
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payouts: {
+        Row: {
+          amount: number
+          created_at: string | null
+          currency: string
+          failure_reason: string | null
+          id: string
+          mentor_id: string
+          processed_at: string | null
+          scheduled_for: string | null
+          status: string
+          stripe_transfer_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          currency?: string
+          failure_reason?: string | null
+          id?: string
+          mentor_id: string
+          processed_at?: string | null
+          scheduled_for?: string | null
+          status?: string
+          stripe_transfer_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          currency?: string
+          failure_reason?: string | null
+          id?: string
+          mentor_id?: string
+          processed_at?: string | null
+          scheduled_for?: string | null
+          status?: string
+          stripe_transfer_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payouts_mentor_id_fkey"
+            columns: ["mentor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -236,7 +505,6 @@ export type Database = {
           },
         ]
       }
-      // MYM-25: Stripe Connect accounts for mentor payouts
       stripe_accounts: {
         Row: {
           charges_enabled: boolean | null
@@ -278,57 +546,59 @@ export type Database = {
           },
         ]
       }
-      // MYM-24: Payment transaction records
       transactions: {
         Row: {
-          id: string
           booking_id: string
-          stripe_payment_intent_id: string | null
-          stripe_checkout_session_id: string | null
+          created_at: string | null
+          currency: string
+          gross_amount: number
+          id: string
           mentee_id: string
           mentor_id: string
-          gross_amount: number
-          platform_fee: number
           net_amount: number
-          currency: string
-          status: string
-          payment_method: string | null
           paid_at: string | null
-          created_at: string | null
+          payment_method: string | null
+          platform_fee: number
+          status: string
+          stripe_checkout_session_id: string | null
+          stripe_payment_intent_id: string | null
+          stripe_refund_id: string | null  // MYM-126: Added for refund tracking
           updated_at: string | null
         }
         Insert: {
-          id?: string
           booking_id: string
-          stripe_payment_intent_id?: string | null
-          stripe_checkout_session_id?: string | null
+          created_at?: string | null
+          currency?: string
+          gross_amount: number
+          id?: string
           mentee_id: string
           mentor_id: string
-          gross_amount: number
-          platform_fee: number
           net_amount: number
-          currency?: string
-          status?: string
-          payment_method?: string | null
           paid_at?: string | null
-          created_at?: string | null
+          payment_method?: string | null
+          platform_fee: number
+          status?: string
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_refund_id?: string | null  // MYM-126: Added for refund tracking
           updated_at?: string | null
         }
         Update: {
-          id?: string
           booking_id?: string
-          stripe_payment_intent_id?: string | null
-          stripe_checkout_session_id?: string | null
+          created_at?: string | null
+          currency?: string
+          gross_amount?: number
+          id?: string
           mentee_id?: string
           mentor_id?: string
-          gross_amount?: number
-          platform_fee?: number
           net_amount?: number
-          currency?: string
-          status?: string
-          payment_method?: string | null
           paid_at?: string | null
-          created_at?: string | null
+          payment_method?: string | null
+          platform_fee?: number
+          status?: string
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_refund_id?: string | null  // MYM-126: Added for refund tracking
           updated_at?: string | null
         }
         Relationships: [
@@ -355,294 +625,47 @@ export type Database = {
           },
         ]
       }
-      // MYM-27: Payout records for mentor earnings
-      payouts: {
-        Row: {
-          id: string
-          mentor_id: string
-          stripe_transfer_id: string | null
-          amount: number
-          currency: string
-          status: string
-          failure_reason: string | null
-          scheduled_for: string | null
-          processed_at: string | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          mentor_id: string
-          stripe_transfer_id?: string | null
-          amount: number
-          currency?: string
-          status?: string
-          failure_reason?: string | null
-          scheduled_for?: string | null
-          processed_at?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          mentor_id?: string
-          stripe_transfer_id?: string | null
-          amount?: number
-          currency?: string
-          status?: string
-          failure_reason?: string | null
-          scheduled_for?: string | null
-          processed_at?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "payouts_mentor_id_fkey"
-            columns: ["mentor_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      // MYM-27: Links payouts to transactions (prevents duplicate payouts)
-      payout_items: {
-        Row: {
-          id: string
-          payout_id: string
-          transaction_id: string
-          created_at: string | null
-        }
-        Insert: {
-          id?: string
-          payout_id: string
-          transaction_id: string
-          created_at?: string | null
-        }
-        Update: {
-          id?: string
-          payout_id?: string
-          transaction_id?: string
-          created_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "payout_items_payout_id_fkey"
-            columns: ["payout_id"]
-            isOneToOne: false
-            referencedRelation: "payouts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "payout_items_transaction_id_fkey"
-            columns: ["transaction_id"]
-            isOneToOne: true
-            referencedRelation: "transactions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      // MYM-27: Failed payout attempts for admin reconciliation
-      failed_payouts: {
-        Row: {
-          id: string
-          booking_id: string
-          transaction_id: string | null
-          mentor_id: string
-          reason: string
-          error_details: Json | null
-          resolved_at: string | null
-          created_at: string | null
-        }
-        Insert: {
-          id?: string
-          booking_id: string
-          transaction_id?: string | null
-          mentor_id: string
-          reason: string
-          error_details?: Json | null
-          resolved_at?: string | null
-          created_at?: string | null
-        }
-        Update: {
-          id?: string
-          booking_id?: string
-          transaction_id?: string | null
-          mentor_id?: string
-          reason?: string
-          error_details?: Json | null
-          resolved_at?: string | null
-          created_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "failed_payouts_booking_id_fkey"
-            columns: ["booking_id"]
-            isOneToOne: false
-            referencedRelation: "bookings"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "failed_payouts_mentor_id_fkey"
-            columns: ["mentor_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "failed_payouts_transaction_id_fkey"
-            columns: ["transaction_id"]
-            isOneToOne: false
-            referencedRelation: "transactions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      // MYM-21: Mentor weekly availability schedule
-      mentor_availability: {
-        Row: {
-          created_at: string | null
-          day_of_week: number
-          end_time: string
-          id: string
-          is_active: boolean
-          mentor_id: string
-          start_time: string
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          day_of_week: number
-          end_time: string
-          id?: string
-          is_active?: boolean
-          mentor_id: string
-          start_time: string
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          day_of_week?: number
-          end_time?: string
-          id?: string
-          is_active?: boolean
-          mentor_id?: string
-          start_time?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "mentor_availability_mentor_id_fkey"
-            columns: ["mentor_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      // MYM-56: Conversations between mentors and mentees
-      conversations: {
-        Row: {
-          id: string
-          participant_1_id: string
-          participant_2_id: string
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          participant_1_id: string
-          participant_2_id: string
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          participant_1_id?: string
-          participant_2_id?: string
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "conversations_participant_1_id_fkey"
-            columns: ["participant_1_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "conversations_participant_2_id_fkey"
-            columns: ["participant_2_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      // MYM-56: Messages within conversations
-      messages: {
-        Row: {
-          id: string
-          conversation_id: string
-          sender_id: string
-          content: string
-          is_read: boolean | null
-          created_at: string | null
-        }
-        Insert: {
-          id?: string
-          conversation_id: string
-          sender_id: string
-          content: string
-          is_read?: boolean | null
-          created_at?: string | null
-        }
-        Update: {
-          id?: string
-          conversation_id?: string
-          sender_id?: string
-          content?: string
-          is_read?: boolean | null
-          created_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "messages_conversation_id_fkey"
-            columns: ["conversation_id"]
-            isOneToOne: false
-            referencedRelation: "conversations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "messages_sender_id_fkey"
-            columns: ["sender_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
       get_all_unique_skills: { Args: never; Returns: string[] }
-      is_admin: { Args: never; Returns: boolean }
-      // MYM-15: Search mentors by keyword across name, bio, and specialties
-      search_mentors_by_keyword: {
-        Args: { search_keyword: string }
-        Returns: Database['public']['Tables']['profiles']['Row'][]
-      }
-      show_limit: { Args: never; Returns: number }
-      show_trgm: { Args: { "": string }; Returns: string[] }
-      // MYM-56: Get or create conversation between two users
       get_or_create_conversation: {
         Args: { user_a_id: string; user_b_id: string }
         Returns: string
       }
+      is_admin: { Args: never; Returns: boolean }
+      search_mentors_by_keyword: {
+        Args: { search_keyword: string }
+        Returns: {
+          average_rating: number | null
+          created_at: string | null
+          description: string | null
+          email: string
+          github_url: string | null
+          hourly_rate: number | null
+          id: string
+          is_verified: boolean | null
+          linkedin_url: string | null
+          name: string | null
+          photo_url: string | null
+          rejection_reason: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          specialties: string[] | null
+          total_reviews: number | null
+          updated_at: string | null
+          years_of_experience: number | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
       user_role: "student" | "mentor" | "admin"

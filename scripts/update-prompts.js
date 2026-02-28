@@ -85,33 +85,8 @@ const ROLE_PHASES = {
   setup: { phases: [1, 2, 3], description: 'Fases sincronicas iniciales' },
 };
 
-// Standalone prompts (files in root of .prompts/)
-const STANDALONE_PROMPTS = [
-  'git-flow.md',
-  'git-conflict-fix.md',
-  'us-dev-workflow.md',
-  'us-qa-workflow.md',
-  'kata-framework-setup.md',
-  'README.md',
-];
-
-// Docs structure - directories to merge (not replace)
-const DOCS_DIRECTORIES = ['architecture', 'mcp', 'testing', 'workflows'];
-
-// Root-level docs files
-const DOCS_ROOT_FILES = ['README.md'];
-
-// Context structure
-const CONTEXT_FILES = ['system-prompt.md', 'README.md'];
-
-// Context guidelines subdirectories
-const CONTEXT_GUIDELINES_DIRS = ['DEV', 'QA', 'TAE', 'MCP'];
-
-// Context guidelines root files
-const CONTEXT_GUIDELINES_FILES = ['README.md'];
-
-// Scripts to update
-const SCRIPT_FILES = ['update-prompts.js', 'mcp-builder.js', 'email-checker.js'];
+// NOTE: No hardcoded file lists - all directories use mergeDirectory() for full sync
+// This ensures any new files/folders in the template are automatically included
 
 // ============================================================================
 // TERMINAL COLORS
@@ -309,48 +284,6 @@ function mergeDirectory(srcDir, destDir, prefix = '') {
   }
 }
 
-/**
- * Merge specific files from source to destination.
- *
- * @param {string} srcDir - Source directory
- * @param {string} destDir - Destination directory
- * @param {string[]} files - List of files to copy
- */
-function mergeFiles(srcDir, destDir, files) {
-  fs.mkdirSync(destDir, { recursive: true });
-
-  for (const file of files) {
-    const srcPath = path.join(srcDir, file);
-    const destPath = path.join(destDir, file);
-
-    if (fs.existsSync(srcPath)) {
-      fs.cpSync(srcPath, destPath);
-      logSuccess(file);
-    }
-  }
-}
-
-/**
- * Merge specific subdirectories from source to destination.
- *
- * @param {string} srcDir - Source directory
- * @param {string} destDir - Destination directory
- * @param {string[]} dirs - List of subdirectories to merge
- */
-function mergeSubdirectories(srcDir, destDir, dirs) {
-  fs.mkdirSync(destDir, { recursive: true });
-
-  for (const dir of dirs) {
-    const srcPath = path.join(srcDir, dir);
-    const destPath = path.join(destDir, dir);
-
-    if (fs.existsSync(srcPath)) {
-      logMerge(`Merging ${dir}/...`);
-      mergeDirectory(srcPath, destPath, '  ');
-    }
-  }
-}
-
 // ============================================================================
 // HELP
 // ============================================================================
@@ -364,15 +297,16 @@ ${colors.bold}USO:${colors.reset}
   bun up <comando> [opciones]   ${colors.dim}# Ejecucion directa${colors.reset}
 
 ${colors.bold}COMANDOS:${colors.reset}
-  all           Actualiza todo (merge inteligente)
+  all           Actualiza todo (merge completo de todos los directorios)
   prompts       Actualiza .prompts/ (menu interactivo o con flags)
-  docs          Actualiza docs/ (merge, preserva archivos del usuario)
-  context       Actualiza .context/ (system-prompt, guidelines)
-  templates     Actualiza templates/mcp/
-  scripts       Actualiza scripts de actualizacion
+  books         Actualiza .books/ (manuales para humanos, mismas flags que prompts)
+  docs          Actualiza docs/ (merge completo del directorio)
+  context       Actualiza .context/ (merge completo del directorio)
+  templates     Actualiza templates/mcp/ (merge completo del directorio)
+  scripts       Actualiza scripts/ (merge completo del directorio)
   help          Muestra esta ayuda
 
-${colors.bold}FLAGS PARA 'prompts':${colors.reset}
+${colors.bold}FLAGS PARA 'prompts' y 'books':${colors.reset}
   --all         Todas las fases (1-14) + standalone
   --fase N      Fases especificas (ej: --fase 5 o --fase 5,10,11)
   --rol ROLE    Por rol (ver roles disponibles)
@@ -387,10 +321,11 @@ ${colors.bold}ROLES DISPONIBLES:${colors.reset}
   setup    ${colors.dim}-> Fases 1, 2, 3 (Setup inicial)${colors.reset}
 
 ${colors.bold}MERGE INTELIGENTE:${colors.reset}
-  Este script usa merge inteligente:
-  - Solo actualiza archivos del template
-  - Preserva archivos/carpetas creados por el usuario
+  Este script sincroniza TODOS los archivos del template:
+  - Actualiza/agrega cualquier archivo que exista en el template
+  - Preserva archivos/carpetas creados por el usuario (no en template)
   - No elimina nada que no exista en el template
+  - Sin listas hardcodeadas: nuevos archivos del template se incluyen automaticamente
 
 ${colors.bold}EJEMPLOS:${colors.reset}
   bun up                        ${colors.dim}# Menu interactivo${colors.reset}
@@ -398,6 +333,8 @@ ${colors.bold}EJEMPLOS:${colors.reset}
   bun up prompts                ${colors.dim}# Menu para elegir fases${colors.reset}
   bun up prompts --rol qa-full  ${colors.dim}# QA + Specification${colors.reset}
   bun up prompts --fase 7,8     ${colors.dim}# Fases 7 y 8${colors.reset}
+  bun up books --all            ${colors.dim}# Todos los manuales${colors.reset}
+  bun up books --rol qa         ${colors.dim}# Manuales de QA${colors.reset}
   bun up docs context           ${colors.dim}# Multiples componentes${colors.reset}
 `);
 }
@@ -415,6 +352,7 @@ async function showMainMenu() {
     choices: [
       { name: 'Todo (all)', value: 'all' },
       { name: 'Prompts (.prompts/)', value: 'prompts' },
+      { name: 'Books (.books/) - Manuales para humanos', value: 'books' },
       { name: 'Documentacion (docs/)', value: 'docs' },
       { name: 'Context (.context/)', value: 'context' },
       { name: 'Templates MCP (templates/mcp/)', value: 'templates' },
@@ -501,6 +439,7 @@ function parseArgs(args) {
   const validCommands = [
     'all',
     'prompts',
+    'books',
     'docs',
     'context',
     'guidelines',
@@ -621,6 +560,7 @@ function createBackup(components) {
 
   const backupMap = {
     prompts: { src: '.prompts', dest: '.prompts' },
+    books: { src: '.books', dest: '.books' },
     docs: { src: 'docs', dest: 'docs' },
     context: { src: '.context', dest: '.context' },
     templates: { src: 'templates/mcp', dest: 'templates/mcp' },
@@ -716,7 +656,10 @@ async function cloneTemplate() {
 // ============================================================================
 
 /**
- * Update .prompts/ directory using merge strategy
+ * Update .prompts/ directory using merge strategy.
+ * - Full update (all phases + standalone): merges entire directory
+ * - Specific phases: merges only those phase directories
+ * - Standalone only: merges root files/folders that are NOT phase directories
  */
 function updatePrompts(phases, includeStandalone) {
   logStep('Actualizando .prompts/ (merge)...');
@@ -730,7 +673,21 @@ function updatePrompts(phases, includeStandalone) {
   // Ensure .prompts exists
   fs.mkdirSync('.prompts', { recursive: true });
 
-  // Update specific phases using merge
+  // Check if this is a full update (all phases + standalone)
+  const allPhaseNums = Object.keys(PHASE_CONFIG).map(Number);
+  const isFullUpdate =
+    includeStandalone &&
+    phases.length === allPhaseNums.length &&
+    allPhaseNums.every(p => phases.includes(p));
+
+  if (isFullUpdate) {
+    // Full directory merge - syncs everything from template
+    logMerge('Sincronizando directorio completo...');
+    mergeDirectory(templatePromptsPath, '.prompts');
+    return;
+  }
+
+  // Update specific phases
   if (phases && phases.length > 0) {
     for (const phaseNum of phases) {
       const phaseConfig = PHASE_CONFIG[phaseNum];
@@ -748,15 +705,106 @@ function updatePrompts(phases, includeStandalone) {
     }
   }
 
-  // Update standalone prompts
+  // Update standalone (non-phase files/folders)
   if (includeStandalone) {
     logMerge('Archivos standalone...');
-    mergeFiles(templatePromptsPath, '.prompts', STANDALONE_PROMPTS);
+    const phaseDirs = Object.values(PHASE_CONFIG).map(c => c.dir);
+    const items = fs.readdirSync(templatePromptsPath, { withFileTypes: true });
+
+    for (const item of items) {
+      // Skip phase directories - only sync non-phase items
+      if (phaseDirs.includes(item.name)) continue;
+
+      const srcPath = path.join(templatePromptsPath, item.name);
+      const destPath = path.join('.prompts', item.name);
+
+      if (item.isDirectory()) {
+        mergeDirectory(srcPath, destPath, '  ');
+      } else {
+        fs.cpSync(srcPath, destPath);
+        logSuccess(`  ${item.name}`);
+      }
+    }
   }
 }
 
 /**
- * Update docs/ directory using merge strategy
+ * Update .books/ directory using merge strategy.
+ * Books are human-readable manuals that mirror .prompts/ structure.
+ * - Full update (all phases + standalone): merges entire directory
+ * - Specific phases: merges only those phase directories
+ * - Standalone only: merges root files/folders that are NOT phase directories
+ */
+function updateBooks(phases, includeStandalone) {
+  logStep('Actualizando .books/ (merge)...');
+
+  const templateBooksPath = path.join(TEMP_DIR, '.books');
+  if (!fs.existsSync(templateBooksPath)) {
+    logWarning('No se encontro directorio .books en el template');
+    return;
+  }
+
+  // Ensure .books exists
+  fs.mkdirSync('.books', { recursive: true });
+
+  // Check if this is a full update (all phases + standalone)
+  const allPhaseNums = Object.keys(PHASE_CONFIG).map(Number);
+  const isFullUpdate =
+    includeStandalone &&
+    phases.length === allPhaseNums.length &&
+    allPhaseNums.every(p => phases.includes(p));
+
+  if (isFullUpdate) {
+    // Full directory merge - syncs everything from template
+    logMerge('Sincronizando directorio completo...');
+    mergeDirectory(templateBooksPath, '.books');
+    return;
+  }
+
+  // Update specific phases
+  if (phases && phases.length > 0) {
+    for (const phaseNum of phases) {
+      const phaseConfig = PHASE_CONFIG[phaseNum];
+      if (!phaseConfig) continue;
+
+      const srcPath = path.join(templateBooksPath, phaseConfig.dir);
+      const destPath = path.join('.books', phaseConfig.dir);
+
+      if (fs.existsSync(srcPath)) {
+        logMerge(`Fase ${phaseNum}: ${phaseConfig.name}`);
+        mergeDirectory(srcPath, destPath, '  ');
+      } else {
+        logWarning(`Fase ${phaseNum} no encontrada en template .books/`);
+      }
+    }
+  }
+
+  // Update standalone (non-phase files/folders)
+  if (includeStandalone) {
+    logMerge('Archivos standalone...');
+    const phaseDirs = Object.values(PHASE_CONFIG).map(c => c.dir);
+    const items = fs.readdirSync(templateBooksPath, { withFileTypes: true });
+
+    for (const item of items) {
+      // Skip phase directories - only sync non-phase items
+      if (phaseDirs.includes(item.name)) continue;
+
+      const srcPath = path.join(templateBooksPath, item.name);
+      const destPath = path.join('.books', item.name);
+
+      if (item.isDirectory()) {
+        mergeDirectory(srcPath, destPath, '  ');
+      } else {
+        fs.cpSync(srcPath, destPath);
+        logSuccess(`  ${item.name}`);
+      }
+    }
+  }
+}
+
+/**
+ * Update docs/ directory using merge strategy.
+ * Merges entire directory - any new files/folders in template are synced.
  */
 function updateDocs() {
   logStep('Actualizando docs/ (merge)...');
@@ -767,15 +815,13 @@ function updateDocs() {
     return;
   }
 
-  // Merge root-level files
-  mergeFiles(docsPath, 'docs', DOCS_ROOT_FILES);
-
-  // Merge subdirectories
-  mergeSubdirectories(docsPath, 'docs', DOCS_DIRECTORIES);
+  logMerge('Sincronizando directorio completo...');
+  mergeDirectory(docsPath, 'docs');
 }
 
 /**
- * Update .context/ directory using merge strategy
+ * Update .context/ directory using merge strategy.
+ * Merges entire directory - any new files/folders in template are synced.
  */
 function updateContext() {
   logStep('Actualizando .context/ (merge)...');
@@ -786,19 +832,8 @@ function updateContext() {
     return;
   }
 
-  // Merge root-level context files
-  logMerge('Archivos raiz de .context/...');
-  mergeFiles(contextPath, '.context', CONTEXT_FILES);
-
-  // Merge guidelines root files
-  const guidelinesPath = path.join(contextPath, 'guidelines');
-  if (fs.existsSync(guidelinesPath)) {
-    logMerge('guidelines/...');
-    mergeFiles(guidelinesPath, '.context/guidelines', CONTEXT_GUIDELINES_FILES);
-
-    // Merge guidelines subdirectories
-    mergeSubdirectories(guidelinesPath, '.context/guidelines', CONTEXT_GUIDELINES_DIRS);
-  }
+  logMerge('Sincronizando directorio completo...');
+  mergeDirectory(contextPath, '.context');
 }
 
 /**
@@ -817,10 +852,11 @@ function updateTemplates() {
 }
 
 /**
- * Actualiza scripts/ (archivos específicos definidos en SCRIPT_FILES).
+ * Update scripts/ directory using merge strategy.
+ * Merges entire directory - any new scripts in template are synced.
  */
 function updateScripts() {
-  logStep('Actualizando scripts/...');
+  logStep('Actualizando scripts/ (merge)...');
 
   const scriptsPath = path.join(TEMP_DIR, 'scripts');
   if (!fs.existsSync(scriptsPath)) {
@@ -828,7 +864,8 @@ function updateScripts() {
     return;
   }
 
-  mergeFiles(scriptsPath, 'scripts', SCRIPT_FILES);
+  logMerge('Sincronizando directorio completo...');
+  mergeDirectory(scriptsPath, 'scripts');
 }
 
 /**
@@ -909,7 +946,7 @@ async function main() {
 
     // Determine which components to backup and update
     const components = selected.includes('all')
-      ? ['prompts', 'docs', 'context', 'templates', 'scripts']
+      ? ['prompts', 'books', 'docs', 'context', 'templates', 'scripts']
       : selected;
 
     createBackup(components);
@@ -920,6 +957,7 @@ async function main() {
 
     if (selected.includes('all')) {
       updatePrompts(Object.keys(PHASE_CONFIG).map(Number), true);
+      updateBooks(Object.keys(PHASE_CONFIG).map(Number), true);
       updateDocs();
       updateContext();
       updateTemplates();
@@ -930,6 +968,9 @@ async function main() {
         if (cmd === 'prompts') {
           const promptsConfig = await showPromptsMenu();
           updatePrompts(promptsConfig.phases, promptsConfig.standalone);
+        } else if (cmd === 'books') {
+          const booksConfig = await showPromptsMenu();
+          updateBooks(booksConfig.phases, booksConfig.standalone);
         } else if (cmd === 'docs') {
           updateDocs();
         } else if (cmd === 'context') {
@@ -966,7 +1007,7 @@ async function main() {
 
   // Expand 'all' command
   if (parsed.commands.includes('all')) {
-    parsed.commands = ['prompts', 'docs', 'context', 'templates', 'scripts'];
+    parsed.commands = ['prompts', 'books', 'docs', 'context', 'templates', 'scripts'];
     parsed.all = true;
   }
 
@@ -993,6 +1034,22 @@ async function main() {
 
           const promptsConfig = await showPromptsMenu();
           updatePrompts(promptsConfig.phases, promptsConfig.standalone);
+        }
+        break;
+      case 'books':
+        if (parsed.all) {
+          updateBooks(Object.keys(PHASE_CONFIG).map(Number), true);
+        } else if (parsed.phases) {
+          updateBooks(parsed.phases, parsed.standalone);
+        } else if (parsed.standalone) {
+          updateBooks([], true);
+        } else {
+          // Check for interactive dependencies before showing menu
+          const depsReady = await ensureDependencies();
+          if (!depsReady) return;
+
+          const booksConfig = await showPromptsMenu();
+          updateBooks(booksConfig.phases, booksConfig.standalone);
         }
         break;
       case 'docs':

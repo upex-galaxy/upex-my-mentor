@@ -82,14 +82,19 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 ```
 .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/story.md
 .context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/implementation-plan.md
-.context/PBI/epics/EPIC-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/stories/STORY-{PROJECT_KEY}-{ISSUE_NUM}-{nombre}/test-cases.md
 ```
+
+**Acceptance Test Plan (Test Cases):** Usar el siguiente orden de descubrimiento:
+
+1. **Jira Comments** (preferido): Buscar en comentarios de la US usando `mcp__atlassian__jira_get_issue` con `comment_limit: 50`
+2. **Jira Custom Field**: Campo `customfield_12400` ("Acceptance Test Plan (QA)🧪") usando `fields: "*all"`
+3. **Archivo Local** (fallback): `.context/.../stories/.../test-cases.md` o `acceptance-test-plan.md`
 
 **Propósito:**
 
 - Entender **qué** implementar (Acceptance Criteria)
 - Entender **cómo** implementarlo (pasos técnicos)
-- Entender **qué validar** después
+- Entender **qué validar** después (Test Cases de Jira)
 
 ### 2. Guidelines de Desarrollo (DEV):
 
@@ -159,9 +164,11 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
    - Identifica user value
    - Entiende el "por qué"
 
-3. **Revisa `test-cases.md`**
+3. **Revisa los Test Cases (Acceptance Test Plan)**
+   - Usar orden de descubrimiento: Jira Comments → Jira `customfield_12400` → Archivo local
    - Entiende qué se espera que funcione
    - Identifica edge cases a considerar
+   - Usa los test cases como checklist durante la implementación
    - (NO implementes tests ahora - eso es Fase 8)
 
 4. **Consulta docs con Context7 MCP (CRÍTICO)**

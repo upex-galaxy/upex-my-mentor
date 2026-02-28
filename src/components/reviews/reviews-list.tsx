@@ -4,7 +4,13 @@ import { useMemo, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Select } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { ReviewCard } from './review-card';
 import { sortReviews, filterReviews, paginateReviews } from '@/lib/reviews';
 import type { ReviewWithReviewer, ReviewSortOption, ReviewFilterOption } from '@/types';
@@ -64,12 +70,12 @@ export function ReviewsList({ reviews, mentorId }: ReviewsListProps) {
   );
 
   // Handlers
-  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    updateParams({ sort: e.target.value, page: '1' });
+  const handleSortChange = (value: string) => {
+    updateParams({ sort: value, page: '1' });
   };
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    updateParams({ filter: e.target.value, page: '1' });
+  const handleFilterChange = (value: string) => {
+    updateParams({ filter: value, page: '1' });
   };
 
   const handlePageChange = (newPage: number) => {
@@ -87,27 +93,29 @@ export function ReviewsList({ reviews, mentorId }: ReviewsListProps) {
       <div className="space-y-4">
         {/* Controls */}
         <div className="flex flex-wrap gap-4">
-          <Select
-            value={sortOption}
-            onChange={handleSortChange}
-            className="w-[180px]"
-          >
-            <option value="recent">Más recientes</option>
-            <option value="highest">Mayor valoración</option>
-            <option value="lowest">Menor valoración</option>
+          <Select value={sortOption} onValueChange={handleSortChange}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="recent">Más recientes</SelectItem>
+              <SelectItem value="highest">Mayor valoración</SelectItem>
+              <SelectItem value="lowest">Menor valoración</SelectItem>
+            </SelectContent>
           </Select>
 
-          <Select
-            value={filterOption}
-            onChange={handleFilterChange}
-            className="w-[180px]"
-          >
-            <option value="all">Todas las valoraciones</option>
-            <option value="5">5 estrellas</option>
-            <option value="4">4 estrellas</option>
-            <option value="3">3 estrellas</option>
-            <option value="2">2 estrellas</option>
-            <option value="1">1 estrella</option>
+          <Select value={filterOption} onValueChange={handleFilterChange}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas las valoraciones</SelectItem>
+              <SelectItem value="5">5 estrellas</SelectItem>
+              <SelectItem value="4">4 estrellas</SelectItem>
+              <SelectItem value="3">3 estrellas</SelectItem>
+              <SelectItem value="2">2 estrellas</SelectItem>
+              <SelectItem value="1">1 estrella</SelectItem>
+            </SelectContent>
           </Select>
         </div>
 
@@ -131,27 +139,29 @@ export function ReviewsList({ reviews, mentorId }: ReviewsListProps) {
     <div data-testid="reviews-list" className="space-y-4">
       {/* Sort and Filter Controls */}
       <div className="flex flex-wrap gap-4">
-        <Select
-          value={sortOption}
-          onChange={handleSortChange}
-          className="w-[180px]"
-        >
-          <option value="recent">Más recientes</option>
-          <option value="highest">Mayor valoración</option>
-          <option value="lowest">Menor valoración</option>
+        <Select value={sortOption} onValueChange={handleSortChange}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="recent">Más recientes</SelectItem>
+            <SelectItem value="highest">Mayor valoración</SelectItem>
+            <SelectItem value="lowest">Menor valoración</SelectItem>
+          </SelectContent>
         </Select>
 
-        <Select
-          value={filterOption}
-          onChange={handleFilterChange}
-          className="w-[180px]"
-        >
-          <option value="all">Todas las valoraciones</option>
-          <option value="5">5 estrellas</option>
-          <option value="4">4 estrellas</option>
-          <option value="3">3 estrellas</option>
-          <option value="2">2 estrellas</option>
-          <option value="1">1 estrella</option>
+        <Select value={filterOption} onValueChange={handleFilterChange}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas las valoraciones</SelectItem>
+            <SelectItem value="5">5 estrellas</SelectItem>
+            <SelectItem value="4">4 estrellas</SelectItem>
+            <SelectItem value="3">3 estrellas</SelectItem>
+            <SelectItem value="2">2 estrellas</SelectItem>
+            <SelectItem value="1">1 estrella</SelectItem>
+          </SelectContent>
         </Select>
       </div>
 

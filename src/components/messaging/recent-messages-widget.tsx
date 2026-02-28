@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { MessageSquare, ChevronRight } from 'lucide-react';
@@ -12,6 +12,7 @@ import { formatDistanceToNow, format, isToday, isYesterday } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useNotification } from '@/contexts/notification-context';
 import { QuickReplyModal } from './quick-reply-modal';
+import { getConversations } from '@/lib/actions/messaging';
 import type { RecentMessagesWidgetProps, ConversationWithDetails, ConversationParticipant } from '@/types';
 
 /**
@@ -173,8 +174,31 @@ export function RecentMessagesWidget({
   userRole,
   initialConversations,
 }: RecentMessagesWidgetProps) {
-  const { unreadCount } = useNotification();
+  const { unreadCount, conversationsRefreshKey } = useNotification();
   const [conversations, setConversations] = useState<ConversationWithDetails[]>(initialConversations);
+  const isFirstRender = useRef(true);
+
+  // MYM-96: Refresh conversations when new messages arrive via realtime
+  useEffect(() => {
+    // Skip on first render (we already have initialConversations)
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    // MYM-132: Fetch fresh conversation data with error handling
+    const refreshConversations = async () => {
+      try {
+        const freshConversations = await getConversations();
+        setConversations(freshConversations);
+      } catch {
+        // Silently fail on network errors - keep existing data
+        console.warn('Failed to refresh conversations (network error)');
+      }
+    };
+
+    refreshConversations();
+  }, [conversationsRefreshKey]);
 
   // Modal state
   const [selectedConversation, setSelectedConversation] = useState<{
@@ -192,13 +216,37 @@ export function RecentMessagesWidget({
     });
   }, []);
 
-  const handleModalClose = useCallback(() => {
+  const handleModalClose = useCallback(async () => {
     setSelectedConversation(null);
+    // MYM-96: Refresh conversations when modal closes to update read status
+    try {
+      const freshConversations = await getConversations();
+      setConversations(freshConversations);
+    } catch {
+      // Silently fail - the next poll will refresh
+    }
   }, []);
 
-  const handleMessageSent = useCallback(() => {
-    // After sending a message, we could refresh the list
-    // For now, the real-time subscription will handle updates
+  // MYM-96: Refresh conversations when messages are marked as read (while modal is open)
+  const handleConversationRead = useCallback(async () => {
+    try {
+      const freshConversations = await getConversations();
+      setConversations(freshConversations);
+    } catch {
+      // Silently fail - optimistic UI can handle this
+    }
+  }, []);
+
+  const handleMessageSent = useCallback(async () => {
+    // MYM-96: Refresh the conversation list after sending a message
+    // MYM-132: Handle network errors gracefully
+    try {
+      const freshConversations = await getConversations();
+      setConversations(freshConversations);
+    } catch {
+      // Silently fail - the optimistic UI already shows the message
+      console.warn('Failed to refresh conversations after send (network error)');
+    }
   }, []);
 
   return (
@@ -271,6 +319,7 @@ export function RecentMessagesWidget({
           otherParticipant={selectedConversation.participant}
           currentUserId={userId}
           onMessageSent={handleMessageSent}
+          onConversationRead={handleConversationRead}
         />
       )}
     </>

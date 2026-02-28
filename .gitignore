@@ -1,64 +1,72 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# ====================================
+# UPEX Project Starter - .gitignore
+# ====================================
 
-# dependencies
-/node_modules
+# Dependencies
+node_modules/
 
-# next.js
-/.next/
-
-# production
-/build
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# media
-
-# env files
-.env
-
-# vercel
-.vercel
-
-# typescript
+# ===== Build Artifacts =====
+dist/
+build/
+.next/
 *.tsbuildinfo
 next-env.d.ts
 
-# system
-.DS_Store
-
-# bun
-bun.lockb
-
-# AI CLI tools and configs
-.serena
-.gemini
-.claude
-.context/mcp/outputs
-.playwright-mcp
-.backups
-
-# MCP catalog files (contain secrets - DO NOT COMMIT)
-*.catalog.json
-
-# MCP auto-generated config files (read by AI tools)
-.mcpservers.json
-.mcp.json
-opencode.json
-
-# add more mcp assets
-
-# Sentry Config File
-.env.sentry-build-plugin
-.env*.local
-
-# Playwright
-node_modules/
+# ===== Playwright Test Artifacts =====
 /test-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# ===== Auth Storage (Session State) =====
+/.auth/
+
+# ===== Allure Reports =====
+/allure-results/
+/allure-report/
+
+# ===== Custom Reports =====
+/reports/
+*.json.bak
+
+# ===== Debug Logs =====
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ===== Environment =====
+.env
+.env.local
+.env.*.local
+.env.sentry-build-plugin
+
+# ===== IDE & Editor =====
+.idea/
+*.swp
+*.swo
+*.code-workspace
+
+# ===== OS Files =====
+.DS_Store
+Thumbs.db
+
+# ===== Vercel =====
+.vercel
+
+# ===== AI CLI Tools & Configs =====
+.serena
+.gemini/
+.claude/
+.playwright-mcp
+.backups/
+.context/mcp/outputs
+
+# ===== MCP Configuration (contain secrets - DO NOT COMMIT) =====
+.mcp.json
+.mcp.catalog.json
+*.catalog.json
+.mcpservers.json
+opencode.json
+dbhub.toml

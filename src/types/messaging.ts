@@ -141,6 +141,8 @@ export interface NotificationContextValue {
   activeConversationId: string | null
   setActiveConversation: (id: string | null) => void
   refreshUnreadCount: () => Promise<void>
+  /** MYM-96: Increments when a new message arrives to trigger widget refresh */
+  conversationsRefreshKey: number
 }
 
 /**
@@ -194,4 +196,6 @@ export interface QuickReplyModalProps {
   otherParticipant: ConversationParticipant
   currentUserId: string
   onMessageSent?: () => void
+  /** MYM-96: Called when conversation is marked as read to update widget */
+  onConversationRead?: () => void
 }

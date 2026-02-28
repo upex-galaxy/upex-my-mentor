@@ -18,7 +18,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 
-import { updateApplicationStatus } from '@/app/admin/applications/[id]/actions'
+import { updateApplicationStatus } from '@/app/(main)/admin/applications/[id]/actions'
 
 interface VerificationActionsProps {
   applicationId: string

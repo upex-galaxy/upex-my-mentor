@@ -115,6 +115,35 @@ export async function PUT(request: NextRequest): Promise<NextResponse<ApiRespons
       )
     }
 
+    // MYM-129: Validate user is a mentor (only mentors can have communication channels)
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    if (profileError || !profile) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'PROFILE_NOT_FOUND',
+          message: 'No se encontró el perfil del usuario',
+        },
+        { status: 404 }
+      )
+    }
+
+    if (profile.role !== 'mentor') {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'FORBIDDEN',
+          message: 'Solo los mentores pueden configurar canales de comunicación',
+        },
+        { status: 403 }
+      )
+    }
+
     // Parse request body
     let body: { channels: ChannelInput[] }
     try {
@@ -206,19 +235,16 @@ export async function PUT(request: NextRequest): Promise<NextResponse<ApiRespons
       (existingChannels ?? []).map((c) => [c.channel_type, c.id])
     )
 
-    // Prepare upsert data - MYM-87: Don't include id if it doesn't exist
-    const upsertData = validatedChannels.map((channel) => {
-      const existingId = existingByType.get(channel.type);
-      return {
-        // Only include id if channel already exists (for update)
-        ...(existingId && { id: existingId }),
-        user_id: user.id,
-        channel_type: channel.type,
-        handle: channel.handle,
-        is_active: channel.isActive,
-        updated_at: new Date().toISOString(),
-      };
-    })
+    // Prepare upsert data - MYM-121: Never include id field
+    // PostgREST requires consistent columns across all rows in batch upsert.
+    // The UNIQUE constraint on (user_id, channel_type) handles update vs insert.
+    const upsertData = validatedChannels.map((channel) => ({
+      user_id: user.id,
+      channel_type: channel.type,
+      handle: channel.handle,
+      is_active: channel.isActive,
+      updated_at: new Date().toISOString(),
+    }))
 
     // Determine which channels to delete (types not in new list)
     const newTypes = new Set(validatedChannels.map((c) => c.type))

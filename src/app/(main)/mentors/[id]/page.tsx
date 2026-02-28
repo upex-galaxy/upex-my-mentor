@@ -1,0 +1,245 @@
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { createServer } from "@/lib/supabase/server";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ReviewsSection } from "@/components/reviews";
+import { SendMessageButton } from "@/components/messaging";
+import {
+  Star,
+  Briefcase,
+  Linkedin,
+  Github,
+  Calendar,
+  Clock,
+} from "lucide-react";
+import type { Mentor, ReviewWithReviewer } from "@/types";
+import type { Database } from "@/types/supabase";
+
+type ProfileRow = Database['public']['Tables']['profiles']['Row'];
+type ReviewRow = Database['public']['Tables']['reviews']['Row'] & {
+  reviewer: { name: string | null } | null;
+};
+
+// Helper to transform DB profile to Mentor domain type
+function transformToMentor(profile: ProfileRow): Mentor {
+  return {
+    id: profile.id,
+    email: profile.email!,
+    name: profile.name!,
+    role: "mentor",
+    photoUrl: profile.photo_url || undefined,
+    description: profile.description || undefined,
+    createdAt: new Date(profile.created_at!),
+    profile: {
+      userId: profile.id,
+      specialties: profile.specialties || [],
+      hourlyRate: profile.hourly_rate || 0,
+      linkedinUrl: profile.linkedin_url || undefined,
+      githubUrl: profile.github_url || undefined,
+      isVerified: profile.is_verified || false,
+      averageRating: profile.average_rating || 0,
+      totalReviews: profile.total_reviews || 0,
+      yearsOfExperience: profile.years_of_experience || 0,
+    },
+  };
+}
+
+// Helper to check if URL is an SVG (requires unoptimized for Next.js Image)
+function isSvgUrl(url: string): boolean {
+  return url.includes('.svg') || url.includes('/svg') || url.includes('dicebear.com');
+}
+
+// Helper to transform DB reviews to ReviewWithReviewer type
+function transformReviews(dbReviews: ReviewRow[]): ReviewWithReviewer[] {
+  return dbReviews.map((review) => ({
+    id: review.id,
+    rating: review.rating,
+    comment: review.comment,
+    created_at: review.created_at!,
+    reviewer: review.reviewer,
+  }));
+}
+
+export default async function MentorProfilePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const supabase = await createServer();
+
+  // Fetch mentor with reviews (only verified mentors are publicly accessible)
+  const { data: mentorData, error: mentorError } = await supabase
+    .from('profiles')
+    .select(`
+      *,
+      reviews:reviews!fk_subject (
+        id,
+        rating,
+        comment,
+        created_at,
+        reviewer:reviewer_id (name)
+      )
+    `)
+    .eq('id', id)
+    .eq('role', 'mentor')
+    .eq('is_verified', true)
+    .single();
+
+  if (mentorError || !mentorData) {
+    notFound();
+  }
+
+  const mentor = transformToMentor(mentorData);
+  const dbReviews = (mentorData.reviews as unknown as ReviewRow[]) || [];
+  const reviews = transformReviews(dbReviews);
+
+  const { profile } = mentor;
+
+  return (
+    <div data-testid="mentorDetailPage">
+        {/* Hero Section */}
+        <div data-testid="profile_hero" className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 dark:from-purple-900/40 dark:via-fuchsia-900/20 dark:to-violet-900/40 py-12">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col md:flex-row gap-8 items-start">
+              {/* Avatar */}
+              <div className="flex-shrink-0">
+                {mentor.photoUrl ? (
+                  <div data-testid="avatar_image" className="relative h-32 w-32 rounded-full overflow-hidden ring-4 ring-background">
+                    <Image
+                      src={mentor.photoUrl}
+                      alt={mentor.name}
+                      fill
+                      className="object-cover"
+                      unoptimized={isSvgUrl(mentor.photoUrl)}
+                    />
+                  </div>
+                ) : (
+                  <div data-testid="avatar_image" className="h-32 w-32 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-4xl font-bold ring-4 ring-background">
+                    {mentor.name.charAt(0)}
+                  </div>
+                )}
+              </div>
+
+              {/* Info */}
+              <div className="flex-1">
+                <h1 data-testid="name_text" className="text-4xl font-bold mb-2 text-gray-900 dark:text-white">{mentor.name}</h1>
+
+                <div className="flex flex-wrap items-center gap-4 mb-4">
+                  <div data-testid="rating_display" className="flex items-center text-lg">
+                    <Star className="h-5 w-5 fill-yellow-400 text-yellow-400 mr-1" />
+                    <span className="font-bold mr-1">
+                      {profile.averageRating}
+                    </span>
+                    <span data-testid="reviews_count" className="text-muted-foreground">
+                      ({profile.totalReviews} reviews)
+                    </span>
+                  </div>
+
+                  {profile.yearsOfExperience && (
+                    <div data-testid="experience_text" className="flex items-center text-muted-foreground">
+                      <Briefcase className="h-4 w-4 mr-1" />
+                      <span>{profile.yearsOfExperience} años de experiencia</span>
+                    </div>
+                  )}
+
+                  {profile.isVerified && (
+                    <Badge data-testid="verified_badge" className="bg-green-600">✓ Verificado</Badge>
+                  )}
+                </div>
+
+                <p data-testid="description_text" className="text-lg text-muted-foreground mb-6 max-w-3xl">
+                  {mentor.description}
+                </p>
+
+                {/* Skills */}
+                <div data-testid="skills_container" className="flex flex-wrap gap-2 mb-6">
+                  {profile.specialties.map((skill) => (
+                    <Badge key={skill} data-testid="skill_badge" variant="secondary">
+                      {skill}
+                    </Badge>
+                  ))}
+                </div>
+
+                {/* Links */}
+                <div className="flex flex-wrap gap-3">
+                  {profile.linkedinUrl && (
+                    <a
+                      data-testid="linkedin_link"
+                      href={profile.linkedinUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      <Linkedin className="h-4 w-4 mr-1" />
+                      LinkedIn
+                    </a>
+                  )}
+                  {profile.githubUrl && (
+                    <a
+                      data-testid="github_link"
+                      href={profile.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      <Github className="h-4 w-4 mr-1" />
+                      GitHub
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              {/* Booking Card */}
+              <Card data-testid="booking_card" className="w-full md:w-80 flex-shrink-0">
+                <CardHeader>
+                  <CardTitle data-testid="hourly_rate" className="text-3xl">
+                    ${profile.hourlyRate}
+                    <span className="text-base font-normal text-muted-foreground">
+                      /hora
+                    </span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Button data-testid="book_button" className="w-full" size="lg" asChild>
+                    <Link href={`/mentors/${mentor.id}/book`}>
+                      <Calendar className="mr-2 h-5 w-5" />
+                      Reservar Sesión
+                    </Link>
+                  </Button>
+
+                  {/* MYM-56: Send Message Button */}
+                  <SendMessageButton
+                    mentorId={mentor.id}
+                    mentorName={mentor.name}
+                  />
+
+                  <div className="pt-4 border-t space-y-3 text-sm">
+                    <div data-testid="session_duration" className="flex items-center text-muted-foreground">
+                      <Clock className="h-4 w-4 mr-2" />
+                      Sesiones de 1 hora
+                    </div>
+                    <div data-testid="cancellation_policy" className="flex items-center text-muted-foreground">
+                      <Calendar className="h-4 w-4 mr-2" />
+                      Cancela hasta 24h antes
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+
+        {/* Reviews Section - MYM-35 */}
+        <ReviewsSection
+          mentorId={mentor.id}
+          reviews={reviews}
+          averageRating={profile.averageRating}
+          totalReviews={profile.totalReviews}
+        />
+    </div>
+  );
+}

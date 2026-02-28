@@ -20,7 +20,7 @@ import { BookingSummary } from '@/components/scheduling/booking-summary'
 import { ChannelSelector } from '@/components/booking/channel-selector'
 import { toast } from 'sonner'
 import { detectUserTimezone, formatInTimezone } from '@/lib/timezone'
-import { createBooking } from '@/app/mentors/[id]/book/actions'
+import { createBooking } from '@/app/(main)/mentors/[id]/book/actions'
 import {
   addDays,
   startOfDay,

@@ -156,8 +156,8 @@ export interface MentorAvailability {
   start_time: string   // HH:MM format (e.g., "09:00")
   end_time: string     // HH:MM format (e.g., "17:00")
   is_active: boolean
-  created_at: string
-  updated_at: string
+  created_at: string | null
+  updated_at: string | null
 }
 
 /**
@@ -190,7 +190,7 @@ export interface CreateBookingResult {
   bookingId?: string
   checkoutUrl?: string
   error?: string
-  errorCode?: 'SLOT_TAKEN' | 'UNAUTHORIZED' | 'STRIPE_ERROR' | 'UNKNOWN'
+  errorCode?: 'SLOT_TAKEN' | 'UNAUTHORIZED' | 'STRIPE_ERROR' | 'MENTOR_NOT_VERIFIED' | 'UNKNOWN'
 }
 
 /**
@@ -241,4 +241,57 @@ export interface MentorForBooking {
   hourlyRate: number
   timezone: string
   isVerified: boolean
+}
+
+// =============================================================================
+// MYM-19: Set Mentor Weekly Availability Types
+// =============================================================================
+
+/**
+ * Availability slot for form/UI state (before saving)
+ * Used when creating or editing slots in the calendar
+ */
+export interface AvailabilitySlot {
+  id?: string           // Optional - only present for existing slots
+  day_of_week: number   // 0-6 (Sunday-Saturday)
+  start_time: string    // HH:MM format (e.g., "09:00")
+  end_time: string      // HH:MM format (e.g., "17:00")
+}
+
+/**
+ * Input for saving mentor availability
+ */
+export interface SaveAvailabilityInput {
+  slots: AvailabilitySlot[]
+  timezone: string      // IANA timezone for display purposes
+}
+
+/**
+ * Result of saving availability
+ */
+export interface SaveAvailabilityResult {
+  success: boolean
+  error?: string
+  savedCount?: number
+}
+
+/**
+ * Props for the AvailabilityCalendar component
+ */
+export interface AvailabilityCalendarProps {
+  mentorId: string
+  initialSlots: MentorAvailability[]
+  mentorTimezone?: string
+}
+
+/**
+ * Props for the TimeBlockEditor component
+ */
+export interface TimeBlockEditorProps {
+  slot?: AvailabilitySlot
+  dayOfWeek: number
+  onSave: (slot: AvailabilitySlot) => void
+  onCancel: () => void
+  onDelete?: () => void
+  existingSlots: AvailabilitySlot[]  // For overlap validation
 }

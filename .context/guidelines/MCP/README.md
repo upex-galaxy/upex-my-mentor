@@ -33,12 +33,22 @@ Living Data (usar MCP) vs Static Docs (leer archivo)
 | Tavily     | `tavily.md`     | Búsqueda web, foros, Stack Overflow |
 | Playwright | `playwright.md` | Tests E2E, interacciones UI         |
 | DevTools   | `devtools.md`   | Debug de tests, network, console    |
-| Postman    | `postman.md`    | API testing, endpoints              |
+| Postman    | `postman.md`    | API testing con colecciones         |
+| OpenAPI    | `openapi.md`    | API testing via spec (requests)     |
+| DBHub      | `dbhub.md`      | SQL queries, verificación de datos  |
 | Sentry     | `sentry.md`     | Errores en producción               |
 | Atlassian  | `atlassian.md`  | Jira, Confluence                    |
 | GitHub     | `github.md`     | Issues, PRs, código                 |
 | Slack      | `slack.md`      | Notificaciones, reportes            |
 | Memory     | `memory.md`     | Contexto entre sesiones             |
+
+### MCPs para Trifuerza Testing
+
+| Capa | MCPs                 | Documentación                  |
+| ---- | -------------------- | ------------------------------ |
+| UI   | `playwright`         | `docs/testing/ui-guide/`       |
+| API  | `postman`, `openapi` | `docs/testing/api-guide/`      |
+| DB   | `dbhub`              | `docs/testing/database-guide/` |
 
 ---
 
@@ -47,8 +57,11 @@ Living Data (usar MCP) vs Static Docs (leer archivo)
 ```
 ¿Necesitas información de...?
 
-├─ Base de datos → supabase.md
-│   └─ Schema, datos, policies
+├─ Base de datos (schema) → supabase.md
+│   └─ Schema, policies, migraciones
+│
+├─ Base de datos (queries) → dbhub.md
+│   └─ SQL directo, verificación de datos
 │
 ├─ Documentación oficial → context7.md
 │   └─ Next.js, React, Playwright docs
@@ -59,14 +72,17 @@ Living Data (usar MCP) vs Static Docs (leer archivo)
 ├─ Project management → atlassian.md
 │   └─ Issues, stories, requirements
 │
-├─ E2E testing → playwright.md
-│   └─ User flows, interactions
+├─ UI/E2E testing → playwright.md
+│   └─ User flows, interactions, screenshots
 │
 ├─ E2E debugging → devtools.md
 │   └─ Console, network, performance
 │
-├─ API testing → postman.md
-│   └─ Endpoints, responses
+├─ API testing (colecciones) → postman.md
+│   └─ Test suites, auth flows
+│
+├─ API testing (requests) → openapi.md
+│   └─ Quick requests via spec
 │
 ├─ Error monitoring → sentry.md
 │   └─ Production errors, stack traces
@@ -89,21 +105,22 @@ Living Data (usar MCP) vs Static Docs (leer archivo)
 
 ```
 Primarios: supabase, context7, tavily
-Secundarios: github, postman
+Secundarios: github, postman, openapi
 ```
 
 ### QA (Testing Manual)
 
 ```
-Primarios: atlassian, playwright (para explorar)
-Secundarios: tavily, slack
+Primarios: atlassian, playwright, postman, dbhub
+Secundarios: openapi, tavily, slack
+Trifuerza: playwright (UI) + postman/openapi (API) + dbhub (DB)
 ```
 
 ### TAE (Test Automation)
 
 ```
 Primarios: playwright, devtools, context7
-Secundarios: postman, sentry, tavily
+Secundarios: postman, openapi, dbhub, sentry, tavily
 ```
 
 ---
@@ -143,4 +160,4 @@ Ver `docs/mcp-builder-strategy.md` para más detalles.
 
 ---
 
-**Última actualización**: 2025-12-21
+**Última actualización**: 2025-12-26

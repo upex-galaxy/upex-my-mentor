@@ -25,10 +25,11 @@ QA Engineers y Test Automation Engineers que quieren aprender a:
 
 ## MCPs Utilizados
 
-| MCP                                                                                      | Proposito                 | Instalacion                          |
-| ---------------------------------------------------------------------------------------- | ------------------------- | ------------------------------------ |
-| [@bytebase/dbhub](https://www.npmjs.com/package/@bytebase/dbhub)                         | Ejecutar SQL directo      | `npx -y @bytebase/dbhub`             |
-| [@ivotoby/openapi-mcp-server](https://www.npmjs.com/package/@ivotoby/openapi-mcp-server) | Consumir APIs via OpenAPI | `npx -y @ivotoby/openapi-mcp-server` |
+| MCP             | Paquete NPM                   | Proposito                 | Instalacion                          |
+| --------------- | ----------------------------- | ------------------------- | ------------------------------------ |
+| `dbhub` (sql)   | `@bytebase/dbhub`             | Ejecutar SQL directo      | `npx -y @bytebase/dbhub`             |
+| `openapi` (api) | `@ivotoby/openapi-mcp-server` | Consumir APIs via OpenAPI | `npx -y @ivotoby/openapi-mcp-server` |
+| `postman`       | `@postman/postman-mcp-server` | Colecciones Postman       | `npx -y @postman/postman-mcp-server` |
 
 ---
 
@@ -46,7 +47,7 @@ QA Engineers y Test Automation Engineers que quieren aprender a:
 ```json
 {
   "mcpServers": {
-    "api": {
+    "openapi": {
       "command": "npx",
       "args": ["-y", "@ivotoby/openapi-mcp-server"],
       "env": {
@@ -55,7 +56,7 @@ QA Engineers y Test Automation Engineers que quieren aprender a:
         "API_HEADERS": "apikey:TU_ANON_KEY,Authorization:Bearer TU_ANON_KEY"
       }
     },
-    "database": {
+    "dbhub": {
       "command": "npx",
       "args": ["-y", "@bytebase/dbhub", "--transport", "stdio"],
       "env": {
@@ -87,5 +88,8 @@ Los problemas documentados en troubleshooting son errores reales encontrados dur
 
 ## Ver Tambien
 
-- [API Testing Guide](../api-guide/README.md) - Testing de APIs con multiples herramientas
-- [MCP General](../../mcp/README.md) - Conceptos generales de MCP
+- [API Guide](../api-guide/README.md) - Testing de APIs con multiples herramientas
+- [UI Guide](../ui-guide/README.md) - Testing de UI con Playwright
+- [Project Management Guide](../project-management-guide/README.md) - Jira y GitHub
+- [Monitoring Guide](../monitoring-guide/README.md) - Sentry y Slack
+- [Research Guide](../research-guide/README.md) - Context7 y Tavily

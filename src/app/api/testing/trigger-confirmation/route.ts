@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getBaseUrl } from '@/lib/urls'
 
 /**
  * Test endpoint for QA to trigger booking confirmation emails
@@ -64,7 +65,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<TriggerRe
   }
 
   // Call the main booking confirmation endpoint
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+  const baseUrl = getBaseUrl()
   const confirmationUrl = `${baseUrl}/api/email/booking-confirmation`
 
   try {

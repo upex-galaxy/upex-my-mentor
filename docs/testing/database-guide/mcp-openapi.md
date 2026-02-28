@@ -1,8 +1,8 @@
-# Configuración de OpenAPI MCP para Testing de API
+# Configuración de openapi MCP para Testing de API
 
-## ¿Qué es @ivotoby/openapi-mcp-server?
+## ¿Qué es openapi MCP?
 
-Este MCP convierte cualquier especificación OpenAPI/Swagger en herramientas MCP. Lee el esquema de una API y convierte cada endpoint en una herramienta que Claude puede usar directamente.
+**openapi** (`@ivotoby/openapi-mcp-server`) es un MCP que convierte cualquier especificación OpenAPI/Swagger en herramientas MCP. Lee el esquema de una API y convierte cada endpoint en una herramienta que Claude puede usar directamente.
 
 ---
 
@@ -57,7 +57,7 @@ Deberías ver un JSON con formato Swagger 2.0 listando todas tus tablas.
 ### Claude Code (CLI)
 
 ```bash
-claude mcp add-json "supabase-api" '{
+claude mcp add-json "openapi" '{
   "command": "npx",
   "args": ["-y", "@ivotoby/openapi-mcp-server"],
   "env": {
@@ -73,7 +73,7 @@ claude mcp add-json "supabase-api" '{
 ```json
 {
   "mcpServers": {
-    "supabase-api": {
+    "openapi": {
       "command": "npx",
       "args": ["-y", "@ivotoby/openapi-mcp-server"],
       "env": {
@@ -123,7 +123,7 @@ El MCP soporta argumentos de línea de comandos para configuración adicional:
 ```json
 {
   "mcpServers": {
-    "supabase-api": {
+    "openapi": {
       "command": "npx",
       "args": ["-y", "@ivotoby/openapi-mcp-server", "--operation", "get"],
       "env": {
@@ -141,7 +141,7 @@ El MCP soporta argumentos de línea de comandos para configuración adicional:
 ```json
 {
   "mcpServers": {
-    "supabase-api": {
+    "openapi": {
       "command": "npx",
       "args": ["-y", "@ivotoby/openapi-mcp-server", "--tools", "dynamic"],
       "env": {
@@ -186,9 +186,9 @@ El MCP generará herramientas como:
 
 ---
 
-## Comparación: DBHub vs OpenAPI MCP
+## Comparación: dbhub vs openapi MCP
 
-| Aspecto                 | DBHub (SQL)          | OpenAPI MCP (API)          |
+| Aspecto                 | dbhub (SQL)          | openapi (API)              |
 | ----------------------- | -------------------- | -------------------------- |
 | **Qué hace**            | Ejecuta SQL directo  | Llama endpoints REST       |
 | **Acceso**              | Connection string DB | API Key + URL              |
@@ -201,12 +201,12 @@ El MCP generará herramientas como:
 
 ---
 
-## Configuración completa: API + SQL
+## Configuración completa: openapi + dbhub
 
 ```json
 {
   "mcpServers": {
-    "supabase-api": {
+    "openapi": {
       "command": "npx",
       "args": ["-y", "@ivotoby/openapi-mcp-server"],
       "env": {
@@ -215,7 +215,7 @@ El MCP generará herramientas como:
         "API_HEADERS": "apikey:TU_ANON_KEY,Authorization:Bearer TU_ANON_KEY"
       }
     },
-    "supabase-db": {
+    "dbhub": {
       "command": "npx",
       "args": ["-y", "@bytebase/dbhub", "--transport", "stdio"],
       "env": {
@@ -233,8 +233,8 @@ El MCP generará herramientas como:
 
 Con esto tienes:
 
-- **`supabase-api`**: Para testing de API REST (pasa por RLS y validaciones)
-- **`supabase-db`**: Para testing de base de datos con SQL (acceso directo)
+- **`openapi`**: Para testing de API REST (pasa por RLS y validaciones)
+- **`dbhub`**: Para testing de base de datos con SQL (acceso directo)
 
 ---
 
@@ -245,7 +245,7 @@ Este documento cubre el **Flujo C: MCP para testing con AI**. El spec OpenAPI pu
 | Fuente del Spec        | Cuando usarlo                     | Documento                                                                       |
 | ---------------------- | --------------------------------- | ------------------------------------------------------------------------------- |
 | **Supabase auto-spec** | Proyectos con Supabase (este doc) | Este documento                                                                  |
-| **sync-openapi.ts**    | Backend externo tiene el spec     | [sync-openapi-guide.md](../../workflows/sync-openapi-guide.md)                  |
+| **sync-openapi.ts**    | Backend externo tiene el spec     | Script: [`scripts/sync-openapi.ts`](../../../scripts/sync-openapi.ts)           |
 | **Zod-to-OpenAPI**     | Tu defines schemas con Zod        | [openapi-zod-contract-testing.md](../api-guide/openapi-zod-contract-testing.md) |
 
 ---

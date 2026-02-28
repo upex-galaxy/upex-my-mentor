@@ -1,208 +1,404 @@
 # Test Prioritization
 
-> Apply risk-based prioritization to determine which tests enter regression.
+> Aplicar análisis ROI **estricto** para determinar qué pruebas realmente valen la pena mantener en regresión.
 
 ---
 
-## Purpose
+## Propósito
 
-Prioritize test candidates based on risk, business value, and automation feasibility to build an effective regression suite.
+Priorizar los candidatos de test con enfoque **Risk-Based Testing**, siendo **muy selectivos** sobre qué entra en regresión para minimizar mantenibilidad.
 
-**This prompt is executed AFTER:**
+**Preguntas clave que responde este prompt:**
 
-- Test analysis completed
-- Regression candidates identified
+1. **¿Este test protege contra regresiones FUTURAS?** → No solo valida implementación inicial
+2. **¿Vale la pena el costo de mantenimiento?** → Cada test tiene costo
+3. **¿Cuántos tests REALMENTE necesitamos?** → Menos es más
+
+**⚠️ CONTEXTO CRÍTICO:**
+
+La User Story ya está **QA Approved**:
+
+- ✅ TODAS las pruebas YA PASARON
+- ✅ Los bugs YA SE CERRARON
+- ✅ NO estamos diseñando tests para ejecutar
+
+**Estamos decidiendo:** ¿Cuáles de esas pruebas que ya pasaron valen la pena VOLVER a correr en el futuro?
 
 ---
 
-## Input Required
+## Pre-requisitos
 
-- Test analysis report (from `test-analysis.md`)
-- Or list of test candidates with classifications
-
----
-
-## Prioritization Framework
-
-### Risk-Based Testing Matrix
+**Cargar contexto obligatorio:**
 
 ```
-                    HIGH BUSINESS IMPACT
-                           │
-           ┌───────────────┼───────────────┐
-           │   CRITICAL    │    HIGH       │
-           │  Automate     │  Automate     │
-           │  First        │  Second       │
-           │               │               │
-HIGH ──────┼───────────────┼───────────────┼────── LOW
-FAILURE    │               │               │      FAILURE
-RISK       │    MEDIUM     │    LOW        │      RISK
-           │  Automate     │  Manual or    │
-           │  Third        │  Defer        │
-           │               │               │
-           └───────────────┼───────────────┘
-                           │
-                    LOW BUSINESS IMPACT
+Leer: .context/guidelines/QA/jira-test-management.md
 ```
 
-### Scoring Criteria
+---
 
-**Business Impact (1-5):**
+## Input Requerido
 
-| Score | Description                                      |
-| ----- | ------------------------------------------------ |
-| 5     | Core revenue flow (checkout, payments)           |
-| 4     | Primary user feature (login, main functionality) |
-| 3     | Secondary feature (settings, preferences)        |
-| 2     | Nice-to-have feature                             |
-| 1     | Rarely used, edge case                           |
-
-**Failure Risk (1-5):**
-
-| Score | Description                                      |
-| ----- | ------------------------------------------------ |
-| 5     | High complexity, frequent changes, past failures |
-| 4     | Moderate complexity, integration points          |
-| 3     | Standard complexity                              |
-| 2     | Simple, stable code                              |
-| 1     | Very stable, rarely changes                      |
-
-**Priority = Business Impact × Failure Risk**
+- Reporte de análisis de `test-analysis.md`
+- Lista de candidatos con clasificaciones
+- Lista de bugs previos relacionados (para análisis de riesgo)
 
 ---
 
 ## Workflow
 
-### Phase 1: Score Each Candidate
+### Fase 0: Preguntas Críticas de Risk-Based Testing
 
-**For each test candidate from analysis:**
+**⚠️ OBLIGATORIO:** Antes de calcular ROI, responder estas preguntas para CADA candidato:
 
-```markdown
-| Scenario                     | Business Impact | Failure Risk | Score | Priority |
-| ---------------------------- | --------------- | ------------ | ----- | -------- |
-| Login with valid credentials | 5               | 4            | 20    | Critical |
-| Password validation          | 4               | 3            | 12    | High     |
-| Remember me option           | 2               | 2            | 4     | Low      |
+#### Pregunta 1: ¿Protege contra regresiones FUTURAS?
+
+```
+¿Si alguien hace cambios en el código en 3 meses, este test evitará que rompan algo?
+
+- SÍ → Continuar evaluación
+- NO → Probablemente fue validación one-time, DIFERIR
+```
+
+**Indicadores de "NO protege":**
+
+- Error fue typo o implementación inicial incorrecta
+- Área del código muy estable, nadie la toca
+- Edge case extremadamente raro (< 1% de usuarios)
+- One-time validation (pluralización, copy, etc.)
+
+#### Pregunta 2: ¿Hay bugs PREVIOS relacionados?
+
+```
+¿Este escenario está relacionado con un bug que ya se encontró y cerró?
+
+- SÍ → Mayor probabilidad de regresión, PRIORIZAR
+- NO → Evaluar normalmente
+```
+
+**Regla:** Si falló una vez, puede volver a fallar. Bugs previos = mayor riesgo.
+
+#### Pregunta 3: ¿Se valida mejor a nivel APP o FEATURE?
+
+```
+¿Esta validación aplica a TODA la app o solo a esta feature?
+
+- Nivel APP → No crear test por feature (ejemplos: XSS, error handling global, responsive)
+- Nivel FEATURE → Crear test específico
+```
+
+**Validaciones a nivel APP (NO son tests por feature):**
+
+- XSS prevention → Suite de seguridad global
+- Error handling → Tests de resiliencia globales
+- Mobile responsive → Ejecutar tests en múltiples viewports
+- Performance → Métricas globales de app
+- Accesibilidad → Suite de a11y global
+
+---
+
+### Fase 1: Calcular ROI para Cada Candidato (Estricto)
+
+**Solo evaluar candidatos que pasaron las 3 preguntas de Fase 0.**
+
+**Fórmula ROI:**
+
+```
+ROI = (Frecuencia × Impacto × Estabilidad) / (Esfuerzo × Dependencias)
+
+Donde cada factor se puntúa 1-5:
+
+FRECUENCIA (¿Cada cuánto se ejecutará?)
+- 5: Cada PR / commit
+- 4: Diario
+- 3: Cada sprint
+- 2: Cada release
+- 1: Ocasionalmente
+
+IMPACTO (¿Qué tan grave si falla?)
+- 5: Afecta revenue / core business
+- 4: Bloquea feature principal
+- 3: Degrada experiencia de usuario
+- 2: Inconveniente menor
+- 1: Cosmético / bajo impacto
+
+ESTABILIDAD (¿Qué tan estable es el flujo?)
+- 5: Muy estable, rara vez cambia
+- 4: Estable, cambios menores
+- 3: Moderado, cambia cada sprint
+- 2: Inestable, cambia frecuentemente
+- 1: Muy volátil, en desarrollo activo
+
+ESFUERZO (¿Cuánto cuesta automatizar?)
+- 1: Trivial (minutos)
+- 2: Bajo (horas)
+- 3: Moderado (1-2 días)
+- 4: Alto (varios días)
+- 5: Muy alto (semana+)
+
+DEPENDENCIAS (¿Cuántas integraciones?)
+- 1: Ninguna / self-contained
+- 2: 1-2 dependencias simples
+- 3: 3-4 dependencias
+- 4: 5+ dependencias
+- 5: Dependencias externas complejas
+```
+
+**Interpretación del ROI (Umbrales ESTRICTOS):**
+
+| ROI Score | Decisión                    | Acción                                |
+| --------- | --------------------------- | ------------------------------------- |
+| > 5.0     | **Automatizar**             | ROI excelente, incluir en regresión   |
+| 3.0 - 5.0 | **Automatizar con cautela** | Evaluar si hay alternativa más simple |
+| 1.5 - 3.0 | **Evaluar caso por caso**   | ¿Hay bug previo? ¿Es flujo crítico?   |
+| 0.5 - 1.5 | **Probablemente diferir**   | Solo incluir si hay bug previo        |
+| < 0.5     | **Diferir**                 | No vale la pena mantener en regresión |
+
+**⚠️ Cambio vs versión anterior:** Los umbrales son más altos porque:
+
+- Cada test tiene costo de mantenimiento
+- La mayoría de bugs no vuelven a ocurrir tras la primera corrección
+- Menos tests bien elegidos > muchos tests de bajo valor
+
+---
+
+### Fase 2: Aplicar Matriz de Riesgo
+
+```
+                    ALTO IMPACTO DE NEGOCIO
+                           │
+           ┌───────────────┼───────────────┐
+           │   CRÍTICO     │    ALTO       │
+           │  Automatizar  │  Automatizar  │
+           │  Primero      │  Segundo      │
+           │               │               │
+ALTO ──────┼───────────────┼───────────────┼────── BAJO
+RIESGO     │               │               │      RIESGO
+DE FALLO   │    MEDIO      │    BAJO       │
+           │  Automatizar  │  Manual o     │
+           │  Tercero      │  Diferir      │
+           │               │               │
+           └───────────────┼───────────────┘
+                           │
+                    BAJO IMPACTO DE NEGOCIO
 ```
 
 ---
 
-### Phase 2: Apply Automation Criteria
+### Fase 3: Evaluar Valor como Componente
 
-**Filter by automatability:**
+**Bonus de reutilización:**
 
-| Scenario            | Score | Automatable | Action            |
-| ------------------- | ----- | ----------- | ----------------- |
-| Login flow          | 20    | Yes         | Automate (E2E)    |
-| Password validation | 12    | Yes         | Automate (E2E)    |
-| Visual alignment    | 8     | No          | Manual regression |
-| Third-party OAuth   | 10    | No          | Manual regression |
+Un test que es componente de múltiples flujos E2E tiene mayor valor:
+
+```
+Valor Componente = ROI Base × (1 + 0.2 × N)
+
+Donde N = número de flujos E2E que lo usan
+
+Ejemplo:
+- "Login exitoso" usado en 5 flujos E2E
+- ROI Base = 1.5
+- Valor Componente = 1.5 × (1 + 0.2 × 5) = 1.5 × 2.0 = 3.0
+- Resultado: Alta prioridad para automatizar
+```
 
 ---
 
-### Phase 3: Assign to Regression Tracks
+### Fase 4: Decisión Final por Candidato
+
+**Para CADA candidato, aplicar esta tabla de decisión:**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        ÁRBOL DE DECISIÓN POR CANDIDATO                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ¿Pasó las 3 preguntas de Fase 0?                                          │
+│  ├─ NO → DIFERIR (no protege contra regresiones futuras)                   │
+│  └─ SÍ ↓                                                                   │
+│                                                                             │
+│  ¿Tiene bug previo relacionado?                                            │
+│  ├─ SÍ → PRIORIZAR (incluir aunque ROI sea moderado)                       │
+│  └─ NO ↓                                                                   │
+│                                                                             │
+│  ¿ROI > 3.0?                                                               │
+│  ├─ SÍ → AUTOMATIZAR                                                       │
+│  └─ NO ↓                                                                   │
+│                                                                             │
+│  ¿Es flujo principal/crítico de la feature?                                │
+│  ├─ SÍ → Considerar 1 test que cubra el happy path principal               │
+│  └─ NO → DIFERIR                                                           │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### Fase 5: Consolidar en Tracks (Resultado Mínimo)
 
 **Track 1: Automated Regression (CI/CD)**
 
-- Tests that run on every PR or nightly
-- High priority + automatable
+- Pasó árbol de decisión
+- ROI > 3.0 O tiene bug previo
+- Se ejecuta en cada PR o nightly
 
-**Track 2: Manual Regression**
+**Track 2: Manual Regression** (usar con cautela)
 
-- Tests that require human execution
-- High priority + not automatable
+- ROI 1.5 - 3.0 Y no automatizable
+- Muy pocos tests deberían estar aquí
+- Se ejecuta antes de release
 
-**Track 3: Deferred**
+**Track 3: Deferred** (mayoría de candidatos)
 
-- Low priority tests
-- May be added later
+- No pasó árbol de decisión
+- ROI < 1.5 sin bug previo
+- Ya se validó en primera ejecución, muy improbable que falle
+
+**⚠️ OBJETIVO:** La mayoría de candidatos deberían ser DIFERIDOS. Si más del 50% pasa a regresión, revisar si estamos siendo demasiado permisivos.
 
 ---
 
-### Phase 4: Generate Prioritization Report
+### Fase 6: Determinar Path del Workflow
+
+Basado en el análisis, decidir el path en el workflow:
+
+```
+Para cada test candidato:
+
+SI (ROI > 1.5 AND Automatizable = Sí):
+    → Path: Ready → In Review → Candidate
+    → Resultado: Listo para Fase 12 (Automation)
+
+SI (ROI > 0.5 AND Automatizable = No):
+    → Path: Ready → Manual
+    → Resultado: Regresión manual
+
+SI (ROI 1.0-1.5 AND Automatizable = Sí):
+    → Path: Ready → In Review
+    → Resultado: Evaluar con más contexto
+    → Puede ir a Candidate o Manual
+
+SI (ROI < 0.5):
+    → No documentar
+    → O documentar como Draft y diferir
+```
+
+---
+
+### Fase 7: Generar Reporte de Priorización
 
 ```markdown
 # Test Prioritization Report
 
 **Feature:** [Feature/US name]
-**Date:** [Date]
-**Total Candidates:** [N]
+**Fecha:** [Date]
+**Total Candidatos Inicial:** [N]
+**Candidatos que pasaron filtro:** [M] (objetivo: < 50% del total)
 
 ---
 
-## Prioritization Summary
+## Fase 0: Filtro de Preguntas Críticas
 
-| Track                | Count | Execution            |
+| #   | Escenario                 | ¿Protege futuro? | ¿Bug previo? | ¿Nivel feature? | ¿Pasa filtro? |
+| --- | ------------------------- | ---------------- | ------------ | --------------- | ------------- |
+| 1   | [Nombre con nomenclatura] | SÍ/NO            | SÍ/NO        | SÍ/NO           | ✅/❌         |
+| 2   | [Nombre con nomenclatura] | SÍ/NO            | SÍ/NO        | SÍ/NO           | ✅/❌         |
+
+**Resultado:** [X] de [N] candidatos pasan el filtro inicial.
+
+---
+
+## Análisis ROI (Solo candidatos que pasaron filtro)
+
+| #   | Escenario (Nomenclatura) | Freq | Impact | Stab | Effort | Deps | ROI | Bug Previo | Decisión   |
+| --- | ------------------------ | ---- | ------ | ---- | ------ | ---- | --- | ---------- | ---------- |
+| 1   | Validar X cuando Y       | 4    | 5      | 4    | 2      | 2    | 5.0 | BUG-XXX    | ✅ AUTO    |
+| 2   | Validar A cuando B       | 3    | 3      | 5    | 2      | 1    | 4.5 | -          | ✅ AUTO    |
+| 3   | Validar C cuando D       | 2    | 2      | 4    | 3      | 2    | 1.3 | -          | ❌ DIFERIR |
+
+---
+
+## Decisión Final
+
+### ✅ Para Regresión Automatizada
+
+| #   | Escenario                          | ROI | Justificación                             |
+| --- | ---------------------------------- | --- | ----------------------------------------- |
+| 1   | [Nombre completo con nomenclatura] | X.X | [Flujo principal / Bug previo / ROI alto] |
+
+**Total:** [N] tests (objetivo: 1-3 por feature simple, 3-5 por feature compleja)
+
+### ❌ Diferidos (NO entran en regresión)
+
+| #   | Escenario | ROI | Razón para diferir                     |
+| --- | --------- | --- | -------------------------------------- |
+| X   | [Nombre]  | X.X | Ya se validó, muy improbable que falle |
+| Y   | [Nombre]  | X.X | Edge case raro, one-time validation    |
+| Z   | [Nombre]  | X.X | Se valida a nivel APP, no por feature  |
+
+**Total diferidos:** [M] (debería ser mayoría)
+
+---
+
+## Resumen
+
+| Métrica | Antes (candidatos) | Después (regresión) | Reducción |
+| ------- | ------------------ | ------------------- | --------- |
+| Total   | [N]                | [M]                 | [X]%      |
+
+| Track                | Count | Justificación        |
 | -------------------- | ----- | -------------------- |
-| Automated Regression | [N]   | CI/CD Pipeline       |
-| Manual Regression    | [N]   | Sprint end / Release |
-| Deferred             | [N]   | Backlog              |
+| Automated Regression | [1-3] | Solo lo esencial     |
+| Manual Regression    | [0-1] | Casi nunca necesario |
+| Deferred             | [N-M] | Mayoría              |
 
 ---
 
-## Automated Regression (Priority Order)
+## Para Test Documentation (siguiente paso):
 
-| Rank | Scenario                       | Score | Test Type   | ATC ID |
-| ---- | ------------------------------ | ----- | ----------- | ------ |
-| 1    | [Login with valid credentials] | 20    | E2E         | TBD    |
-| 2    | [Password validation]          | 12    | E2E         | TBD    |
-| 3    | [API authentication]           | 15    | Integration | TBD    |
+**Tests a documentar en Jira:**
 
-**Estimated automation effort:** [X] ATCs
+| Escenario | Path        | Nomenclatura Final                           |
+| --------- | ----------- | -------------------------------------------- |
+| [Nombre]  | → Candidate | `{US_ID}: TC1: Validar <CORE> <CONDITIONAL>` |
 
----
+**Características transversales (NO son tests):**
 
-## Manual Regression
-
-| Rank | Scenario                 | Score | Reason Not Automated |
-| ---- | ------------------------ | ----- | -------------------- |
-| 1    | [Visual alignment check] | 8     | Requires human eye   |
-| 2    | [Third-party OAuth flow] | 10    | External dependency  |
-
-**Manual execution time:** ~[X] minutes
-
----
-
-## Deferred (Backlog)
-
-| Scenario             | Score | Reason Deferred     |
-| -------------------- | ----- | ------------------- |
-| [Remember me option] | 4     | Low business impact |
-| [Rare edge case X]   | 3     | Rarely exercised    |
-
----
-
-## Recommendations
-
-### Immediate Actions:
-
-1. Document top [N] scenarios in Jira (next: test-documentation.md)
-2. Mark automation candidates with label `automation-candidate`
-3. Add manual tests to regression checklist
-
-### For Fase 12 (Automation):
-
-- Start with scenarios ranked 1-3
-- Estimated [X] ATCs to implement
-- Test types: [N] E2E, [M] Integration
+| Característica    | Cómo se valida                    |
+| ----------------- | --------------------------------- |
+| Mobile responsive | Ejecutar tests en viewport mobile |
+| XSS prevention    | Incluir en test data              |
+| Performance       | Assertions de tiempo              |
 ```
 
 ---
 
-## Decision Point
+## Decisión Point
 
-After prioritization:
+Después de priorización:
 
-| Action             | Next Step                    |
-| ------------------ | ---------------------------- |
-| Tests prioritized  | → `test-documentation.md`    |
-| Skip documentation | → Directly to Fase 12 (rare) |
+| Acción            | Siguiente Paso                |
+| ----------------- | ----------------------------- |
+| Tests priorizados | → `test-documentation.md`     |
+| Todos diferidos   | → Cerrar fase                 |
+| Necesita más info | → Volver a `test-analysis.md` |
 
 ---
 
 ## Output
 
-- Prioritized list of regression tests
-- Clear separation: automated vs manual
-- Scoring justification for each test
-- Ready for Jira documentation
+- **Filtro aplicado:** Cuántos candidatos pasaron las preguntas críticas
+- **Lista priorizada:** Con scores ROI y decisión final
+- **Tests para regresión:** Mínimo necesario (1-3 por feature simple)
+- **Diferidos documentados:** Con justificación de por qué no entran
+- **Nomenclatura preservada:** Usar mismos nombres que en Shift-Left/Exploratory
+
+---
+
+## Principios de Risk-Based Testing
+
+1. **Menos es más:** Cada test tiene costo de mantenimiento
+2. **Bugs previos priorizan:** Si falló una vez, puede volver a fallar
+3. **Mayoría se difiere:** La mayoría de tests one-time no necesitan regresión
+4. **Nivel correcto:** Algunas validaciones son a nivel APP, no FEATURE
+5. **Flujo > fragmentos:** Preferir 1 test de flujo completo que 5 tests atómicos
