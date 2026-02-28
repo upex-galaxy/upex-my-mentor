@@ -9,7 +9,9 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "ai": "bun scripts/mcp-builder.js",
-    "up": "bun scripts/update-prompts.js"
+    "up": "bun scripts/update-template.js",
+    "xray": "bun cli/xray/index.ts",
+    "prepare": "husky"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "7.3.4",
@@ -58,8 +60,18 @@
     "autoprefixer": "^10.4.20",
     "eslint": "^9",
     "eslint-config-next": "^15.1.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "postcss": "^8",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "next lint --fix --file"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
   }
 }

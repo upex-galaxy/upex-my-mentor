@@ -49,10 +49,10 @@ Proveer **al menos uno** de los siguientes:
 
 **Formato:** `Validar <CORE> <CONDITIONAL>`
 
-| Componente    | Qué es                                              | Ejemplos                                             |
-| ------------- | --------------------------------------------------- | ---------------------------------------------------- |
-| `CORE`        | El comportamiento principal (verbo + objeto)        | `login exitoso`, `visualización de reviews`          |
-| `CONDITIONAL` | La condición que hace único este escenario          | `con credenciales válidas`, `cuando hay 10+ reseñas` |
+| Componente    | Qué es                                       | Ejemplos                                             |
+| ------------- | -------------------------------------------- | ---------------------------------------------------- |
+| `CORE`        | El comportamiento principal (verbo + objeto) | `login exitoso`, `visualización de reviews`          |
+| `CONDITIONAL` | La condición que hace único este escenario   | `con credenciales válidas`, `cuando hay 10+ reseñas` |
 
 **Ejemplos correctos:**
 
@@ -114,16 +114,17 @@ Proveer **al menos uno** de los siguientes:
 
 **Fuentes de tests existentes:**
 
-| Fuente | Path/Ubicación | Qué contiene |
-|--------|----------------|--------------|
-| **Acceptance Test Plan** | `.context/PBI/epics/.../stories/.../acceptance-test-plan.md` | Test cases de Shift-Left |
-| **Comentarios en Jira** | Comentario "🧪 Acceptance Test Plan" en la US | Test cases documentados |
-| **Session Notes** | Notas de exploratory testing | Escenarios validados |
-| **Bugs cerrados** | Issues enlazadas con status CLOSED | Áreas que fallaron y se corrigieron |
+| Fuente                   | Path/Ubicación                                               | Qué contiene                        |
+| ------------------------ | ------------------------------------------------------------ | ----------------------------------- |
+| **Acceptance Test Plan** | `.context/PBI/epics/.../stories/.../acceptance-test-plan.md` | Test cases de Shift-Left            |
+| **Comentarios en Jira**  | Comentario "🧪 Acceptance Test Plan" en la US                | Test cases documentados             |
+| **Session Notes**        | Notas de exploratory testing                                 | Escenarios validados                |
+| **Bugs cerrados**        | Issues enlazadas con status CLOSED                           | Áreas que fallaron y se corrigieron |
 
 **Reutilizar nomenclatura existente:**
 
 Si un test ya fue documentado en Shift-Left como:
+
 ```
 Validar visualización completa de reviews cuando el mentor tiene múltiples reseñas
 ```
@@ -140,30 +141,31 @@ Usar ESA MISMA nomenclatura en todo el análisis para mantener trazabilidad.
 
 Estas se validan **DENTRO** de cada test, no como tests independientes:
 
-| Característica | Cómo se valida | Ejemplo |
-|---------------|----------------|---------|
-| **Mobile responsive** | Ejecutar cada test en viewport mobile Y desktop | No crear test "Mobile responsive" |
-| **XSS prevention** | Incluir datos con caracteres especiales en test data | No crear test "XSS prevention" |
-| **Performance** | Medir tiempo de carga en cada test | No crear test "Performance" |
-| **Accesibilidad** | Assertions de a11y en tests UI | No crear test "Accessibility" |
-| **API contract** | Verificar responses en cada test con API | No crear test "API validation" |
-| **Error handling** | Validar como parte de escenarios negativos específicos | No crear test genérico "Error handling" |
+| Característica        | Cómo se valida                                         | Ejemplo                                 |
+| --------------------- | ------------------------------------------------------ | --------------------------------------- |
+| **Mobile responsive** | Ejecutar cada test en viewport mobile Y desktop        | No crear test "Mobile responsive"       |
+| **XSS prevention**    | Incluir datos con caracteres especiales en test data   | No crear test "XSS prevention"          |
+| **Performance**       | Medir tiempo de carga en cada test                     | No crear test "Performance"             |
+| **Accesibilidad**     | Assertions de a11y en tests UI                         | No crear test "Accessibility"           |
+| **API contract**      | Verificar responses en cada test con API               | No crear test "API validation"          |
+| **Error handling**    | Validar como parte de escenarios negativos específicos | No crear test genérico "Error handling" |
 
 #### Escenarios Reales (SÍ son tests)
 
 Un escenario real es un **FLUJO de usuario** con:
+
 - Objetivo de negocio claro
 - Inicio, acción y resultado verificable
 - Nomenclatura: `Validar <CORE> <CONDITIONAL>`
 
 **Ejemplo de separación:**
 
-| ❌ Característica (NO es test) | ✅ Escenario Real (SÍ es test) |
-|-------------------------------|-------------------------------|
-| `Empty state` | `Validar mensaje informativo cuando el mentor no tiene reseñas` |
-| `API error handling` | `Validar mensaje de error con reintento cuando la API retorna 500` |
-| `Mobile responsive` | Se valida ejecutando TODOS los tests en mobile |
-| `Pagination` | `Validar navegación entre páginas cuando hay más de 10 reseñas` |
+| ❌ Característica (NO es test) | ✅ Escenario Real (SÍ es test)                                     |
+| ------------------------------ | ------------------------------------------------------------------ |
+| `Empty state`                  | `Validar mensaje informativo cuando el mentor no tiene reseñas`    |
+| `API error handling`           | `Validar mensaje de error con reintento cuando la API retorna 500` |
+| `Mobile responsive`            | Se valida ejecutando TODOS los tests en mobile                     |
+| `Pagination`                   | `Validar navegación entre páginas cuando hay más de 10 reseñas`    |
 
 ---
 

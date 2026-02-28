@@ -31,7 +31,7 @@ Decorator captures results (PASS/FAIL/ERROR)
     ↓
 Generate JSON Report (atc_results.json)
     ↓
-Sync Script runs (tms_sync.ts)
+Sync Script runs (jiraSync.ts)
     ↓
 POST to Jira/Xray API
     ↓
@@ -56,7 +56,7 @@ Jira issues updated with test results
 
 **Step 1: Get Xray API Credentials**
 
-1. Go to Xray Cloud → Settings → API Keys
+1. Go to Xray Cloud Settings API Keys
 2. Create new API Key
 3. Copy **Client ID** and **Client Secret**
 
@@ -67,188 +67,39 @@ Jira issues updated with test results
 
 # Enable auto-sync
 AUTO_SYNC=true
+TMS_PROVIDER=xray
 
 # Xray Cloud credentials
 XRAY_CLIENT_ID=your_client_id_here
 XRAY_CLIENT_SECRET=your_client_secret_here
-XRAY_PROJECT_KEY=UPEX
+XRAY_PROJECT_KEY=PROJECT
 ```
 
-**Step 3: Install Dependencies**
+### 2.3 Using the Sync Script
 
-```bash
-bun add -d axios
-```
-
-### 2.3 Implementation
-
-**File: `tests/utils/decorators.ts`**
+The sync is handled by `tests/utils/jiraSync.ts`:
 
 ```typescript
-import axios from 'axios';
+import { syncToXray } from '@utils/jiraSync';
 
-// Store ATC results in-memory
-const atcResults: Record<string, AtcResult[]> = {};
-
-interface AtcResult {
-  testId: string;
-  methodName: string;
-  status: 'PASS' | 'FAIL';
-  error: string | null;
-  executedAt: string;
-}
-
-/**
- * @atc decorator for marking methods as ATCs
- * Usage: @atc('PROJECT-XXX')
- */
-export function atc(testId: string) {
-  return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
-    const originalMethod = descriptor.value;
-
-    descriptor.value = async function (...args: any[]) {
-      const result: AtcResult = {
-        testId,
-        methodName: propertyName,
-        status: 'FAIL',
-        error: null,
-        executedAt: new Date().toISOString(),
-      };
-
-      try {
-        const returnValue = await originalMethod.apply(this, args);
-        result.status = 'PASS';
-        storeResult(testId, result);
-        return returnValue;
-      } catch (error: any) {
-        result.error = error.message;
-        storeResult(testId, result);
-        throw error; // Re-throw to fail the test
-      }
-    };
-
-    return descriptor;
-  };
-}
-
-function storeResult(testId: string, result: AtcResult) {
-  if (!atcResults[testId]) {
-    atcResults[testId] = [];
-  }
-  atcResults[testId].push(result);
-}
-
-export function getAtcResults() {
-  return atcResults;
-}
-
-export function clearAtcResults() {
-  Object.keys(atcResults).forEach(key => delete atcResults[key]);
-}
+// In playwright.config.ts globalTeardown
+await syncToXray();
 ```
 
-**File: `tests/utils/tms_sync.ts`**
+### 2.4 Hook into Playwright
 
-```typescript
-import axios from 'axios';
-import * as fs from 'fs';
-import * as path from 'path';
-import { getAtcResults } from './decorators';
-
-interface XrayTestExecution {
-  testKey: string;
-  status: 'PASSED' | 'FAILED';
-  comment: string;
-}
-
-export async function syncToXray() {
-  if (process.env.AUTO_SYNC !== 'true') {
-    console.log('⏭️  TMS sync disabled. Set AUTO_SYNC=true to enable.');
-    return;
-  }
-
-  const clientId = process.env.XRAY_CLIENT_ID;
-  const clientSecret = process.env.XRAY_CLIENT_SECRET;
-  const projectKey = process.env.XRAY_PROJECT_KEY || 'UPEX';
-
-  if (!clientId || !clientSecret) {
-    console.error('❌ Missing Xray credentials. Check XRAY_CLIENT_ID and XRAY_CLIENT_SECRET.');
-    return;
-  }
-
-  try {
-    // Step 1: Authenticate with Xray
-    const authResponse = await axios.post('https://xray.cloud.getxray.app/api/v2/authenticate', {
-      client_id: clientId,
-      client_secret: clientSecret,
-    });
-
-    const token = authResponse.data;
-
-    // Step 2: Prepare test execution payload
-    const atcResults = getAtcResults();
-    const tests: XrayTestExecution[] = [];
-
-    for (const [testId, executions] of Object.entries(atcResults)) {
-      // Determine final status (fail if any execution failed)
-      const finalStatus = executions.every(e => e.status === 'PASS') ? 'PASSED' : 'FAILED';
-      const lastExecution = executions[executions.length - 1];
-
-      tests.push({
-        testKey: testId,
-        status: finalStatus,
-        comment:
-          `🤖 KATA ATC: ${lastExecution.methodName}\n` +
-          `📊 Executions: ${executions.length}\n` +
-          `⏱️ Last run: ${lastExecution.executedAt}\n` +
-          (lastExecution.error ? `\n❌ Error:\n${lastExecution.error}` : ''),
-      });
-    }
-
-    const payload = {
-      info: {
-        project: projectKey,
-        summary: `KATA Execution - ${process.env.BUILD_ID || new Date().toISOString()}`,
-        description: 'Automated test execution via KATA Framework',
-      },
-      tests,
-    };
-
-    // Step 3: Import results to Xray
-    const importResponse = await axios.post(
-      'https://xray.cloud.getxray.app/api/v2/import/execution',
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-
-    console.log(`✅ Results synced to Xray Cloud successfully`);
-    console.log(`   Test Execution: ${importResponse.data.key}`);
-    console.log(`   URL: https://your-domain.atlassian.net/browse/${importResponse.data.key}`);
-  } catch (error: any) {
-    console.error('❌ Xray sync failed:', error.response?.data || error.message);
-  }
-}
-```
-
-**Step 4: Hook into Playwright**
-
-Add to `playwright.config.ts`:
+In `playwright.config.ts`:
 
 ```typescript
 import { defineConfig } from '@playwright/test';
-import { syncToXray } from './tests/utils/tms_sync';
 
 export default defineConfig({
-  // ... other config
-
   globalTeardown: async () => {
-    console.log('\n🔄 Syncing test results to TMS...');
-    await syncToXray();
+    if (process.env.AUTO_SYNC === 'true') {
+      console.log('\n Syncing test results to TMS...');
+      const { syncToXray } = await import('./tests/utils/jiraSync');
+      await syncToXray();
+    }
   },
 });
 ```
@@ -271,7 +122,7 @@ export default defineConfig({
 
 **Step 1: Create Custom Field in Jira**
 
-1. Go to Jira → Settings → Issues → Custom Fields
+1. Go to Jira Settings Issues Custom Fields
 2. Create new field:
    - Type: **Select List (single choice)**
    - Name: **Test Status**
@@ -291,6 +142,7 @@ export default defineConfig({
 
 # Enable auto-sync
 AUTO_SYNC=true
+TMS_PROVIDER=jira
 
 # Jira Direct
 JIRA_URL=https://your-domain.atlassian.net
@@ -299,112 +151,49 @@ JIRA_API_TOKEN=your_api_token_here
 JIRA_TEST_STATUS_FIELD=customfield_10100
 ```
 
-### 3.3 Implementation
-
-**File: `tests/utils/tms_sync.ts` (Jira Direct version)**
+### 3.3 Using the Sync Script
 
 ```typescript
-import axios from 'axios';
-import { getAtcResults } from './decorators';
+import { syncToJiraDirect } from '@utils/jiraSync';
 
-export async function syncToJiraDirect() {
-  if (process.env.AUTO_SYNC !== 'true') {
-    console.log('⏭️  TMS sync disabled.');
-    return;
-  }
-
-  const jiraUrl = process.env.JIRA_URL;
-  const jiraUser = process.env.JIRA_USER;
-  const jiraToken = process.env.JIRA_API_TOKEN;
-  const customFieldId = process.env.JIRA_TEST_STATUS_FIELD || 'customfield_10100';
-
-  if (!jiraUrl || !jiraUser || !jiraToken) {
-    console.error('❌ Missing Jira credentials.');
-    return;
-  }
-
-  const atcResults = getAtcResults();
-  const auth = Buffer.from(`${jiraUser}:${jiraToken}`).toString('base64');
-
-  for (const [testId, executions] of Object.entries(atcResults)) {
-    const finalStatus = executions.every(e => e.status === 'PASS') ? 'PASS' : 'FAIL';
-    const lastExecution = executions[executions.length - 1];
-
-    try {
-      // Update custom field
-      await axios.put(
-        `${jiraUrl}/rest/api/3/issue/${testId}`,
-        {
-          fields: {
-            [customFieldId]: { value: finalStatus },
-          },
-        },
-        {
-          headers: {
-            Authorization: `Basic ${auth}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      // Add comment
-      await axios.post(
-        `${jiraUrl}/rest/api/3/issue/${testId}/comment`,
-        {
-          body: {
-            type: 'doc',
-            version: 1,
-            content: [
-              {
-                type: 'paragraph',
-                content: [
-                  {
-                    type: 'text',
-                    text: `🤖 KATA Execution - ${finalStatus}\n`,
-                    marks: [{ type: 'strong' }],
-                  },
-                ],
-              },
-              {
-                type: 'paragraph',
-                content: [
-                  { type: 'text', text: `ATC: ${lastExecution.methodName}\n` },
-                  { type: 'text', text: `Executions: ${executions.length}\n` },
-                  { type: 'text', text: `Last run: ${lastExecution.executedAt}\n` },
-                ],
-              },
-              ...(lastExecution.error
-                ? [
-                    {
-                      type: 'codeBlock',
-                      content: [{ type: 'text', text: `Error:\n${lastExecution.error}` }],
-                    },
-                  ]
-                : []),
-            ],
-          },
-        },
-        {
-          headers: {
-            Authorization: `Basic ${auth}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      console.log(`✅ Updated ${testId} → ${finalStatus}`);
-    } catch (error: any) {
-      console.error(`❌ Failed to update ${testId}:`, error.response?.data || error.message);
-    }
-  }
-
-  console.log('✅ All results synced to Jira Direct');
-}
+// In playwright.config.ts globalTeardown
+await syncToJiraDirect();
 ```
 
 ---
 
-## 4. Choosing the Right Approach
+## 4. Implementation Details
+
+### 4.1 Decorator Usage
+
+```typescript
+import { atc } from '@utils/decorators';
+
+class LoginPage extends UiBase {
+  @atc('PROJECT-001')
+  async loginWithValidCredentials(credentials: Credentials) {
+    await this.goto('/');
+    await this.page.fill('#email', credentials.email);
+    await this.page.fill('#password', credentials.password);
+    await this.page.click('button[type="submit"]');
+    await expect(this.page).toHaveURL(/.*dashboard.*/);
+  }
+}
+```
+
+### 4.2 Sync Script Location
+
+The sync functionality is in `tests/utils/jiraSync.ts`:
+
+```typescript
+// Available exports
+export async function syncToXray(): Promise<void>;
+export async function syncToJiraDirect(): Promise<void>;
+```
+
+---
+
+## 5. Choosing the Right Approach
 
 | Feature                    | Xray Cloud                                    | Jira Direct                     |
 | -------------------------- | --------------------------------------------- | ------------------------------- |
@@ -423,7 +212,7 @@ export async function syncToJiraDirect() {
 
 ---
 
-## 5. Test ID Format
+## 6. Test ID Format
 
 Both approaches use the same test ID format:
 
@@ -446,7 +235,7 @@ Both approaches use the same test ID format:
 
 ---
 
-## 6. Creating Test Cases in Jira
+## 7. Creating Test Cases in Jira
 
 ### For Xray Cloud
 
@@ -465,7 +254,30 @@ Both approaches use the same test ID format:
 
 ---
 
-## 7. Troubleshooting
+## 8. Xray CLI Commands
+
+The Xray CLI is available in `cli/xray.ts`:
+
+```bash
+# Authenticate
+bun xray auth --client-id "xxx" --client-secret "xxx"
+
+# Import test results
+bun xray results import --file test-results/results.json
+
+# Create test execution
+bun xray execution create --project UPEX --summary "Sprint 10 Regression"
+
+# Update test status
+bun xray test update UPEX-123 --status PASS
+
+# List tests
+bun xray test list --project UPEX --status FAIL
+```
+
+---
+
+## 9. Troubleshooting
 
 ### Issue: "401 Unauthorized"
 
@@ -508,15 +320,15 @@ Both approaches use the same test ID format:
 
 **Solution**:
 
-- Implement parallel requests with `Promise.all()`
-- Batch requests if API supports it
-- Cache authentication tokens
+- The sync script uses batch operations where possible
+- Implement retry logic for rate limits
+- Run sync only in CI/CD, not locally
 
 ---
 
-## 8. Best Practices
+## 10. Best Practices
 
-✅ **DO:**
+**DO:**
 
 - Create Jira issues before writing ATCs
 - Use meaningful test IDs that map to requirements
@@ -524,7 +336,7 @@ Both approaches use the same test ID format:
 - Run sync in CI/CD, not locally (avoid noise)
 - Monitor sync failures (set up alerts)
 
-❌ **DON'T:**
+**DON'T:**
 
 - Hardcode test IDs in multiple places
 - Sync from local runs (pollutes Jira)
@@ -534,7 +346,7 @@ Both approaches use the same test ID format:
 
 ---
 
-## 9. CI/CD Integration
+## 11. CI/CD Integration
 
 In GitHub Actions, enable sync only on `main` branch:
 
@@ -547,6 +359,7 @@ In GitHub Actions, enable sync only on `main` branch:
   if: github.ref == 'refs/heads/main'
   env:
     AUTO_SYNC: true
+    TMS_PROVIDER: xray
     XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
     XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
     BUILD_ID: ${{ github.run_id }}
@@ -555,9 +368,15 @@ In GitHub Actions, enable sync only on `main` branch:
 
 ---
 
-## 10. References
+## 12. References
 
 - **Xray Cloud API**: <https://docs.getxray.app/display/XRAYCLOUD/REST+API>
 - **Jira Cloud API**: <https://developer.atlassian.com/cloud/jira/platform/rest/v3/>
 - **Xray Pricing**: <https://marketplace.atlassian.com/apps/1211769/xray-test-management-for-jira>
 - **Jira API Tokens**: <https://id.atlassian.com/manage-profile/security/api-tokens>
+- **Xray CLI**: `cli/xray.ts` in this repo
+- **Jira Sync**: `tests/utils/jiraSync.ts` in this repo
+
+---
+
+**Last Updated**: 2026-02-12

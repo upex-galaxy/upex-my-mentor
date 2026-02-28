@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
-const fs = require('fs');
-const path = require('path');
-const { spawn } = require('child_process');
+const { spawn } = require('node:child_process');
+const fs = require('node:fs');
+const path = require('node:path');
 
 // =========== VARIABLES DE ENTORNO ============
 // Bun carga automáticamente el archivo .env del directorio actual
@@ -43,7 +43,8 @@ function loadCatalog() {
   try {
     const content = fs.readFileSync(mcpCatalogFile, 'utf8');
     return JSON.parse(content);
-  } catch (error) {
+  }
+  catch (error) {
     console.error(`❌ Error al leer ${mcpCatalogFile}:`, error.message);
     process.exit(1);
   }
@@ -66,7 +67,7 @@ function parseArgs(catalog) {
     console.log('\n⚠️  ADVERTENCIA: Usando perfil "full"');
     console.log('📊 Esto carga TODOS los MCPs disponibles en el catálogo');
     console.log(
-      '💡 Consume muchos tokens. Considera usar perfiles específicos (backend, frontend, etc.)'
+      '💡 Consume muchos tokens. Considera usar perfiles específicos (backend, frontend, etc.)',
     );
     console.log(`📈 Total de MCPs a cargar: ${allMcps.length}\n`);
     return allMcps;
@@ -107,7 +108,7 @@ function generateMcpJson(selectedMcps, catalog) {
   }
 
   // Construir objeto mcpServers con solo los seleccionados
-  selectedMcps.forEach(name => {
+  selectedMcps.forEach((name) => {
     mcpServers[name] = catalog.mcpServers[name];
   });
 
@@ -135,7 +136,7 @@ function startCodeAgentCLI() {
     shell: true,
   });
 
-  codeAgent.on('error', err => {
+  codeAgent.on('error', (err) => {
     console.error(`\n❌ Error al iniciar ${codeAgentName}:`, err.message);
     process.exit(1);
   });
@@ -143,7 +144,7 @@ function startCodeAgentCLI() {
 
 // ============ MAIN ============
 function main() {
-  console.log(`🔧 MCP Builder\n`);
+  console.log('🔧 MCP Builder\n');
 
   const catalog = loadCatalog();
   const selectedMcps = parseArgs(catalog);
@@ -154,7 +155,8 @@ function main() {
 
 try {
   main();
-} catch (error) {
+}
+catch (error) {
   console.error('❌ Error inesperado:', error.message);
   process.exit(1);
 }

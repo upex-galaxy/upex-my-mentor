@@ -186,10 +186,15 @@ export function RecentMessagesWidget({
       return;
     }
 
-    // Fetch fresh conversation data
+    // MYM-132: Fetch fresh conversation data with error handling
     const refreshConversations = async () => {
-      const freshConversations = await getConversations();
-      setConversations(freshConversations);
+      try {
+        const freshConversations = await getConversations();
+        setConversations(freshConversations);
+      } catch {
+        // Silently fail on network errors - keep existing data
+        console.warn('Failed to refresh conversations (network error)');
+      }
     };
 
     refreshConversations();
@@ -211,14 +216,37 @@ export function RecentMessagesWidget({
     });
   }, []);
 
-  const handleModalClose = useCallback(() => {
+  const handleModalClose = useCallback(async () => {
     setSelectedConversation(null);
+    // MYM-96: Refresh conversations when modal closes to update read status
+    try {
+      const freshConversations = await getConversations();
+      setConversations(freshConversations);
+    } catch {
+      // Silently fail - the next poll will refresh
+    }
+  }, []);
+
+  // MYM-96: Refresh conversations when messages are marked as read (while modal is open)
+  const handleConversationRead = useCallback(async () => {
+    try {
+      const freshConversations = await getConversations();
+      setConversations(freshConversations);
+    } catch {
+      // Silently fail - optimistic UI can handle this
+    }
   }, []);
 
   const handleMessageSent = useCallback(async () => {
     // MYM-96: Refresh the conversation list after sending a message
-    const freshConversations = await getConversations();
-    setConversations(freshConversations);
+    // MYM-132: Handle network errors gracefully
+    try {
+      const freshConversations = await getConversations();
+      setConversations(freshConversations);
+    } catch {
+      // Silently fail - the optimistic UI already shows the message
+      console.warn('Failed to refresh conversations after send (network error)');
+    }
   }, []);
 
   return (
@@ -291,6 +319,7 @@ export function RecentMessagesWidget({
           otherParticipant={selectedConversation.participant}
           currentUserId={userId}
           onMessageSent={handleMessageSent}
+          onConversationRead={handleConversationRead}
         />
       )}
     </>

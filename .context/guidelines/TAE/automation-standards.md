@@ -168,7 +168,7 @@ private async waitForLoadingComplete() {
 
 Think of ATCs like Gherkin scenarios:
 
-- **Given**: Preconditions (data passed as arguments)
+- **Given**: Flows (data passed as arguments)
 - **When**: The action being tested
 - **Then**: Expected outcome (fixed assertions)
 
@@ -192,11 +192,11 @@ test('checkout with new user', async ({ ui, api }) => {
 **Why this matters:**
 
 - ATCs remain atomic and reusable
-- Traceability is maintained (each ATC = one Jira test case)
+- Traceability is maintained (each ATC = one Jira/Xray test case)
 - Failures are easier to diagnose
 - Test files orchestrate the flow, ATCs execute actions
 
-**For reusable flows, see Section 1.7: Preconditions Module**
+**For reusable flows, see Section 1.7: Flows Module**
 
 ### 1.5 Test Data Strategy
 
@@ -323,9 +323,9 @@ await Promise.all([
 ]);
 ```
 
-### 1.7 Preconditions Module
+### 1.7 Flows Module
 
-When multiple tests need the same sequence of ATCs, create a **Preconditions** component.
+When multiple tests need the same sequence of ATCs, create a **Flows** component.
 
 **Problem**: Repetitive ATC chains across test files
 
@@ -339,11 +339,11 @@ test('test 1', async ({ ui }) => {
 });
 ```
 
-**Solution**: Preconditions module
+**Solution**: Flows module
 
 ```typescript
-// tests/components/preconditions/AuthFlows.ts
-import { UiFixture } from '@components/UiFixture';
+// tests/components/flows/AuthFlows.ts
+import { UiFixture } from '@UiFixture';
 
 export class AuthFlows {
   constructor(private ui: UiFixture) {}
@@ -384,7 +384,7 @@ test('checkout flow', async ({ ui }) => {
 
 **Key points:**
 
-- Preconditions are NOT ATCs (no `@atc` decorator)
+- Flows are NOT ATCs (no `@atc` decorator)
 - They orchestrate ATCs, not replace them
 - Changes to flow = edit one file, not 10 test files
 - Named clearly: `setup*`, `prepare*`
@@ -434,9 +434,9 @@ test('checkout flow', async ({ ui }) => {
  */
 
 import { expect, type APIResponse } from '@playwright/test';
-import { ApiBase } from '@components/api/ApiBase';
+import { ApiBase } from '@api/ApiBase';
 import { atc } from '@utils/decorators';
-import type { Environment } from '@config/variables';
+import type { Environment } from '@variables';
 
 // ============================================
 // Types
@@ -632,8 +632,8 @@ bun run type-check  # Run tsc --noEmit
 
 ```typescript
 // ✅ CORRECT
-import { config, env } from '@config/variables';
-import { ApiBase } from '@components/api/ApiBase';
+import { config, env } from '@variables';
+import { ApiBase } from '@api/ApiBase';
 import { atc } from '@utils/decorators';
 
 // ❌ WRONG
@@ -702,7 +702,7 @@ Common mistakes to avoid when implementing KATA:
 | **Separate locator storage file**  | Maintenance overhead, disconnected from tests | Locators inline in ATCs          |
 | **Multiple ATCs with same output** | Violates equivalence partitioning             | One parameterized ATC            |
 | **Helper for `page.fill()`**       | Playwright already does this                  | Delete helper, use inline        |
-| **ATC calling another ATC**        | Breaks atomicity and traceability             | Use Preconditions module         |
+| **ATC calling another ATC**        | Breaks atomicity and traceability             | Use Flows module                 |
 | **`waitForTimeout(3000)`**         | Arbitrary, flaky, slow                        | Wait for specific condition      |
 | **Relying on retries**             | Masks real issues                             | Investigate failures immediately |
 | **Shared state between tests**     | Tests become order-dependent                  | Each test creates own data       |
@@ -821,6 +821,6 @@ export default defineConfig({
 ## References
 
 - **KATA Architecture**: `kata-architecture.md`
-- **Framework Setup**: `.prompts/kata-framework-setup.md`
-- **E2E Automation**: `.prompts/fase-12-test-automation/automation-e2e-test.md`
-- **API Automation**: `.prompts/fase-12-test-automation/automation-integration-test.md`
+- **Framework Adaptation**: `.prompts/kata-framework-setup.md`
+- **E2E Automation**: `.prompts/fase-12-test-automation/e2e/e2e-coding.md`
+- **API Automation**: `.prompts/fase-12-test-automation/integration/integration-coding.md`

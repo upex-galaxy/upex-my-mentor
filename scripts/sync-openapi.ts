@@ -13,10 +13,10 @@
  * Configuration is stored in: api/.openapi-config.json
  */
 
-import { execSync, spawnSync } from 'child_process';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { join } from 'path';
-import { createInterface } from 'readline';
+import { execSync, spawnSync } from 'node:child_process';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { createInterface } from 'node:readline';
 
 // ============================================
 // Configuration
@@ -28,10 +28,10 @@ const OPENAPI_FILE = join(API_DIR, 'openapi.yaml');
 const TYPES_FILE = join(API_DIR, 'types.ts');
 
 interface OpenAPIConfig {
-  repo: string; // e.g., "owner/repo"
-  branch: string; // e.g., "main"
-  filePath: string; // e.g., "docs/openapi.yaml"
-  lastSync?: string; // ISO date of last sync
+  repo: string // e.g., "owner/repo"
+  branch: string // e.g., "main"
+  filePath: string // e.g., "docs/openapi.yaml"
+  lastSync?: string // ISO date of last sync
 }
 
 // ============================================
@@ -40,10 +40,10 @@ interface OpenAPIConfig {
 
 function log(message: string, type: 'info' | 'success' | 'error' | 'warn' = 'info') {
   const icons = {
-    info: '\x1b[36mℹ\x1b[0m',
-    success: '\x1b[32m✓\x1b[0m',
-    error: '\x1b[31m✗\x1b[0m',
-    warn: '\x1b[33m⚠\x1b[0m',
+    info: '\x1B[36mℹ\x1B[0m',
+    success: '\x1B[32m✓\x1B[0m',
+    error: '\x1B[31m✗\x1B[0m',
+    warn: '\x1B[33m⚠\x1B[0m',
   };
   console.log(`${icons[type]} ${message}`);
 }
@@ -52,7 +52,8 @@ function checkGhCli(): boolean {
   try {
     execSync('gh --version', { stdio: 'pipe' });
     return true;
-  } catch {
+  }
+  catch {
     return false;
   }
 }
@@ -61,7 +62,8 @@ function checkGhAuth(): boolean {
   try {
     execSync('gh auth status', { stdio: 'pipe' });
     return true;
-  } catch {
+  }
+  catch {
     return false;
   }
 }
@@ -70,7 +72,8 @@ function loadConfig(): OpenAPIConfig | null {
   if (existsSync(CONFIG_FILE)) {
     try {
       return JSON.parse(readFileSync(CONFIG_FILE, 'utf-8'));
-    } catch {
+    }
+    catch {
       return null;
     }
   }
@@ -85,8 +88,8 @@ function saveConfig(config: OpenAPIConfig): void {
   log(`Configuration saved to ${CONFIG_FILE}`, 'success');
 }
 
-function prompt(question: string, defaultValue?: string): Promise<string> {
-  return new Promise(resolve => {
+async function prompt(question: string, defaultValue?: string): Promise<string> {
+  return new Promise((resolve) => {
     const rl = createInterface({
       input: process.stdin,
       output: process.stdout,
@@ -94,7 +97,7 @@ function prompt(question: string, defaultValue?: string): Promise<string> {
 
     const defaultStr = defaultValue ? ` (${defaultValue})` : '';
 
-    rl.question(`${question}${defaultStr}: `, answer => {
+    rl.question(`${question}${defaultStr}: `, (answer) => {
       rl.close();
       resolve(answer.trim() || defaultValue || '');
     });
@@ -106,7 +109,7 @@ function prompt(question: string, defaultValue?: string): Promise<string> {
 // ============================================
 
 async function getConfigInteractive(): Promise<OpenAPIConfig> {
-  console.log('\n\x1b[1m📋 OpenAPI Sync Configuration\x1b[0m\n');
+  console.log('\n\x1B[1m📋 OpenAPI Sync Configuration\x1B[0m\n');
 
   const repo = await prompt('GitHub repository (owner/repo)', 'org/backend-repo');
   const branch = await prompt('Branch name', 'main');
@@ -133,7 +136,7 @@ function downloadOpenAPI(config: OpenAPIConfig): boolean {
       {
         encoding: 'utf-8',
         stdio: ['pipe', 'pipe', 'pipe'],
-      }
+      },
     );
 
     if (result.status !== 0) {
@@ -152,14 +155,16 @@ function downloadOpenAPI(config: OpenAPIConfig): boolean {
       }
 
       writeFileSync(OPENAPI_FILE, curlResult.stdout);
-    } else {
+    }
+    else {
       writeFileSync(OPENAPI_FILE, result.stdout);
     }
 
     log(`OpenAPI specification saved to ${OPENAPI_FILE}`, 'success');
     return true;
-  } catch (error) {
-    log(`Download failed: ${error}`, 'error');
+  }
+  catch (error) {
+    log(`Download failed: ${String(error)}`, 'error');
     return false;
   }
 }
@@ -192,8 +197,9 @@ async function generateTypes(): Promise<boolean> {
 
     log(`TypeScript types generated at ${TYPES_FILE}`, 'success');
     return true;
-  } catch (error) {
-    log(`Type generation failed: ${error}`, 'error');
+  }
+  catch (error) {
+    log(`Type generation failed: ${String(error)}`, 'error');
     return false;
   }
 }
@@ -203,8 +209,8 @@ async function generateTypes(): Promise<boolean> {
 // ============================================
 
 async function main() {
-  console.log('\n\x1b[1m🔄 OpenAPI Sync Tool\x1b[0m');
-  console.log('━'.repeat(40) + '\n');
+  console.log('\n\x1B[1m🔄 OpenAPI Sync Tool\x1B[0m');
+  console.log(`${'━'.repeat(40)}\n`);
 
   // Check prerequisites
   if (!checkGhCli()) {
@@ -282,11 +288,11 @@ Examples:
     await generateTypes();
   }
 
-  console.log('\n' + '━'.repeat(40));
+  console.log(`\n${'━'.repeat(40)}`);
   log('OpenAPI sync completed!', 'success');
 
   console.log(`
-\x1b[1mNext steps:\x1b[0m
+\x1B[1mNext steps:\x1B[0m
 1. Configure MCP OpenAPI server in your .mcp.json:
    {
      "mcpServers": {
