@@ -24,13 +24,15 @@ Supabase usa JWT (JSON Web Tokens) para autenticación. El mismo token funciona 
 │                  │                     │                         │
 │          ┌───────▼───────┐     ┌───────▼───────┐                │
 │          │ REST API      │     │ Next.js API   │                │
-│          │ (Header)      │     │ (Cookie)      │                │
+│          │ (Header)      │     │ (Header/Cookie)│               │
 │          │               │     │               │                │
-│          │ Authorization:│     │ sb-xxx-auth-  │                │
-│          │ Bearer <JWT>  │     │ token=<base64>│                │
+│          │ Authorization:│     │ Authorization:│                │
+│          │ Bearer <JWT>  │     │ Bearer <JWT>  │                │
 │          └───────────────┘     └───────────────┘                │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+> **Nota:** Next.js API Routes soportan Bearer token (recomendado para testing) y cookies (automático en browser).
 
 ---
 
@@ -142,9 +144,38 @@ const response = await fetch(`${SUPABASE_URL}/rest/v1/orders?user_id=eq.${userId
 
 ## Usar el Token en Next.js API Routes
 
-Next.js API routes esperan el token en una **cookie** con formato específico.
+Next.js API routes soportan **dos métodos** de autenticación:
 
-### Estructura de la Cookie
+### Opción A: Bearer Token (Recomendado para Testing)
+
+El método más simple - igual que Supabase REST API:
+
+```http
+GET http://localhost:3000/api/clients
+Authorization: Bearer [ACCESS_TOKEN]
+```
+
+#### cURL Ejemplo
+
+```bash
+curl -X GET \
+  'http://localhost:3000/api/clients' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIs...'
+```
+
+**Ventajas:**
+
+- ✅ Simple - mismo formato que Supabase REST
+- ✅ Funciona en Postman, cURL, mobile apps
+- ✅ No requiere construir cookies manualmente
+
+---
+
+### Opción B: Cookie (Automático en Browser)
+
+El browser envía cookies automáticamente. Para testing manual:
+
+#### Estructura de la Cookie
 
 ```
 Nombre: sb-[PROJECT_REF]-auth-token

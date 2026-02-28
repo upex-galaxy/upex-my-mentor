@@ -13,48 +13,48 @@
  * Output: kata-manifest.json in project root
  */
 
-import { existsSync, readdirSync, readFileSync, statSync, watch, writeFileSync } from 'fs';
-import { basename, join, relative } from 'path';
+import { existsSync, readdirSync, readFileSync, statSync, watch, writeFileSync } from 'node:fs';
+import { basename, join, relative } from 'node:path';
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface ATCInfo {
-  id: string;
-  method: string;
-  line: number;
+  id: string
+  method: string
+  line: number
 }
 
 interface ComponentInfo {
-  name: string;
-  file: string;
-  relativePath: string;
-  atcs: ATCInfo[];
+  name: string
+  file: string
+  relativePath: string
+  atcs: ATCInfo[]
 }
 
 interface PreconditionInfo {
-  name: string;
-  file: string;
-  relativePath: string;
-  methods: string[];
+  name: string
+  file: string
+  relativePath: string
+  methods: string[]
 }
 
 interface KataManifest {
-  version: '1.0';
-  generatedAt: string;
+  version: '1.0'
+  generatedAt: string
   components: {
-    api: ComponentInfo[];
-    ui: ComponentInfo[];
-  };
-  preconditions: PreconditionInfo[];
+    api: ComponentInfo[]
+    ui: ComponentInfo[]
+  }
+  preconditions: PreconditionInfo[]
   summary: {
-    totalComponents: number;
-    totalATCs: number;
-    apiComponents: number;
-    uiComponents: number;
-    preconditionModules: number;
-  };
+    totalComponents: number
+    totalATCs: number
+    apiComponents: number
+    uiComponents: number
+    preconditionModules: number
+  }
 }
 
 // ============================================================================
@@ -151,7 +151,8 @@ function extractPreconditionMethods(filePath: string): string[] {
   // Pattern: async methodName( - public methods (must start with lowercase letter)
   const methodPattern = /^\s*async\s+([a-z][a-zA-Z0-9]*)\s*\(/gm;
 
-  let match;
+  let match: RegExpExecArray | null;
+  // eslint-disable-next-line no-cond-assign
   while ((match = methodPattern.exec(content)) !== null) {
     const methodName = match[1];
     // Exclude constructor and private methods (starting with _)
@@ -184,7 +185,8 @@ function scanDirectory(dirPath: string): string[] {
         files.push(fullPath);
       }
     }
-  } catch {
+  }
+  catch {
     // Directory doesn't exist or isn't readable
   }
 
@@ -277,11 +279,12 @@ function main() {
 
     if (stdoutMode) {
       console.log(json);
-    } else {
+    }
+    else {
       writeFileSync(OUTPUT_FILE, json, 'utf-8');
       console.log(`✅ Generated ${OUTPUT_FILE}`);
       console.log(
-        `   📦 Components: ${manifest.summary.totalComponents} (${manifest.summary.apiComponents} API, ${manifest.summary.uiComponents} UI)`
+        `   📦 Components: ${manifest.summary.totalComponents} (${manifest.summary.apiComponents} API, ${manifest.summary.uiComponents} UI)`,
       );
       console.log(`   🎯 ATCs: ${manifest.summary.totalATCs}`);
       console.log(`   🔗 Preconditions: ${manifest.summary.preconditionModules}`);
