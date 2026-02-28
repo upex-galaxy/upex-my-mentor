@@ -997,7 +997,7 @@ Based on functional requirements, these endpoints are needed:
 ### Test Environment
 
 **Staging Environment**:
-- URL: `https://staging.upexmymentor.com`
+- URL: `https://staging-upexmymentor.vercel.app`
 - Database: Supabase staging instance (isolated from prod)
 - Email: Mailtrap.io (catches emails, no real delivery)
 - Admin User: `admin@upexmymentor.com` / `TestPass123!`

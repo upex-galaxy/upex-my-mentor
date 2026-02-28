@@ -155,7 +155,7 @@ function validateEnvironment() {
     output({
       success: false,
       error: 'Invalid RESEND_API_KEY format',
-      hint: "Resend API keys start with 're_'. Check your key at https://resend.com/api-keys",
+      hint: 'Resend API keys start with \'re_\'. Check your key at https://resend.com/api-keys',
     });
     process.exit(1);
   }
@@ -171,7 +171,7 @@ async function apiRequest(endpoint, options = {}) {
   const response = await fetch(url, {
     ...options,
     headers: {
-      Authorization: `Bearer ${API_KEY}`,
+      'Authorization': `Bearer ${API_KEY}`,
       'Content-Type': 'application/json',
       ...options.headers,
     },
@@ -196,7 +196,7 @@ function output(data) {
 
 function errorExit(message, hint = null) {
   const error = { success: false, error: message };
-  if (hint) error.hint = hint;
+  if (hint) { error.hint = hint; }
   output(error);
   process.exit(1);
 }
@@ -223,11 +223,13 @@ function parseArgs(args) {
       if (next && !next.startsWith('--')) {
         result.options[key] = next;
         i += 2;
-      } else {
+      }
+      else {
         result.options[key] = true;
         i += 1;
       }
-    } else {
+    }
+    else {
       result.positional.push(arg);
       i += 1;
     }
@@ -244,15 +246,15 @@ async function commandInbox(options) {
   const params = new URLSearchParams();
 
   if (options.limit) {
-    const limit = parseInt(options.limit);
-    if (isNaN(limit) || limit < 1 || limit > 100) {
+    const limit = Number.parseInt(options.limit);
+    if (Number.isNaN(limit) || limit < 1 || limit > 100) {
       errorExit('Invalid --limit value', 'Must be a number between 1 and 100');
     }
     params.set('limit', limit.toString());
   }
 
-  if (options.after) params.set('after', options.after);
-  if (options.before) params.set('before', options.before);
+  if (options.after) { params.set('after', options.after); }
+  if (options.before) { params.set('before', options.before); }
 
   const queryString = params.toString();
   const endpoint = `/emails/receiving${queryString ? `?${queryString}` : ''}`;
@@ -277,7 +279,8 @@ async function commandInbox(options) {
         })),
       },
     });
-  } catch (err) {
+  }
+  catch (err) {
     errorExit(err.message, 'Check your API key and domain configuration');
   }
 }
@@ -288,7 +291,7 @@ async function commandRead(positional) {
   if (!emailId) {
     errorExit(
       'Missing email ID',
-      'Usage: bun email-checker.js read <email-id>\nGet the ID from: bun email-checker.js inbox'
+      'Usage: bun email-checker.js read <email-id>\nGet the ID from: bun email-checker.js inbox',
     );
   }
 
@@ -319,10 +322,11 @@ async function commandRead(positional) {
         })),
       },
     });
-  } catch (err) {
+  }
+  catch (err) {
     errorExit(
       err.message,
-      'Make sure the email ID exists. List emails with: bun email-checker.js inbox'
+      'Make sure the email ID exists. List emails with: bun email-checker.js inbox',
     );
   }
 }
@@ -333,7 +337,7 @@ async function commandStatus(positional) {
   if (!emailId) {
     errorExit(
       'Missing email ID',
-      "Usage: bun email-checker.js status <email-id>\nThis ID comes from Resend's send API response"
+      'Usage: bun email-checker.js status <email-id>\nThis ID comes from Resend\'s send API response',
     );
   }
 
@@ -352,22 +356,23 @@ async function commandStatus(positional) {
         from: email.from,
         subject: email.subject,
         status: email.last_event,
-        isDelivered: isDelivered,
+        isDelivered,
         sentAt: email.created_at,
         scheduledAt: email.scheduled_at,
       },
       statusExplanation:
         {
           sent: 'Email accepted by Resend servers',
-          delivered: "Email delivered to recipient's mail server",
+          delivered: 'Email delivered to recipient\'s mail server',
           bounced: 'Email bounced - address may be invalid',
           complained: 'Recipient marked email as spam',
           opened: 'Recipient opened the email',
           clicked: 'Recipient clicked a link in the email',
         }[email.last_event] || 'Unknown status',
     });
-  } catch (err) {
-    errorExit(err.message, "Make sure this is a SENT email ID from Resend's send API response");
+  }
+  catch (err) {
+    errorExit(err.message, 'Make sure this is a SENT email ID from Resend\'s send API response');
   }
 }
 
@@ -385,7 +390,7 @@ async function commandAttachments(positional) {
       success: true,
       command: 'attachments',
       data: {
-        emailId: emailId,
+        emailId,
         count: response.data?.length || 0,
         attachments: (response.data || []).map(att => ({
           id: att.id,
@@ -396,7 +401,8 @@ async function commandAttachments(positional) {
         })),
       },
     });
-  } catch (err) {
+  }
+  catch (err) {
     errorExit(err.message, 'Make sure the email ID exists and has attachments');
   }
 }
@@ -408,7 +414,7 @@ async function commandDownload(positional) {
   if (!emailId || !attachmentId) {
     errorExit(
       'Missing email ID or attachment ID',
-      'Usage: bun email-checker.js download <email-id> <attachment-id>\nGet IDs from: bun email-checker.js attachments <email-id>'
+      'Usage: bun email-checker.js download <email-id> <attachment-id>\nGet IDs from: bun email-checker.js attachments <email-id>',
     );
   }
 
@@ -419,14 +425,15 @@ async function commandDownload(positional) {
       success: true,
       command: 'download',
       data: {
-        emailId: emailId,
-        attachmentId: attachmentId,
+        emailId,
+        attachmentId,
         filename: response.filename,
         contentType: response.content_type,
         content: response.content,
       },
     });
-  } catch (err) {
+  }
+  catch (err) {
     errorExit(err.message, 'Make sure both email ID and attachment ID are valid');
   }
 }
@@ -437,15 +444,15 @@ async function commandSearch(positional, options) {
   if (!query) {
     errorExit(
       'Missing search query',
-      'Usage: bun email-checker.js search <query> [--field from|subject]'
+      'Usage: bun email-checker.js search <query> [--field from|subject]',
     );
   }
 
   const field = options.field || 'subject';
-  const limit = parseInt(options.limit) || 50;
+  const limit = Number.parseInt(options.limit) || 50;
 
   if (!['from', 'subject'].includes(field)) {
-    errorExit('Invalid --field value', "Must be 'from' or 'subject'");
+    errorExit('Invalid --field value', 'Must be \'from\' or \'subject\'');
   }
 
   try {
@@ -453,7 +460,7 @@ async function commandSearch(positional, options) {
     const emails = response.data || [];
 
     const queryLower = query.toLowerCase();
-    const matches = emails.filter(email => {
+    const matches = emails.filter((email) => {
       const value = (email[field] || '').toLowerCase();
       return value.includes(queryLower);
     });
@@ -462,8 +469,8 @@ async function commandSearch(positional, options) {
       success: true,
       command: 'search',
       data: {
-        query: query,
-        field: field,
+        query,
+        field,
         scanned: emails.length,
         matchCount: matches.length,
         matches: matches.map(email => ({
@@ -475,7 +482,8 @@ async function commandSearch(positional, options) {
         })),
       },
     });
-  } catch (err) {
+  }
+  catch (err) {
     errorExit(err.message, 'Check your API key and try again');
   }
 }
@@ -534,10 +542,10 @@ TYPICAL WORKFLOW:
 // ============================================================================
 
 function formatBytes(bytes) {
-  if (!bytes || bytes === 0) return '0 B';
+  if (!bytes || bytes === 0) { return '0 B'; }
   const units = ['B', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${units[i]}`;
+  return `${(bytes / 1024 ** i).toFixed(1)} ${units[i]}`;
 }
 
 // ============================================================================
@@ -577,10 +585,11 @@ async function main() {
       default:
         errorExit(
           `Unknown command: ${args.command}`,
-          "Run 'bun email-checker.js help' to see available commands"
+          'Run \'bun email-checker.js help\' to see available commands',
         );
     }
-  } catch (err) {
+  }
+  catch (err) {
     errorExit(`Unexpected error: ${err.message}`, 'Check your network connection and API key');
   }
 }

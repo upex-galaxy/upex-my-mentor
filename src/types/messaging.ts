@@ -196,4 +196,6 @@ export interface QuickReplyModalProps {
   otherParticipant: ConversationParticipant
   currentUserId: string
   onMessageSent?: () => void
+  /** MYM-96: Called when conversation is marked as read to update widget */
+  onConversationRead?: () => void
 }

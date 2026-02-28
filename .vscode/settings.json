@@ -77,8 +77,8 @@
   // =====================
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit", // Ejecuta fix all de todos los linters
-    "source.organizeImports": "explicit", // Organiza imports automáticamente
-    "source.fixAll.eslint": "explicit", // ESLint fixes
+    "source.organizeImports": "never", // Desactivado: usa perfectionist/sort-imports de ESLint
+    "source.fixAll.eslint": "explicit", // ESLint fixes (incluye ordenar imports)
     "source.fixAll.markdownlint": "explicit" // Markdown lint fixes
   },
   // =====================
@@ -272,21 +272,12 @@
   //? Extension Specific Settings
   // =====================
   // ESLint
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact"
-  ],
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
   // Prettier
   "prettier.requireConfig": false, // Funciona sin archivo de config
   "prettier.useEditorConfig": true, // Respeta .editorconfig
   // Error Lens
-  "errorLens.enabledDiagnosticLevels": [
-    "error",
-    "warning",
-    "info"
-  ],
+  "errorLens.enabledDiagnosticLevels": ["error", "warning", "info"],
   // Todo Highlight
   "todohighlight.isEnable": true,
   "todohighlight.keywords": [
@@ -335,7 +326,7 @@
   "material-icon-theme.folders.associations": {
     "utils": "tools",
     "test-results": "temp",
-    "tests": "test",
+    "qa": "test",
     "__tests__": "test"
   },
   // =====================

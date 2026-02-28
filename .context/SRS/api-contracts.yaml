@@ -6,9 +6,9 @@ info:
 servers:
   - url: http://localhost:3000
     description: Development server
-  - url: https://staging.upexmymentor.com
+  - url: https://staging-upexmymentor.vercel.app
     description: Staging server
-  - url: https://api.upexmymentor.com
+  - url: https://upexmymentor.vercel.app
     description: Production server
 
 paths:

@@ -1,6 +1,5 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["opencode-anthropic-auth"],
   "mcp": {
     "playwright": {
       "type": "local",
@@ -23,34 +22,26 @@
       "command": ["npx", "-y", "chrome-devtools-mcp"],
       "enabled": false
     },
-    "api": {
+    "openapi": {
       "type": "local",
-      "command": ["npx", "-y", "@ivotoby/openapi-mcp-server"],
+      "command": ["npx", "-y", "@ivotoby/openapi-mcp-server", "--tools", "dynamic"],
       "environment": {
-        "API_BASE_URL": "https://api.example.com",
-        "OPENAPI_SPEC_PATH": "https://api.example.com/openapi.json",
-        "API_HEADERS": "Authorization:Bearer token123,X-API-Key:your-api-key"
+        "API_BASE_URL": "https://staging-upexsoloq.vercel.app/api",
+        "OPENAPI_SPEC_PATH": "https://staging-upexsoloq.vercel.app/api/openapi",
+        "API_HEADERS": "Authorization:Bearer {{API_BEARER_TOKEN}}"
       },
       "enabled": false
     },
     "sql": {
       "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@bytebase/dbhub",
-        "--transport",
-        "stdio",
-        "--dsn",
-        "postgresql://{USER}.{DATABASE}.{HOST}:{PORT}/{DATABASE}"
-      ],
+      "command": ["npx", "-y", "@bytebase/dbhub@latest", "--config", "dbhub.toml"],
       "enabled": false
     },
     "supabase": {
       "type": "local",
       "command": ["npx", "-y", "@supabase/mcp-server-supabase@latest"],
       "environment": {
-        "SUPABASE_ACCESS_TOKEN": "{env:SUPABASE_ACCESS_TOKEN}"
+        "SUPABASE_ACCESS_TOKEN": "{{SUPABASE_ACCESS_TOKEN}}"
       },
       "enabled": false
     },
@@ -60,8 +51,8 @@
       "enabled": false
     },
     "context7": {
-      "type": "remote",
-      "url": "https://mcp.context7.com/mcp",
+      "type": "local",
+      "command": ["npx", "-y", "@upstash/context7-mcp"],
       "enabled": false
     },
     "tavily": {
@@ -69,7 +60,7 @@
       "url": "https://mcp.tavily.com/mcp",
       "oauth": false,
       "headers": {
-        "Authorization": "Bearer {env:TAVILY_API_KEY}"
+        "Authorization": "Bearer {{TAVILY_API_KEY}}"
       },
       "enabled": false
     },
@@ -78,13 +69,13 @@
       "url": "https://mcp.postman.com/mcp",
       "oauth": false,
       "headers": {
-        "Authorization": "Bearer {env:POSTMAN_API_KEY}"
+        "Authorization": "Bearer {{POSTMAN_API_KEY}}"
       },
-      "enabled": true
+      "enabled": false
     },
     "sentry": {
       "type": "remote",
-      "url": "https://mcp.sentry.dev/mcp/{env:SENTRY_PROJECT_NAME}/{env:SENTRY_PROJECT_LANGUAGE}",
+      "url": "https://mcp.sentry.dev/mcp/soloq/typescript",
       "enabled": false
     },
     "vercel": {
@@ -101,18 +92,18 @@
       "type": "local",
       "command": ["uvx", "mcp-atlassian"],
       "environment": {
-        "JIRA_URL": "{env:JIRA_URL}",
-        "JIRA_USERNAME": "{env:JIRA_USERNAME}",
-        "JIRA_API_TOKEN": "{env:JIRA_API_TOKEN}"
+        "JIRA_URL": "https://upexgalaxy62.atlassian.net",
+        "JIRA_USERNAME": "tu.email@ejemplo.com",
+        "JIRA_API_TOKEN": "{{JIRA_API_TOKEN}}"
       },
-      "enabled": true
+      "enabled": false
     },
     "github": {
       "type": "remote",
       "url": "https://api.githubcopilot.com/mcp",
       "oauth": false,
       "headers": {
-        "Authorization": "Bearer {env:GITHUB_TOKEN}"
+        "Authorization": "Bearer {{GITHUB_TOKEN}}"
       },
       "enabled": false
     },
@@ -120,10 +111,10 @@
       "type": "local",
       "command": ["npx", "-y", "slack-mcp-server@latest", "--transport", "stdio"],
       "environment": {
-        "SLACK_MCP_XOXP_TOKEN": "{env:SLACK_MCP_XOXP_TOKEN}",
+        "SLACK_MCP_XOXP_TOKEN": "{{SLACK_MCP_XOXP_TOKEN}}",
         "SLACK_MCP_ADD_MESSAGE_TOOL": "true",
-        "SLACK_MCP_USERS_CACHE": "{env:SLACK_MCP_USERS_CACHE}",
-        "SLACK_MCP_CHANNELS_CACHE": "{env:SLACK_MCP_CHANNELS_CACHE}"
+        "SLACK_MCP_USERS_CACHE": "./context/mcp/outputs/slack/",
+        "SLACK_MCP_CHANNELS_CACHE": "./context/mcp/outputs/slack/"
       },
       "enabled": false
     }
