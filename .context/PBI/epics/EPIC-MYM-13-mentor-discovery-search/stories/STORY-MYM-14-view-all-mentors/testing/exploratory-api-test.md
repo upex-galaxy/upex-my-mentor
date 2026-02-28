@@ -1,4 +1,4 @@
-# API Exploratory Testing Session Notes
+# Notas de testing exploratorio de API
 
 **Fecha:** 2026-02-13
 **Feature:** MYM-14 - View All Available Mentors
@@ -8,10 +8,11 @@
 
 ---
 
-## Summary
+## Resumen ejecutivo
 
 - **Estado general:** ISSUES FOUND (BLOCKED)
 - **Bloqueador principal:** /api/mentors retorna 404 en staging
+- **Conclusion:** La funcionalidad parece no estar desplegada en staging; se requiere deployment para continuar pruebas.
 - **Endpoints probados:** 1
 - **Escenarios ejecutados:** 1 de 4 planificados
 - **Issues encontrados:** 2 (MYM-141, MYM-142)
@@ -22,9 +23,10 @@
 ## Hallazgos clave
 
 1. **Endpoint critico inexistente en staging:** /api/mentors retorna 404, bloquea la US MYM-14.
-2. **Contrato desalineado:** el OpenAPI apunta a un dominio de staging no resolvible.
-3. **Testing incompleto por bloqueo:** no fue posible validar paginacion, filtros, orden por rating ni datos.
-4. **Acceso TLS:** el primer intento sin -k fallo por verificacion TLS (revocation check).
+2. **La funcionalidad no parece desplegada:** sin el endpoint activo no se puede validar el flujo.
+3. **Contrato desalineado:** el OpenAPI apunta a un dominio de staging no resolvible.
+4. **Testing incompleto por bloqueo:** no fue posible validar paginacion, filtros, orden por rating ni datos.
+5. **Acceso TLS:** el primer intento sin -k fallo por verificacion TLS (revocation check).
 
 ---
 
