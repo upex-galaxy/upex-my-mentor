@@ -1,11 +1,159 @@
 /**
  * Mentors API Schemas
  *
+ * GET /api/mentors - List all verified mentors (paginated)
  * GET /api/mentors/[id]/availability - Get mentor availability and bookings
  */
 
 import { registry, z } from '../registry'
-import { UUIDSchema, TimestampSchema } from './common'
+import { UUIDSchema, TimestampSchema, EmailSchema } from './common'
+
+// ============================================================================
+// Mentor Schema (for listing)
+// ============================================================================
+
+export const MentorSchema = z.object({
+  id: UUIDSchema,
+  name: z.string().nullable().openapi({
+    description: 'Mentor display name',
+    example: 'John Doe',
+  }),
+  email: EmailSchema,
+  photoUrl: z.string().url().nullable().openapi({
+    description: 'Profile photo URL',
+  }),
+  description: z.string().nullable().openapi({
+    description: 'Mentor bio/description',
+  }),
+  specialties: z.array(z.string()).openapi({
+    description: 'List of mentor specialties',
+    example: ['React', 'TypeScript', 'Node.js'],
+  }),
+  hourlyRate: z.number().openapi({
+    description: 'Hourly rate in USD',
+    example: 50,
+  }),
+  linkedinUrl: z.string().url().nullable().openapi({
+    description: 'LinkedIn profile URL',
+  }),
+  githubUrl: z.string().url().nullable().openapi({
+    description: 'GitHub profile URL',
+  }),
+  isVerified: z.boolean().openapi({
+    description: 'Whether mentor is verified',
+  }),
+  averageRating: z.number().openapi({
+    description: 'Average rating (0-5)',
+    example: 4.5,
+  }),
+  totalReviews: z.number().int().openapi({
+    description: 'Total number of reviews',
+    example: 12,
+  }),
+  yearsOfExperience: z.number().int().openapi({
+    description: 'Years of professional experience',
+    example: 5,
+  }),
+}).openapi('Mentor')
+
+// ============================================================================
+// Pagination Schema
+// ============================================================================
+
+export const MentorsPaginationSchema = z.object({
+  hasNextPage: z.boolean().openapi({
+    description: 'Whether more results are available',
+  }),
+  nextCursor: z.string().optional().openapi({
+    description: 'Cursor for the next page (format: rating:id)',
+    example: '4.5:550e8400-e29b-41d4-a716-446655440000',
+  }),
+  pageSize: z.number().int().openapi({
+    description: 'Number of results per page',
+    example: 20,
+  }),
+}).openapi('MentorsPagination')
+
+// ============================================================================
+// List Mentors Response Schema
+// ============================================================================
+
+export const ListMentorsResponseSchema = z.object({
+  mentors: z.array(MentorSchema).openapi({
+    description: 'List of verified mentors',
+  }),
+  pagination: MentorsPaginationSchema,
+}).openapi('ListMentorsResponse')
+
+// ============================================================================
+// Register Path: GET /api/mentors
+// ============================================================================
+
+registry.registerPath({
+  method: 'get',
+  path: '/mentors',
+  summary: 'List all verified mentors',
+  description: `
+Returns a paginated list of all verified mentors with optional filtering.
+
+**Pagination:**
+Uses cursor-based pagination for efficient navigation. The cursor format is "rating:id".
+
+**Filtering:**
+- \`keyword\`: Search across name, description, and specialties (case-insensitive)
+- \`skill\`: Filter by specialty (can be repeated for multiple skills)
+
+**Sorting:**
+Results are sorted by:
+1. \`average_rating\` DESC (highest rated first, nulls last)
+2. \`id\` ASC (for consistent ordering within same rating)
+
+**No Authentication Required:**
+This is a public endpoint - anyone can browse mentors.
+  `.trim(),
+  tags: ['Mentors'],
+  request: {
+    query: z.object({
+      keyword: z.string().optional().openapi({
+        description: 'Search term for name, description, or specialties',
+        example: 'react',
+      }),
+      skill: z.array(z.string()).optional().openapi({
+        description: 'Filter by specialty (can be repeated)',
+        example: ['React', 'TypeScript'],
+      }),
+      cursor: z.string().optional().openapi({
+        description: 'Pagination cursor from previous response',
+        example: '4.5:550e8400-e29b-41d4-a716-446655440000',
+      }),
+      limit: z.string().optional().openapi({
+        description: 'Number of results per page (default: 20, max: 50)',
+        example: '20',
+      }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Mentors retrieved successfully',
+      content: {
+        'application/json': {
+          schema: ListMentorsResponseSchema,
+        },
+      },
+    },
+    500: {
+      description: 'Server error fetching mentors',
+      content: {
+        'application/json': {
+          schema: z.object({
+            error: z.string(),
+            details: z.string().optional(),
+          }),
+        },
+      },
+    },
+  },
+})
 
 // ============================================================================
 // Availability Slot Schema

@@ -134,11 +134,12 @@ export async function POST(
         })
         refundId = refund.id
 
-        // Update transaction status to refunded
+        // MYM-126: Update transaction status to refunded with refund_id
         await supabase
           .from('transactions')
           .update({
             status: 'refunded',
+            stripe_refund_id: refundId,
             updated_at: new Date().toISOString(),
           })
           .eq('id', transaction.id)

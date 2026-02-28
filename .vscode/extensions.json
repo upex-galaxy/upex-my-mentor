@@ -12,7 +12,6 @@
     // =====================
     "esbenp.prettier-vscode", // Prettier - Formateador universal (JS, TS, JSON, CSS, etc.)
     "dbaeumer.vscode-eslint", // ESLint - Linter para JavaScript/TypeScript
-    "ms-python.black-formatter", // Black - Formateador Python
     "ms-python.python", // Python - Soporte completo para Python
     "ms-python.vscode-pylance", // Pylance - IntelliSense avanzado para Python
     // =====================
@@ -50,7 +49,7 @@
     // =====================
     // Utilidades
     // =====================
-    "bierner.github-markdown-preview", // GitHub Markdown Preview - Preview como en GitHub
+    "bierner.github-markdown-preview" // GitHub Markdown Preview - Preview como en GitHub
   ],
   // =====================
   // Extensiones No Deseadas

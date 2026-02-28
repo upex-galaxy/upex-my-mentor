@@ -43,6 +43,7 @@ Archivo: scripts/xray.ts
 ```
 
 El CLI de Xray es self-documented. **OBLIGATORIO leerlo** antes de usar para:
+
 - Conocer comandos disponibles y sus opciones
 - Verificar variables de entorno requeridas (`XRAY_CLIENT_ID`, `XRAY_CLIENT_SECRET`)
 - Entender el formato de output de cada comando
@@ -186,6 +187,7 @@ REGRESSION_EPIC_KEY = {EPIC-XXX}
 **⚠️ CRÍTICO:** Antes de documentar cualquier test, validar que el diseño coincida con la implementación real.
 
 **Por qué es necesario:**
+
 - Los tests priorizados vienen del Acceptance Test Plan (Fase 5), que se escribió ANTES de la implementación
 - El código real puede diferir del plan original
 - Detectar discrepancias AHORA evita tests inválidos en automatización
@@ -199,12 +201,14 @@ Ruta: .context/PBI/epics/EPIC-{PROJECT}-{NUM}-{nombre}/stories/STORY-{US_ID}-{no
 ```
 
 **Del plan de implementación extraer:**
+
 - Archivos creados/modificados (lista de rutas)
 - Arquitectura decidida (SSR vs API vs Client)
 - Componentes principales
 - Decisiones técnicas relevantes
 
 **SI no existe plan de implementación:**
+
 - Documentar: "No existe plan de implementación, validando directamente desde código"
 - Proceder a búsqueda directa en código fuente
 
@@ -217,6 +221,7 @@ Ruta: .context/PBI/epics/EPIC-{PROJECT}-{NUM}-{nombre}/stories/STORY-{US_ID}-{no
 3. Leer componentes para extraer información crítica
 
 **Archivos a buscar:**
+
 - Páginas: `src/app/**/page.tsx`
 - Componentes: `src/components/**/*.tsx`
 - APIs (si existen): `src/app/api/**/*.ts`
@@ -225,13 +230,13 @@ Ruta: .context/PBI/epics/EPIC-{PROJECT}-{NUM}-{nombre}/stories/STORY-{US_ID}-{no
 
 #### 2.3 Extraer Información Crítica
 
-| Información | Por qué es importante | Cómo obtenerla |
-|-------------|----------------------|----------------|
-| **Arquitectura** | Saber si es SSR, API, o Client-side | Leer page.tsx, buscar `fetch`, `use client`, hooks |
-| **Test IDs** | Para automatización E2E | `grep -r "data-testid=" src/components/` |
-| **Formatos de UI** | Validar expected results exactos | Leer JSX de componentes |
-| **Validaciones** | Confirmar reglas de negocio | Leer lógica de componentes |
-| **Database queries** | Para sección de variables | Leer queries en pages/services |
+| Información          | Por qué es importante               | Cómo obtenerla                                     |
+| -------------------- | ----------------------------------- | -------------------------------------------------- |
+| **Arquitectura**     | Saber si es SSR, API, o Client-side | Leer page.tsx, buscar `fetch`, `use client`, hooks |
+| **Test IDs**         | Para automatización E2E             | `grep -r "data-testid=" src/components/`           |
+| **Formatos de UI**   | Validar expected results exactos    | Leer JSX de componentes                            |
+| **Validaciones**     | Confirmar reglas de negocio         | Leer lógica de componentes                         |
+| **Database queries** | Para sección de variables           | Leer queries en pages/services                     |
 
 #### 2.4 Checklist de Validación
 
@@ -256,11 +261,13 @@ h2. Notas de Refinamiento
 _Refinado:_ {fecha}
 _Motivo:_ Validación pre-documentación
 _Cambios:_
-* {Cambio 1}
-* {Cambio 2}
+
+- {Cambio 1}
+- {Cambio 2}
 ```
 
 **Ejemplos de discrepancias comunes:**
+
 - API `/api/reviews` → No existe, se usa SSR con Supabase directo
 - Formato "based on N reviews" → UI real muestra "(N reviews)"
 - UUID hardcodeado → Debe ser variable `{mentor_id}`
@@ -272,11 +279,11 @@ Documentar para cada test:
 ```markdown
 ## Código de Implementación
 
-| Archivo | Propósito |
-|---------|-----------|
-| src/app/(main)/mentors/[id]/page.tsx | Página principal (SSR) |
-| src/components/reviews/reviews-section.tsx | Contenedor de reviews |
-| src/components/reviews/rating-display.tsx | Rating promedio |
+| Archivo                                    | Propósito              |
+| ------------------------------------------ | ---------------------- |
+| src/app/(main)/mentors/[id]/page.tsx       | Página principal (SSR) |
+| src/components/reviews/reviews-section.tsx | Contenedor de reviews  |
+| src/components/reviews/rating-display.tsx  | Rating promedio        |
 
 ## Arquitectura
 
@@ -285,11 +292,13 @@ Documentar para cada test:
 - **Validaciones:** {Descripción}
 
 ## Test IDs Disponibles
-
 ```
+
 data-testid="component-name"
 data-testid="otro-component"
+
 ```
+
 ```
 
 ---
@@ -299,6 +308,7 @@ data-testid="otro-component"
 #### Modalidad A: Con Xray CLI
 
 **⚠️ IMPORTANTE:** Xray requiere 2 pasos para documentación completa:
+
 1. **Paso 1:** Crear el Test con Xray CLI (registra en Xray)
 2. **Paso 2:** Actualizar Description del issue con template completo (backup + contexto)
 
@@ -374,23 +384,23 @@ Feature: {Feature Name}
 
 **Elementos clave del Gherkin de alta calidad:**
 
-| Elemento | Propósito | Ejemplo |
-|----------|-----------|---------|
-| `Background` | Contexto común reutilizable | `Given el sistema está en estado inicial` |
-| `Scenario Outline` | Parametrización con Examples | Permite iterar múltiples casos |
+| Elemento              | Propósito                       | Ejemplo                                       |
+| --------------------- | ------------------------------- | --------------------------------------------- |
+| `Background`          | Contexto común reutilizable     | `Given el sistema está en estado inicial`     |
+| `Scenario Outline`    | Parametrización con Examples    | Permite iterar múltiples casos                |
 | `Examples` con nombre | Particiones equivalentes claras | `Examples: Happy Path`, `Examples: Edge Case` |
-| `<variables>` | Placeholders para datos | `<mentor_id>`, `<cantidad>`, `<formato>` |
-| Comentarios `# ===` | Estructura visual clara | `# === PRECONDICIONES ===` |
-| Docstring `"""` | Metadata del test | Bugs cubiertos, Story relacionada |
-| Tags múltiples | Categorización y filtrado | `@critical @regression @MYM-35` |
+| `<variables>`         | Placeholders para datos         | `<mentor_id>`, `<cantidad>`, `<formato>`      |
+| Comentarios `# ===`   | Estructura visual clara         | `# === PRECONDICIONES ===`                    |
+| Docstring `"""`       | Metadata del test               | Bugs cubiertos, Story relacionada             |
+| Tags múltiples        | Categorización y filtrado       | `@critical @regression @MYM-35`               |
 
 **Cuándo usar cada tipo:**
 
-| Tipo | Usar cuando... |
-|------|----------------|
-| `Scenario` simple | Solo hay 1 caso, sin variaciones |
+| Tipo                            | Usar cuando...                                    |
+| ------------------------------- | ------------------------------------------------- |
+| `Scenario` simple               | Solo hay 1 caso, sin variaciones                  |
 | `Scenario Outline` + `Examples` | Hay múltiples particiones equivalentes que probar |
-| `Background` | Varios scenarios comparten precondiciones |
+| `Background`                    | Varios scenarios comparten precondiciones         |
 
 ##### Paso 2: Actualizar Description con Template Completo
 
@@ -408,6 +418,7 @@ Tool: mcp__atlassian__jira_update_issue
 ```
 
 **La Description de Jira contiene:**
+
 1. **Copia del Gherkin de Xray** (el mismo que se pasó a `--gherkin`)
 2. **Secciones adicionales del template:** Variables, Código de Implementación, Arquitectura, Test IDs, etc.
 
@@ -755,10 +766,10 @@ Los siguientes tests entran en la **Regresión Manual**:
 
 ## Código de Implementación
 
-| Archivo | Propósito |
-|---------|-----------|
-| src/app/.../page.tsx | Página principal |
-| src/components/... | Componentes de UI |
+| Archivo              | Propósito         |
+| -------------------- | ----------------- |
+| src/app/.../page.tsx | Página principal  |
+| src/components/...   | Componentes de UI |
 
 ## Arquitectura
 
@@ -766,10 +777,11 @@ Los siguientes tests entran en la **Regresión Manual**:
 - **Componente principal:** {ComponentName}
 
 ## Test IDs Disponibles
-
 ```
+
 data-testid="component-1"
 data-testid="component-2"
+
 ```
 
 ---
@@ -978,12 +990,12 @@ Then el rating se muestra en formato "X.X/5.0"
 
 Usar llaves `{variable}` para indicar datos parametrizables:
 
-| Variable | Descripción | Cómo la obtiene el tester |
-|----------|-------------|---------------------------|
-| `{user_id}` | UUID de un usuario existente | Consultar DB o crear usuario de prueba |
+| Variable      | Descripción                  | Cómo la obtiene el tester                                          |
+| ------------- | ---------------------------- | ------------------------------------------------------------------ |
+| `{user_id}`   | UUID de un usuario existente | Consultar DB o crear usuario de prueba                             |
 | `{mentor_id}` | UUID de un mentor verificado | `SELECT id FROM profiles WHERE role='mentor' AND is_verified=true` |
-| `{N}` | Cantidad de elementos | Contar en DB o definir en setup |
-| `{promedio}` | Valor calculado | Se deriva de los datos del setup |
+| `{N}`         | Cantidad de elementos        | Contar en DB o definir en setup                                    |
+| `{promedio}`  | Valor calculado              | Se deriva de los datos del setup                                   |
 
 ### Ejemplo: Antes vs Después
 
@@ -1009,13 +1021,13 @@ And la distribución de ratings es calculable desde los {N} reviews
 
 Cuando una regla de negocio acepta un **rango de valores**, documentar la partición, no un valor específico:
 
-| Partición | Clase | Ejemplo de dato |
-|-----------|-------|-----------------|
+| Partición           | Clase               | Ejemplo de dato                        |
+| ------------------- | ------------------- | -------------------------------------- |
 | Cantidad de reviews | N > 0 (con reviews) | Cualquier mentor con al menos 1 review |
-| Cantidad de reviews | N = 0 (sin reviews) | Mentor nuevo sin reviews |
-| Rating promedio | 1.0 ≤ X ≤ 5.0 | El promedio calculado |
-| Pluralización | N = 1 (singular) | "1 review" |
-| Pluralización | N > 1 (plural) | "N reviews" |
+| Cantidad de reviews | N = 0 (sin reviews) | Mentor nuevo sin reviews               |
+| Rating promedio     | 1.0 ≤ X ≤ 5.0       | El promedio calculado                  |
+| Pluralización       | N = 1 (singular)    | "1 review"                             |
+| Pluralización       | N > 1 (plural)      | "N reviews"                            |
 
 ### Sección de Variables en el Test Case
 
@@ -1024,11 +1036,11 @@ Cuando una regla de negocio acepta un **rango de valores**, documentar la partic
 ```markdown
 ## Variables del Test Case
 
-| Variable | Descripción | Cómo obtenerla |
-|----------|-------------|----------------|
+| Variable    | Descripción               | Cómo obtenerla                                                             |
+| ----------- | ------------------------- | -------------------------------------------------------------------------- |
 | {mentor_id} | UUID de mentor verificado | `SELECT id FROM profiles WHERE role='mentor' AND is_verified=true LIMIT 1` |
-| {N} | Cantidad de reviews | `SELECT COUNT(*) FROM reviews WHERE subject_id = {mentor_id}` |
-| {promedio} | Rating promedio | `SELECT AVG(rating) FROM reviews WHERE subject_id = {mentor_id}` |
+| {N}         | Cantidad de reviews       | `SELECT COUNT(*) FROM reviews WHERE subject_id = {mentor_id}`              |
+| {promedio}  | Rating promedio           | `SELECT AVG(rating) FROM reviews WHERE subject_id = {mentor_id}`           |
 ```
 
 ### Notas para el Tester

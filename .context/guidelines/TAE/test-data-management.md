@@ -1,573 +1,447 @@
 # Test Data Management
 
-Comprehensive guide for managing test data in KATA framework with TypeScript + Playwright + Supabase.
+Guide for test data management in KATA framework with TypeScript + Playwright.
 
 ---
 
 ## 1. Philosophy
 
-**Core Principles:**
+### Golden Rule
 
-- **Isolation**: Each test creates its own data, no shared state
-- **Uniqueness**: Use UUIDs/timestamps to prevent conflicts
-- **Cleanup**: Always clean up after tests
-- **Realism**: Data should mimic production scenarios
-- **Repeatability**: Tests should produce consistent results
+**NEVER use static data** (except login credentials). Always generate dynamic data with Faker.
+
+### Principles
+
+| Principle        | Description                              |
+| ---------------- | ---------------------------------------- |
+| **Dynamic**      | Data generated at runtime, not hardcoded |
+| **Isolation**    | Each test creates its own data           |
+| **Uniqueness**   | UUIDs/timestamps to prevent conflicts    |
+| **Realism**      | Data that simulates production scenarios |
+| **Traceability** | Identifiable prefixes for cleanup        |
 
 ---
 
-## 2. Data Sources
+## 2. Architecture
 
-### 2.1 Faker Library
+### DataFactory
 
-Use **@faker-js/faker** for generating realistic random data.
+Centralized static class in `tests/data/DataFactory.ts`.
 
-**Installation:**
-
-```bash
-bun add -d @faker-js/faker
+```
+tests/data/
+├── DataFactory.ts      # Centralized generator
+├── types.ts            # Internal types
+├── fixtures/           # Static reference data
+│   └── example.json
+├── uploads/            # Files for upload tests
+└── downloads/          # Destination for downloaded files
 ```
 
-**Common Use Cases:**
+### Access
 
-- User names: `faker.person.fullName()`
-- Emails: `faker.internet.email()`
-- Passwords: `faker.internet.password({ length: 12 })`
-- Addresses: `faker.location.streetAddress()`
-- Dates: `faker.date.past()`
-- UUIDs: `faker.string.uuid()`
-
-**Integration with TestContext:**
+DataFactory propagates through TestContext:
 
 ```typescript
-// components/testcontext.ts
-import { faker } from '@faker-js/faker';
+// From components (inherit from TestContext)
+const user = this.data.createUser();
 
-export class TestContext {
-  faker = faker;
+// From tests (via fixtures)
+const user = ui.data.createUser();
+const user = api.data.createUser();
 
-  generateUniqueEmail(): string {
-    const timestamp = Date.now();
-    return `test_${timestamp}_${faker.internet.email()}`;
+// Direct import (when no context available)
+import { DataFactory } from '@DataFactory';
+const user = DataFactory.createUser();
+```
+
+---
+
+## 3. DataFactory API
+
+### Available Methods
+
+| Method                          | Returns           | Description                              |
+| ------------------------------- | ----------------- | ---------------------------------------- |
+| `createUser(overrides?)`        | `TestUser`        | Complete user with email, password, name |
+| `createCredentials(overrides?)` | `TestCredentials` | Only email + password                    |
+| `createTestId(prefix?)`         | `string`          | Unique ID for tracking                   |
+| `createProduct(overrides?)`     | `TestProduct`     | Product data (example)                   |
+| `createOrder(overrides?)`       | `TestOrder`       | Order data (example)                     |
+
+### Types
+
+```typescript
+// tests/data/types.ts
+
+interface TestUser {
+  email: string;
+  password: string;
+  name: string;
+  firstName?: string;
+  lastName?: string;
+}
+
+interface TestCredentials {
+  email: string;
+  password: string;
+}
+
+interface TestHotel {
+  name: string;
+  organizationId?: number;
+  invoiceCap?: number;
+}
+
+interface TestBooking {
+  confirmationNumber: string;
+  hotelId: number;
+  stayValue: number;
+  checkInDate: string;
+  emailHash?: string;
+}
+```
+
+---
+
+## 4. Usage Patterns
+
+### 4.1 Complete Object
+
+```typescript
+// Generates all fields with Faker
+const user = this.data.createUser();
+// → { email: 'test.john.x7k2m9@example.com', password: 'TestAb3kL9mN!', name: 'John Doe', ... }
+```
+
+### 4.2 With Overrides
+
+```typescript
+// Generates everything but overrides specific fields
+const admin = this.data.createUser({
+  email: 'admin@example.com',
+  name: 'Admin User',
+});
+// → { email: 'admin@example.com', password: 'TestAb3kL9mN!', name: 'Admin User', ... }
+```
+
+### 4.3 Credentials Only
+
+```typescript
+// When you only need email + password
+const creds = this.data.createCredentials();
+await this.loginPage.login(creds.email, creds.password);
+```
+
+### 4.4 ID for Tracking
+
+```typescript
+// Generates unique ID to identify test data
+const testId = this.data.createTestId('booking');
+// → 'booking-1707312000000-x7k2m9'
+```
+
+---
+
+## 5. Usage in Components
+
+### In ATCs (Layer 3)
+
+```typescript
+// tests/components/api/BookingsApi.ts
+import { ApiBase } from './ApiBase';
+
+export class BookingsApi extends ApiBase {
+  @atc('BOOK-API-001')
+  async createBookingSuccessfully(overrides?: Partial<TestBooking>) {
+    // Generate dynamic data
+    const booking = this.data.createBooking(overrides);
+
+    const response = await this.post('/api/bookings', { data: booking });
+    expect(response.status()).toBe(201);
+
+    return [response, await response.json(), booking] as const;
   }
+}
+```
 
-  generateUser(): UserData {
+### In UI Components
+
+```typescript
+// tests/components/ui/RegistrationPage.ts
+import { UiBase } from './UiBase';
+
+export class RegistrationPage extends UiBase {
+  @atc('REG-UI-001')
+  async registerNewUser(overrides?: Partial<TestUser>) {
+    const user = this.data.createUser(overrides);
+
+    await this.page.fill('[data-testid="email"]', user.email);
+    await this.page.fill('[data-testid="password"]', user.password);
+    await this.page.fill('[data-testid="name"]', user.name);
+    await this.page.click('[data-testid="submit"]');
+
+    await expect(this.page).toHaveURL(/.*dashboard.*/);
+    return user;
+  }
+}
+```
+
+---
+
+## 6. Usage in Tests
+
+### E2E Tests
+
+```typescript
+// tests/e2e/registration/registration.test.ts
+import { test, expect } from '@TestFixture';
+
+test.describe('User Registration', () => {
+  test('should register new user successfully', async ({ ui }) => {
+    // ARRANGE - DataFactory generates dynamic data
+    const user = ui.data.createUser();
+
+    // ACT - ATC uses the data
+    await ui.registration.registerNewUser(user);
+
+    // ASSERT
+    await expect(ui.page.locator('[data-testid="welcome"]')).toContainText(user.name);
+  });
+
+  test('should register user with specific email', async ({ ui }) => {
+    // Specific override for this test
+    const user = ui.data.createUser({
+      email: 'vip@example.com',
+    });
+
+    await ui.registration.registerNewUser(user);
+  });
+});
+```
+
+### Integration Tests
+
+```typescript
+// tests/integration/bookings/bookings.test.ts
+import { test, expect } from '@TestFixture';
+
+test.describe('Bookings API', () => {
+  test('should create booking with generated data', async ({ api }) => {
+    // ARRANGE
+    const booking = api.data.createBooking({
+      hotelId: 123, // Specific hotel
+      stayValue: 500, // Fixed value for validation
+    });
+
+    // ACT
+    const [response, body] = await api.bookings.createBookingSuccessfully(booking);
+
+    // ASSERT
+    expect(body.stayValue).toBe(500);
+    expect(body.confirmationNumber).toMatch(/^CONF-[A-Z0-9]{8}$/);
+  });
+});
+```
+
+---
+
+## 7. Extending DataFactory
+
+### Adding New Generators
+
+```typescript
+// tests/data/DataFactory.ts
+
+export class DataFactory {
+  // ... existing methods ...
+
+  /**
+   * Generates Newsletter data for testing
+   */
+  static createNewsletter(overrides?: Partial<TestNewsletter>): TestNewsletter {
     return {
-      name: faker.person.fullName(),
-      email: this.generateUniqueEmail(),
-      password: faker.internet.password({ length: 12 }),
+      name: `Newsletter ${faker.date.month()} ${faker.date.year()}`,
+      hotelId: faker.number.int({ min: 1, max: 1000 }),
+      sentDate: faker.date.recent().toISOString(),
+      recipientCount: faker.number.int({ min: 100, max: 10000 }),
+      ...overrides,
     };
   }
 }
 ```
 
-### 2.2 Static Fixtures
+### Adding New Types
 
-Store reusable test data in `/tests/fixtures/` as JSON or TypeScript files.
+```typescript
+// tests/data/types.ts
 
-**Use for:**
+export interface TestNewsletter {
+  name: string;
+  hotelId: number;
+  sentDate: string;
+  recipientCount: number;
+}
+```
 
-- Reference data (countries, categories, roles)
-- Complex objects that don't need randomization
-- Expected API responses for mocking
+---
 
-**Example:**
+## 8. Static Fixtures
+
+For reference data that doesn't change, use `tests/data/fixtures/`.
+
+### When to Use Fixtures
+
+| Use Fixtures For        | Use DataFactory For      |
+| ----------------------- | ------------------------ |
+| Fixed roles/permissions | Test users               |
+| Reference catalogs      | Transactional data       |
+| API mock responses      | Request payloads         |
+| Configurations          | Data with business logic |
+
+### Fixture Example
 
 ```json
-// tests/fixtures/user_roles.json
+// tests/data/fixtures/roles.json
 {
   "admin": {
-    "name": "Admin",
+    "name": "Administrator",
     "permissions": ["read", "write", "delete", "admin"]
   },
-  "user": {
-    "name": "User",
+  "hotel_manager": {
+    "name": "Hotel Manager",
+    "permissions": ["read", "write", "reconcile"]
+  },
+  "viewer": {
+    "name": "Viewer",
     "permissions": ["read"]
   }
 }
 ```
 
-### 2.3 Factories (Data Builders)
-
-Create factory functions for complex objects in `/tests/utils/data_generators.ts`.
-
-**Example:**
+### Using Fixtures
 
 ```typescript
-// tests/utils/data_generators.ts
-import { faker } from '@faker-js/faker';
+import roles from '@data/fixtures/roles.json';
 
-export class DataFactory {
-  static createUser(overrides?: Partial<User>): User {
-    return {
-      id: faker.number.int({ min: 1000, max: 9999 }),
-      name: faker.person.fullName(),
-      email: faker.internet.email(),
-      createdAt: faker.date.past().toISOString(),
-      ...overrides, // Allow custom fields
-    };
-  }
-
-  static createProduct(overrides?: Partial<Product>): Product {
-    return {
-      id: faker.number.int({ min: 100, max: 999 }),
-      name: faker.commerce.productName(),
-      price: parseFloat(faker.commerce.price()),
-      stock: faker.number.int({ min: 0, max: 100 }),
-      ...overrides,
-    };
-  }
-
-  static createOrder(userId: number, products: Product[]): Order {
-    return {
-      id: faker.number.int({ min: 10000, max: 99999 }),
-      userId,
-      items: products.map(p => ({
-        productId: p.id,
-        quantity: faker.number.int({ min: 1, max: 5 }),
-        price: p.price,
-      })),
-      status: 'pending',
-      createdAt: new Date().toISOString(),
-    };
-  }
-}
-```
-
-### 2.4 Database Seeding (Supabase)
-
-Use Supabase client to seed data directly in the database for integration tests.
-
-**Setup:**
-
-```typescript
-// components/testcontext.ts
-import { createClient } from '@supabase/supabase-js';
-
-export class TestContext {
-  supabase = createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_KEY! // Use service key for admin access
-  );
-
-  async seedUser(userData: UserData): Promise<User> {
-    const { data, error } = await this.supabase.from('users').insert(userData).select().single();
-
-    if (error) throw new Error(`Failed to seed user: ${error.message}`);
-    return data;
-  }
-
-  async cleanupUser(userId: number): Promise<void> {
-    await this.supabase.from('users').delete().eq('id', userId);
-  }
-}
+test('admin can delete', async ({ api }) => {
+  const user = api.data.createUser();
+  // Use fixed role from fixture
+  await api.users.assignRole(user.id, roles.admin);
+});
 ```
 
 ---
 
-## 3. Data Isolation Strategies
+## 9. Data Isolation
 
-### 3.1 Unique Identifiers
+### Unique Identifiers
 
-Always generate unique identifiers to prevent test data conflicts.
-
-**Strategies:**
-
-- **UUIDs**: `faker.string.uuid()`
-- **Timestamps**: `Date.now()`
-- **Combination**: `test_${Date.now()}_${faker.string.alphanumeric(5)}`
-
-**Example:**
+DataFactory automatically generates unique identifiers:
 
 ```typescript
-@atc('UPEX-100')
-async createUserSuccessfully(data?: Partial<UserData>): Promise<User> {
-  const uniqueEmail = `test_${Date.now()}_${faker.internet.email()}`;
+// Unique email: test.john.x7k2m9@example.com
+// Pattern: {prefix}.{name}.{6-chars-random}@example.com
 
-  const userData = {
-    name: faker.person.fullName(),
-    email: uniqueEmail,
-    password: faker.internet.password({ length: 12 }),
-    ...data, // Allow overrides
-  };
-
-  const response = await this._post('/api/users', { data: userData });
-  expect(response.status()).toBe(201);
-  return await response.json();
-}
+// Unique TestId: test-1707312000000-x7k2m9
+// Pattern: {prefix}-{timestamp}-{6-chars-random}
 ```
 
-### 3.2 Test Database Isolation
+### Parallel Execution
 
-**Option 1: Separate Test Database**
-
-- Use dedicated Supabase project for tests
-- Configure via environment variables
-- Reset database schema between test runs
-
-**Option 2: Schema Isolation**
-
-- Use different schema per test run
-- PostgreSQL supports multiple schemas
-- Cleanup schema after tests complete
-
-**Option 3: Transaction Rollback (Advanced)**
-
-- Wrap tests in database transactions
-- Rollback after test completes
-- Fast but complex to implement
-
-**Recommended: Separate Test Database**
-
-```env
-# .env.test
-SUPABASE_URL=https://test-project.supabase.co
-SUPABASE_ANON_KEY=your_test_anon_key
-SUPABASE_SERVICE_KEY=your_test_service_key
-```
-
-### 3.3 Parallel Execution Isolation
-
-When running tests in parallel (Playwright workers), ensure data doesn't collide.
-
-**Strategies:**
-
-- **Worker ID in data**: Include Playwright worker ID in test data
-- **Unique prefixes**: `worker_${workerIndex}_${timestamp}_${faker.uuid()}`
-- **Database partitioning**: Assign user ID ranges per worker
-
-**Example:**
+For parallel tests, generated data is automatically unique by timestamp + random string.
 
 ```typescript
 // playwright.config.ts
 export default defineConfig({
-  workers: 4, // Run 4 tests in parallel
-  use: {
-    testIdAttribute: 'data-testid',
+  workers: 4, // 4 tests in parallel
+});
+
+// Each worker generates unique data automatically
+// No collisions thanks to timestamp + random
+```
+
+---
+
+## 10. Credentials and Sensitive Data
+
+### Login Credentials
+
+**Exception to the rule**: Credentials for existing users come from environment variables.
+
+```typescript
+// config/variables.ts
+export const config = {
+  testUser: {
+    email: process.env.LOCAL_USER_EMAIL!,
+    password: process.env.LOCAL_USER_PASSWORD!,
   },
-});
+};
 
-// In test:
-test('create user', async ({ page }, testInfo) => {
-  const workerId = testInfo.workerIndex;
-  const uniqueEmail = `worker${workerId}_${Date.now()}@test.com`;
-  // ...
-});
+// Usage in tests
+const { email, password } = api.config.testUser;
+await api.auth.loginSuccessfully({ email, password });
 ```
 
----
-
-## 4. Data Cleanup
-
-### 4.1 Cleanup Strategies
-
-**1. Inline Cleanup (Simple)**
-
-```typescript
-test('user flow', async ({ page }) => {
-  const fixture = new TestFixture(page);
-
-  // Create
-  const user = await fixture.api.users.createUserSuccessfully({
-    name: 'Test User',
-    email: `test_${Date.now()}@example.com`,
-  });
-
-  try {
-    // Test logic...
-    await fixture.ui.login.loginSuccessfully(user.email, 'password');
-    // ...
-  } finally {
-    // Cleanup (always runs)
-    await fixture.api.users.deleteUser(user.id);
-  }
-});
-```
-
-**2. Fixture-Level Cleanup (Recommended)**
-
-```typescript
-// global-setup.ts
-export default async function globalSetup() {
-  // Track created resources
-  global.createdUsers = [];
-  global.createdOrders = [];
-}
-
-// TestContext
-export class TestContext {
-  private createdResources: { type: string; id: number }[] = [];
-
-  trackResource(type: string, id: number) {
-    this.createdResources.push({ type, id });
-  }
-
-  async cleanup() {
-    for (const resource of this.createdResources.reverse()) {
-      if (resource.type === 'user') {
-        await this.supabase.from('users').delete().eq('id', resource.id);
-      } else if (resource.type === 'order') {
-        await this.supabase.from('orders').delete().eq('id', resource.id);
-      }
-    }
-    this.createdResources = [];
-  }
-}
-
-// In tests:
-test.afterEach(async ({ page }) => {
-  const fixture = new TestFixture(page);
-  await fixture.context.cleanup();
-});
-```
-
-**3. Scheduled Cleanup (Fallback)**
-
-- Run nightly job to delete test data older than 24 hours
-- Identify test data by email pattern (`test_*@example.com`)
-- Use Supabase SQL function or external script
-
-```sql
--- Supabase SQL function
-CREATE OR REPLACE FUNCTION cleanup_test_data()
-RETURNS void AS $$
-BEGIN
-  DELETE FROM users
-  WHERE email LIKE 'test_%@%'
-    AND created_at < NOW() - INTERVAL '24 hours';
-
-  DELETE FROM orders
-  WHERE created_at < NOW() - INTERVAL '24 hours'
-    AND user_id NOT IN (SELECT id FROM users);
-END;
-$$ LANGUAGE plpgsql;
-```
-
-### 4.2 Cleanup Best Practices
-
-✅ **DO:**
-
-- Always clean up in `finally` blocks or `afterEach`
-- Delete in reverse order of creation (child → parent)
-- Log cleanup failures (don't throw errors)
-- Use soft deletes if supported (mark as deleted, cleanup later)
-
-❌ **DON'T:**
-
-- Skip cleanup assuming tests are independent
-- Clean up before assertions (use `finally`)
-- Ignore cleanup failures silently
-- Delete production data accidentally (verify environment!)
-
----
-
-## 5. Sensitive Data Handling
-
-### 5.1 Credentials Management
-
-**Never hardcode credentials in tests!**
-
-**Use environment variables:**
+### Environment Variables
 
 ```env
-# .env.test
-TEST_USER_EMAIL=test@example.com
-TEST_USER_PASSWORD=SecureTestPassword123!
-SUPABASE_SERVICE_KEY=ey...
-ADMIN_API_KEY=sk_test_...
-```
-
-**Load in TestContext:**
-
-```typescript
-export class TestContext {
-  config = {
-    testUserEmail: process.env.TEST_USER_EMAIL!,
-    testUserPassword: process.env.TEST_USER_PASSWORD!,
-    supabaseServiceKey: process.env.SUPABASE_SERVICE_KEY!,
-  };
-
-  getTestCredentials() {
-    return {
-      email: this.config.testUserEmail,
-      password: this.config.testUserPassword,
-    };
-  }
-}
-```
-
-### 5.2 PII (Personally Identifiable Information)
-
-**Rules for test data with PII:**
-
-- Use fake data (Faker) for all PII fields
-- Never use real emails, phone numbers, or addresses
-- Prefix test emails clearly: `test_*@example.com`
-- Use disposable email domains if needed: `@mailinator.com`, `@guerrillamail.com`
-
-**Anonymization for production data (if needed):**
-
-```typescript
-// utils/data_anonymizer.ts
-export function anonymizeUser(user: User): User {
-  return {
-    ...user,
-    name: faker.person.fullName(),
-    email: `anon_${user.id}@example.com`,
-    phone: faker.phone.number(),
-    address: faker.location.streetAddress(),
-  };
-}
-```
-
-### 5.3 Encryption
-
-If storing test data with sensitive fields, encrypt them.
-
-**Example with crypto:**
-
-```typescript
-import crypto from 'crypto';
-
-export class TestContext {
-  private encryptionKey = process.env.TEST_DATA_ENCRYPTION_KEY!;
-
-  encrypt(text: string): string {
-    const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(this.encryptionKey), iv);
-    let encrypted = cipher.update(text, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
-    return iv.toString('hex') + ':' + encrypted;
-  }
-
-  decrypt(text: string): string {
-    const parts = text.split(':');
-    const iv = Buffer.from(parts[0], 'hex');
-    const encryptedText = parts[1];
-    const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(this.encryptionKey), iv);
-    let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
-  }
-}
+# .env (do not commit)
+LOCAL_USER_EMAIL=test@example.com
+LOCAL_USER_PASSWORD=SecurePassword123!
+DEVSTAGE_USER_EMAIL=staging@example.com
+DEVSTAGE_USER_PASSWORD=StagingPassword123!
 ```
 
 ---
 
-## 6. Test Data Per Environment
+## 11. Best Practices
 
-### 6.1 Environment Configuration
+### DO
 
-**Separate config per environment:**
+- Use `this.data.createX()` in components
+- Use `ui.data.createX()` or `api.data.createX()` in tests
+- Pass overrides only when necessary
+- Generate new data for each test
+- Use identifiable prefixes (`test.`, `CONF-`)
 
-```
-/config
-├── test.env
-├── staging.env
-└── production.env (no tests run here!)
-```
+### DON'T
 
-**Load based on NODE_ENV:**
-
-```typescript
-// components/testcontext.ts
-export class TestContext {
-  private env = process.env.NODE_ENV || 'test';
-  private config = this.loadConfig(this.env);
-
-  private loadConfig(env: string) {
-    // Bun auto-loads .env - no dotenv needed!
-    return {
-      apiBaseUrl: process.env.API_BASE_URL!,
-      supabaseUrl: process.env.SUPABASE_URL!,
-      supabaseKey: process.env.SUPABASE_ANON_KEY!,
-    };
-  }
-}
-```
-
-### 6.2 Data Requirements by Environment
-
-| Environment             | Data Strategy                 | Cleanup               |
-| ----------------------- | ----------------------------- | --------------------- |
-| **Local**               | Generate on-the-fly           | Manual or afterEach   |
-| **CI (GitHub Actions)** | Generate on-the-fly + seeding | Automatic in teardown |
-| **Staging**             | Mix of generated + seed data  | Nightly cleanup job   |
-| **Production**          | NO TESTS RUN                  | N/A                   |
-
----
-
-## 7. Data Factories vs Direct Creation
-
-### When to Use Factories
-
-✅ **Use factories when:**
-
-- Creating complex objects with many fields
-- Need realistic data with business logic
-- Want to reuse data creation across tests
-- Need variations of similar objects
-
-### When to Create Directly
-
-✅ **Create directly when:**
-
-- Simple objects (2-3 fields)
-- One-off data for specific test
-- Customization needed that factory doesn't support
-
-**Example comparison:**
-
-```typescript
-// Factory (reusable, complex)
-const user = DataFactory.createUser({ role: 'admin' });
-
-// Direct (simple, one-off)
-const simpleUser = {
-  email: `test_${Date.now()}@example.com`,
-  password: 'Test123!',
-};
-```
-
----
-
-## 8. Best Practices Summary
-
-✅ **DO:**
-
-- Use Faker for realistic random data
-- Always include unique identifiers (UUIDs, timestamps)
-- Clean up after every test
-- Use factories for complex objects
-- Load credentials from environment variables
-- Test with realistic data volumes (pagination, performance)
-
-❌ **DON'T:**
-
-- Hardcode test data values
+- Hardcode emails, names, or values
 - Share data between tests
-- Use real user data in tests
-- Skip cleanup (causes test pollution)
-- Create data without tracking for cleanup
-- Run tests against production database
+- Use production data in tests
+- Create generators without TypeScript types
+- Import faker directly (use DataFactory)
 
 ---
 
-## 9. Tools & Libraries
+## 12. Quick Reference
 
-| Tool                      | Purpose                                 | Installation                    |
-| ------------------------- | --------------------------------------- | ------------------------------- |
-| **@faker-js/faker**       | Generate realistic random data          | `bun add -d @faker-js/faker`    |
-| **@supabase/supabase-js** | Interact with Supabase DB               | `bun add @supabase/supabase-js` |
-| **uuid**                  | Generate UUIDs (optional, Faker has it) | `bun add uuid`                  |
+```typescript
+// Access from components
+this.data.createUser();
+this.data.createCredentials();
+this.data.createTestId('prefix');
+this.data.createHotel();
+this.data.createBooking();
 
-> **Note:** Bun auto-loads `.env` files - no `dotenv` package needed!
+// Access from tests
+ui.data.createUser();
+api.data.createUser();
+
+// Direct import
+import { DataFactory } from '@DataFactory';
+DataFactory.createUser();
+
+// With overrides
+this.data.createUser({ email: 'fixed@test.com' });
+this.data.createBooking({ hotelId: 123, stayValue: 500 });
+```
 
 ---
 
-## 10. References
+## 13. Resources
 
-- **Faker Documentation**: <https://fakerjs.dev/>
-- **Supabase JS Client**: <https://supabase.com/docs/reference/javascript>
-- **Playwright Test Fixtures**: <https://playwright.dev/docs/test-fixtures>
-- **Test Data Patterns**: <https://martinfowler.com/bliki/TestDataBuilder.html>
+- **Faker Documentation**: https://fakerjs.dev/
+- **Playwright Test Fixtures**: https://playwright.dev/docs/test-fixtures
+- **Test Data Patterns**: https://martinfowler.com/bliki/TestDataBuilder.html

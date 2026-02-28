@@ -1,119 +1,132 @@
 # Data-TestID Usage Guidelines
 
-> **Para**: Test Automation Engineers
-> **Fase**: 12 (Test Automation)
-> **Propósito**: Cómo USAR data-testid en Playwright tests
+> **For**: Test Automation Engineers
+> **Stage**: 4 (Test Automation)
+> **Purpose**: How to USE data-testid in Playwright tests
 
 ---
 
-## Propósito
+## Purpose
 
-Este documento explica cómo utilizar los `data-testid` existentes en la aplicación para automatización de pruebas con Playwright.
-
-**Nota**: Para cómo CREAR data-testid, ver `../DEV/data-testid-standards.md`.
+This document explains how to use existing `data-testid` attributes in the application for test automation with Playwright.
 
 ---
 
-## Prioridad de Locators
+## Naming Conventions (Quick Reference)
 
-En Playwright, seguir esta prioridad al seleccionar elementos:
+Understanding the naming conventions helps predict `data-testid` values:
 
-| Prioridad | Locator       | Cuándo usar                           |
-| --------- | ------------- | ------------------------------------- |
-| **1**     | `data-testid` | Siempre preferido                     |
-| **2**     | `getByRole`   | Elementos semánticos (buttons, links) |
-| **3**     | `getByLabel`  | Inputs con label asociado             |
-| **4**     | `getByText`   | Contenido visible único               |
-| **5**     | CSS/XPath     | Último recurso                        |
+| Context           | Convention   | Example                         |
+| ----------------- | ------------ | ------------------------------- |
+| Component (root)  | `camelCase`  | `data-testid="shoppingCart"`    |
+| Specific element  | `snake_case` | `data-testid="email_input"`     |
+| Component section | `snake_case` | `data-testid="billing_section"` |
+| Action button     | `snake_case` | `data-testid="checkout_button"` |
 
-**Regla**: Si existe `data-testid`, úsalo. Es el locator más estable y resistente a cambios de UI.
+**Pattern**: `{description}_{type}` where type = `input`, `button`, `link`, `section`, `list`, `item`, etc.
 
 ---
 
-## Sintaxis en Playwright
+## Locator Priority
 
-### Selector Básico
+In Playwright, follow this priority when selecting elements:
+
+| Priority | Locator       | When to use                        |
+| -------- | ------------- | ---------------------------------- |
+| **1**    | `data-testid` | Always preferred                   |
+| **2**    | `getByRole`   | Semantic elements (buttons, links) |
+| **3**    | `getByLabel`  | Inputs with associated label       |
+| **4**    | `getByText`   | Unique visible content             |
+| **5**    | CSS/XPath     | Last resort                        |
+
+**Rule**: If `data-testid` exists, use it. It's the most stable locator and resistant to UI changes.
+
+---
+
+## Playwright Syntax
+
+### Basic Selector
 
 ```typescript
-// ✅ Correcto - Usar getByTestId
+// ✅ Correct - Use getByTestId
 const loginButton = page.getByTestId('login-submit-button');
 
-// ✅ También válido - locator con CSS
+// ✅ Also valid - locator with CSS
 const loginButton = page.locator('[data-testid="login-submit-button"]');
 
-// ❌ Incorrecto - Usar clase CSS (frágil)
+// ❌ Incorrect - Use CSS class (fragile)
 const loginButton = page.locator('.btn-primary');
 ```
 
-### Dentro de Componentes KATA
+### Within KATA Components
 
 ```typescript
-// En un Page Object o Komponent
-export class LoginKomponent {
-  readonly page: Page;
+// tests/components/ui/LoginPage.ts
+export class LoginPage extends UiBase {
+  // Locators defined as properties (only if used in 2+ ATCs)
+  private readonly emailInput = () => this.page.getByTestId('login-email-input');
+  private readonly passwordInput = () => this.page.getByTestId('login-password-input');
+  private readonly submitButton = () => this.page.getByTestId('login-submit-button');
+  private readonly errorMessage = () => this.page.getByTestId('login-error-message');
 
-  // Locators definidos como propiedades
-  readonly emailInput = () => this.page.getByTestId('login-email-input');
-  readonly passwordInput = () => this.page.getByTestId('login-password-input');
-  readonly submitButton = () => this.page.getByTestId('login-submit-button');
-  readonly errorMessage = () => this.page.getByTestId('login-error-message');
-
-  constructor(page: Page) {
-    this.page = page;
+  constructor(options: TestContextOptions) {
+    super(options);
   }
 
-  // Action que usa los locators
-  async login(email: string, password: string) {
+  // ATC that uses the locators
+  @atc('AUTH-UI-001')
+  async loginSuccessfully(email: string, password: string) {
     await this.emailInput().fill(email);
     await this.passwordInput().fill(password);
     await this.submitButton().click();
+    await expect(this.page).toHaveURL(/.*dashboard.*/);
   }
 }
 ```
 
 ---
 
-## Patrones Comunes
+## Common Patterns
 
-### 1. Listas de Elementos
+### 1. Lists of Elements
 
-Cuando hay múltiples elementos con el mismo patrón:
+When there are multiple elements with the same pattern:
 
 ```typescript
-// En el DOM:
+// In the DOM:
 // <div data-testid="product-card">...</div>
 // <div data-testid="product-card">...</div>
 // <div data-testid="product-card">...</div>
 
-// Obtener todos
+// Get all
 const allCards = page.getByTestId('product-card');
 const count = await allCards.count();
 
-// Obtener por índice
+// Get by index
 const firstCard = allCards.nth(0);
 const lastCard = allCards.last();
 
-// Iterar
+// Iterate
 for (const card of await allCards.all()) {
-  // hacer algo con cada card
+  // do something with each card
 }
 ```
 
-### 2. Elementos con ID Dinámico
+### 2. Elements with Dynamic ID
 
 ```typescript
-// En el DOM:
+// In the DOM:
 // <button data-testid="edit-product-123">Edit</button>
 // <button data-testid="edit-product-456">Edit</button>
 
-// Selector exacto
+// Exact selector
 const editButton = page.getByTestId('edit-product-123');
 
-// Selector con regex (si el ID es variable)
+// Selector with regex (if ID is variable)
 const editButton = page.locator('[data-testid^="edit-product-"]').first();
 ```
 
-### 3. Estados de Elementos
+### 3. Element States
 
 ```typescript
 // Loading state
@@ -129,14 +142,14 @@ const errorState = page.getByTestId('products-error-state');
 await expect(errorState).toBeVisible();
 ```
 
-### 4. Formularios
+### 4. Forms
 
 ```typescript
-// Campos
+// Fields
 const nameInput = page.getByTestId('form-name-input');
 const emailInput = page.getByTestId('form-email-input');
 
-// Validación de errores
+// Error validation
 const nameError = page.getByTestId('form-name-error');
 await expect(nameError).toHaveText('Name is required');
 
@@ -146,159 +159,146 @@ const submitButton = page.getByTestId('form-submit-button');
 
 ---
 
-## Cuando Falta data-testid
+## When data-testid is Missing
 
-### Paso 1: Verificar si Existe
+### Step 1: Verify if it Exists
 
-Usar DevTools del navegador:
+Use browser DevTools:
 
 ```javascript
-// En Console del navegador
+// In browser Console
 document.querySelectorAll('[data-testid]');
 ```
 
-### Paso 2: Reportar al Equipo DEV
+### Step 2: Report to DEV Team
 
-Si falta un `data-testid` necesario:
+If a necessary `data-testid` is missing:
 
-1. **Crear issue en Jira** con:
-   - Componente afectado
-   - Página/ruta donde está
-   - Elemento que necesita testid
-   - Sugerencia de nombre siguiendo `data-testid-standards.md`
+1. **Create Jira issue** with:
+   - Affected component
+   - Page/route where it is located
+   - Element that needs testid
+   - Suggested name following `data-testid-standards.md`
 
-2. **Formato de solicitud**:
+2. **Request format**:
 
 ```markdown
-## Solicitud de data-testid
+## data-testid Request
 
-**Componente:** LoginForm
-**Ruta:** /auth/login
-**Elemento:** Botón de submit del formulario
+**Component:** LoginForm
+**Route:** /auth/login
+**Element:** Form submit button
 
-**data-testid sugerido:** `login-submit-button`
+**Suggested data-testid:** `login-submit-button`
 
-**Razón:** Necesario para automatizar test de login E2E
+**Reason:** Needed to automate E2E login test
 ```
 
-### Paso 3: Workaround Temporal
+### Step 3: Temporary Workaround
 
-Si urgente y no puede esperar:
+If urgent and cannot wait:
 
 ```typescript
-// ⚠️ TEMPORAL - Usar fallback menos estable
+// ⚠️ TEMPORARY - Use less stable fallback
 const submitButton = page.getByRole('button', { name: 'Login' });
 
-// Agregar comentario para futuro refactor
-// TODO: Cambiar a getByTestId('login-submit-button') cuando DEV agregue el testid
+// Add comment for future refactor
+// TODO: Change to getByTestId('login-submit-button') when DEV adds the testid
 ```
 
 ---
 
 ## Anti-Patterns
 
-### NO Hacer
+### DON'T Do
 
 ```typescript
-// ❌ Selectores basados en clases CSS
+// ❌ Selectors based on CSS classes
 page.locator('.btn-primary');
 
-// ❌ Selectores basados en estructura DOM
+// ❌ Selectors based on DOM structure
 page.locator('div > form > button:last-child');
 
-// ❌ Selectores por texto que cambia
-page.getByText('Iniciar Sesión'); // puede cambiar a 'Login'
+// ❌ Selectors by changing text
+page.getByText('Sign In'); // may change to 'Login'
 
-// ❌ Hardcodear índices sin razón
-page.locator('[data-testid="card"]').nth(2); // ¿por qué el tercero?
+// ❌ Hardcode indices without reason
+page.locator('[data-testid="card"]').nth(2); // why the third one?
 
-// ❌ Mezclar selectores CSS con data-testid
+// ❌ Mix CSS selectors with data-testid
 page.locator('.container [data-testid="button"]');
 ```
 
-### SÍ Hacer
+### DO Do
 
 ```typescript
-// ✅ Usar data-testid directo
+// ✅ Use direct data-testid
 page.getByTestId('login-submit-button');
 
-// ✅ Usar getByRole para elementos semánticos sin testid
+// ✅ Use getByRole for semantic elements without testid
 page.getByRole('button', { name: /submit/i });
 
-// ✅ Encadenar con filter cuando necesario
+// ✅ Chain with filter when necessary
 page.getByTestId('product-card').filter({ hasText: 'iPhone' });
 
-// ✅ Usar locator descriptivo
+// ✅ Use descriptive locator
 const specificCard = page.getByTestId('product-card-iphone-15');
 ```
 
 ---
 
-## Integración con KATA
+## Integration with KATA
 
-### En Komponents
+### In Components
 
-Los Komponents encapsulan locators:
+Components encapsulate locators and expose ATCs:
 
 ```typescript
-// components/LoginKomponent.ts
-import { Locator, Page } from '@playwright/test';
+// tests/components/ui/LoginPage.ts
+import { UiBase } from './UiBase';
+import { atc } from '@utils/decorators';
 
-export class LoginKomponent {
-  private readonly page: Page;
+export class LoginPage extends UiBase {
+  // Shared locators (used in multiple ATCs)
+  private readonly emailInput = () => this.page.getByTestId('login-email-input');
+  private readonly passwordInput = () => this.page.getByTestId('login-password-input');
+  private readonly submitButton = () => this.page.getByTestId('login-submit-button');
+  private readonly errorMessage = () => this.page.getByTestId('login-error-message');
 
-  // Locators como propiedades privadas
-  private readonly _emailInput: Locator;
-  private readonly _passwordInput: Locator;
-  private readonly _submitButton: Locator;
-  private readonly _errorMessage: Locator;
-
-  constructor(page: Page) {
-    this.page = page;
-    this._emailInput = page.getByTestId('login-email-input');
-    this._passwordInput = page.getByTestId('login-password-input');
-    this._submitButton = page.getByTestId('login-submit-button');
-    this._errorMessage = page.getByTestId('login-error-message');
+  @atc('AUTH-UI-001')
+  async loginSuccessfully(email: string, password: string) {
+    await this.emailInput().fill(email);
+    await this.passwordInput().fill(password);
+    await this.submitButton().click();
+    await expect(this.page).toHaveURL(/.*dashboard.*/);
   }
 
-  // Actions expuestas públicamente
-  async fillEmail(email: string) {
-    await this._emailInput.fill(email);
-  }
-
-  async fillPassword(password: string) {
-    await this._passwordInput.fill(password);
-  }
-
-  async submit() {
-    await this._submitButton.click();
-  }
-
-  async getErrorText(): Promise<string> {
-    return this._errorMessage.textContent() ?? '';
+  @atc('AUTH-UI-002')
+  async loginWithInvalidCredentials(email: string, password: string) {
+    await this.emailInput().fill(email);
+    await this.passwordInput().fill(password);
+    await this.submitButton().click();
+    await expect(this.errorMessage()).toBeVisible();
   }
 }
 ```
 
-### En Tests
+### In Tests
 
-Los tests usan Komponents, no locators directos:
+Tests use fixture and call ATCs:
 
 ```typescript
-// tests/login.spec.ts
-import { test, expect } from '@playwright/test';
-import { LoginKomponent } from '../components/LoginKomponent';
+// tests/e2e/auth/login.test.ts
+import { test, expect } from '@TestFixture';
 
-test('login with valid credentials', async ({ page }) => {
-  await page.goto('/login');
+test('login with valid credentials', async ({ ui }) => {
+  await ui.page.goto('/login');
+  await ui.login.loginSuccessfully('user@example.com', 'Password123!');
+});
 
-  const login = new LoginKomponent(page);
-
-  await login.fillEmail('user@example.com');
-  await login.fillPassword('Password123!');
-  await login.submit();
-
-  await expect(page).toHaveURL('/dashboard');
+test('login with invalid credentials shows error', async ({ ui }) => {
+  await ui.page.goto('/login');
+  await ui.login.loginWithInvalidCredentials('wrong@example.com', 'badpass');
 });
 ```
 
@@ -306,20 +306,20 @@ test('login with valid credentials', async ({ page }) => {
 
 ## Debugging
 
-### Encontrar Elementos por data-testid
+### Find Elements by data-testid
 
 ```bash
-# En Playwright Inspector (UI Mode)
+# In Playwright Inspector (UI Mode)
 npx playwright test --ui
 
-# En Debug Mode
+# In Debug Mode
 npx playwright test --debug
 ```
 
-### Listar Todos los data-testid en una Página
+### List All data-testid on a Page
 
 ```typescript
-// Script de utilidad
+// Utility script
 test('list all testids', async ({ page }) => {
   await page.goto('/login');
 
@@ -338,13 +338,8 @@ test('list all testids', async ({ page }) => {
 
 ---
 
-## Ver También
+## See Also
 
-- `../DEV/data-testid-standards.md` - Cómo DEV crea los data-testid
-- `./automation-standards.md` - Estándares generales de automatización
-- `./kata-framework.md` - Arquitectura KATA
-- `../MCP/playwright.md` - Uso de Playwright MCP
-
----
-
-**Última actualización**: 2025-12-21
+- `./automation-standards.md` - General automation standards
+- `./kata-architecture.md` - KATA Architecture
+- `./kata-ai-index.md` - AI implementation guide

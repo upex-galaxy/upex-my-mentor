@@ -945,7 +945,7 @@ describe.each([
 - Supabase Auth service is running and accessible
 - Supabase Database (PostgreSQL) is accessible
 - Email service (SendGrid/Resend/Supabase) is operational and configured
-- Frontend is deployed to test environment (staging): `https://staging.upexmymentor.com`
+- Frontend is deployed to test environment (staging): `https://staging-upexmymentor.vercel.app`
 - Test environment has clean state (no leftover test data)
 
 ---
@@ -953,7 +953,7 @@ describe.each([
 **Test Steps:**
 
 **Step 1: Navigate to signup page**
-- **Action:** Open browser (Chrome/Firefox/Safari) and navigate to `https://staging.upexmymentor.com/signup`
+- **Action:** Open browser (Chrome/Firefox/Safari) and navigate to `https://staging-upexmymentor.vercel.app/signup`
 - **Verify:**
   - Page loads successfully (status 200)
   - URL is correct: `/signup`
@@ -1004,7 +1004,7 @@ describe.each([
 - **Action:** Monitor network tab (or use API interception tool like Playwright's `page.route()`)
 - **Expected Request:**
   - Method: `POST`
-  - URL: `https://staging.upexmymentor.com/api/auth/register`
+  - URL: `https://staging-upexmymentor.vercel.app/api/auth/register`
   - Headers: `Content-Type: application/json`
   - Body:
     ```json
@@ -1115,7 +1115,7 @@ describe.each([
   - **From:** `noreply@upexmymentor.com` or configured sender
   - **Body contains:**
     - Verification link with token
-    - Link format: `https://staging.upexmymentor.com/verify-email?token=<VERIFICATION_TOKEN>`
+    - Link format: `https://staging-upexmymentor.vercel.app/verify-email?token=<VERIFICATION_TOKEN>`
     - Token is URL-safe string (alphanumeric + hyphens/underscores)
     - Instructions: "Click the link below to verify your email address" (or similar)
   - **Timing:** Email received within 30 seconds of signup
@@ -1445,7 +1445,7 @@ This story is considered "Done" from QA when:
 **Note:** This section is completed during test execution phase
 
 **Test Execution Date:** [TBD]
-**Environment:** Staging (`https://staging.upexmymentor.com`)
+**Environment:** Staging (`https://staging-upexmymentor.vercel.app`)
 **Executed By:** [QA Engineer Name]
 **Test Run ID:** [ID from test management tool]
 

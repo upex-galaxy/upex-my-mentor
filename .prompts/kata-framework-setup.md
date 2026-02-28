@@ -1,737 +1,564 @@
 # KATA Framework Setup
 
-> Setup the KATA (Komponent Action Test Architecture) framework for test automation from scratch.
+> **Purpose**: Set up the KATA test automation framework by cloning the boilerplate into a dedicated `qa/` directory, converting the project into a monorepo.
+> **When to Use**: When starting test automation in a new or existing project.
+> **Output**: `qa/` directory with full KATA framework + adaptation to project.
 
 ---
 
-## Purpose
+## Overview
 
-Set up the complete KATA test automation framework by downloading core files from the template repository and generating domain-specific components.
+This prompt transforms any project into a **monorepo** with dedicated test automation:
 
-**Use this prompt when:**
+```
+project/
+├── src/                    # Implementation code (existing)
+├── qa/                     # Test automation (KATA framework)
+│   ├── tests/
+│   ├── playwright.config.ts
+│   ├── package.json
+│   └── ...
+├── .context/               # Shared context
+└── package.json            # Root package.json
+```
 
-- Starting test automation in a new project
-- Setting up KATA in an existing project without automation
-- Reconstructing KATA framework after cloning a project
+**Process:**
 
-**Prerequisites:**
-
-- Project uses TypeScript
-- Bun runtime installed (`curl -fsSL https://bun.sh/install | bash`)
-- Git initialized in project
+1. **Phase 1**: Clone boilerplate into `qa/`
+2. **Phase 2**: Clean up and configure
+3. **Phase 3**: Adapt to project (authentication, entities)
+4. **Phase 4**: Validate setup
 
 ---
 
-## Template Repository
+## Prerequisites
 
-All core KATA files are available at:
+Before starting, verify:
 
-```
-https://github.com/upex-galaxy/ai-driven-test-automation-boilerplate
-Branch: template
-```
-
-**Download method:**
+- [ ] Git initialized in project
+- [ ] GitHub CLI installed and authenticated (`gh auth status`)
+- [ ] Bun runtime installed (`bun --version`)
+- [ ] Access to UPEX Galaxy private repos
 
 ```bash
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/[PATH]" -o [PATH]
-```
-
----
-
-## Workflow
-
-### Phase 0: Detection & Context Gathering
-
-**Step 1: Check existing KATA files**
-
-```bash
-# Run these checks
-ls tests/components/TestContext.ts 2>/dev/null && echo "✓ TestContext exists"
-ls tests/components/api/ApiBase.ts 2>/dev/null && echo "✓ ApiBase exists"
-ls tests/components/ui/UiBase.ts 2>/dev/null && echo "✓ UiBase exists"
-ls tests/utils/decorators.ts 2>/dev/null && echo "✓ Decorators exist"
-ls playwright.config.ts 2>/dev/null && echo "✓ Playwright config exists"
-ls .context/guidelines/TAE/KATA-AI-GUIDE.md 2>/dev/null && echo "✓ TAE Guidelines exist"
-```
-
-**Step 2: Determine project context**
-
-Before proceeding, identify:
-
-- Project name/prefix (e.g., `PROJ`, `MYM`, `SHOP`)
-- Main domain entities (e.g., Users, Products, Orders)
-- API base URL (from environment or documentation)
-- UI base URL (from environment or documentation)
-
-**Ask user:**
-
-```
-What is your project context?
-1. Project prefix for test IDs (e.g., PROJ-UI-001): ___
-2. Main domain entities to automate: ___
-3. API base URL: ___
-4. UI base URL: ___
+# Verify prerequisites
+gh auth status
+bun --version
+git status
 ```
 
 ---
 
-### Phase 1: Install Dependencies
+## PHASE 1: Clone Boilerplate
+
+### Step 1.1: Verify Clean State
 
 ```bash
-# Core Playwright
-bun add -d @playwright/test
+# Check if qa/ already exists
+[ -d "qa" ] && echo "WARNING: qa/ directory already exists" || echo "OK: Ready to proceed"
+```
 
-# Install browsers
-bunx playwright install chromium
+### Step 1.2: Download Repository (Without Git History)
 
-# Allure reporting
-bun add -d allure-playwright
+**Download the KATA boilerplate as a tarball (no git history, no commits from template authors):**
 
-# Allure CLI (install globally if not present)
-which allure || bun add -g allure-commandline
+```bash
+# Create qa/ directory and download boilerplate without any git history
+mkdir -p qa && \
+gh api repos/upex-galaxy/ai-driven-test-automation-boilerplate/tarball \
+  -H "Accept: application/vnd.github+json" | \
+  tar -xz -C qa --strip-components=1
+```
 
-# TypeScript & Linting (using @antfu/eslint-config for modern flat config)
-bun add -d typescript @types/node
-bun add -d eslint @antfu/eslint-config
+> **Why tarball instead of clone?**
+>
+> - `git clone` brings commit history - template authors would appear in your git log
+> - Tarball downloads **only the files** - like GitHub's "Use this template" feature
+> - Files appear as "new" when you commit - clean history with only your commits
 
-# Code Formatting & Git Hooks
-bun add -d prettier husky lint-staged
+### Step 1.3: Verify Structure
 
-# Test Data Generation
-bun add -d @faker-js/faker
+```bash
+tree qa/ -L 2
+```
 
-# OpenAPI Types Generation (optional, for API testing)
-bun add -d openapi-typescript
+Expected structure:
+
+```
+qa/
+├── tests/
+│   ├── components/
+│   ├── setup/
+│   ├── e2e/
+│   ├── integration/
+│   └── utils/
+├── config/
+├── scripts/
+├── playwright.config.ts
+├── package.json
+├── tsconfig.json
+└── ...
 ```
 
 ---
 
-### Phase 2: Create Directory Structure
+## PHASE 2: Clean Up and Configure
+
+### Step 2.1: Remove Unnecessary Files
+
+Remove files that are project-specific or not needed:
 
 ```bash
-# Create all required directories
-mkdir -p tests/components/api
-mkdir -p tests/components/ui
-mkdir -p tests/components/preconditions
-mkdir -p tests/e2e
-mkdir -p tests/integration
-mkdir -p tests/data/fixtures
-mkdir -p tests/data/downloads
-mkdir -p tests/data/uploads
-mkdir -p tests/utils
-mkdir -p config
-mkdir -p api
-mkdir -p .context/guidelines/TAE
-mkdir -p .context/PBI
-mkdir -p .github/workflows
+# Remove example tests (will create project-specific ones)
+rm -rf qa/tests/e2e/example
+rm -rf qa/tests/integration/example.test.ts
 
-# Create .gitkeep files for empty directories
-touch tests/data/downloads/.gitkeep
-touch tests/data/uploads/.gitkeep
-touch api/.gitkeep
+# Remove template-specific files
+rm -rf qa/.prompts
+rm -rf qa/.books
+rm -rf qa/docs
+rm -rf qa/templates
+
+# Remove duplicate context (use root .context/)
+rm -rf qa/.context/PRD
+rm -rf qa/.context/SRS
+rm -rf qa/.context/idea
+rm -rf qa/.context/PBI
+
+# Keep TAE guidelines - they're essential
+# qa/.context/guidelines/TAE/ stays
+
+# Remove root-level duplicates
+rm -f qa/README.md
+rm -f qa/context-engineering.md
+```
+
+### Step 2.2: Create Environment File
+
+```bash
+# Copy example to .env
+cp qa/.env.example qa/.env
+
+# Edit with project values
+echo "Update qa/.env with your project's URLs and credentials"
+```
+
+### Step 2.3: Install Dependencies
+
+```bash
+cd qa && bun install && cd ..
+```
+
+### Step 2.4: Install Playwright Browsers
+
+```bash
+cd qa && bunx playwright install chromium && cd ..
 ```
 
 ---
 
-### Phase 3: Download Core Framework Files
+## PHASE 3: Adapt to Project
 
-**IMPORTANT:** Only download files that DON'T already exist.
+### Step 3.1: Read Project Context
 
-#### Core Utilities (tests/utils/)
+**Read these files to understand the project (MANDATORY):**
 
-```bash
-# Decorators - @atc pattern implementation
-[ ! -f tests/utils/decorators.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/utils/decorators.ts" \
-  -o tests/utils/decorators.ts
-
-# Kata Reporter - Allure integration
-[ ! -f tests/utils/KataReporter.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/utils/KataReporter.ts" \
-  -o tests/utils/KataReporter.ts
-
-# TMS Sync - Jira/X-Ray integration
-[ ! -f tests/utils/tmsSync.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/utils/tmsSync.ts" \
-  -o tests/utils/tmsSync.ts
+```
+.context/
+├── SRS/                    # Architecture, API contracts
+├── PRD/                    # Features, user journeys
+├── idea/                   # Domain glossary
+└── api-architecture.md     # If exists
 ```
 
-#### Base Components (tests/components/)
+**Identify:**
 
-```bash
-# TestContext - Core utilities layer
-[ ! -f tests/components/TestContext.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/components/TestContext.ts" \
-  -o tests/components/TestContext.ts
+- Project name/prefix for test IDs (e.g., `PROJ`, `APP`)
+- Main domain entities (Users, Products, Orders, etc.)
+- API base URL
+- UI base URL
+- Authentication method (OAuth, JWT, API key)
+- Login endpoint and flow
 
-# ApiBase - HTTP client wrapper
-[ ! -f tests/components/api/ApiBase.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/components/api/ApiBase.ts" \
-  -o tests/components/api/ApiBase.ts
+### Step 3.2: Read KATA Guidelines
 
-# UiBase - Playwright page wrapper
-[ ! -f tests/components/ui/UiBase.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/components/ui/UiBase.ts" \
-  -o tests/components/ui/UiBase.ts
+**Read these files to understand KATA patterns (MANDATORY):**
+
+```
+qa/.context/guidelines/TAE/
+├── KATA-AI-GUIDE.md              # Entry point - concepts overview
+├── kata-architecture.md          # 4-layer architecture
+├── automation-standards.md       # ATC rules, naming conventions
+└── playwright-automation-system.md  # DI, fixtures, session reuse
 ```
 
-#### Fixtures (tests/components/)
+### Step 3.3: Update Configuration
 
-```bash
-# TestFixture - Extended test object
-[ ! -f tests/components/TestFixture.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/components/TestFixture.ts" \
-  -o tests/components/TestFixture.ts
+**File:** `qa/config/variables.ts`
 
-# ApiFixture - API DI container
-[ ! -f tests/components/ApiFixture.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/components/ApiFixture.ts" \
-  -o tests/components/ApiFixture.ts
-
-# UiFixture - UI DI container
-[ ! -f tests/components/UiFixture.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/components/UiFixture.ts" \
-  -o tests/components/UiFixture.ts
-```
-
-#### Global Setup/Teardown
-
-```bash
-[ ! -f tests/globalSetup.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/globalSetup.ts" \
-  -o tests/globalSetup.ts
-
-[ ! -f tests/globalTeardown.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/globalTeardown.ts" \
-  -o tests/globalTeardown.ts
-```
-
----
-
-### Phase 4: Download Configuration Files
-
-```bash
-# Playwright configuration
-[ ! -f playwright.config.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/playwright.config.ts" \
-  -o playwright.config.ts
-
-# TypeScript configuration
-[ ! -f tsconfig.json ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tsconfig.json" \
-  -o tsconfig.json
-
-# ESLint configuration
-[ ! -f eslint.config.js ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/eslint.config.js" \
-  -o eslint.config.js
-
-# Environment variables
-[ ! -f config/variables.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/config/variables.ts" \
-  -o config/variables.ts
-
-# Environment example
-[ ! -f .env.example ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.env.example" \
-  -o .env.example
-
-# Prettier configuration
-[ ! -f .prettierrc ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.prettierrc" \
-  -o .prettierrc
-
-# Prettier ignore
-[ ! -f .prettierignore ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.prettierignore" \
-  -o .prettierignore
-
-# EditorConfig
-[ ! -f .editorconfig ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.editorconfig" \
-  -o .editorconfig
-```
-
----
-
-### Phase 5: Setup Code Quality Tools (Git Hooks)
-
-**Configure Husky and lint-staged for automatic code quality checks on commit:**
-
-```bash
-# Initialize Husky
-bunx husky init
-
-# Create pre-commit hook
-echo "bunx lint-staged" > .husky/pre-commit
-```
-
-**Add lint-staged configuration to package.json:**
-
-```json
-{
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx}": ["eslint --fix", "prettier --write"],
-    "*.{json,md,yml,yaml}": ["prettier --write"]
-  }
-}
-```
-
-**Add format scripts to package.json:**
-
-```json
-{
-  "scripts": {
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
-  }
-}
-```
-
----
-
-### Phase 6: Download TAE Guidelines
-
-**These files provide context for AI-assisted development:**
-
-```bash
-# Main AI guide
-[ ! -f .context/guidelines/TAE/KATA-AI-GUIDE.md ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.context/guidelines/TAE/KATA-AI-GUIDE.md" \
-  -o .context/guidelines/TAE/KATA-AI-GUIDE.md
-
-# Architecture documentation
-[ ! -f .context/guidelines/TAE/kata-architecture.md ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.context/guidelines/TAE/kata-architecture.md" \
-  -o .context/guidelines/TAE/kata-architecture.md
-
-# Automation standards
-[ ! -f .context/guidelines/TAE/automation-standards.md ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.context/guidelines/TAE/automation-standards.md" \
-  -o .context/guidelines/TAE/automation-standards.md
-
-# API setup guide
-[ ! -f .context/guidelines/TAE/api-setup-guide.md ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.context/guidelines/TAE/api-setup-guide.md" \
-  -o .context/guidelines/TAE/api-setup-guide.md
-
-# Test data management
-[ ! -f .context/guidelines/TAE/test-data-management.md ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.context/guidelines/TAE/test-data-management.md" \
-  -o .context/guidelines/TAE/test-data-management.md
-
-# TMS integration
-[ ! -f .context/guidelines/TAE/tms-integration.md ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.context/guidelines/TAE/tms-integration.md" \
-  -o .context/guidelines/TAE/tms-integration.md
-
-# CI/CD integration
-[ ! -f .context/guidelines/TAE/ci-cd-integration.md ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.context/guidelines/TAE/ci-cd-integration.md" \
-  -o .context/guidelines/TAE/ci-cd-integration.md
-
-# TAE README
-[ ! -f .context/guidelines/TAE/README.md ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.context/guidelines/TAE/README.md" \
-  -o .context/guidelines/TAE/README.md
-```
-
----
-
-### Phase 7: Download Scripts
-
-```bash
-# KATA Manifest - Extracts ATCs from codebase
-[ ! -f scripts/kata-manifest.ts ] && \
-mkdir -p scripts && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/scripts/kata-manifest.ts" \
-  -o scripts/kata-manifest.ts
-
-# OpenAPI Sync - Generates API types
-[ ! -f scripts/sync-openapi.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/scripts/sync-openapi.ts" \
-  -o scripts/sync-openapi.ts
-```
-
----
-
-### Phase 8: Download CI/CD Workflows (Optional)
-
-```bash
-# Main Playwright workflow
-[ ! -f .github/workflows/playwright.yml ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.github/workflows/playwright.yml" \
-  -o .github/workflows/playwright.yml
-
-# E2E Tests workflow
-[ ! -f .github/workflows/e2e.yml ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.github/workflows/e2e.yml" \
-  -o .github/workflows/e2e.yml
-
-# Integration Tests workflow
-[ ! -f .github/workflows/integration.yml ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.github/workflows/integration.yml" \
-  -o .github/workflows/integration.yml
-
-# Smoke Tests workflow
-[ ! -f .github/workflows/smoke.yml ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.github/workflows/smoke.yml" \
-  -o .github/workflows/smoke.yml
-
-# Sanity Tests workflow
-[ ! -f .github/workflows/sanity.yml ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.github/workflows/sanity.yml" \
-  -o .github/workflows/sanity.yml
-
-# Regression Tests workflow
-[ ! -f .github/workflows/regression.yml ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/.github/workflows/regression.yml" \
-  -o .github/workflows/regression.yml
-```
-
----
-
-### Phase 9: Download Examples (Optional)
-
-**For reference on patterns - ask user before downloading:**
-
-```bash
-# Example API component
-[ ! -f tests/components/api/ExampleApi.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/components/api/ExampleApi.ts" \
-  -o tests/components/api/ExampleApi.ts
-
-# Example UI component
-[ ! -f tests/components/ui/ExamplePage.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/components/ui/ExamplePage.ts" \
-  -o tests/components/ui/ExamplePage.ts
-
-# Example preconditions
-[ ! -f tests/components/preconditions/ExampleFlows.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/components/preconditions/ExampleFlows.ts" \
-  -o tests/components/preconditions/ExampleFlows.ts
-
-# Example E2E test
-mkdir -p tests/e2e/example && \
-[ ! -f tests/e2e/example/example.test.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/e2e/example/example.test.ts" \
-  -o tests/e2e/example/example.test.ts
-
-# Example Integration test
-[ ! -f tests/integration/example.test.ts ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/integration/example.test.ts" \
-  -o tests/integration/example.test.ts
-
-# Example fixture data
-[ ! -f tests/data/fixtures/example.json ] && \
-curl -sL "https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template/tests/data/fixtures/example.json" \
-  -o tests/data/fixtures/example.json
-```
-
----
-
-### Phase 10: Update package.json
-
-**Add or merge these scripts into package.json:**
-
-```json
-{
-  "scripts": {
-    "test": "playwright test",
-    "test:ui": "playwright test --ui",
-    "test:debug": "playwright test --debug",
-    "test:headed": "playwright test --headed",
-    "test:retries": "playwright test --retries=2",
-    "test:last-failed": "playwright test --last-failed",
-    "test:e2e": "playwright test tests/e2e",
-    "test:e2e:critical": "playwright test tests/e2e --grep @critical",
-    "test:integration": "playwright test tests/integration --project=api",
-    "test:chromium": "playwright test --project=chromium",
-    "test:firefox": "playwright test --project=firefox",
-    "test:webkit": "playwright test --project=webkit",
-    "test:mobile": "playwright test --project=mobile-chrome --project=mobile-safari",
-    "test:api": "playwright test --project=api",
-    "test:report": "playwright show-report",
-    "test:allure": "allure generate ./allure-results -o ./allure-report --clean && allure open ./allure-report",
-    "test:allure:generate": "allure generate ./allure-results -o ./allure-report --clean",
-    "test:allure:open": "allure open ./allure-report",
-    "test:sync": "bun run tests/utils/tmsSync.ts",
-    "clean": "rm -rf test-results playwright-report allure-results allure-report reports",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "type-check": "tsc --noEmit",
-    "api:sync": "bun run scripts/sync-openapi.ts",
-    "api:sync:types": "bun run scripts/sync-openapi.ts -c -t",
-    "api:types": "bunx openapi-typescript api/openapi.yaml -o api/types.ts",
-    "kata:manifest": "bun run scripts/kata-manifest.ts",
-    "kata:manifest:watch": "bun run scripts/kata-manifest.ts --watch",
-    "mcp": "bun run scripts/mcp-builder.js",
-    "up": "bun run scripts/update-prompts.js",
-    "install:browsers": "playwright install --with-deps",
-    "prepare": "husky"
-  },
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx}": ["eslint --fix", "prettier --write"],
-    "*.{json,md,yml,yaml}": ["prettier --write"]
-  }
-}
-```
-
----
-
-### Phase 11: Generate Domain-Specific Components
-
-**IMPORTANT:** This is where AI generates project-specific code based on context.
-
-#### For each domain entity (e.g., User, Product, Order)
-
-**1. Create API Component:**
+Update with project-specific values:
 
 ```typescript
-// tests/components/api/{Entity}Api.ts
-import { ApiBase } from './ApiBase';
+export const urlMap = {
+  local: 'http://localhost:3000',
+  staging: 'https://staging.yourproject.com',  // UPDATE
+  production: 'https://yourproject.com',        // UPDATE
+};
+
+export const apiUrlMap = {
+  local: 'http://localhost:3000/api',
+  staging: 'https://api.staging.yourproject.com',  // UPDATE
+  production: 'https://api.yourproject.com',        // UPDATE
+};
+```
+
+**File:** `qa/.env`
+
+```env
+# Application URLs
+BASE_URL=https://staging.yourproject.com
+API_URL=https://api.staging.yourproject.com
+
+# Test User Credentials
+TEST_USER_EMAIL=test@example.com
+TEST_USER_PASSWORD=testpassword
+
+# Environment
+NODE_ENV=test
+```
+
+### Step 3.4: Adapt Authentication Components
+
+**File:** `qa/tests/components/api/AuthApi.ts`
+
+Update the authentication endpoint and request format:
+
+```typescript
+// Update endpoint
+private readonly endpoints = {
+  login: '/auth/login',  // UPDATE to your project's endpoint
+  // ...
+};
+
+// Update request body format if needed
+@atc('PROJ-API-AUTH-001')
+async authenticateSuccessfully(credentials: LoginCredentials) {
+  // Adapt to your API's expected format
+}
+```
+
+**File:** `qa/tests/components/ui/LoginPage.ts`
+
+Update locators to match your login form:
+
+```typescript
+// Update locators
+readonly emailInput = () => this.page.getByTestId('email');        // UPDATE
+readonly passwordInput = () => this.page.getByTestId('password');  // UPDATE
+readonly submitButton = () => this.page.getByRole('button', { name: 'Login' });  // UPDATE
+
+// Update success assertion
+@atc('PROJ-UI-AUTH-001')
+async loginSuccessfully(email: string, password: string) {
+  await this.goto();
+  await this.emailInput().fill(email);
+  await this.passwordInput().fill(password);
+  await this.submitButton().click();
+  await expect(this.page).toHaveURL(/dashboard/);  // UPDATE to your success URL
+}
+```
+
+### Step 3.5: Create First Domain Component
+
+Based on project entities, create the first component:
+
+**API Component:** `qa/tests/components/api/{Entity}Api.ts`
+
+```typescript
+import { ApiBase } from '@api/ApiBase';
 import { atc } from '@utils/decorators';
 
 export class {Entity}Api extends ApiBase {
-  // Endpoints
-  private endpoints = {
+  private readonly endpoints = {
     list: '/api/{entities}',
     get: (id: string) => `/api/{entities}/${id}`,
     create: '/api/{entities}',
-    update: (id: string) => `/api/{entities}/${id}`,
-    delete: (id: string) => `/api/{entities}/${id}`,
   };
 
-  // ATCs
   @atc('PROJ-API-001')
-  async create{Entity}(data: Create{Entity}Dto) {
-    return this.post<{Entity}Response, Create{Entity}Dto>(
-      this.endpoints.create,
-      data
-    );
-  }
-
-  @atc('PROJ-API-002')
-  async get{Entity}ById(id: string) {
-    return this.get<{Entity}Response>(this.endpoints.get(id));
+  async get{Entity}Successfully(id: string) {
+    const [response, body] = await this.apiGET(this.endpoints.get(id));
+    expect(response.status()).toBe(200);
+    return [response, body];
   }
 }
 ```
 
-**2. Create UI Component:**
+**UI Component:** `qa/tests/components/ui/{Entity}Page.ts`
 
 ```typescript
-// tests/components/ui/{Entity}Page.ts
-import { UiBase } from './UiBase';
+import { UiBase } from '@ui/UiBase';
 import { atc } from '@utils/decorators';
 
 export class {Entity}Page extends UiBase {
-  // Locators (inline, not separate file)
-  readonly titleInput = () => this.page.getByTestId('{entity}-title');
-  readonly submitButton = () => this.page.getByRole('button', { name: 'Submit' });
-  readonly successMessage = () => this.page.getByTestId('success-message');
-
-  // Navigation
   async goto() {
-    await this.page.goto('/{entities}/new');
+    await this.page.goto('/{entities}');
   }
 
-  // ATCs
   @atc('PROJ-UI-001')
-  async create{Entity}Successfully(data: {Entity}FormData) {
+  async view{Entity}ListSuccessfully() {
     await this.goto();
-    await this.titleInput().fill(data.title);
-    await this.submitButton().click();
-    await expect(this.successMessage()).toBeVisible();
+    await expect(this.page.getByTestId('{entity}-list')).toBeVisible();
   }
 }
 ```
 
-**3. Update Fixtures to include new components:**
+### Step 3.6: Update Fixtures
 
-Add to `ApiFixture.ts`:
+**File:** `qa/tests/components/ApiFixture.ts`
 
 ```typescript
-{entity}Api: async ({ context }, use) => {
-  await use(new {Entity}Api(context));
-},
+import { {Entity}Api } from '@api/{Entity}Api';
+
+// Add to class
+{entity}: {Entity}Api;
+
+// Add to constructor
+this.{entity} = new {Entity}Api(options);
 ```
 
-Add to `UiFixture.ts`:
+**File:** `qa/tests/components/UiFixture.ts`
 
 ```typescript
-{entity}Page: async ({ page }, use) => {
-  await use(new {Entity}Page(page));
-},
+import { {Entity}Page } from '@ui/{Entity}Page';
+
+// Add to class
+{entity}Page: {Entity}Page;
+
+// Add to constructor
+this.{entity}Page = new {Entity}Page(options);
 ```
 
 ---
 
-### Phase 12: Create Environment File
+## PHASE 4: Validate Setup
+
+### Step 4.1: TypeScript Check
 
 ```bash
-# Copy example to .env if not exists
-[ ! -f .env ] && cp .env.example .env
+cd qa && bun run type-check && cd ..
+```
 
-# User should update values
-echo "Please update .env with your actual values"
+### Step 4.2: Lint Check
+
+```bash
+cd qa && bun run lint && cd ..
+```
+
+### Step 4.3: Run Auth Setup
+
+```bash
+# Test API authentication
+cd qa && bun run test --project=api-setup && cd ..
+
+# Test UI authentication
+cd qa && bun run test --project=ui-setup && cd ..
+```
+
+### Step 4.4: Run Smoke Test
+
+```bash
+cd qa && bun run test --grep @smoke && cd ..
 ```
 
 ---
 
-### Phase 13: Validate Setup
+## PHASE 5: Integrate with Root Project (Optional)
 
-```bash
-# Run TypeScript compilation check
-bunx tsc --noEmit
+### Step 5.1: Add Scripts to Root package.json
 
-# Run linting
-bun run lint
+Add convenience scripts to run tests from root:
 
-# Run format check
-bun run format:check
+```json
+{
+  "scripts": {
+    "qa:test": "cd qa && bun run test",
+    "qa:test:ui": "cd qa && bun run test:ui",
+    "qa:test:e2e": "cd qa && bun run test:e2e",
+    "qa:test:integration": "cd qa && bun run test:integration",
+    "qa:report": "cd qa && bun run test:report",
+    "qa:allure": "cd qa && bun run test:allure"
+  }
+}
+```
 
-# Verify git hooks are installed
-ls .husky/pre-commit && echo "✓ Git hooks installed"
+### Step 5.2: Update Root .gitignore
 
-# Run a simple test to verify setup
-bun run test --grep "@smoke" || bun run test tests/e2e/example
+Add qa-specific ignores:
+
+```gitignore
+# QA Test Automation
+qa/test-results/
+qa/playwright-report/
+qa/allure-results/
+qa/allure-report/
+qa/.auth/
+qa/node_modules/
+```
+
+### Step 5.3: Link Shared Context
+
+The `qa/` directory can reference root `.context/` for project documentation:
+
+```typescript
+// In qa tests, you can reference:
+// - Root context: ../.context/SRS/, ../.context/PRD/
+// - QA guidelines: .context/guidelines/TAE/
 ```
 
 ---
 
 ## Quick Setup Script
 
-**For rapid deployment, run all phases at once:**
+For rapid deployment, run this script:
 
 ```bash
 #!/bin/bash
-# kata-setup.sh - Run this to set up KATA framework
+# kata-setup.sh
 
-REPO="https://raw.githubusercontent.com/upex-galaxy/ai-driven-test-automation-boilerplate/template"
+set -e
 
-# Create directories
-mkdir -p tests/{components/{api,ui,preconditions},e2e,integration,data/{fixtures,downloads,uploads},utils}
-mkdir -p config api scripts .context/guidelines/TAE .context/PBI .github/workflows
+echo "🚀 Setting up KATA Framework..."
 
-# Download core files
-for file in \
-  "tests/utils/decorators.ts" \
-  "tests/utils/KataReporter.ts" \
-  "tests/utils/tmsSync.ts" \
-  "tests/components/TestContext.ts" \
-  "tests/components/api/ApiBase.ts" \
-  "tests/components/ui/UiBase.ts" \
-  "tests/components/TestFixture.ts" \
-  "tests/components/ApiFixture.ts" \
-  "tests/components/UiFixture.ts" \
-  "tests/globalSetup.ts" \
-  "tests/globalTeardown.ts" \
-  "config/variables.ts" \
-  "playwright.config.ts" \
-  "tsconfig.json" \
-  "eslint.config.js" \
-  ".env.example" \
-  ".prettierrc" \
-  ".prettierignore" \
-  ".editorconfig"
-do
-  [ ! -f "$file" ] && curl -sL "$REPO/$file" -o "$file" && echo "✓ Downloaded $file"
-done
+# Phase 1: Download (without git history)
+echo "📦 Downloading boilerplate..."
+mkdir -p qa && \
+gh api repos/upex-galaxy/ai-driven-test-automation-boilerplate/tarball \
+  -H "Accept: application/vnd.github+json" | \
+  tar -xz -C qa --strip-components=1
 
-# Setup git hooks
-bunx husky init
-echo "bunx lint-staged" > .husky/pre-commit
-echo "✓ Git hooks configured"
+# Phase 2: Clean up
+echo "🧹 Cleaning up..."
+rm -rf qa/tests/e2e/example qa/tests/integration/example.test.ts
+rm -rf qa/.prompts qa/.books qa/docs qa/templates
+rm -rf qa/.context/PRD qa/.context/SRS qa/.context/idea qa/.context/PBI
+rm -f qa/README.md qa/context-engineering.md
 
-# Download TAE guidelines
-for file in \
-  ".context/guidelines/TAE/KATA-AI-GUIDE.md" \
-  ".context/guidelines/TAE/kata-architecture.md" \
-  ".context/guidelines/TAE/automation-standards.md" \
-  ".context/guidelines/TAE/api-setup-guide.md" \
-  ".context/guidelines/TAE/test-data-management.md" \
-  ".context/guidelines/TAE/tms-integration.md" \
-  ".context/guidelines/TAE/ci-cd-integration.md" \
-  ".context/guidelines/TAE/README.md"
-do
-  [ ! -f "$file" ] && curl -sL "$REPO/$file" -o "$file" && echo "✓ Downloaded $file"
-done
+# Phase 3: Install
+echo "📥 Installing dependencies..."
+cd qa && bun install && cd ..
 
-echo "KATA Framework setup complete!"
+echo "🎭 Installing Playwright browsers..."
+cd qa && bunx playwright install chromium && cd ..
+
+# Phase 4: Environment
+echo "⚙️ Creating environment file..."
+cp qa/.env.example qa/.env
+
+echo "✅ KATA Framework setup complete!"
+echo ""
+echo "Next steps:"
+echo "1. Update qa/.env with your project URLs and credentials"
+echo "2. Update qa/config/variables.ts with your URLs"
+echo "3. Adapt authentication in qa/tests/components/api/AuthApi.ts"
+echo "4. Adapt login page in qa/tests/components/ui/LoginPage.ts"
+echo "5. Run: cd qa && bun run test --project=api-setup"
 ```
-
----
-
-## File Summary
-
-### Downloaded from Template (DO NOT modify without need)
-
-| File                              | Purpose                        |
-| --------------------------------- | ------------------------------ |
-| `tests/utils/decorators.ts`       | @atc decorator implementation  |
-| `tests/utils/KataReporter.ts`     | Allure reporter integration    |
-| `tests/utils/tmsSync.ts`          | TMS synchronization            |
-| `tests/components/TestContext.ts` | Base utilities layer           |
-| `tests/components/api/ApiBase.ts` | HTTP client wrapper            |
-| `tests/components/ui/UiBase.ts`   | Playwright page wrapper        |
-| `tests/components/*Fixture.ts`    | DI containers                  |
-| `playwright.config.ts`            | Playwright configuration       |
-| `config/variables.ts`             | Environment configuration      |
-| `scripts/kata-manifest.ts`        | Extract ATCs from codebase     |
-| `scripts/sync-openapi.ts`         | Sync OpenAPI spec & types      |
-| `.prettierrc`                     | Prettier code formatter config |
-| `.prettierignore`                 | Files to ignore in formatting  |
-| `.editorconfig`                   | Editor consistency settings    |
-| `eslint.config.js`                | ESLint flat config             |
-| `tsconfig.json`                   | TypeScript configuration       |
-
-### Generated Per Project (AI creates these)
-
-| File                                            | Purpose                |
-| ----------------------------------------------- | ---------------------- |
-| `tests/components/api/{Entity}Api.ts`           | Domain API components  |
-| `tests/components/ui/{Entity}Page.ts`           | Domain UI components   |
-| `tests/components/preconditions/{Flow}Flows.ts` | Reusable flows         |
-| `tests/e2e/{feature}/*.test.ts`                 | E2E test files         |
-| `tests/integration/{feature}.test.ts`           | Integration test files |
-| `tests/data/fixtures/*.json`                    | Test data              |
-
----
-
-## KATA Guidelines Reference
-
-After setup, always consult these guidelines:
-
-| Document                  | When to Read         |
-| ------------------------- | -------------------- |
-| `KATA-AI-GUIDE.md`        | Before any KATA work |
-| `automation-standards.md` | When writing tests   |
-| `kata-architecture.md`    | Understanding layers |
-| `api-setup-guide.md`      | Setting up API tests |
-| `test-data-management.md` | Managing test data   |
-
-**Location:** `.context/guidelines/TAE/`
 
 ---
 
 ## Post-Setup Checklist
 
-- [ ] Dependencies installed (`bun install`)
-- [ ] Browsers installed (`bunx playwright install`)
-- [ ] Directory structure created
-- [ ] Core framework files downloaded
-- [ ] Configuration files in place
-- [ ] Code quality tools configured (Prettier, ESLint)
-- [ ] Git hooks installed (Husky, lint-staged)
-- [ ] TAE guidelines downloaded
-- [ ] `.env` file configured
+- [ ] Boilerplate downloaded to `qa/` (no git history)
+- [ ] Unnecessary files cleaned up
+- [ ] Dependencies installed (`qa/node_modules/`)
+- [ ] Playwright browsers installed
+- [ ] `qa/.env` configured with project values
+- [ ] `qa/config/variables.ts` updated with URLs
+- [ ] `AuthApi.ts` adapted to project's auth endpoint
+- [ ] `LoginPage.ts` adapted to project's login form
+- [ ] Auth setup tests passing
 - [ ] TypeScript compiles without errors
-- [ ] Linting passes (`bun run lint`)
-- [ ] Format check passes (`bun run format:check`)
-- [ ] Sample test runs successfully
-- [ ] Domain-specific components created
+- [ ] Lint passes
+- [ ] First domain component created
 - [ ] Fixtures updated with new components
+- [ ] Root `package.json` has qa scripts (optional)
+- [ ] Root `.gitignore` updated (optional)
+
+---
+
+## Troubleshooting
+
+### Download fails
+
+```bash
+# Verify GitHub CLI auth
+gh auth status
+
+# Verify repo access
+gh repo view upex-galaxy/ai-driven-test-automation-boilerplate
+
+# Alternative: manual download
+# 1. Go to https://github.com/upex-galaxy/ai-driven-test-automation-boilerplate
+# 2. Click "Code" > "Download ZIP"
+# 3. Extract contents into qa/ directory
+```
+
+### Auth setup fails
+
+1. Check `qa/.env` has correct credentials
+2. Check `AuthApi.ts` endpoint matches your API
+3. Check `LoginPage.ts` locators match your form
+4. Run with debug: `cd qa && bun run test:debug --project=ui-setup`
+
+### Type errors
+
+```bash
+cd qa && bun run type-check
+# Check import aliases in tsconfig.json
+# Verify all imports use @utils/, @api/, @ui/, etc.
+```
+
+---
+
+## Files Reference
+
+### Keep from Boilerplate (Core Framework)
+
+| Directory/File | Purpose |
+|----------------|---------|
+| `tests/components/` | KATA components (TestContext, ApiBase, UiBase, Fixtures) |
+| `tests/setup/` | Authentication setup (global, api, ui) |
+| `tests/utils/` | Decorators, reporters, utilities |
+| `config/` | Environment variables configuration |
+| `scripts/` | KATA manifest, sync scripts |
+| `.context/guidelines/TAE/` | KATA documentation for AI |
+| `playwright.config.ts` | Playwright configuration |
+| `tsconfig.json` | TypeScript configuration |
+| `eslint.config.js` | ESLint configuration |
+| `.prettierrc` | Prettier configuration |
+
+### Remove from Boilerplate (Not Needed)
+
+| Directory/File | Reason |
+|----------------|--------|
+| `.prompts/` | Use root project prompts |
+| `.books/` | Use root project books |
+| `docs/` | Use root project docs |
+| `.context/PRD,SRS,idea,PBI/` | Use root project context |
+| `tests/e2e/example/` | Will create project-specific tests |
+| `README.md` | Use root project README |
+
+### Create Per Project
+
+| File | Purpose |
+|------|---------|
+| `tests/components/api/{Entity}Api.ts` | Domain API components |
+| `tests/components/ui/{Entity}Page.ts` | Domain UI components |
+| `tests/e2e/{feature}/*.test.ts` | E2E test files |
+| `tests/integration/{feature}.test.ts` | Integration test files |
+
+---
+
+**Version**: 2.0
+**Last Updated**: 2025-02-16
