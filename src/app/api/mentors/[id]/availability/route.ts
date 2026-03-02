@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createServer } from '@/lib/supabase/server'
+import { createServerFromRequest } from '@/lib/supabase/server'
 import { addDays } from 'date-fns'
 
 /**
@@ -13,7 +13,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id: mentorId } = await params
-  const supabase = await createServer()
+  const supabase = await createServerFromRequest(request)
 
   // Fetch mentor availability
   const { data: availability, error: availError } = await supabase

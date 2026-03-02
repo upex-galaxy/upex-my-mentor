@@ -6,7 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createServer } from '@/lib/supabase/server'
+import { createServerFromRequest } from '@/lib/supabase/server'
 import { z } from 'zod'
 
 const meetingLinkSchema = z.object({
@@ -32,7 +32,7 @@ export async function PATCH(
 ): Promise<NextResponse<ApiResponse>> {
   try {
     const { id: bookingId } = await params
-    const supabase = await createServer()
+    const supabase = await createServerFromRequest(request)
 
     // 1. Get authenticated user
     const {

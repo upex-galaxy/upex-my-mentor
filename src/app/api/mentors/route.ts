@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createServer } from '@/lib/supabase/server'
+import { createServerFromRequest } from '@/lib/supabase/server'
 
 const PAGE_SIZE = 20
 
@@ -28,7 +28,7 @@ export async function GET(request: Request) {
     50
   )
 
-  const supabase = await createServer()
+  const supabase = await createServerFromRequest(request)
 
   let mentorsResult
 

@@ -6,9 +6,9 @@
  * for the mentor to complete their onboarding.
  */
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { createServer } from '@/lib/supabase/server'
+import { createServerFromRequest } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/server'
 import { getBaseUrl } from '@/lib/urls'
 import type { Database } from '@/types/supabase'
@@ -20,9 +20,9 @@ const supabaseAdmin = createClient<Database>(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-export async function POST(): Promise<NextResponse<StripeConnectOnboardResponse | PaymentAPIError>> {
+export async function POST(request: NextRequest): Promise<NextResponse<StripeConnectOnboardResponse | PaymentAPIError>> {
   try {
-    const supabase = await createServer()
+    const supabase = await createServerFromRequest(request)
 
     // Get authenticated user
     const { data: { user }, error: authError } = await supabase.auth.getUser()

@@ -1,5 +1,5 @@
-import { createServer } from '@/lib/supabase/server'
-import { NextResponse } from 'next/server'
+import { createServerFromRequest } from '@/lib/supabase/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 /**
  * MYM-58: GET /api/messages/unread-count
@@ -10,9 +10,9 @@ import { NextResponse } from 'next/server'
  * - It was NOT sent by the user
  * - It has is_read = false
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const supabase = await createServer()
+    const supabase = await createServerFromRequest(request)
 
     // Get current user
     const {

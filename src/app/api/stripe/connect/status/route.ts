@@ -3,13 +3,13 @@
  * MYM-25: Get Stripe Connect account status for the authenticated mentor
  */
 
-import { NextResponse } from 'next/server'
-import { createServer } from '@/lib/supabase/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { createServerFromRequest } from '@/lib/supabase/server'
 import type { StripeConnectStatus, StripeConnectStatusResponse, PaymentAPIError } from '@/types/payments'
 
-export async function GET(): Promise<NextResponse<StripeConnectStatusResponse | PaymentAPIError>> {
+export async function GET(request: NextRequest): Promise<NextResponse<StripeConnectStatusResponse | PaymentAPIError>> {
   try {
-    const supabase = await createServer()
+    const supabase = await createServerFromRequest(request)
 
     // Get authenticated user
     const { data: { user }, error: authError } = await supabase.auth.getUser()
