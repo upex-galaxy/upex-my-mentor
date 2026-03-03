@@ -1,110 +1,45 @@
 /**
- * Users API Schemas
+ * Users API OpenAPI Paths Registration
  *
  * GET /api/users/[id]/communication-channels - Get public channels
  * GET /api/users/me/communication-channels - Get my channels
  * PUT /api/users/me/communication-channels - Update my channels
  *
- * IMPORTANT: These schemas MUST match the actual implementation in:
- * - src/app/api/users/me/communication-channels/route.ts
- * - src/app/api/users/[id]/communication-channels/route.ts
- * - src/types/communication.ts
+ * IMPORTANT: Schemas are imported from @/types/communication.ts (Single Source of Truth).
+ * DO NOT define schemas here - only register paths.
  */
 
-import { registry, z } from '../registry'
-import { UUIDSchema } from './common'
+import { z } from 'zod'
+import { registry } from '../registry'
+
+// Import schemas from Single Source of Truth
+import {
+  CommunicationChannelTypeSchema,
+  CommunicationChannelSchema,
+  ChannelInputSchema,
+  UpdateCommunicationChannelsRequestSchema,
+  CommunicationChannelsSuccessResponseSchema,
+  CommunicationChannelsErrorResponseSchema,
+} from '@/types/communication'
+
+// Re-export types for convenience
+export type {
+  CommunicationChannelType,
+  CommunicationChannel,
+  ChannelInput,
+  UpdateCommunicationChannelsRequest,
+  CommunicationChannelsSuccessResponse,
+  CommunicationChannelsErrorResponse,
+} from '@/types/communication'
 
 // ============================================================================
-// Communication Channel Types (from src/types/communication.ts)
+// Common Schemas (local to this file)
 // ============================================================================
 
-/**
- * All supported communication channel types.
- * MUST match CHANNEL_TYPES in src/types/communication.ts
- */
-export const CommunicationChannelTypeSchema = z.enum([
-  'whatsapp',
-  'slack',
-  'email',
-  'google_meet',
-  'zoom',
-  'discord',
-  'teams',
-  'skype',
-  'telegram',
-]).openapi('CommunicationChannelType')
-
-// ============================================================================
-// Response Schema (what the API returns)
-// Matches CommunicationChannel interface in src/types/communication.ts
-// ============================================================================
-
-export const CommunicationChannelSchema = z.object({
-  id: UUIDSchema.openapi({ description: 'Channel unique identifier' }),
-  userId: UUIDSchema.openapi({ description: 'Owner user ID' }),
-  channelType: CommunicationChannelTypeSchema.openapi({
-    description: 'Type of communication channel',
-  }),
-  handle: z.string().nullable().openapi({
-    description: 'Channel-specific identifier (URL, username, phone, etc.)',
-    example: 'https://meet.google.com/abc-defg-hij',
-  }),
-  isActive: z.boolean().openapi({
-    description: 'Whether this channel is currently active',
-  }),
-  createdAt: z.string().datetime().openapi({
-    description: 'When the channel was created',
-  }),
-  updatedAt: z.string().datetime().openapi({
-    description: 'When the channel was last updated',
-  }),
-}).openapi('CommunicationChannel')
-
-// ============================================================================
-// API Response Schemas
-// ============================================================================
-
-export const CommunicationChannelsSuccessResponseSchema = z.object({
-  success: z.literal(true),
-  channels: z.array(CommunicationChannelSchema),
-}).openapi('CommunicationChannelsSuccessResponse')
-
-export const CommunicationChannelsErrorResponseSchema = z.object({
-  success: z.literal(false),
-  error: z.string().openapi({
-    description: 'Error code',
-    example: 'UNAUTHORIZED',
-  }),
-  message: z.string().openapi({
-    description: 'Human-readable error message',
-    example: 'Debes iniciar sesión para acceder a esta función',
-  }),
-}).openapi('CommunicationChannelsErrorResponse')
-
-// ============================================================================
-// Request Schema (what the API expects)
-// Matches ChannelInput interface in route.ts
-// ============================================================================
-
-export const ChannelInputSchema = z.object({
-  type: CommunicationChannelTypeSchema.openapi({
-    description: 'Type of communication channel',
-    example: 'google_meet',
-  }),
-  handle: z.string().nullable().optional().openapi({
-    description: 'Channel-specific identifier (URL, username, phone, etc.)',
-    example: 'https://meet.google.com/abc-defg-hij',
-  }),
-  isActive: z.boolean().optional().default(true).openapi({
-    description: 'Whether this channel is active (defaults to true)',
-  }),
-}).openapi('ChannelInput')
-
-export const UpdateCommunicationChannelsRequestSchema = z.object({
-  channels: z.array(ChannelInputSchema).openapi({
-    description: 'List of communication channels to set (full replacement)',
-  }),
-}).openapi('UpdateCommunicationChannelsRequest')
+const UUIDSchema = z.string().uuid().openapi({
+  description: 'UUID v4 identifier',
+  example: '550e8400-e29b-41d4-a716-446655440000',
+})
 
 // ============================================================================
 // Register Paths
@@ -285,14 +220,3 @@ Only mentors can have communication channels. Students will receive a 403 error.
     },
   },
 })
-
-// ============================================================================
-// Export types for use in route handlers
-// ============================================================================
-
-export type CommunicationChannelType = z.infer<typeof CommunicationChannelTypeSchema>
-export type CommunicationChannel = z.infer<typeof CommunicationChannelSchema>
-export type ChannelInput = z.infer<typeof ChannelInputSchema>
-export type CommunicationChannelsSuccessResponse = z.infer<typeof CommunicationChannelsSuccessResponseSchema>
-export type CommunicationChannelsErrorResponse = z.infer<typeof CommunicationChannelsErrorResponseSchema>
-export type UpdateCommunicationChannelsRequest = z.infer<typeof UpdateCommunicationChannelsRequestSchema>

@@ -1,44 +1,139 @@
 /**
  * MYM-30: Communication Channel Types
  *
- * Types and configuration for the Communication Channel Agreement feature.
- * Allows mentors to configure preferred communication methods and mentees
- * to select their preference during booking.
+ * SINGLE SOURCE OF TRUTH for communication channels.
+ * These Zod schemas are used for:
+ * 1. Runtime validation in API route handlers
+ * 2. OpenAPI documentation generation
+ * 3. TypeScript type inference
+ *
+ * DO NOT define these types elsewhere - always import from here.
  */
 
+import { z } from 'zod'
+import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi'
 import type { Database } from './supabase'
 
-// Database row type
+// Extend Zod with OpenAPI methods
+extendZodWithOpenApi(z)
+
+// ============================================================================
+// Database Types (from Supabase)
+// ============================================================================
+
 export type CommunicationChannelRow = Database['public']['Tables']['communication_channels']['Row']
 export type CommunicationChannelInsert = Database['public']['Tables']['communication_channels']['Insert']
 export type CommunicationChannelUpdate = Database['public']['Tables']['communication_channels']['Update']
 
-/**
- * Supported communication channel types
- */
-export type CommunicationChannelType =
-  | 'whatsapp'
-  | 'slack'
-  | 'email'
-  | 'google_meet'
-  | 'zoom'
-  | 'discord'
-  | 'teams'
-  | 'skype'
-  | 'telegram'
+// ============================================================================
+// Zod Schemas (Single Source of Truth)
+// ============================================================================
 
 /**
- * Communication channel configuration from database
+ * All supported communication channel types.
+ * Used for validation and OpenAPI enum generation.
  */
-export interface CommunicationChannel {
-  id: string
-  userId: string
-  channelType: CommunicationChannelType
-  handle: string | null
-  isActive: boolean
-  createdAt: string
-  updatedAt: string
-}
+export const CommunicationChannelTypeSchema = z.enum([
+  'whatsapp',
+  'slack',
+  'email',
+  'google_meet',
+  'zoom',
+  'discord',
+  'teams',
+  'skype',
+  'telegram',
+]).openapi('CommunicationChannelType')
+
+/**
+ * Communication channel as returned by the API (domain object).
+ * Matches the shape returned by mapChannelRowToDomain().
+ */
+export const CommunicationChannelSchema = z.object({
+  id: z.string().uuid().openapi({ description: 'Channel unique identifier' }),
+  userId: z.string().uuid().openapi({ description: 'Owner user ID' }),
+  channelType: CommunicationChannelTypeSchema.openapi({
+    description: 'Type of communication channel',
+  }),
+  handle: z.string().nullable().openapi({
+    description: 'Channel-specific identifier (URL, username, phone, etc.)',
+    example: 'https://meet.google.com/abc-defg-hij',
+  }),
+  isActive: z.boolean().openapi({
+    description: 'Whether this channel is currently active',
+  }),
+  createdAt: z.string().openapi({
+    description: 'When the channel was created',
+  }),
+  updatedAt: z.string().openapi({
+    description: 'When the channel was last updated',
+  }),
+}).openapi('CommunicationChannel')
+
+/**
+ * Input schema for creating/updating a channel.
+ * Used in PUT /api/users/me/communication-channels request body.
+ */
+export const ChannelInputSchema = z.object({
+  type: CommunicationChannelTypeSchema.openapi({
+    description: 'Type of communication channel',
+    example: 'google_meet',
+  }),
+  handle: z.string().nullable().optional().openapi({
+    description: 'Channel-specific identifier (URL, username, phone, etc.)',
+    example: 'https://meet.google.com/abc-defg-hij',
+  }),
+  isActive: z.boolean().optional().default(true).openapi({
+    description: 'Whether this channel is active (defaults to true)',
+  }),
+}).openapi('ChannelInput')
+
+/**
+ * Request body for PUT /api/users/me/communication-channels
+ */
+export const UpdateCommunicationChannelsRequestSchema = z.object({
+  channels: z.array(ChannelInputSchema).openapi({
+    description: 'List of communication channels to set (full replacement)',
+  }),
+}).openapi('UpdateCommunicationChannelsRequest')
+
+/**
+ * Success response for communication channels endpoints.
+ */
+export const CommunicationChannelsSuccessResponseSchema = z.object({
+  success: z.literal(true),
+  channels: z.array(CommunicationChannelSchema),
+}).openapi('CommunicationChannelsSuccessResponse')
+
+/**
+ * Error response for communication channels endpoints.
+ */
+export const CommunicationChannelsErrorResponseSchema = z.object({
+  success: z.literal(false),
+  error: z.string().openapi({
+    description: 'Error code',
+    example: 'UNAUTHORIZED',
+  }),
+  message: z.string().openapi({
+    description: 'Human-readable error message',
+    example: 'Debes iniciar sesión para acceder a esta función',
+  }),
+}).openapi('CommunicationChannelsErrorResponse')
+
+// ============================================================================
+// Inferred Types (from Zod schemas)
+// ============================================================================
+
+export type CommunicationChannelType = z.infer<typeof CommunicationChannelTypeSchema>
+export type CommunicationChannel = z.infer<typeof CommunicationChannelSchema>
+export type ChannelInput = z.infer<typeof ChannelInputSchema>
+export type UpdateCommunicationChannelsRequest = z.infer<typeof UpdateCommunicationChannelsRequestSchema>
+export type CommunicationChannelsSuccessResponse = z.infer<typeof CommunicationChannelsSuccessResponseSchema>
+export type CommunicationChannelsErrorResponse = z.infer<typeof CommunicationChannelsErrorResponseSchema>
+
+// ============================================================================
+// Legacy Interface (for booking JSONB storage)
+// ============================================================================
 
 /**
  * Communication channel stored in booking (simplified for JSONB)
@@ -47,6 +142,10 @@ export interface BookingCommunicationChannel {
   type: CommunicationChannelType
   handle?: string | null
 }
+
+// ============================================================================
+// UI Configuration (not part of API schema)
+// ============================================================================
 
 /**
  * Configuration metadata for each channel type (UI display)
@@ -139,19 +238,14 @@ export const CHANNEL_CONFIG: Record<CommunicationChannelType, ChannelConfig> = {
 }
 
 /**
- * All available channel types as array (for iteration)
+ * All available channel types as array (for iteration).
+ * Derived from the Zod schema to ensure consistency.
  */
-export const CHANNEL_TYPES: CommunicationChannelType[] = [
-  'google_meet',
-  'zoom',
-  'slack',
-  'whatsapp',
-  'discord',
-  'teams',
-  'email',
-  'telegram',
-  'skype',
-]
+export const CHANNEL_TYPES: CommunicationChannelType[] = CommunicationChannelTypeSchema.options
+
+// ============================================================================
+// Utility Functions
+// ============================================================================
 
 /**
  * Convert database row to domain object
@@ -190,8 +284,25 @@ export function channelRequiresLink(type: CommunicationChannelType): boolean {
 }
 
 /**
- * Validate that a string is a valid channel type
+ * Validate that a string is a valid channel type.
+ * Uses Zod schema for validation.
  */
 export function isValidChannelType(type: string): type is CommunicationChannelType {
-  return CHANNEL_TYPES.includes(type as CommunicationChannelType)
+  return CommunicationChannelTypeSchema.safeParse(type).success
+}
+
+/**
+ * Parse and validate channel input from request body.
+ * Returns validated data or throws ZodError.
+ */
+export function parseChannelInput(data: unknown): ChannelInput {
+  return ChannelInputSchema.parse(data)
+}
+
+/**
+ * Safely parse channel input, returning null on failure.
+ */
+export function safeParseChannelInput(data: unknown): ChannelInput | null {
+  const result = ChannelInputSchema.safeParse(data)
+  return result.success ? result.data : null
 }
