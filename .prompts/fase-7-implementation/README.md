@@ -12,7 +12,8 @@ En esta fase **NO generas documentación**. En su lugar, **implementas código r
 **Esta fase se enfoca SOLO en:**
 
 - ✅ Implementar funcionalidad según `implementation-plan.md`
-- ✅ **Crear unit tests para lógica de negocio** (nuevo en v4.0)
+- ✅ **Crear unit tests para lógica de negocio**
+- ✅ **Corregir bugs/defects reportados en Jira**
 - ✅ Seguir code standards de `.context/guidelines/`
 - ✅ Validar manualmente que funciona (smoke testing)
 - ✅ Crear código limpio y mantenible
@@ -54,12 +55,13 @@ Fase 11 (Test Automation - Integration/E2E)
 
 ## 📚 Prompts disponibles
 
-| Prompt                             | Cuándo usarlo                     | Propósito                            | Duración  |
-| ---------------------------------- | --------------------------------- | ------------------------------------ | --------- |
-| **`implement-story.md`** ⭐        | Iniciar story desde cero          | Implementar funcionalidad completa   | 1-4 hours |
-| **`unit-testing.md`** ⭐ **NUEVO** | Durante/después de implementación | Crear unit tests para lógica crítica | 30-90 min |
-| **`continue-implementation.md`**   | Retomar story pausada             | Continuar desde donde quedó          | Variable  |
-| **`fix-issues.md`**                | Debuggear errores                 | Corregir bugs o errores              | Variable  |
+| Prompt                             | Cuándo usarlo                       | Propósito                              | Duración  |
+| ---------------------------------- | ----------------------------------- | -------------------------------------- | --------- |
+| **`implement-story.md`** ⭐        | Iniciar story desde cero            | Implementar funcionalidad completa     | 1-4 hours |
+| **`unit-testing.md`** ⭐           | Durante/después de implementación   | Crear unit tests para lógica crítica   | 30-90 min |
+| **`bug-fix-workflow.md`** ⭐       | Bug/Defect reportado en Jira        | Workflow completo: triage, fix, document | 30-90 min |
+| **`continue-implementation.md`**   | Retomar story pausada               | Continuar desde donde quedó            | Variable  |
+| **`fix-issues.md`**                | Debuggear errores durante desarrollo| Corregir bugs encontrados localmente   | Variable  |
 
 ---
 
@@ -96,7 +98,7 @@ Use: continue-implementation.md
 Use: unit-testing.md
 ```
 
-### Escenario 3: Errores/bugs durante implementación
+### Escenario 3: Errores/bugs durante implementación local
 
 ```bash
 # 1. Debuggea el error
@@ -109,7 +111,30 @@ Use: fix-issues.md
 Use: unit-testing.md
 ```
 
-### Escenario 4: Solo agregar tests a código existente
+### Escenario 4: Bug/Defect reportado en Jira (desde QA o Producción)
+
+```bash
+# 1. Bug reportado en Jira por QA o usuarios
+Use: bug-fix-workflow.md
+
+# 2. La IA:
+#    - Lee contexto completo de Jira (issue + comentarios)
+#    - Reproduce el bug
+#    - Hace triage (real bug vs WAD vs duplicate)
+#    - Implementa fix mínimo
+#    - Crea branch, commit, PR
+#    - Documenta en Jira
+
+# 3. Si es HOTFIX (crítico en producción):
+#    - Branch: hotfix/ISSUE-KEY/...
+#    - PR directo a main
+
+# 4. Para múltiples bugs en una sesión:
+#    - Usa JQL query del prompt para listar bugs pendientes
+#    - Usa Session Report Template al finalizar
+```
+
+### Escenario 5: Solo agregar tests a código existente
 
 ```bash
 # Si ya implementaste la funcionalidad pero faltaron tests:

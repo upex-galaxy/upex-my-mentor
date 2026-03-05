@@ -37,7 +37,6 @@ Identify, validate, and report defects found during exploratory testing. This pr
 | `customfield_10116` | SEVERITY                          | Dropdown | `Crítica`, `Mayor`, `Moderada`, `Menor`, `Trivial`                                                                                                              |
 | `customfield_12210` | Test Environment                  | Dropdown | `Dev`, `QA`, `UAT`, `Staging`, `Production`                                                                                                                     |
 | `customfield_10701` | Root Cause🐞                      | Dropdown | `Code Error`, `Config/Env Error`, `Environment Error`, `Requirement Error`, `Working As Designed (WAD)`, `Third-Party Error`, `Integration Error`, `Data Error` |
-| `customfield_10049` | Root Cause Text                   | Textarea | Technical analysis: file path, function name, API endpoint, or "Investigation needed" if unknown                                                                |
 
 ### Optional Fields
 
@@ -410,7 +409,6 @@ Tool: mcp__atlassian__jira_create_issue
     "customfield_10116": {"value": "[Crítica|Mayor|Moderada|Menor|Trivial]"},
     "customfield_12210": {"value": "[Dev|QA|UAT|Staging|Production]"},
     "customfield_10701": {"value": "[Code Error|Config/Env Error|Environment Error|Requirement Error|Working As Designed (WAD)|Third-Party Error|Integration Error|Data Error]"},
-    "customfield_10049": "[ROOT CAUSE TEXT: Technical analysis or 'Investigation needed']",
 
     "customfield_10111": "[WORKAROUND: Temporary solution - omit if none]",
     "customfield_10607": "[EVIDENCE: Notes about attachments - omit if using attachments parameter]",
@@ -421,7 +419,7 @@ Tool: mcp__atlassian__jira_create_issue
 
 **Field Format Rules:**
 
-- **Textarea fields** (`customfield_10109`, `10110`, `10049`, `10111`, `10607`): Plain string
+- **Textarea fields** (`customfield_10109`, `10110`, `10111`, `10607`): Plain string
 - **Dropdown fields** (`customfield_10112`, `10116`, `10701`, `12210`, `12212`): Object with `{"value": "Option"}`
 - **Omit optional fields** by not including them (don't set to `null`)
 
@@ -692,7 +690,6 @@ mcp__atlassian__jira_create_issue({
     "customfield_10116": {"value": "Mayor"},
     "customfield_12210": {"value": "Staging"},
     "customfield_10701": {"value": "Code Error"},
-    "customfield_10049": "La validación de duplicados en la función handleSubmit compara emails con === en lugar de usar toLowerCase() para una comparación case-insensitive.",
     "customfield_12212": {"value": "Bugfix"}
   }
 })
