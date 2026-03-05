@@ -30,11 +30,11 @@
 
 ### 2. Autenticación
 
-- Email Mentor: `joseqa81@gmail.com`
-- Password: `f8N6g5agBHuv#`
+- Email Mentor: <MENTOR_EMAIL>
+- Password: <MENTOR_PASSWORD>
 
-- Email Mentee (alumno): `jose-student@hotmail.com`
-- Password: `joS123@456`
+- Email Mentee (alumno): <MENTEE_EMAIL>
+- Password: <MENTEE_PASSWORD>
 - Deben redirigir al Dashboard después del login.
 
 - [x] **Login funciona**
@@ -83,10 +83,11 @@
   - Abrir DevTools → Network tab
   - Validar requests a `/api/conversations` o similar.
 
-- [❌] **Realtime Updates**
+- [⚠️] **Realtime Updates (incoming messages without refresh)**
   - Acción: Recibir mensaje nuevo de un mentee (simulado u otro dispositivo).
   - Validar: El widget se actualiza automáticamente sin refrescar.
   - **Nota:** FAILED. Tras limpiar caché y cookies, el widget 'Mensajes Recientes' sigue sin actualizarse automáticamente tras el envío. Requiere F5 (Scenario 1 & 9).
+  - **Actualización de Estado:** Este comportamiento se reclasificó como **Enhancement** y se abordará en una nueva Epic (Realtime Messaging Refactor). No bloquea el MVP actual de MYM-59.
 
 - [x] **Datos del Perfil**
   - Validar: Al abrir la conversación, se puede navegar al perfil del mentee.
@@ -137,3 +138,20 @@ El componente es visualmente estable y cumple con la navegación básica (incluy
 1. Validar corrección de MYM-132 (Resiliencia).
 2. Investigar si el Issue 3 es un problema de Front-end (Suscripción de React) o de Back-end (Socket/API).
 3. Iniciar fase de pruebas de API para mayor diagnóstico.
+
+---
+
+## Addendum: Estado Actual (2026-03-05)
+
+> Nota: El contenido anterior es un **snapshot** del Smoke Test ejecutado el 21/01/2026.
+> Esta sección documenta el **estado posterior** tras fixes y decisiones de scope, sin modificar los hallazgos originales.
+
+### Actualizaciones de Bugs / Scope
+
+- **MYM-132:** Closed / Fixed (retesting PASS).
+- **MYM-155:** Closed / Fixed (retesting PASS).
+- **MYM-137:** Closed / Fixed (retesting PASS).
+- **MYM-96:** Cerrado como **Enhancement**, se gestionará en una nueva **Epic “Realtime Messaging Refactor”** (fuera de scope del MVP de MYM-59).
+
+### Estado de la US (MYM-59)
+- **Estado actual:** QA Approved (MVP scope).
