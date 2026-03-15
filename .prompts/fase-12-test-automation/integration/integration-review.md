@@ -10,9 +10,9 @@
 
 **Cargar estos archivos de referencia:**
 
-1. `.context/guidelines/TAE/kata-ai-index.md` → Patrones core KATA
-2. `.context/guidelines/TAE/automation-standards.md` → Reglas y anti-patrones
-3. `.context/guidelines/TAE/api-testing-patterns.md` → Patrones de API
+1. `qa/.context/guidelines/TAE/kata-ai-index.md` → Patrones core KATA
+2. `qa/.context/guidelines/TAE/automation-standards.md` → Reglas y anti-patrones
+3. `qa/.context/guidelines/TAE/api-testing-patterns.md` → Patrones de API
 
 ---
 
@@ -34,13 +34,13 @@
 
 ```bash
 # Leer el componente
-cat tests/components/api/{Resource}Api.ts
+cat qa/tests/components/api/{Resource}Api.ts
 
 # Leer el archivo de test
-cat tests/integration/{resource}/{resource}.test.ts
+cat qa/tests/integration/{resource}/{resource}.test.ts
 
 # Leer cambios de fixture
-cat tests/components/ApiFixture.ts
+cat qa/tests/components/ApiFixture.ts
 
 # Verificar tipos
 cat tests/data/types.ts

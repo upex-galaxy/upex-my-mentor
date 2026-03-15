@@ -19,9 +19,55 @@ Solo automatizar funcionalidad que ha sido validada manualmente y documentada.
 
 - ATCs documentados en Jira (Fase 11 completada)
 - ATCs marcados como "automation-candidate" (status CANDIDATE)
-- Framework KATA configurado (o usar kata-framework-setup.md)
+- Framework KATA configurado (ejecutar `kata-framework-setup.md` primero)
 
 **Trazabilidad:** Cada ATC usa el decorador `@atc('PROJECT-XXX')` para vincular código con Jira.
+
+---
+
+## Validación de Entorno (OBLIGATORIO)
+
+**Antes de usar cualquier prompt de esta fase, verificar que el directorio `qa/` existe y el framework KATA está instalado:**
+
+```bash
+# 1. Verificar que existe el directorio qa/
+ls -la qa/
+
+# 2. Verificar estructura KATA
+ls qa/tests/components/
+
+# 3. Verificar clases base existen
+cat qa/tests/components/ui/UiBase.ts > /dev/null && echo "✅ UiBase existe"
+cat qa/tests/components/api/ApiBase.ts > /dev/null && echo "✅ ApiBase existe"
+
+# 4. Verificar fixtures
+cat qa/tests/components/UiFixture.ts > /dev/null && echo "✅ UiFixture existe"
+cat qa/tests/components/ApiFixture.ts > /dev/null && echo "✅ ApiFixture existe"
+```
+
+**Si alguna verificación falla:**
+
+→ Ejecutar primero: `.prompts/kata-framework-setup.md`
+
+**Estructura esperada:**
+
+```
+qa/
+├── tests/
+│   ├── components/
+│   │   ├── api/
+│   │   │   └── ApiBase.ts
+│   │   ├── ui/
+│   │   │   └── UiBase.ts
+│   │   ├── ApiFixture.ts
+│   │   └── UiFixture.ts
+│   ├── e2e/
+│   ├── integration/
+│   └── data/
+│       └── types.ts
+├── playwright.config.ts
+└── package.json
+```
 
 ---
 
@@ -30,7 +76,7 @@ Solo automatizar funcionalidad que ha sido validada manualmente y documentada.
 **Antes de CUALQUIER trabajo de automatización, leer:**
 
 ```
-.context/guidelines/TAE/
+qa/.context/guidelines/TAE/
 ├── KATA-AI-GUIDE.md          # Orientación rápida
 ├── automation-standards.md    # Reglas y patrones
 └── kata-architecture.md       # Estructura de capas
@@ -77,7 +123,7 @@ Automatización de tests End-to-End que interactúan con la interfaz de usuario.
 | 2    | `e2e/e2e-coding.md` | Implementar componente UI y archivo de test                      |
 | 3    | `e2e/e2e-review.md` | Validar cumplimiento KATA y calidad de código                    |
 
-**Ubicación de tests:** `tests/e2e/{feature}/`
+**Ubicación de tests:** `qa/tests/e2e/{feature}/`
 **Fixture:** `{ kata }` o `{ ui }`
 
 ---
@@ -92,7 +138,7 @@ Automatización de tests de integración para endpoints de API.
 | 2    | `integration/integration-coding.md` | Implementar componente API y archivo de test |
 | 3    | `integration/integration-review.md` | Validar cumplimiento KATA y tipos de retorno |
 
-**Ubicación de tests:** `tests/integration/{resource}/`
+**Ubicación de tests:** `qa/tests/integration/{resource}/`
 **Fixture:** `{ api }`
 
 ---
@@ -209,6 +255,6 @@ ATP (Fase 5) → ATCs en Jira (Fase 11) → KATA Scripts (Fase 12)
 ## Documentación Relacionada
 
 - **QA Workflow:** `.prompts/us-qa-workflow.md`
-- **KATA Guidelines:** `.context/guidelines/TAE/`
+- **KATA Guidelines:** `qa/.context/guidelines/TAE/`
 - **Fase Anterior:** `.prompts/fase-11-test-documentation/`
 - **Docs de Automation:** `docs/testing/automation/`

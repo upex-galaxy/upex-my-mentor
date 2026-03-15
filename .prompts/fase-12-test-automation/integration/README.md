@@ -1,7 +1,7 @@
 # Integration Test Automation
 
 > **Propósito**: Automatizar tests de integración (API) siguiendo la arquitectura KATA.
-> **Ubicación de Tests**: `tests/integration/{resource}/{resource}.test.ts`
+> **Ubicación de Tests**: `qa/tests/integration/{resource}/{resource}.test.ts`
 
 ---
 
@@ -63,7 +63,7 @@ Antes de usar estos prompts:
 ## Arquitectura KATA para Integration
 
 ```
-tests/
+qa/tests/
 ├── components/
 │   ├── api/
 │   │   ├── ApiBase.ts        # Layer 2

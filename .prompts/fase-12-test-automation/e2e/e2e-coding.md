@@ -10,10 +10,10 @@
 
 **Cargar estos archivos antes de proceder:**
 
-1. `.context/guidelines/TAE/kata-ai-index.md` → Patrones core KATA
-2. `.context/guidelines/TAE/typescript-patterns.md` → Convenciones TypeScript
-3. `.context/guidelines/TAE/automation-standards.md` → Reglas y estándares
-4. `.context/playwright-automation-system.md` → Arquitectura de código
+1. `qa/.context/guidelines/TAE/kata-ai-index.md` → Patrones core KATA
+2. `qa/.context/guidelines/TAE/typescript-patterns.md` → Convenciones TypeScript
+3. `qa/.context/guidelines/TAE/automation-standards.md` → Reglas y estándares
+4. `qa/.context/guidelines/TAE/playwright-automation-system.md` → Arquitectura de código
 
 **Opcional (para exploración UI):**
 
@@ -36,10 +36,10 @@ Antes de codificar, verificar:
 
 ```bash
 # Verificar si existen las clases base
-cat tests/components/ui/UiBase.ts
+cat qa/tests/components/ui/UiBase.ts
 
 # Verificar estructura de fixture
-cat tests/components/UiFixture.ts
+cat qa/tests/components/UiFixture.ts
 
 # Verificar import aliases en tsconfig
 grep -A 10 '"paths"' tsconfig.json
@@ -84,7 +84,7 @@ Crear el componente KATA siguiendo la estructura de Layer 3:
 #### Template de Componente
 
 ```typescript
-// tests/components/ui/{PageName}Page.ts
+// qa/tests/components/ui/{PageName}Page.ts
 
 import type { TestContextOptions } from '@components/TestContext';
 import { expect } from '@playwright/test';
@@ -234,7 +234,7 @@ export class {PageName}Page extends UiBase {
 Agregar el nuevo componente a `UiFixture.ts`:
 
 ```typescript
-// tests/components/UiFixture.ts
+// qa/tests/components/UiFixture.ts
 
 import type { TestContextOptions } from '@components/TestContext';
 import { UiBase } from '@ui/UiBase';
@@ -272,7 +272,7 @@ Crear el archivo de test siguiendo patrones KATA:
 #### Template de Archivo de Test
 
 ```typescript
-// tests/e2e/{feature}/{feature}.test.ts
+// qa/tests/e2e/{feature}/{feature}.test.ts
 
 import { expect } from '@playwright/test';
 import { test } from '@TestFixture';
@@ -383,13 +383,13 @@ Ejecutar el test para verificar la implementación:
 
 ```bash
 # Ejecutar archivo de test específico
-bun run test tests/e2e/{feature}/{feature}.test.ts
+cd qa && bun run test tests/e2e/{feature}/{feature}.test.ts
 
 # Ejecutar con modo UI para debugging
 bun run test:ui --grep "{nombre del test}"
 
 # Ejecutar con trace para debugging detallado
-bun run test --trace on tests/e2e/{feature}/{feature}.test.ts
+cd qa && bun run test --trace on tests/e2e/{feature}/{feature}.test.ts
 ```
 
 ---
@@ -553,9 +553,9 @@ await ui.checkout.completeCheckoutSuccessfully();
 
 Después de completar la fase de Coding:
 
-- [ ] Componente UI creado: `tests/components/ui/{PageName}Page.ts`
-- [ ] Componente registrado en: `tests/components/UiFixture.ts`
-- [ ] Archivo de test creado: `tests/e2e/{feature}/{feature}.test.ts`
+- [ ] Componente UI creado: `qa/tests/components/ui/{PageName}Page.ts`
+- [ ] Componente registrado en: `qa/tests/components/UiFixture.ts`
+- [ ] Archivo de test creado: `qa/tests/e2e/{feature}/{feature}.test.ts`
 - [ ] Tipos definidos (si nuevos): `tests/data/types.ts`
 - [ ] Test pasa localmente: `bun run test <archivo-de-test>`
 - [ ] Sin errores TypeScript: `bun run type-check`
