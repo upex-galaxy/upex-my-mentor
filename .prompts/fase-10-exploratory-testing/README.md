@@ -67,6 +67,8 @@ This phase supports **complete feature validation** through three testing layers
 
 **Note:** 2a, 2b, 2c can be executed in any order or combination based on feature needs.
 
+**Bug Fixing:** When bugs are reported, developers use `.prompts/fase-7-implementation/bug-fix-workflow.md` to implement fixes.
+
 ---
 
 ## Execution Flow
@@ -97,7 +99,7 @@ US Status: Ready For QA
         ↓
 Decision: PASSED or FAILED?
     └── PASSED → Transition US to "QA Approved"
-    └── FAILED → Wait for fixes, re-test
+    └── FAILED → Wait for fixes (DEV uses bug-fix-workflow.md), re-test
 ```
 
 ---
@@ -193,6 +195,7 @@ If exploratory testing **PASSED**:
 ## Related Documentation
 
 - **QA Workflow:** `.prompts/us-qa-workflow.md`
+- **Bug Fixing (DEV):** `.prompts/fase-7-implementation/bug-fix-workflow.md`
 - **KATA Guidelines:** `.context/guidelines/TAE/`
 - **API Testing Guide:** `docs/testing/api-guide/`
 - **Database Testing Guide:** `docs/testing/database-guide/`

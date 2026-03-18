@@ -10,7 +10,7 @@
 
 **Cargar estos archivos de referencia:**
 
-1. `.context/guidelines/TAE/kata-ai-index.md` → Entender estructura de ATCs
+1. `qa/.context/guidelines/TAE/kata-ai-index.md` → Entender estructura de ATCs
 2. `.context/test-management-system.md` → Para issues conocidos y links de TMS
 3. Artefactos del run (descargados en esta fase)
 
