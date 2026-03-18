@@ -112,10 +112,17 @@
 - **Details:** Verified if the "unread" indicator (purple dot) disappears after opening the Quick Reply modal or reading the message.
 - **Result:** The purple dot persists even after the mentor interacts with the message. This confirms a mismatch between the UI notification state and the actual message read status. Logged as part of **[Issue 1]**.
 
-### 8. Edge Case: "The Infinite Message" - [FAILED]
+### 8. Edge Case: "The Infinite Message" - [PASSED]
 
 - **Details:** Received a 200-character string without spaces ("AAAAA...") to test layout stability and CSS text-overflow.
 - **Result:** The layout remained stable. The widget correctly truncated the long string using an ellipsis (...), preventing any visual overflow or container breaking.
+
+### 8.1 Edge Case: "The Infinite Message" (Chat Bubble / Modal) - [PASSED] (MYM-137)
+
+- **Details:** Sent/received a 200-character string without spaces ("AAAAA...") inside the conversation thread (Quick Reply modal) to validate text wrapping in the chat bubble.
+- **Expected:** The message should remain fully readable by breaking/wrapping the long string (e.g., `overflow-wrap: anywhere` / `word-break`), without truncation or overflow.
+- **Result:** The long string now wraps/breaks correctly inside the chat bubble and remains readable, with no overflow or truncation.
+- **Status Update:** This scenario was failing during exploratory and was logged as **MYM-137**. After the fix, re-testing confirms it is now **PASSED**.
 
 ### 9. Multitasking Scenario (Simultaneous Reception) - [FAILED]
 
@@ -145,6 +152,7 @@
 - **Expected:** The purple notification dot should disappear once the message is read/replied to.
 - **Actual:** The purple dot persists. It only clears after navigating to the full Messaging view.
 - **Evidence:** Visual observation during MYM-96 fix re-test.
+- **Status update:** This issue was addressed within MYM-96 and is considered resolved/improved (based on the latest retesting). It remains documented as a historical risk.
 
 ### Issue 2: Critical Application Crash on Network Loss [MYM-132]
 
@@ -156,6 +164,7 @@
   3. Type a message and click "Send".
 - **Expected:** The system should show a friendly error message and keep the text.
 - **Actual:** UI crashes into a white screen (Client-side exception).
+- **Status update:** Network crash fixed (MYM-132 closed), keep as regression risk.
 
 ### Issue 3: Dashboard Widget Fails to Sync Message Content in Real-Time
 
@@ -166,6 +175,7 @@
   2. Receive a message from another user.
 - **Expected:** The "Recent Messages" widget should update the message preview text automatically to show the most recent content received.
 - **Actual:** While notification indicators might trigger, the message text within the conversation item remains outdated (showing the previous message) until a manual page refresh.
+- **Status update:** (Scope): This behavior is reclassified as an 'Enhancement' and will be addressed in a new "Realtime Messaging Refactor" Epic. It does not block the acceptance of the current MYM-59 MVP, but it remains documented as a finding and technical evidence.
 
 **Technical Audit (Network Analysis):**
 
@@ -188,9 +198,19 @@
 
 ## Observations & Recommendations
 
+- **Issue 3 - Dashboard Widget Fails to Sync Message Content in Real-Time:** “Realtime receive/update moved to future Epic”.
+
 ### Positive Findings:
 
-- [To be completed tomorrow]
+- The Quick Reply Modal works end-to-end (open, send, toast notification, auto-close).
+
+- "View all messages" navigation and conversation/profile links work without errors.
+
+- "Ghost effect": The draft is not lost and no UI flickering occurs when receiving a message while typing.
+
+- Stress testing ("Spammer"): The system does not freeze and handles multiple rapid messages without crashing.
+
+- "Dead link": Navigation remains stable even during component re-renders.
 
 ### Areas of Concern:
 
@@ -205,6 +225,6 @@
 
 ## Next Steps
 
-- [ ] Report critical bugs in Jira.
-- [ ] Perform Database Testing (Supabase) to investigate the sync failure.
-- [ ] Complete pending scenarios (Multitasking & Network).
+- [✅] Report critical bugs in Jira.
+- [✅] Perform Database Testing (Supabase) to investigate the sync failure.
+- [✅] Complete pending scenarios (Multitasking & Network).
