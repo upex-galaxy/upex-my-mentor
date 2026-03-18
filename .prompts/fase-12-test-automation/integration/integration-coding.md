@@ -10,10 +10,10 @@
 
 **Cargar estos archivos antes de proceder:**
 
-1. `.context/guidelines/TAE/kata-ai-index.md` → Patrones core KATA
-2. `.context/guidelines/TAE/typescript-patterns.md` → Convenciones TypeScript
-3. `.context/guidelines/TAE/api-testing-patterns.md` → Patrones de API
-4. `.context/playwright-automation-system.md` → Arquitectura de código
+1. `qa/.context/guidelines/TAE/kata-ai-index.md` → Patrones core KATA
+2. `qa/.context/guidelines/TAE/typescript-patterns.md` → Convenciones TypeScript
+3. `qa/.context/guidelines/TAE/api-testing-patterns.md` → Patrones de API
+4. `qa/.context/guidelines/TAE/playwright-automation-system.md` → Arquitectura de código
 
 ---
 
@@ -32,16 +32,16 @@ Antes de codificar, verificar:
 
 ```bash
 # Verificar si existen las clases base
-cat tests/components/api/ApiBase.ts
+cat qa/tests/components/api/ApiBase.ts
 
 # Verificar estructura de fixture
-cat tests/components/ApiFixture.ts
+cat qa/tests/components/ApiFixture.ts
 
 # Verificar import aliases
-grep -A 10 '"paths"' tsconfig.json
+grep -A 10 '"paths"' qa/tsconfig.json
 
 # Verificar tipos existentes
-cat tests/data/types.ts
+cat qa/tests/data/types.ts
 ```
 
 ---
@@ -51,7 +51,7 @@ cat tests/data/types.ts
 Agregar todos los tipos necesarios para el componente API:
 
 ```typescript
-// tests/data/types.ts
+// qa/tests/data/types.ts
 
 // ============================================================================
 // TIPOS DE {RESOURCE}
@@ -118,12 +118,12 @@ export interface ApiErrorResponse {
 
 ### Paso 3: Implementar Componente API
 
-Crear el componente KATA API siguiendo la estructura de Layer 3:
+Crear el componente KATA API siguiendo estructura de Layer 3:
 
 #### Template de Componente
 
 ```typescript
-// tests/components/api/{Resource}Api.ts
+// qa/tests/components/api/{Resource}Api.ts
 
 import type { APIResponse } from '@playwright/test';
 import type { TestContextOptions } from '@components/TestContext';
@@ -135,6 +135,7 @@ import { atc } from '@utils/decorators';
 // IMPORTS/EXPORTS DE TIPOS
 // ============================================================================
 
+// Importar tipos del archivo central de tipos
 import type {
   Create{Resource}Payload,
   Update{Resource}Payload,
@@ -143,7 +144,7 @@ import type {
   ApiErrorResponse,
 } from '@data/types';
 
-// Re-exportar para conveniencia del archivo de test
+// Re-exportar para conveniencia en archivo de test
 export type {
   Create{Resource}Payload,
   Update{Resource}Payload,
@@ -197,18 +198,25 @@ export class {Resource}Api extends ApiBase {
    * - Status code es 201 Created
    * - Response body contiene id
    * - Response refleja valores del payload
+   *
+   * @param payload - Datos para crear el recurso
+   * @returns Tupla de [response, body, payload]
    */
   @atc('{TEST-001}')
   async create{Resource}Successfully(
     payload: Create{Resource}Payload
   ): Promise<[APIResponse, {Resource}Response, Create{Resource}Payload]> {
+    // -------------------------------------------------------------------------
     // REQUEST
+    // -------------------------------------------------------------------------
     const [response, body] = await this.apiPOST<{Resource}Response, Create{Resource}Payload>(
       this.baseEndpoint,
       payload
     );
 
+    // -------------------------------------------------------------------------
     // ASSERTIONS FIJAS
+    // -------------------------------------------------------------------------
     expect(response.status()).toBe(201);
     expect(body.id).toBeDefined();
     expect(body.name).toBe(payload.name);
@@ -225,20 +233,28 @@ export class {Resource}Api extends ApiBase {
    * Assertions Fijas:
    * - Status code es 200 OK
    * - Response body contiene campos esperados
+   *
+   * @param id - Identificador del recurso
+   * @returns Tupla de [response, body]
    */
   @atc('{TEST-002}')
   async get{Resource}Successfully(
     id: string
   ): Promise<[APIResponse, {Resource}Response]> {
+    // -------------------------------------------------------------------------
     // REQUEST
+    // -------------------------------------------------------------------------
     const [response, body] = await this.apiGET<{Resource}Response>(
       `${this.baseEndpoint}/${id}`
     );
 
+    // -------------------------------------------------------------------------
     // ASSERTIONS FIJAS
+    // -------------------------------------------------------------------------
     expect(response.status()).toBe(200);
     expect(body.id).toBe(id);
     expect(body.name).toBeDefined();
+    expect(body.email).toBeDefined();
 
     return [response, body];
   }
@@ -247,11 +263,22 @@ export class {Resource}Api extends ApiBase {
    * {TEST-003}: Obtener todos los {resources} con paginación
    *
    * GET /api/v1/{resources}?page=1&limit=10
+   *
+   * Assertions Fijas:
+   * - Status code es 200 OK
+   * - Response contiene array de datos
+   * - Info de paginación presente
+   *
+   * @param params - Parámetros de query (page, limit)
+   * @returns Tupla de [response, body]
    */
   @atc('{TEST-003}')
   async getAll{Resources}Successfully(
     params?: { page?: number; limit?: number }
   ): Promise<[APIResponse, {Resource}ListResponse]> {
+    // -------------------------------------------------------------------------
+    // CONSTRUIR QUERY STRING
+    // -------------------------------------------------------------------------
     const queryParams = new URLSearchParams();
     if (params?.page) queryParams.set('page', params.page.toString());
     if (params?.limit) queryParams.set('limit', params.limit.toString());
@@ -260,11 +287,18 @@ export class {Resource}Api extends ApiBase {
       ? `${this.baseEndpoint}?${queryParams}`
       : this.baseEndpoint;
 
+    // -------------------------------------------------------------------------
+    // REQUEST
+    // -------------------------------------------------------------------------
     const [response, body] = await this.apiGET<{Resource}ListResponse>(endpoint);
 
+    // -------------------------------------------------------------------------
+    // ASSERTIONS FIJAS
+    // -------------------------------------------------------------------------
     expect(response.status()).toBe(200);
     expect(Array.isArray(body.data)).toBe(true);
     expect(body.pagination).toBeDefined();
+    expect(body.pagination.page).toBeGreaterThanOrEqual(1);
 
     return [response, body];
   }
@@ -273,20 +307,35 @@ export class {Resource}Api extends ApiBase {
    * {TEST-004}: Actualizar un {resource} existente
    *
    * PUT /api/v1/{resources}/{id}
+   *
+   * Assertions Fijas:
+   * - Status code es 200 OK
+   * - Response refleja valores actualizados
+   *
+   * @param id - Identificador del recurso
+   * @param payload - Datos de actualización
+   * @returns Tupla de [response, body, payload]
    */
   @atc('{TEST-004}')
   async update{Resource}Successfully(
     id: string,
     payload: Update{Resource}Payload
   ): Promise<[APIResponse, {Resource}Response, Update{Resource}Payload]> {
+    // -------------------------------------------------------------------------
+    // REQUEST
+    // -------------------------------------------------------------------------
     const [response, body] = await this.apiPUT<{Resource}Response, Update{Resource}Payload>(
       `${this.baseEndpoint}/${id}`,
       payload
     );
 
+    // -------------------------------------------------------------------------
+    // ASSERTIONS FIJAS
+    // -------------------------------------------------------------------------
     expect(response.status()).toBe(200);
     expect(body.id).toBe(id);
     if (payload.name) expect(body.name).toBe(payload.name);
+    if (payload.email) expect(body.email).toBe(payload.email);
 
     return [response, body, payload];
   }
@@ -295,13 +344,25 @@ export class {Resource}Api extends ApiBase {
    * {TEST-005}: Eliminar un {resource}
    *
    * DELETE /api/v1/{resources}/{id}
+   *
+   * Assertions Fijas:
+   * - Status code es 204 No Content O 200 OK
+   *
+   * @param id - Identificador del recurso
+   * @returns Tupla de [response, void]
    */
   @atc('{TEST-005}')
   async delete{Resource}Successfully(
     id: string
   ): Promise<[APIResponse, void]> {
+    // -------------------------------------------------------------------------
+    // REQUEST
+    // -------------------------------------------------------------------------
     const [response] = await this.apiDELETE(`${this.baseEndpoint}/${id}`);
 
+    // -------------------------------------------------------------------------
+    // ASSERTIONS FIJAS
+    // -------------------------------------------------------------------------
     expect([200, 204]).toContain(response.status());
 
     return [response, undefined];
@@ -314,16 +375,29 @@ export class {Resource}Api extends ApiBase {
   /**
    * {TEST-006}: Intentar obtener {resource} inexistente
    *
-   * GET /api/v1/{resources}/{non-existent-id}
+   * GET /api/v1/{resources}/{id-inexistente}
+   *
+   * Assertions Fijas:
+   * - Status code es 404 Not Found
+   * - Mensaje de error presente
+   *
+   * @param id - ID de recurso inexistente
+   * @returns Tupla de [response, errorBody]
    */
   @atc('{TEST-006}')
   async get{Resource}WithNonExistentId(
     id: string
   ): Promise<[APIResponse, ApiErrorResponse]> {
+    // -------------------------------------------------------------------------
+    // REQUEST
+    // -------------------------------------------------------------------------
     const [response, body] = await this.apiGET<ApiErrorResponse>(
       `${this.baseEndpoint}/${id}`
     );
 
+    // -------------------------------------------------------------------------
+    // ASSERTIONS FIJAS
+    // -------------------------------------------------------------------------
     expect(response.status()).toBe(404);
     expect(body.error).toBeDefined();
 
@@ -334,20 +408,61 @@ export class {Resource}Api extends ApiBase {
    * {TEST-007}: Intentar crear con payload inválido
    *
    * POST /api/v1/{resources} con datos inválidos
+   *
+   * Assertions Fijas:
+   * - Status code es 400 Bad Request
+   * - Errores de validación presentes
+   *
+   * @param payload - Datos de payload inválidos
+   * @returns Tupla de [response, errorBody, payload]
    */
   @atc('{TEST-007}')
   async create{Resource}WithInvalidPayload(
     payload: Partial<Create{Resource}Payload>
   ): Promise<[APIResponse, ApiErrorResponse, Partial<Create{Resource}Payload>]> {
+    // -------------------------------------------------------------------------
+    // REQUEST
+    // -------------------------------------------------------------------------
     const [response, body] = await this.apiPOST<ApiErrorResponse, Partial<Create{Resource}Payload>>(
       this.baseEndpoint,
       payload
     );
 
+    // -------------------------------------------------------------------------
+    // ASSERTIONS FIJAS
+    // -------------------------------------------------------------------------
     expect(response.status()).toBe(400);
     expect(body.error).toBeDefined();
 
     return [response, body, payload];
+  }
+
+  /**
+   * {TEST-008}: Intentar acceso no autorizado
+   *
+   * GET /api/v1/{resources} sin token de auth
+   *
+   * Nota: Llamar clearAuthToken() antes de este ATC
+   *
+   * Assertions Fijas:
+   * - Status code es 401 Unauthorized
+   *
+   * @returns Tupla de [response, errorBody]
+   */
+  @atc('{TEST-008}')
+  async get{Resources}Unauthorized(): Promise<[APIResponse, ApiErrorResponse]> {
+    // -------------------------------------------------------------------------
+    // REQUEST (sin auth - debe llamar clearAuthToken antes)
+    // -------------------------------------------------------------------------
+    const [response, body] = await this.apiGET<ApiErrorResponse>(this.baseEndpoint);
+
+    // -------------------------------------------------------------------------
+    // ASSERTIONS FIJAS
+    // -------------------------------------------------------------------------
+    expect(response.status()).toBe(401);
+    expect(body.error).toBeDefined();
+
+    return [response, body];
   }
 }
 ```
@@ -359,7 +474,7 @@ export class {Resource}Api extends ApiBase {
 Agregar el nuevo componente a `ApiFixture.ts`:
 
 ```typescript
-// tests/components/ApiFixture.ts
+// qa/tests/components/ApiFixture.ts
 
 import type { TestContextOptions } from '@components/TestContext';
 import { ApiBase } from '@api/ApiBase';
@@ -394,13 +509,19 @@ export class ApiFixture extends ApiBase {
 
 Crear el archivo de test siguiendo patrones KATA:
 
+#### Template de Archivo de Test
+
 ```typescript
-// tests/integration/{resource}/{resource}.test.ts
+// qa/tests/integration/{resource}/{resource}.test.ts
 
 import { expect } from '@playwright/test';
 import { test } from '@TestFixture';
 import { faker } from '@faker-js/faker';
-import type { Create{Resource}Payload } from '@api/{Resource}Api';
+import type {
+  Create{Resource}Payload,
+  Update{Resource}Payload,
+  {Resource}Response,
+} from '@api/{Resource}Api';
 
 // ============================================================================
 // SUITE DE TESTS: {Resource} API
@@ -408,11 +529,14 @@ import type { Create{Resource}Payload } from '@api/{Resource}Api';
 
 test.describe('{Resource} API', () => {
   // ==========================================================================
-  // SETUP
+  // SETUP DE AUTENTICACIÓN
   // ==========================================================================
 
+  /**
+   * Autenticar antes de cada test.
+   * Usa credenciales de variables de entorno.
+   */
   test.beforeEach(async ({ api }) => {
-    // Autenticar antes de cada test
     await api.auth.authenticateSuccessfully({
       email: process.env.TEST_USER_EMAIL!,
       password: process.env.TEST_USER_PASSWORD!,
@@ -420,85 +544,196 @@ test.describe('{Resource} API', () => {
   });
 
   // ==========================================================================
-  // FÁBRICA DE DATOS DE TEST
+  // FÁBRICAS DE DATOS DE TEST
   // ==========================================================================
 
+  /**
+   * Generar payload de creación válido usando Faker.
+   * Llamar fresco en cada test para datos únicos.
+   */
   const createValidPayload = (): Create{Resource}Payload => ({
     name: faker.person.fullName(),
     email: faker.internet.email(),
     roleId: faker.number.int({ min: 1, max: 5 }),
   });
 
+  /**
+   * Generar payload de actualización con datos parciales.
+   */
+  const createUpdatePayload = (): Update{Resource}Payload => ({
+    name: faker.person.fullName(),
+  });
+
+  /**
+   * Generar payload inválido para tests negativos.
+   */
+  const createInvalidPayload = (): Partial<Create{Resource}Payload> => ({
+    name: '', // Nombre vacío debería fallar validación
+    email: 'not-an-email', // Formato de email inválido
+  });
+
   // ==========================================================================
-  // TESTS: CRUD Operations
+  // TESTS: CREATE (POST)
   // ==========================================================================
 
   test('debería crear {resource} exitosamente @integration @{resource}', async ({ api }) => {
+    // -------------------------------------------------------------------------
     // ARRANGE
+    // -------------------------------------------------------------------------
     const payload = createValidPayload();
 
+    // -------------------------------------------------------------------------
     // ACT
+    // -------------------------------------------------------------------------
     const [response, body, sentPayload] = await api.{resource}.create{Resource}Successfully(payload);
 
+    // -------------------------------------------------------------------------
     // ASSERT (opcional - más allá de assertions del ATC)
+    // -------------------------------------------------------------------------
     expect(body.name).toBe(sentPayload.name);
     expect(body.email).toBe(sentPayload.email);
   });
 
+  test('debería fallar al crear con payload inválido @integration @{resource}', async ({ api }) => {
+    // -------------------------------------------------------------------------
+    // ARRANGE
+    // -------------------------------------------------------------------------
+    const invalidPayload = createInvalidPayload();
+
+    // -------------------------------------------------------------------------
+    // ACT
+    // -------------------------------------------------------------------------
+    const [response, errorBody] = await api.{resource}.create{Resource}WithInvalidPayload(invalidPayload);
+
+    // -------------------------------------------------------------------------
+    // ASSERT
+    // -------------------------------------------------------------------------
+    expect(errorBody.error).toBeDefined();
+  });
+
+  // ==========================================================================
+  // TESTS: READ (GET)
+  // ==========================================================================
+
   test('debería obtener {resource} por ID @integration @{resource}', async ({ api }) => {
-    // ARRANGE: Crear primero
-    const payload = createValidPayload();
-    const [, created] = await api.{resource}.create{Resource}Successfully(payload);
-
-    // ACT
-    const [, retrieved] = await api.{resource}.get{Resource}Successfully(created.id);
-
-    // ASSERT
-    expect(retrieved.id).toBe(created.id);
-    expect(retrieved.name).toBe(created.name);
-  });
-
-  test('debería actualizar {resource} @integration @{resource}', async ({ api }) => {
-    // ARRANGE
-    const [, created] = await api.{resource}.create{Resource}Successfully(createValidPayload());
-    const updatePayload = { name: faker.person.fullName() };
-
-    // ACT
-    const [, updated] = await api.{resource}.update{Resource}Successfully(created.id, updatePayload);
-
-    // ASSERT
-    expect(updated.name).toBe(updatePayload.name);
-  });
-
-  test('debería eliminar {resource} @integration @{resource}', async ({ api }) => {
-    // ARRANGE
+    // -------------------------------------------------------------------------
+    // ARRANGE: Crear recurso primero
+    // -------------------------------------------------------------------------
     const [, created] = await api.{resource}.create{Resource}Successfully(createValidPayload());
 
+    // -------------------------------------------------------------------------
     // ACT
-    await api.{resource}.delete{Resource}Successfully(created.id);
+    // -------------------------------------------------------------------------
+    const [response, body] = await api.{resource}.get{Resource}Successfully(created.id);
 
-    // ASSERT: Verificar que ya no existe
-    await api.{resource}.get{Resource}WithNonExistentId(created.id);
+    // -------------------------------------------------------------------------
+    // ASSERT
+    // -------------------------------------------------------------------------
+    expect(body.id).toBe(created.id);
+    expect(body.name).toBe(created.name);
   });
 
-  // ==========================================================================
-  // TESTS: Casos de Error
-  // ==========================================================================
-
-  test('debería retornar 404 para ID inexistente @integration @{resource}', async ({ api }) => {
+  test('debería retornar 404 para {resource} inexistente @integration @{resource}', async ({ api }) => {
+    // -------------------------------------------------------------------------
     // ARRANGE
+    // -------------------------------------------------------------------------
     const nonExistentId = faker.string.uuid();
 
-    // ACT & ASSERT (el ATC contiene las assertions)
-    await api.{resource}.get{Resource}WithNonExistentId(nonExistentId);
+    // -------------------------------------------------------------------------
+    // ACT
+    // -------------------------------------------------------------------------
+    const [response, errorBody] = await api.{resource}.get{Resource}WithNonExistentId(nonExistentId);
+
+    // -------------------------------------------------------------------------
+    // ASSERT
+    // -------------------------------------------------------------------------
+    expect(response.status()).toBe(404);
   });
 
-  test('debería retornar 400 para payload inválido @integration @{resource}', async ({ api }) => {
-    // ARRANGE: Payload inválido (falta email)
-    const invalidPayload = { name: faker.person.fullName() };
+  test('debería obtener todos los {resources} con paginación @integration @{resource}', async ({ api }) => {
+    // -------------------------------------------------------------------------
+    // ACT
+    // -------------------------------------------------------------------------
+    const [response, body] = await api.{resource}.getAll{Resources}Successfully({
+      page: 1,
+      limit: 10,
+    });
 
-    // ACT & ASSERT
-    await api.{resource}.create{Resource}WithInvalidPayload(invalidPayload);
+    // -------------------------------------------------------------------------
+    // ASSERT
+    // -------------------------------------------------------------------------
+    expect(body.data).toBeDefined();
+    expect(body.pagination.page).toBe(1);
+    expect(body.pagination.limit).toBe(10);
+  });
+
+  // ==========================================================================
+  // TESTS: UPDATE (PUT/PATCH)
+  // ==========================================================================
+
+  test('debería actualizar {resource} exitosamente @integration @{resource}', async ({ api }) => {
+    // -------------------------------------------------------------------------
+    // ARRANGE: Crear recurso primero
+    // -------------------------------------------------------------------------
+    const [, created] = await api.{resource}.create{Resource}Successfully(createValidPayload());
+    const updatePayload = createUpdatePayload();
+
+    // -------------------------------------------------------------------------
+    // ACT
+    // -------------------------------------------------------------------------
+    const [response, updated] = await api.{resource}.update{Resource}Successfully(
+      created.id,
+      updatePayload
+    );
+
+    // -------------------------------------------------------------------------
+    // ASSERT
+    // -------------------------------------------------------------------------
+    expect(updated.name).toBe(updatePayload.name);
+    expect(updated.id).toBe(created.id); // ID sin cambios
+  });
+
+  // ==========================================================================
+  // TESTS: DELETE
+  // ==========================================================================
+
+  test('debería eliminar {resource} exitosamente @integration @{resource}', async ({ api }) => {
+    // -------------------------------------------------------------------------
+    // ARRANGE: Crear recurso para eliminar
+    // -------------------------------------------------------------------------
+    const [, created] = await api.{resource}.create{Resource}Successfully(createValidPayload());
+
+    // -------------------------------------------------------------------------
+    // ACT
+    // -------------------------------------------------------------------------
+    const [response] = await api.{resource}.delete{Resource}Successfully(created.id);
+
+    // -------------------------------------------------------------------------
+    // ASSERT: Verificar eliminación
+    // -------------------------------------------------------------------------
+    const [getResponse] = await api.{resource}.get{Resource}WithNonExistentId(created.id);
+    expect(getResponse.status()).toBe(404);
+  });
+
+  // ==========================================================================
+  // TESTS: AUTORIZACIÓN
+  // ==========================================================================
+
+  test('debería retornar 401 sin autenticación @integration @{resource}', async ({ api }) => {
+    // -------------------------------------------------------------------------
+    // ARRANGE: Limpiar token de auth
+    // -------------------------------------------------------------------------
+    api.clearAuthToken();
+
+    // -------------------------------------------------------------------------
+    // ACT
+    // -------------------------------------------------------------------------
+    const [response, errorBody] = await api.{resource}.get{Resources}Unauthorized();
+
+    // -------------------------------------------------------------------------
+    // ASSERT
+    // -------------------------------------------------------------------------
+    expect(response.status()).toBe(401);
   });
 });
 ```
@@ -511,35 +746,170 @@ Ejecutar el test para verificar la implementación:
 
 ```bash
 # Ejecutar archivo de test específico
-bun run test tests/integration/{resource}/{resource}.test.ts
+cd qa && bun run test tests/integration/{resource}/{resource}.test.ts
 
-# Ejecutar solo tests de integration
-bun run test --project=integration
+# Ejecutar con output verbose
+cd qa && bun run test --reporter=list tests/integration/{resource}/{resource}.test.ts
 
-# Ver output detallado
-bun run test --reporter=list tests/integration/{resource}/
+# Ejecutar solo test específico
+cd qa && bun run test --grep "debería crear {resource}" tests/integration/{resource}/
 ```
 
 ---
 
 ## Checklist de Calidad de Código
 
+Antes de completar la fase de Coding, verificar:
+
 ### Calidad del Componente
 
 - [ ] Extiende `ApiBase` correctamente
 - [ ] Constructor acepta `TestContextOptions`
 - [ ] Decorator `@atc` con Test ID correcto
-- [ ] Tipos de retorno son tuplas correctas
+- [ ] Retorna tupla: `[APIResponse, TBody]` o `[APIResponse, TBody, TPayload]`
 - [ ] Assertions fijas dentro del ATC
-- [ ] Import aliases usados
+- [ ] Generics type-safe en métodos de API
+- [ ] Import aliases usados (`@api/`, `@utils/`, etc.)
 
 ### Calidad del Archivo de Test
 
 - [ ] Importa `test` desde `@TestFixture`
-- [ ] Setup de auth en `beforeEach`
-- [ ] Datos generados con Faker
+- [ ] `beforeEach` con autenticación (si necesario)
+- [ ] Datos de test generados frescos (Faker)
 - [ ] Estructura ARRANGE-ACT-ASSERT
-- [ ] Tags apropiados
+- [ ] Tags apropiados (`@integration`, `@{resource}`)
+- [ ] Cada test es independiente
+
+### Seguridad de Tipos
+
+- [ ] Tipos de request definidos (Payload)
+- [ ] Tipos de response definidos
+- [ ] Tipo de error response definido
+- [ ] Tipos exportados para uso en archivo de test
+- [ ] Sin tipos `any`
+
+---
+
+## Patrones Comunes de Implementación
+
+### Uso de Métodos API
+
+```typescript
+// GET - Retorna [response, body]
+const [response, body] = await this.apiGET<{Resource}Response>(endpoint);
+
+// POST - Retorna [response, body] pero ATC retorna [response, body, payload]
+const [response, body] = await this.apiPOST<{Resource}Response, CreatePayload>(
+  endpoint,
+  payload
+);
+
+// PUT - Igual que POST
+const [response, body] = await this.apiPUT<{Resource}Response, UpdatePayload>(
+  endpoint,
+  payload
+);
+
+// PATCH - Igual que PUT
+const [response, body] = await this.apiPATCH<{Resource}Response, PartialPayload>(
+  endpoint,
+  payload
+);
+
+// DELETE - Usualmente sin body
+const [response] = await this.apiDELETE(endpoint);
+```
+
+### Encadenar Operaciones (en tests)
+
+```typescript
+test('debería encadenar operaciones', async ({ api }) => {
+  // Crear → Actualizar → Verificar
+  const [, created] = await api.resource.createSuccessfully(data);
+  const [, updated] = await api.resource.updateSuccessfully(created.id, updates);
+  const [, fetched] = await api.resource.getSuccessfully(created.id);
+
+  expect(fetched.name).toBe(updates.name);
+});
+```
+
+### Testing con Recursos Relacionados
+
+```typescript
+test('debería crear con foreign key', async ({ api }) => {
+  // Primero crear recurso relacionado
+  const [, relatedResource] = await api.related.createSuccessfully(relatedData);
+
+  // Luego crear recurso principal con foreign key
+  const payload = {
+    ...createValidPayload(),
+    relatedId: relatedResource.id,
+  };
+
+  const [, created] = await api.resource.createSuccessfully(payload);
+  expect(created.relatedId).toBe(relatedResource.id);
+});
+```
+
+---
+
+## Anti-Patrones a Evitar
+
+### ❌ Incorrecto: Falta Tupla de Retorno
+
+```typescript
+@atc('TEST-001')
+async createResource(payload) {
+  const response = await this.apiPOST(endpoint, payload);
+  return response; // Falta formato de tupla
+}
+```
+
+### ✅ Correcto: Tupla de Retorno Apropiada
+
+```typescript
+@atc('TEST-001')
+async createResourceSuccessfully(
+  payload: CreatePayload
+): Promise<[APIResponse, ResourceResponse, CreatePayload]> {
+  const [response, body] = await this.apiPOST<ResourceResponse, CreatePayload>(
+    endpoint,
+    payload
+  );
+  expect(response.status()).toBe(201);
+  return [response, body, payload];
+}
+```
+
+### ❌ Incorrecto: Faltan Generics de Tipo
+
+```typescript
+const [response, body] = await this.apiGET(endpoint); // Sin tipo = any
+```
+
+### ✅ Correcto: Generics Type-Safe
+
+```typescript
+const [response, body] = await this.apiGET<ResourceResponse>(endpoint);
+```
+
+### ❌ Incorrecto: Datos de Test Hardcodeados
+
+```typescript
+const payload = {
+  email: 'test@example.com', // ¡Hardcodeado!
+  id: '123e4567-e89b-12d3-a456-426614174000', // ¡UUID hardcodeado!
+};
+```
+
+### ✅ Correcto: Datos de Test Dinámicos
+
+```typescript
+const payload = {
+  email: faker.internet.email(),
+  id: faker.string.uuid(),
+};
+```
 
 ---
 
@@ -547,12 +917,13 @@ bun run test --reporter=list tests/integration/{resource}/
 
 Después de completar la fase de Coding:
 
-- [ ] Componente API creado: `tests/components/api/{Resource}Api.ts`
-- [ ] Tipos definidos: `tests/data/types.ts`
-- [ ] Componente registrado en: `tests/components/ApiFixture.ts`
-- [ ] Archivo de test creado: `tests/integration/{resource}/{resource}.test.ts`
-- [ ] Test pasa localmente: `bun run test <archivo-de-test>`
-- [ ] Sin errores TypeScript: `bun run type-check`
+- [ ] Componente API creado: `qa/tests/components/api/{Resource}Api.ts`
+- [ ] Componente registrado en: `qa/tests/components/ApiFixture.ts`
+- [ ] Archivo de test creado: `qa/tests/integration/{resource}/{resource}.test.ts`
+- [ ] Tipos definidos: `qa/tests/data/types.ts`
+- [ ] Test pasa localmente: `cd qa && bun run test <archivo-de-test>`
+- [ ] Sin errores TypeScript: `cd qa && bun run type-check`
+- [ ] Linting pasa: `cd qa && bun run lint`
 
 ---
 

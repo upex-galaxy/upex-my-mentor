@@ -10,9 +10,9 @@
 
 **Cargar estos archivos de referencia:**
 
-1. `.context/guidelines/TAE/kata-ai-index.md` → Patrones core KATA
-2. `.context/guidelines/TAE/automation-standards.md` → Reglas y anti-patrones
-3. `.context/guidelines/TAE/typescript-patterns.md` → Convenciones TypeScript
+1. `qa/.context/guidelines/TAE/kata-ai-index.md` → Patrones core KATA
+2. `qa/.context/guidelines/TAE/automation-standards.md` → Reglas y anti-patrones
+3. `qa/.context/guidelines/TAE/typescript-patterns.md` → Convenciones TypeScript
 
 ---
 
@@ -36,13 +36,13 @@ Recolectar todos los archivos a revisar:
 
 ```bash
 # Leer el componente
-cat tests/components/ui/{PageName}Page.ts
+cat qa/tests/components/ui/{PageName}Page.ts
 
 # Leer el archivo de test
-cat tests/e2e/{feature}/{feature}.test.ts
+cat qa/tests/e2e/{feature}/{feature}.test.ts
 
 # Leer cambios de fixture
-cat tests/components/UiFixture.ts
+cat qa/tests/components/UiFixture.ts
 
 # Verificar definiciones de tipos
 cat tests/data/types.ts
