@@ -10,11 +10,11 @@
 
 **Cargar estos archivos antes de proceder:**
 
-1. `.context/guidelines/TAE/kata-ai-index.md` → Patrones core KATA
-2. `.context/guidelines/TAE/kata-architecture.md` → Estructura de capas
-3. `.context/guidelines/TAE/e2e-testing-patterns.md` → Patrones específicos E2E
-4. `.context/guidelines/TAE/automation-standards.md` → Reglas y convenciones de nombres
-5. `.context/playwright-automation-system.md` → Overview de arquitectura de código
+1. `qa/.context/guidelines/TAE/kata-ai-index.md` → Patrones core KATA
+2. `qa/.context/guidelines/TAE/kata-architecture.md` → Estructura de capas
+3. `qa/.context/guidelines/TAE/e2e-testing-patterns.md` → Patrones específicos E2E
+4. `qa/.context/guidelines/TAE/automation-standards.md` → Reglas y convenciones de nombres
+5. `qa/.context/guidelines/TAE/playwright-automation-system.md` → Overview de arquitectura de código
 6. `.context/test-management-system.md` → Configuración TMS (para formato de Test ID)
 
 ---
@@ -89,13 +89,13 @@ Buscar en el codebase componentes existentes:
 
 ```bash
 # Verificar componentes UI existentes
-ls tests/components/ui/
+ls qa/tests/components/ui/
 
 # Verificar estructura de fixtures
-cat tests/components/UiFixture.ts
+cat qa/tests/components/UiFixture.ts
 
 # Buscar ATCs similares
-grep -r "@atc" tests/components/ui/
+grep -r "@atc" qa/tests/components/ui/
 ```
 
 Documentar hallazgos:
@@ -107,13 +107,13 @@ Documentar hallazgos:
 
 | Componente | Archivo                          | ATCs Disponibles                               | ¿Reutilizar?  |
 | ---------- | -------------------------------- | ---------------------------------------------- | ------------- |
-| LoginPage  | tests/components/ui/LoginPage.ts | loginSuccessfully, loginWithInvalidCredentials | Sí/Parcial/No |
+| LoginPage  | qa/tests/components/ui/LoginPage.ts | loginSuccessfully, loginWithInvalidCredentials | Sí/Parcial/No |
 
 ### Componentes API Relevantes Encontrados (para setup)
 
 | Componente | Archivo                         | ATCs Disponibles         | Usar Para  |
 | ---------- | ------------------------------- | ------------------------ | ---------- |
-| AuthApi    | tests/components/api/AuthApi.ts | authenticateSuccessfully | Auth setup |
+| AuthApi    | qa/tests/components/api/AuthApi.ts | authenticateSuccessfully | Auth setup |
 
 ### Decisión
 
@@ -135,7 +135,7 @@ Determinar la arquitectura KATA:
 
 - **Layer**: 3 (Componente de Dominio)
 - **Tipo**: Componente UI
-- **Archivo**: `tests/components/ui/{PageName}Page.ts`
+- **Archivo**: `qa/tests/components/ui/{PageName}Page.ts`
 - **Extiende**: `UiBase`
 
 ### Fixture a Usar
@@ -217,7 +217,7 @@ Diseñar la estructura del archivo de test:
 ## Diseño del Archivo de Test
 
 ### Ubicación del Archivo
-`tests/e2e/{feature}/{feature}.test.ts`
+`qa/tests/e2e/{feature}/{feature}.test.ts`
 
 ### Estructura del Test
 ```typescript
@@ -312,10 +312,10 @@ Generar un documento de plan final:
 
 | Archivo | Acción | Descripción |
 |---------|--------|-------------|
-| `tests/components/ui/{PageName}Page.ts` | CREAR | Nuevo componente UI |
-| `tests/components/UiFixture.ts` | MODIFICAR | Registrar componente |
-| `tests/e2e/{feature}/{feature}.test.ts` | CREAR | Archivo de test |
-| `tests/data/types.ts` | MODIFICAR | Agregar definiciones de tipos |
+| `qa/tests/components/ui/{PageName}Page.ts` | CREAR | Nuevo componente UI |
+| `qa/tests/components/UiFixture.ts` | MODIFICAR | Registrar componente |
+| `qa/tests/e2e/{feature}/{feature}.test.ts` | CREAR | Archivo de test |
+| `qa/tests/data/types.ts` | MODIFICAR | Agregar definiciones de tipos |
 
 ## Plan de Implementación del ATC
 

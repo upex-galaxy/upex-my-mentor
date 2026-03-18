@@ -134,16 +134,18 @@ Este directorio contiene prompts optimizados para generar documentación de proy
 | `fase-6-planning/feature-implementation-plan.md` | Plan tecnico a nivel epica                 |
 | `fase-6-planning/story-implementation-plan.md`   | Plan detallado de implementacion por story |
 
-#### **Fase 7: Implementation** (Desarrollo + Unit Tests)
+#### **Fase 7: Implementation** (Desarrollo + Unit Tests + Bug Fixing)
 
-| Archivo                                            | Proposito                               |
-| -------------------------------------------------- | --------------------------------------- |
-| `fase-7-implementation/implement-story.md`         | Implementar story desde cero            |
-| `fase-7-implementation/continue-implementation.md` | Continuar story pausada                 |
-| `fase-7-implementation/fix-issues.md`              | Debuggear y corregir errores            |
-| `fase-7-implementation/unit-testing.md`            | Crear unit tests durante implementacion |
+| Archivo                                            | Proposito                                    |
+| -------------------------------------------------- | -------------------------------------------- |
+| `fase-7-implementation/implement-story.md`         | Implementar story desde cero                 |
+| `fase-7-implementation/continue-implementation.md` | Continuar story pausada                      |
+| `fase-7-implementation/fix-issues.md`              | Debuggear y corregir errores                 |
+| `fase-7-implementation/unit-testing.md`            | Crear unit tests durante implementacion      |
+| `fase-7-implementation/bug-fix-workflow.md`        | Workflow completo de bug fixing (triage, fix, document) |
 
 **IMPORTANTE:** Unit tests se crean AQUI (Fase 7), NO en fases posteriores.
+**IMPORTANTE:** Bug fixing tambien va aqui - es una tarea de implementacion.
 
 #### **Fase 8: Code Review** (Revision de codigo)
 

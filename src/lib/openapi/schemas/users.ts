@@ -1,69 +1,45 @@
 /**
- * Users API Schemas
+ * Users API OpenAPI Paths Registration
  *
  * GET /api/users/[id]/communication-channels - Get public channels
  * GET /api/users/me/communication-channels - Get my channels
  * PUT /api/users/me/communication-channels - Update my channels
+ *
+ * IMPORTANT: Schemas are imported from @/types/communication.ts (Single Source of Truth).
+ * DO NOT define schemas here - only register paths.
  */
 
-import { registry, z } from '../registry'
-import { UUIDSchema, ErrorResponseSchema } from './common'
+import { z } from 'zod'
+import { registry } from '../registry'
+
+// Import schemas from Single Source of Truth
+import {
+  CommunicationChannelTypeSchema,
+  CommunicationChannelSchema,
+  ChannelInputSchema,
+  UpdateCommunicationChannelsRequestSchema,
+  CommunicationChannelsSuccessResponseSchema,
+  CommunicationChannelsErrorResponseSchema,
+} from '@/types/communication'
+
+// Re-export types for convenience
+export type {
+  CommunicationChannelType,
+  CommunicationChannel,
+  ChannelInput,
+  UpdateCommunicationChannelsRequest,
+  CommunicationChannelsSuccessResponse,
+  CommunicationChannelsErrorResponse,
+} from '@/types/communication'
 
 // ============================================================================
-// Communication Channel Schema
+// Common Schemas (local to this file)
 // ============================================================================
 
-export const CommunicationChannelTypeSchema = z.enum([
-  'zoom',
-  'google_meet',
-  'discord',
-  'slack',
-  'microsoft_teams',
-  'other',
-]).openapi('CommunicationChannelType')
-
-export const CommunicationChannelSchema = z.object({
-  id: UUIDSchema,
-  user_id: UUIDSchema,
-  channel_type: CommunicationChannelTypeSchema,
-  channel_value: z.string().openapi({
-    description: 'Channel-specific value (URL, username, etc.)',
-    example: 'https://zoom.us/my/username',
-  }),
-  is_preferred: z.boolean().openapi({
-    description: 'Whether this is the preferred communication channel',
-  }),
-  is_public: z.boolean().openapi({
-    description: 'Whether this channel is visible to other users',
-  }),
-  created_at: z.string().datetime(),
-  updated_at: z.string().datetime(),
-}).openapi('CommunicationChannel')
-
-// ============================================================================
-// Response Schemas
-// ============================================================================
-
-export const CommunicationChannelsResponseSchema = z.object({
-  channels: z.array(CommunicationChannelSchema),
-}).openapi('CommunicationChannelsResponse')
-
-// ============================================================================
-// Update Request Schema
-// ============================================================================
-
-export const UpdateCommunicationChannelsRequestSchema = z.object({
-  channels: z.array(z.object({
-    channel_type: CommunicationChannelTypeSchema,
-    channel_value: z.string().min(1).openapi({
-      description: 'Channel-specific value',
-    }),
-    is_preferred: z.boolean().default(false),
-    is_public: z.boolean().default(true),
-  })).openapi({
-    description: 'List of communication channels to set',
-  }),
-}).openapi('UpdateCommunicationChannelsRequest')
+const UUIDSchema = z.string().uuid().openapi({
+  description: 'UUID v4 identifier',
+  example: '550e8400-e29b-41d4-a716-446655440000',
+})
 
 // ============================================================================
 // Register Paths
@@ -75,17 +51,16 @@ registry.registerPath({
   path: '/users/{id}/communication-channels',
   summary: 'Get user public communication channels',
   description: `
-Returns the public communication channels for a specific user (mentor).
+Returns the active communication channels for a specific user (typically a mentor).
 
 **Use Case:**
-When a student views a mentor's profile, they can see how to contact the mentor
-for scheduling or questions.
+When a student views a mentor's profile or during booking flow to see available contact methods.
 
 **Visibility:**
-Only returns channels where \`is_public = true\`.
+Only returns channels where \`isActive = true\`.
 
 **No Authentication Required:**
-This is a public endpoint - anyone can view a mentor's public channels.
+This is a public endpoint.
   `.trim(),
   tags: ['Users'],
   request: {
@@ -98,7 +73,23 @@ This is a public endpoint - anyone can view a mentor's public channels.
       description: 'Channels retrieved successfully',
       content: {
         'application/json': {
-          schema: CommunicationChannelsResponseSchema,
+          schema: CommunicationChannelsSuccessResponseSchema,
+        },
+      },
+    },
+    400: {
+      description: 'Invalid user ID format',
+      content: {
+        'application/json': {
+          schema: CommunicationChannelsErrorResponseSchema,
+        },
+      },
+    },
+    404: {
+      description: 'User not found',
+      content: {
+        'application/json': {
+          schema: CommunicationChannelsErrorResponseSchema,
         },
       },
     },
@@ -114,19 +105,22 @@ registry.registerPath({
 Returns all communication channels for the authenticated user.
 
 **Use Case:**
-Used in the user's settings page to manage their communication preferences.
+Used in the mentor's settings page to manage their communication preferences.
 
 **Returns All Channels:**
-Unlike the public endpoint, this returns ALL channels including private ones.
+Unlike the public endpoint, this returns ALL channels including inactive ones.
+
+**Authentication:**
+Requires valid session cookie or Bearer token.
   `.trim(),
   tags: ['Users'],
-  security: [{ cookieAuth: [] }],
+  security: [{ cookieAuth: [] }, { bearerAuth: [] }],
   responses: {
     200: {
       description: 'Channels retrieved successfully',
       content: {
         'application/json': {
-          schema: CommunicationChannelsResponseSchema,
+          schema: CommunicationChannelsSuccessResponseSchema,
         },
       },
     },
@@ -134,7 +128,7 @@ Unlike the public endpoint, this returns ALL channels including private ones.
       description: 'Unauthorized - user not authenticated',
       content: {
         'application/json': {
-          schema: ErrorResponseSchema,
+          schema: CommunicationChannelsErrorResponseSchema,
         },
       },
     },
@@ -150,15 +144,29 @@ registry.registerPath({
 Replaces all communication channels for the authenticated user.
 
 **Behavior:**
-- Deletes all existing channels
-- Creates new channels from the request body
+- Deletes channels not in the new list
+- Creates/updates channels from the request body
 - This is a full replacement, not a partial update
 
 **Use Case:**
-Used when a user saves their communication preferences in settings.
+Used when a mentor saves their communication preferences in settings.
+
+**Authorization:**
+Only mentors can have communication channels. Students will receive a 403 error.
+
+**Example Request Body:**
+\`\`\`json
+{
+  "channels": [
+    { "type": "google_meet", "handle": null, "isActive": true },
+    { "type": "zoom", "handle": "https://zoom.us/j/123456", "isActive": true },
+    { "type": "slack", "handle": "workspace.slack.com", "isActive": false }
+  ]
+}
+\`\`\`
   `.trim(),
   tags: ['Users'],
-  security: [{ cookieAuth: [] }],
+  security: [{ cookieAuth: [] }, { bearerAuth: [] }],
   request: {
     body: {
       required: true,
@@ -174,15 +182,15 @@ Used when a user saves their communication preferences in settings.
       description: 'Channels updated successfully',
       content: {
         'application/json': {
-          schema: CommunicationChannelsResponseSchema,
+          schema: CommunicationChannelsSuccessResponseSchema,
         },
       },
     },
     400: {
-      description: 'Bad request - invalid channel data',
+      description: 'Bad request - invalid channel data or duplicate channel types',
       content: {
         'application/json': {
-          schema: ErrorResponseSchema,
+          schema: CommunicationChannelsErrorResponseSchema,
         },
       },
     },
@@ -190,15 +198,25 @@ Used when a user saves their communication preferences in settings.
       description: 'Unauthorized - user not authenticated',
       content: {
         'application/json': {
-          schema: ErrorResponseSchema,
+          schema: CommunicationChannelsErrorResponseSchema,
+        },
+      },
+    },
+    403: {
+      description: 'Forbidden - only mentors can configure communication channels',
+      content: {
+        'application/json': {
+          schema: CommunicationChannelsErrorResponseSchema,
+        },
+      },
+    },
+    404: {
+      description: 'Profile not found',
+      content: {
+        'application/json': {
+          schema: CommunicationChannelsErrorResponseSchema,
         },
       },
     },
   },
 })
-
-// Export types for use in route handlers
-export type CommunicationChannelType = z.infer<typeof CommunicationChannelTypeSchema>
-export type CommunicationChannel = z.infer<typeof CommunicationChannelSchema>
-export type CommunicationChannelsResponse = z.infer<typeof CommunicationChannelsResponseSchema>
-export type UpdateCommunicationChannelsRequest = z.infer<typeof UpdateCommunicationChannelsRequestSchema>

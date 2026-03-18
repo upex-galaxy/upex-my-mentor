@@ -10,7 +10,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createServer } from '@/lib/supabase/server'
+import { createServerFromRequest } from '@/lib/supabase/server'
 import { isWithinJoinWindow, isSessionExpired, canJoinNow } from '@/lib/date-utils'
 
 // Error codes for client handling
@@ -42,7 +42,7 @@ export async function GET(
 ): Promise<NextResponse<VideoLinkResponse>> {
   try {
     const { id: bookingId } = await params
-    const supabase = await createServer()
+    const supabase = await createServerFromRequest(request)
 
     // 1. Get authenticated user
     const { data: { user }, error: authError } = await supabase.auth.getUser()

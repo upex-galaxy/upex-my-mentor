@@ -28,6 +28,22 @@ registry.registerComponent('securitySchemes', 'cookieAuth', {
   description: 'Supabase session cookie. Obtained automatically after login via the web app.',
 })
 
+// Bearer token authentication (Supabase JWT)
+registry.registerComponent('securitySchemes', 'bearerAuth', {
+  type: 'http',
+  scheme: 'bearer',
+  bearerFormat: 'JWT',
+  description: `Supabase access_token for API testing (Postman, mobile apps, etc.).
+
+**How to obtain:**
+1. POST to \`https://ionevzckjyxtpmyenbxc.supabase.co/auth/v1/token?grant_type=password\`
+2. Headers: \`apikey: SUPABASE_ANON_KEY\`, \`Content-Type: application/json\`
+3. Body: \`{"email": "user@example.com", "password": "password"}\`
+4. Use the \`access_token\` from the response
+
+**Note:** Token expires in 1 hour. Use \`refresh_token\` to renew.`,
+})
+
 // API Key authentication (for internal endpoints)
 registry.registerComponent('securitySchemes', 'apiKeyAuth', {
   type: 'apiKey',

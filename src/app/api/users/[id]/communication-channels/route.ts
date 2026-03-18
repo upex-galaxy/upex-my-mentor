@@ -7,7 +7,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createServer } from '@/lib/supabase/server'
+import { createServerFromRequest } from '@/lib/supabase/server'
 import {
   mapChannelRowToDomain,
   type CommunicationChannel,
@@ -32,7 +32,7 @@ export async function GET(
 ): Promise<NextResponse<ApiResponse>> {
   try {
     const { id: userId } = await params
-    const supabase = await createServer()
+    const supabase = await createServerFromRequest(request)
 
     // Validate UUID format
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i

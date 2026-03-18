@@ -1,7 +1,7 @@
 # E2E Test Automation
 
 > **Propósito**: Automatizar tests E2E (End-to-End) siguiendo la arquitectura KATA.
-> **Ubicación de Tests**: `tests/e2e/{feature}/{feature}.test.ts`
+> **Ubicación de Tests**: `qa/tests/e2e/{feature}/{feature}.test.ts`
 
 ---
 
@@ -63,7 +63,7 @@ Antes de usar estos prompts:
 ## Arquitectura KATA para E2E
 
 ```
-tests/
+qa/tests/
 ├── components/
 │   ├── ui/
 │   │   ├── UiBase.ts         # Layer 2

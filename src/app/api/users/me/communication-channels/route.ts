@@ -7,7 +7,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createServer } from '@/lib/supabase/server'
+import { createServerFromRequest } from '@/lib/supabase/server'
 import {
   mapChannelRowToDomain,
   isValidChannelType,
@@ -37,9 +37,9 @@ type ApiResponse = SuccessResponse | ErrorResponse
 /**
  * GET: Get all channels for authenticated user (includes inactive)
  */
-export async function GET(): Promise<NextResponse<ApiResponse>> {
+export async function GET(request: NextRequest): Promise<NextResponse<ApiResponse>> {
   try {
-    const supabase = await createServer()
+    const supabase = await createServerFromRequest(request)
 
     // Get authenticated user
     const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -99,7 +99,7 @@ export async function GET(): Promise<NextResponse<ApiResponse>> {
  */
 export async function PUT(request: NextRequest): Promise<NextResponse<ApiResponse>> {
   try {
-    const supabase = await createServer()
+    const supabase = await createServerFromRequest(request)
 
     // Get authenticated user
     const { data: { user }, error: authError } = await supabase.auth.getUser()

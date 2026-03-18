@@ -16,7 +16,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createServer } from '@/lib/supabase/server'
+import { createServerFromRequest } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/server'
 import { resend, EMAIL_CONFIG, isEmailServiceConfigured } from '@/lib/email/resend'
 import { canCancelSession } from '@/lib/date-utils'
@@ -40,7 +40,7 @@ export async function POST(
 ): Promise<NextResponse<CancelSessionResponse>> {
   try {
     const { id: bookingId } = await params
-    const supabase = await createServer()
+    const supabase = await createServerFromRequest(request)
 
     // 1. Get authenticated user
     const { data: { user }, error: authError } = await supabase.auth.getUser()

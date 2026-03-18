@@ -10,11 +10,11 @@
 
 **Cargar estos archivos antes de proceder:**
 
-1. `.context/guidelines/TAE/kata-ai-index.md` → Patrones core KATA
-2. `.context/guidelines/TAE/kata-architecture.md` → Estructura de capas
-3. `.context/guidelines/TAE/api-testing-patterns.md` → Patrones específicos de API
-4. `.context/guidelines/TAE/typescript-patterns.md` → Convenciones TypeScript
-5. `.context/playwright-automation-system.md` → Overview de arquitectura
+1. `qa/.context/guidelines/TAE/kata-ai-index.md` → Patrones core KATA
+2. `qa/.context/guidelines/TAE/kata-architecture.md` → Estructura de capas
+3. `qa/.context/guidelines/TAE/api-testing-patterns.md` → Patrones específicos de API
+4. `qa/.context/guidelines/TAE/typescript-patterns.md` → Convenciones TypeScript
+5. `qa/.context/guidelines/TAE/playwright-automation-system.md` → Overview de arquitectura
 6. `.context/test-management-system.md` → Configuración TMS
 
 **Opcional (para exploración de API):**
@@ -137,13 +137,13 @@ Buscar en el codebase componentes existentes:
 
 ```bash
 # Verificar componentes API existentes
-ls tests/components/api/
+ls qa/tests/components/api/
 
 # Verificar estructura de fixtures
-cat tests/components/ApiFixture.ts
+cat qa/tests/components/ApiFixture.ts
 
 # Buscar ATCs similares
-grep -r "@atc" tests/components/api/
+grep -r "@atc" qa/tests/components/api/
 
 # Verificar tipos existentes
 grep -r "interface.*Response" tests/data/types.ts
@@ -158,8 +158,8 @@ Documentar hallazgos:
 
 | Componente | Archivo                          | ATCs Disponibles         | ¿Reutilizar?         |
 | ---------- | -------------------------------- | ------------------------ | -------------------- |
-| AuthApi    | tests/components/api/AuthApi.ts  | authenticateSuccessfully | Sí (para auth setup) |
-| UsersApi   | tests/components/api/UsersApi.ts | createUserSuccessfully   | Sí/Parcial/No        |
+| AuthApi    | qa/tests/components/api/AuthApi.ts  | authenticateSuccessfully | Sí (para auth setup) |
+| UsersApi   | qa/tests/components/api/UsersApi.ts | createUserSuccessfully   | Sí/Parcial/No        |
 
 ### Tipos Existentes Encontrados
 
@@ -250,7 +250,7 @@ Determinar la arquitectura KATA:
 ### Ubicación del Componente
 - **Layer**: 3 (Componente de Dominio)
 - **Tipo**: Componente API
-- **Archivo**: `tests/components/api/{Resource}Api.ts`
+- **Archivo**: `qa/tests/components/api/{Resource}Api.ts`
 - **Extiende**: `ApiBase`
 
 ### Fixture
@@ -345,7 +345,7 @@ Diseñar la estructura del archivo de test:
 ## Diseño del Archivo de Test
 
 ### Ubicación del Archivo
-`tests/integration/{resource}/{resource}.test.ts`
+`qa/tests/integration/{resource}/{resource}.test.ts`
 
 ### Estructura del Test
 ```typescript
@@ -452,9 +452,9 @@ Generar un documento de plan final:
 
 | Archivo | Acción | Descripción |
 |---------|--------|-------------|
-| `tests/components/api/{Resource}Api.ts` | CREAR | Nuevo componente API |
-| `tests/components/ApiFixture.ts` | MODIFICAR | Registrar componente |
-| `tests/integration/{resource}/{resource}.test.ts` | CREAR | Archivo de test |
+| `qa/tests/components/api/{Resource}Api.ts` | CREAR | Nuevo componente API |
+| `qa/tests/components/ApiFixture.ts` | MODIFICAR | Registrar componente |
+| `qa/tests/integration/{resource}/{resource}.test.ts` | CREAR | Archivo de test |
 | `tests/data/types.ts` | MODIFICAR | Agregar definiciones de tipos |
 
 ## Definiciones de Tipos

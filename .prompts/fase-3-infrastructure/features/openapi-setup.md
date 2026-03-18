@@ -85,6 +85,159 @@ ls -la src/lib/openapi/ 2>/dev/null
 
 ---
 
+## ⚠️ PATRÓN CRÍTICO: Single Source of Truth
+
+> **IMPORTANTE:** Este patrón es OBLIGATORIO para evitar desincronización entre tipos y documentación OpenAPI.
+
+### El Problema (Anti-patrón)
+
+```
+src/types/user.ts           →  Define tipos TypeScript
+src/lib/openapi/schemas/users.ts  →  Define schemas Zod separados (¡DUPLICADO!)
+
+Resultado: Al agregar un campo, debes actualizar AMBOS archivos.
+           Si olvidas uno, la documentación queda desincronizada.
+```
+
+### La Solución (Patrón Correcto)
+
+```
+src/types/user.ts           →  Define schemas Zod con .openapi() + genera tipos
+src/lib/openapi/schemas/users.ts  →  Solo importa y registra paths (NO define schemas)
+
+Resultado: Cambiar types = automáticamente cambiar OpenAPI spec.
+           IMPOSIBLE desincronizarse.
+```
+
+### Estructura de Archivos Correcta
+
+```
+src/types/                          ← FUENTE DE VERDAD (schemas Zod + tipos)
+├── user.ts                         ← UserSchema.openapi('User') + type User
+├── booking.ts                      ← BookingSchema.openapi('Booking') + type Booking
+├── communication.ts                ← ChannelSchema.openapi('Channel') + type Channel
+└── index.ts                        ← Barrel export
+
+src/lib/openapi/
+├── registry.ts                     ← Configuración central
+├── index.ts                        ← Entry point
+└── schemas/
+    ├── common.ts                   ← Schemas genéricos (ErrorResponse, UUID, etc.)
+    ├── users.ts                    ← Solo registry.registerPath(), importa de @/types
+    ├── bookings.ts                 ← Solo registry.registerPath(), importa de @/types
+    └── index.ts                    ← Barrel export
+```
+
+### Ejemplo Práctico
+
+```typescript
+// ✅ CORRECTO: src/types/communication.ts (FUENTE DE VERDAD)
+import { z } from 'zod';
+import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
+
+extendZodWithOpenApi(z);
+
+// Schema con metadata OpenAPI
+export const CommunicationChannelSchema = z.object({
+  id: z.string().uuid(),
+  type: z.enum(['zoom', 'google_meet', 'phone', 'whatsapp']),
+  handle: z.string().nullable().optional(),
+  isActive: z.boolean().default(true),
+}).openapi('CommunicationChannel');
+
+// Tipo inferido AUTOMÁTICAMENTE (siempre sincronizado)
+export type CommunicationChannel = z.infer<typeof CommunicationChannelSchema>;
+
+// Schema para input (crear/actualizar)
+export const ChannelInputSchema = CommunicationChannelSchema.omit({ id: true }).openapi('ChannelInput');
+export type ChannelInput = z.infer<typeof ChannelInputSchema>;
+
+// Helper de validación para usar en API routes
+export function isValidChannelType(type: string): boolean {
+  return ['zoom', 'google_meet', 'phone', 'whatsapp'].includes(type);
+}
+```
+
+```typescript
+// ✅ CORRECTO: src/lib/openapi/schemas/users.ts (SOLO REGISTRA PATHS)
+import { registry } from '../registry';
+import { z } from 'zod';
+import {
+  CommunicationChannelSchema,
+  ChannelInputSchema,
+} from '@/types/communication';  // ← IMPORTA de types, NO define aquí
+import { ErrorResponseSchema } from './common';
+
+// Solo registra el PATH, no define schemas nuevos
+registry.registerPath({
+  method: 'put',
+  path: '/users/me/communication-channels',
+  tags: ['Users'],
+  summary: 'Update user communication channels',
+  security: [{ cookieAuth: [] }],
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: z.object({
+            channels: z.array(ChannelInputSchema),  // ← USA schema importado
+          }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'Channels updated',
+      content: {
+        'application/json': {
+          schema: z.object({
+            channels: z.array(CommunicationChannelSchema),  // ← USA schema importado
+          }),
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: { 'application/json': { schema: ErrorResponseSchema } },
+    },
+  },
+});
+```
+
+```typescript
+// ❌ INCORRECTO: NO hagas esto (duplicación)
+// src/lib/openapi/schemas/users.ts
+export const ChannelSchema = z.object({  // ← DUPLICADO de src/types/communication.ts
+  type: z.enum(['zoom', 'google_meet']),
+  handle: z.string(),
+}).openapi('Channel');
+```
+
+### Beneficio
+
+Al agregar un campo nuevo, solo editas UN archivo:
+
+```typescript
+// src/types/communication.ts - agregar campo "priority"
+export const ChannelInputSchema = z.object({
+  type: CommunicationChannelTypeSchema,
+  handle: z.string().nullable().optional(),
+  isActive: z.boolean().optional().default(true),
+  priority: z.number().optional().default(0).openapi({  // ← NUEVO
+    description: 'Display priority (higher = first)',
+  }),
+});
+
+// Automáticamente:
+// ✅ TypeScript types actualizados
+// ✅ Validación en runtime actualizada
+// ✅ OpenAPI spec actualizado
+// ✅ Documentación en /api-docu actualizada
+```
+
+---
+
 ## 📤 OUTPUT GENERADO
 
 ### Modo PARCIAL:
@@ -113,9 +266,18 @@ ls -la src/lib/openapi/ 2>/dev/null
 
 ### Modo COMPLETO (adicional):
 
-- ✅ `schemas/[dominio].ts` - Schemas por dominio
+**Tipos de dominio (`src/types/`):** ← FUENTE DE VERDAD
+
+- ✅ `[dominio].ts` - Zod schemas con `.openapi()` + tipos inferidos
+- ✅ Helpers de validación para API routes
+
+**Path registrations (`src/lib/openapi/schemas/`):**
+
+- ✅ `[dominio].ts` - Solo `registry.registerPath()`, importa de `@/types`
 - ✅ Endpoints registrados en registry
 - ✅ Auth info panel con detalles específicos
+
+> **Nota:** Los schemas de dominio viven en `src/types/`, NO en `src/lib/openapi/schemas/`
 
 ---
 
@@ -831,67 +993,237 @@ export function AuthInfoPanel({ apiType }: AuthInfoPanelProps) {
 
 ---
 
-### FASE 5: (COMPLETO) Crear Schemas de Dominio
+### FASE 5: (COMPLETO) Crear Schemas de Dominio con Single Source of Truth
 
 **Solo si hay endpoints existentes.**
 
-**Paso 5.1: Analizar endpoints**
+> **⚠️ CRÍTICO:** Los schemas de dominio deben definirse en `src/types/`, NO en `src/lib/openapi/schemas/`. Ver sección "PATRÓN CRÍTICO: Single Source of Truth" arriba.
+
+**Paso 5.1: Analizar endpoints y tipos existentes**
 
 ```bash
 # Listar endpoints existentes
 find src/app/api -name "route.ts" | grep -v "openapi"
+
+# Listar tipos existentes (pueden ya tener schemas Zod)
+ls src/types/
 ```
 
-**Paso 5.2: Crear schema por dominio**
+**Paso 5.2: Crear o actualizar schema en src/types/**
 
-Por cada dominio identificado (ej: users, bookings, payments), crear:
+Por cada dominio identificado (ej: users, bookings, payments), crear en `src/types/`:
 
 ```typescript
-// src/lib/openapi/schemas/[dominio].ts
+// src/types/booking.ts (FUENTE DE VERDAD)
 
-import { registry, z } from '../registry'
+import { z } from 'zod';
+import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 
-// Definir schemas específicos del dominio
-export const [Entity]Schema = z.object({
-  id: z.string().uuid(),
-  // ... campos
-}).openapi('[Entity]')
+extendZodWithOpenApi(z);
 
-// Registrar
-registry.register('[Entity]', [Entity]Schema)
+// ============================================================================
+// SCHEMAS (con metadata OpenAPI)
+// ============================================================================
 
-// Registrar endpoints
+export const BookingStatusSchema = z.enum([
+  'pending',
+  'confirmed',
+  'cancelled',
+  'completed',
+]).openapi('BookingStatus');
+
+export const BookingSchema = z.object({
+  id: z.string().uuid().openapi({ description: 'Unique booking identifier' }),
+  userId: z.string().uuid().openapi({ description: 'User who made the booking' }),
+  serviceId: z.string().uuid().openapi({ description: 'Service being booked' }),
+  status: BookingStatusSchema,
+  scheduledAt: z.string().datetime().openapi({ description: 'Scheduled date/time' }),
+  notes: z.string().nullable().optional().openapi({ description: 'Additional notes' }),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+}).openapi('Booking');
+
+// Schemas para input (omitir campos autogenerados)
+export const CreateBookingSchema = BookingSchema.omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+}).openapi('CreateBooking');
+
+export const UpdateBookingSchema = BookingSchema.partial().omit({
+  id: true,
+  userId: true,
+  createdAt: true,
+  updatedAt: true,
+}).openapi('UpdateBooking');
+
+// ============================================================================
+// TIPOS INFERIDOS (siempre sincronizados con schemas)
+// ============================================================================
+
+export type BookingStatus = z.infer<typeof BookingStatusSchema>;
+export type Booking = z.infer<typeof BookingSchema>;
+export type CreateBooking = z.infer<typeof CreateBookingSchema>;
+export type UpdateBooking = z.infer<typeof UpdateBookingSchema>;
+
+// ============================================================================
+// HELPERS DE VALIDACIÓN (para usar en API routes)
+// ============================================================================
+
+export function isValidBookingStatus(status: string): status is BookingStatus {
+  return BookingStatusSchema.safeParse(status).success;
+}
+```
+
+**Paso 5.3: Registrar paths en src/lib/openapi/schemas/**
+
+Crear archivo que SOLO registra paths, importando schemas de `@/types`:
+
+```typescript
+// src/lib/openapi/schemas/bookings.ts (SOLO PATHS, NO SCHEMAS)
+
+import { registry } from '../registry';
+import { z } from 'zod';
+import {
+  BookingSchema,
+  CreateBookingSchema,
+  UpdateBookingSchema,
+} from '@/types/booking';  // ← IMPORTA de types
+import { ErrorResponseSchema, UUIDSchema } from './common';
+
+// ============================================================================
+// REGISTRAR PATHS (no definir schemas aquí)
+// ============================================================================
+
+// GET /bookings
 registry.registerPath({
   method: 'get',
-  path: '/[dominio]/{id}',
-  tags: ['[Dominio]'],
-  summary: 'Get [entity] by ID',
+  path: '/bookings',
+  tags: ['Bookings'],
+  summary: 'List all bookings',
+  security: [{ cookieAuth: [] }],
   request: {
-    params: z.object({
-      id: z.string().uuid(),
+    query: z.object({
+      status: z.string().optional().openapi({ description: 'Filter by status' }),
+      limit: z.coerce.number().optional().default(20),
+      offset: z.coerce.number().optional().default(0),
     }),
   },
   responses: {
     200: {
-      description: 'Success',
+      description: 'List of bookings',
       content: {
         'application/json': {
-          schema: [Entity]Schema,
+          schema: z.object({
+            data: z.array(BookingSchema),  // ← USA schema importado
+            total: z.number(),
+          }),
         },
       },
     },
+    401: {
+      description: 'Unauthorized',
+      content: { 'application/json': { schema: ErrorResponseSchema } },
+    },
   },
-})
+});
+
+// GET /bookings/{id}
+registry.registerPath({
+  method: 'get',
+  path: '/bookings/{id}',
+  tags: ['Bookings'],
+  summary: 'Get booking by ID',
+  security: [{ cookieAuth: [] }],
+  request: {
+    params: z.object({ id: UUIDSchema }),
+  },
+  responses: {
+    200: {
+      description: 'Booking details',
+      content: { 'application/json': { schema: BookingSchema } },
+    },
+    404: {
+      description: 'Booking not found',
+      content: { 'application/json': { schema: ErrorResponseSchema } },
+    },
+  },
+});
+
+// POST /bookings
+registry.registerPath({
+  method: 'post',
+  path: '/bookings',
+  tags: ['Bookings'],
+  summary: 'Create a new booking',
+  security: [{ cookieAuth: [] }],
+  request: {
+    body: {
+      content: {
+        'application/json': { schema: CreateBookingSchema },  // ← USA schema importado
+      },
+    },
+  },
+  responses: {
+    201: {
+      description: 'Booking created',
+      content: { 'application/json': { schema: BookingSchema } },
+    },
+    400: {
+      description: 'Invalid request',
+      content: { 'application/json': { schema: ErrorResponseSchema } },
+    },
+  },
+});
+
+// PATCH /bookings/{id}
+registry.registerPath({
+  method: 'patch',
+  path: '/bookings/{id}',
+  tags: ['Bookings'],
+  summary: 'Update a booking',
+  security: [{ cookieAuth: [] }],
+  request: {
+    params: z.object({ id: UUIDSchema }),
+    body: {
+      content: {
+        'application/json': { schema: UpdateBookingSchema },  // ← USA schema importado
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'Booking updated',
+      content: { 'application/json': { schema: BookingSchema } },
+    },
+    404: {
+      description: 'Booking not found',
+      content: { 'application/json': { schema: ErrorResponseSchema } },
+    },
+  },
+});
 ```
 
-**Paso 5.3: Actualizar index.ts**
+**Paso 5.4: Actualizar index.ts**
 
 ```typescript
 // src/lib/openapi/schemas/index.ts
 
 export * from './common';
-export * from './[dominio]'; // Agregar cada dominio
+export * from './bookings'; // Solo exporta los registros de paths
+// Agregar más según se creen
 ```
+
+**Paso 5.5: Verificar que no hay duplicación**
+
+```bash
+# Buscar schemas duplicados (NO debería haber .openapi() en lib/openapi/schemas/)
+grep -r "\.openapi\(" src/lib/openapi/schemas/ --include="*.ts" | grep -v "common.ts"
+
+# Si encuentra algo, mover esos schemas a src/types/
+```
+
+> **⚠️ ADVERTENCIA:** Si `grep` encuentra schemas con `.openapi()` en `src/lib/openapi/schemas/` (excepto `common.ts`), esos schemas están duplicados. Muévelos a `src/types/` e importa desde ahí.
 
 ---
 
@@ -939,9 +1271,12 @@ curl -s http://localhost:3000/api/openapi | jq '.info.title'
 
 ### Modo COMPLETO (adicional):
 
-- [ ] Schemas de dominio creados
+- [ ] Schemas de dominio creados en `src/types/` (con `.openapi()`)
+- [ ] Tipos inferidos con `z.infer<>` en `src/types/`
+- [ ] Path registrations en `src/lib/openapi/schemas/` (solo importan de `@/types`)
 - [ ] Endpoints registrados en OpenAPI
 - [ ] Tags configurados por dominio
+- [ ] **NO hay schemas duplicados** (verificar con `grep -r "\.openapi\(" src/lib/openapi/schemas/`)
 
 ---
 
@@ -980,9 +1315,17 @@ curl -s http://localhost:3000/api/openapi | jq '.info.title'
 
 ## Próximos Pasos:
 
-1. Al crear nuevos endpoints, registrarlos en OpenAPI
-2. Crear schemas por dominio según necesites
-3. Actualizar auth-info-panel si agregas métodos de auth
+1. Al crear nuevos endpoints:
+   - Definir schemas Zod en `src/types/[dominio].ts` con `.openapi()`
+   - Registrar paths en `src/lib/openapi/schemas/[dominio].ts`
+   - **NUNCA duplicar schemas** - siempre importar de `@/types`
+2. Actualizar auth-info-panel si agregas métodos de auth
+
+## Patrón Single Source of Truth:
+
+- ✅ Schemas en `src/types/` → Tipos + Validación + OpenAPI
+- ✅ Paths en `src/lib/openapi/schemas/` → Solo `registerPath()`
+- ❌ NO definir schemas en `src/lib/openapi/schemas/`
 ```
 
 ---
@@ -993,15 +1336,39 @@ curl -s http://localhost:3000/api/openapi | jq '.info.title'
 R: Es intencional. La documentación de API no debe exponerse públicamente. Solo está disponible en development y staging.
 
 **P: ¿Cómo registro un nuevo endpoint?**
-R: Usa `registry.registerPath()` en el schema correspondiente:
+R: Primero define el schema en `src/types/`, luego registra el path:
 
 ```typescript
+// 1. src/types/user.ts (PRIMERO - definir schema)
+export const UserSchema = z.object({...}).openapi('User');
+export type User = z.infer<typeof UserSchema>;
+
+// 2. src/lib/openapi/schemas/users.ts (DESPUÉS - registrar path)
+import { UserSchema } from '@/types/user';
+
 registry.registerPath({
   method: 'post',
   path: '/users',
   tags: ['Users'],
-  // ... resto de la configuración
+  request: { body: { content: { 'application/json': { schema: UserSchema } } } },
+  // ...
 });
+```
+
+**P: ¿Por qué no puedo definir schemas en `src/lib/openapi/schemas/`?**
+R: Para evitar duplicación y desincronización. Si defines schemas en dos lugares (types + openapi), al agregar un campo puedes olvidar actualizar uno. Con Single Source of Truth, cambias UN archivo y todo se actualiza automáticamente.
+
+**P: ¿Qué pasa si ya tengo schemas duplicados?**
+R: Migra los schemas a `src/types/`:
+
+```bash
+# Encontrar schemas duplicados
+grep -r "\.openapi\(" src/lib/openapi/schemas/ --include="*.ts" | grep -v "common.ts"
+
+# Para cada uno encontrado:
+# 1. Mover el schema a src/types/[dominio].ts
+# 2. Cambiar el import en src/lib/openapi/schemas/[dominio].ts
+# 3. Eliminar la definición duplicada
 ```
 
 **P: ¿Puedo ejecutar este prompt de nuevo?**
@@ -1009,3 +1376,11 @@ R: Sí. Si ya existe la estructura, el prompt pasará a modo COMPLETO y analizar
 
 **P: ¿Funciona con Stripe webhooks?**
 R: Sí, agrega un security scheme para Stripe-Signature y regístralo en los endpoints de webhook.
+
+**P: ¿Cómo sé si mi OpenAPI está sincronizado con los tipos?**
+R: Si seguiste el patrón Single Source of Truth, **siempre** están sincronizados porque vienen del mismo archivo. Verifica con:
+
+```bash
+# No debería encontrar nada (excepto common.ts)
+grep -r "\.openapi\(" src/lib/openapi/schemas/ --include="*.ts" | grep -v "common.ts"
+```

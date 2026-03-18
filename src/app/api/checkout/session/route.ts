@@ -9,7 +9,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createServer } from '@/lib/supabase/server'
+import { createServerFromRequest } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/server'
 import { getBaseUrl } from '@/lib/urls'
 import type { CreateCheckoutSessionRequest, CreateCheckoutSessionResponse, PaymentAPIError } from '@/types/payments'
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get authenticated user
-    const supabase = await createServer()
+    const supabase = await createServerFromRequest(request)
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
     if (authError || !user) {
