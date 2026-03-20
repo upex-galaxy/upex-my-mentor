@@ -8,13 +8,13 @@
  */
 
 import { useState, useTransition, useCallback } from 'react'
+import { toast } from 'sonner'
 import { Plus, Clock, Loader2, Save } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { useToast } from '@/hooks/use-toast'
 import { TimeBlockEditor } from './time-block-editor'
-import { saveMentorAvailability } from '@/lib/actions/availability'
+import { saveMentorAvailability, getMentorAvailability } from '@/lib/actions/availability'
 import type { AvailabilityCalendarProps, AvailabilitySlot, MentorAvailability } from '@/types/scheduling'
 
 /**
@@ -52,7 +52,6 @@ export function AvailabilityCalendar({
   initialSlots,
   mentorTimezone,
 }: AvailabilityCalendarProps) {
-  const { toast } = useToast()
   const [isPending, startTransition] = useTransition()
 
   // Local state for slots
@@ -115,7 +114,7 @@ export function AvailabilityCalendar({
     setEditingSlot(null)
   }
 
-  // Save all changes
+  // Save all changes and re-sync UI state with DB (MYM-133)
   const handleSave = () => {
     startTransition(async () => {
       const result = await saveMentorAvailability({
@@ -128,17 +127,13 @@ export function AvailabilityCalendar({
       })
 
       if (result.success) {
-        toast({
-          title: 'Disponibilidad guardada',
-          description: `Se guardaron ${result.savedCount} horarios correctamente.`,
-        })
+        toast.success(`Se guardaron ${result.savedCount} horarios correctamente.`)
+        // MYM-133: Re-fetch from DB to sync UI state with real IDs
+        const { slots: freshSlots } = await getMentorAvailability(mentorId)
+        setSlots(toSlots(freshSlots))
         setHasChanges(false)
       } else {
-        toast({
-          title: 'Error al guardar',
-          description: result.error || 'Ocurrió un error. Intenta de nuevo.',
-          variant: 'destructive',
-        })
+        toast.error(result.error || 'Ocurrió un error. Intenta de nuevo.')
       }
     })
   }

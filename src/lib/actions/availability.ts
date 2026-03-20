@@ -1,5 +1,6 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { createServer } from '@/lib/supabase/server'
 import { saveAvailabilitySchema } from '@/lib/validations/availability'
 import type { SaveAvailabilityResult, MentorAvailability, AvailabilitySlot } from '@/types/scheduling'
@@ -74,15 +75,13 @@ export async function saveMentorAvailability(
 
   const { slots } = validation.data
 
-  // Begin atomic operation: delete all existing, then insert new
-  // Note: Supabase doesn't support true transactions via JS client,
-  // but we can minimize race conditions with sequential operations
-
-  // Step 1: Delete all existing availability for this mentor
-  const { error: deleteError } = await supabase
+  // MYM-133: Atomic DELETE+INSERT with verification
+  // Step 1: Delete all existing availability and verify rows were affected
+  const { data: deletedRows, error: deleteError } = await supabase
     .from('mentor_availability')
     .delete()
     .eq('mentor_id', user.id)
+    .select('id')
 
   if (deleteError) {
     console.error('Error deleting availability:', deleteError)
@@ -99,15 +98,24 @@ export async function saveMentorAvailability(
       is_active: true,
     }))
 
-    const { error: insertError } = await supabase
+    const { data: insertedRows, error: insertError } = await supabase
       .from('mentor_availability')
       .insert(slotsToInsert)
+      .select('id, day_of_week, start_time, end_time')
 
     if (insertError) {
       console.error('Error inserting availability:', insertError)
       return { success: false, error: 'Error al guardar disponibilidad' }
     }
+
+    if (!insertedRows || insertedRows.length !== slots.length) {
+      console.error('Insert mismatch: expected', slots.length, 'got', insertedRows?.length)
+      return { success: false, error: 'No se pudieron guardar todos los horarios' }
+    }
   }
+
+  // MYM-133: Revalidate the page cache so refresh shows updated data
+  revalidatePath('/dashboard/mentor/availability')
 
   return { success: true, savedCount: slots.length }
 }
