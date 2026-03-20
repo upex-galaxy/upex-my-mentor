@@ -12,13 +12,13 @@ Guide for test data management in KATA framework with TypeScript + Playwright.
 
 ### Principles
 
-| Principle        | Description                              |
-| ---------------- | ---------------------------------------- |
-| **Dynamic**      | Data generated at runtime, not hardcoded |
-| **Isolation**    | Each test creates its own data           |
-| **Uniqueness**   | UUIDs/timestamps to prevent conflicts    |
-| **Realism**      | Data that simulates production scenarios |
-| **Traceability** | Identifiable prefixes for cleanup        |
+| Principle         | Description                                    |
+| ----------------- | ---------------------------------------------- |
+| **Dynamic**       | Data generated at runtime, not hardcoded       |
+| **Isolation**     | Each test creates its own data                 |
+| **Uniqueness**    | UUIDs/timestamps to prevent conflicts          |
+| **Realism**       | Data that simulates production scenarios       |
+| **Traceability**  | Identifiable prefixes for cleanup              |
 
 ---
 
@@ -61,13 +61,13 @@ const user = DataFactory.createUser();
 
 ### Available Methods
 
-| Method                          | Returns           | Description                              |
-| ------------------------------- | ----------------- | ---------------------------------------- |
-| `createUser(overrides?)`        | `TestUser`        | Complete user with email, password, name |
-| `createCredentials(overrides?)` | `TestCredentials` | Only email + password                    |
-| `createTestId(prefix?)`         | `string`          | Unique ID for tracking                   |
-| `createProduct(overrides?)`     | `TestProduct`     | Product data (example)                   |
-| `createOrder(overrides?)`       | `TestOrder`       | Order data (example)                     |
+| Method                          | Returns           | Description                                |
+| ------------------------------- | ----------------- | ------------------------------------------ |
+| `createUser(overrides?)`        | `TestUser`        | Complete user with email, password, name   |
+| `createCredentials(overrides?)` | `TestCredentials` | Only email + password                      |
+| `createTestId(prefix?)`         | `string`          | Unique ID for tracking                     |
+| `createProduct(overrides?)`     | `TestProduct`     | Product data (example)                     |
+| `createOrder(overrides?)`       | `TestOrder`       | Order data (example)                       |
 
 ### Types
 
@@ -198,7 +198,7 @@ export class RegistrationPage extends UiBase {
 import { test, expect } from '@TestFixture';
 
 test.describe('User Registration', () => {
-  test('should register new user successfully', async ({ ui }) => {
+  test('TK-XXX: should register new user successfully', async ({ ui }) => {
     // ARRANGE - DataFactory generates dynamic data
     const user = ui.data.createUser();
 
@@ -209,7 +209,7 @@ test.describe('User Registration', () => {
     await expect(ui.page.locator('[data-testid="welcome"]')).toContainText(user.name);
   });
 
-  test('should register user with specific email', async ({ ui }) => {
+  test('TK-XXX: should register user with specific email', async ({ ui }) => {
     // Specific override for this test
     const user = ui.data.createUser({
       email: 'vip@example.com',
@@ -227,7 +227,7 @@ test.describe('User Registration', () => {
 import { test, expect } from '@TestFixture';
 
 test.describe('Bookings API', () => {
-  test('should create booking with generated data', async ({ api }) => {
+  test('TK-XXX: should create booking with generated data', async ({ api }) => {
     // ARRANGE
     const booking = api.data.createBooking({
       hotelId: 123, // Specific hotel
@@ -292,12 +292,12 @@ For reference data that doesn't change, use `tests/data/fixtures/`.
 
 ### When to Use Fixtures
 
-| Use Fixtures For        | Use DataFactory For      |
-| ----------------------- | ------------------------ |
-| Fixed roles/permissions | Test users               |
-| Reference catalogs      | Transactional data       |
-| API mock responses      | Request payloads         |
-| Configurations          | Data with business logic |
+| Use Fixtures For         | Use DataFactory For          |
+| ------------------------ | ---------------------------- |
+| Fixed roles/permissions  | Test users                   |
+| Reference catalogs       | Transactional data           |
+| API mock responses       | Request payloads             |
+| Configurations           | Data with business logic     |
 
 ### Fixture Example
 
@@ -389,8 +389,8 @@ await api.auth.loginSuccessfully({ email, password });
 # .env (do not commit)
 LOCAL_USER_EMAIL=test@example.com
 LOCAL_USER_PASSWORD=SecurePassword123!
-DEVSTAGE_USER_EMAIL=staging@example.com
-DEVSTAGE_USER_PASSWORD=StagingPassword123!
+STAGING_USER_EMAIL=staging@example.com
+STAGING_USER_PASSWORD=StagingPassword123!
 ```
 
 ---

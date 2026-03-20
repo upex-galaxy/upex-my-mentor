@@ -124,6 +124,10 @@ rm -rf qa/.context
 
 # Remove root-level duplicates
 rm -f qa/context-engineering.md
+
+# Remove scripts/CLIs that already exist in the root project or are not needed in qa/
+rm -rf qa/cli/legacy
+rm -f qa/scripts/kata-manifest.ts
 ```
 
 ### Step 2.2: Create Environment File
@@ -222,23 +226,207 @@ TEST_USER_PASSWORD=testpassword
 NODE_ENV=test
 ```
 
-### Step 3.4: Adapt Authentication Components
+### Step 3.4: Sync OpenAPI Specification & Generate Types
+
+**Objetivo:** Descargar la especificación OpenAPI/Swagger del backend y generar tipos TypeScript para testing type-safe.
+
+> **Prerequisito:** Necesitas saber dónde está la spec OpenAPI del proyecto. Esto se identifica en Step 3.1 (contexto del proyecto).
+
+**El script soporta 3 fuentes:**
+
+| Fuente | Cuándo usar | Ejemplo |
+|--------|------------|---------|
+| **URL** | El backend expone OpenAPI en un endpoint | `http://localhost:3000/api/openapi` (Next.js) o `http://localhost:PORT/swagger/v1/swagger.json` (.NET/Spring) |
+| **GitHub** | La spec está commiteada como archivo en un repo | `owner/repo` + `docs/openapi.yaml` |
+| **Local** | Ya tienes el archivo en tu máquina | `../backend/docs/openapi.json` |
+
+> **Nota:** Si el proyecto usa el prompt `openapi-setup.md` (Next.js + Zod), el endpoint es `/api/openapi` y sirve JSON generado desde Zod schemas en runtime. Para otros backends (.NET, Spring, FastAPI), la URL típica es `/swagger/v1/swagger.json` o `/docs/openapi.json`.
+
+**1. Ejecutar sync + generar tipos (recomendado):**
+
+Siempre pasar `-t` (`--generate-types`) para obtener los tipos junto con la spec:
+
+```bash
+# Modo interactivo (primera vez) — te pregunta qué fuente usar
+cd qa && bun run api:sync -t && cd ..
+
+# O directamente con URL (sin prompts)
+cd qa && bun run api:sync --url http://localhost:3000/api/openapi -t && cd ..
+
+# O directamente desde archivo local
+cd qa && bun run api:sync --file ../backend/docs/openapi.yaml -t && cd ..
+```
+
+En **modo interactivo**, el script pregunta:
+
+```
+📋 OpenAPI Sync Configuration
+
+  1) URL     — Download from an HTTP endpoint (Swagger, localhost, etc.)
+  2) GitHub  — Download from a GitHub repository
+  3) Local   — Copy from a file on your machine
+
+Select source [1/2/3]:
+```
+
+Según la opción elegida, pedirá los datos correspondientes (URL, repo+branch+path, o ruta local).
+
+**2. Resultado esperado:**
+
+```
+qa/api/
+├── openapi.json          ← Spec descargada (o openapi.yaml según la fuente)
+├── openapi-types.ts      ← Tipos TypeScript generados (con -t)
+└── .openapi-config.json  ← Config guardada (para futuros syncs con -c)
+```
+
+**3. Verificar la generación:**
+
+```bash
+# Confirmar que los archivos se crearon
+ls qa/api/openapi.json qa/api/openapi-types.ts
+
+# Verificar que los tipos se generaron correctamente
+head -50 qa/api/openapi-types.ts
+```
+
+**4. Para futuras sincronizaciones (sin prompts):**
+
+```bash
+cd qa && bun run api:sync -c -t && cd ..
+```
+
+> **Referencia:** Ver `.context/guidelines/TAE/openapi-integration.md` para detalles completos.
+
+### Step 3.5: Create Type Facades
+
+**Objetivo:** Crear archivos de fachada que re-exportan los tipos OpenAPI con nombres legibles. Los componentes NUNCA importan directamente de `@openapi` — siempre usan facades.
+
+```
+qa/api/openapi-types.ts          ← Auto-generado (NUNCA editar manualmente)
+        ↓ import type
+qa/api/schemas/{domain}.types.ts  ← Facades escritas a mano (aliases legibles)
+        ↓ import type
+qa/tests/components/api/*.ts      ← Componentes consumen facades
+```
+
+**1. Crear directorio de schemas:**
+
+```bash
+mkdir -p qa/api/schemas
+```
+
+**2. Crear facade de autenticación:** `qa/api/schemas/auth.types.ts`
+
+```typescript
+import type { components, paths } from '@openapi';
+
+// ============================================================================
+// Schema Types
+// ============================================================================
+export type User = components['schemas']['UserModel'];           // UPDATE schema name
+
+// ============================================================================
+// Endpoint Types - POST /auth/login (UPDATE endpoint path)
+// ============================================================================
+type LoginPath = paths['/api/auth/login']['post'];               // UPDATE path
+export type LoginPayload = LoginPath['requestBody']['content']['application/json'];
+export type LoginResponse = LoginPath['responses']['200']['content']['application/json'];
+
+// ============================================================================
+// Custom Types (not in OpenAPI spec)
+// ============================================================================
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+```
+
+> **Cómo encontrar los nombres correctos:** Abrir `qa/api/openapi-types.ts` y buscar los schemas y paths reales del proyecto. Los nombres deben coincidir exactamente con lo que generó `openapi-typescript`.
+
+**3. Crear facade del primer dominio (si aplica):** `qa/api/schemas/{domain}.types.ts`
+
+```typescript
+import type { components, paths } from '@openapi';
+
+// ============================================================================
+// Schema Types
+// ============================================================================
+export type {Entity} = components['schemas']['{EntityModel}'];   // UPDATE
+
+// ============================================================================
+// Endpoint Types - GET /api/{entities}
+// ============================================================================
+type Get{Entities}Path = paths['/api/{entities}']['get'];        // UPDATE
+export type {Entity}ListResponse = Get{Entities}Path['responses']['200']['content']['application/json'];
+
+// ============================================================================
+// Endpoint Types - POST /api/{entities}
+// ============================================================================
+type Create{Entity}Path = paths['/api/{entities}']['post'];      // UPDATE
+export type Create{Entity}Request = Create{Entity}Path['requestBody']['content']['application/json'];
+export type Create{Entity}Response = Create{Entity}Path['responses']['201']['content']['application/json'];
+```
+
+**4. Crear barrel de re-export:** `qa/api/schemas/index.ts`
+
+```typescript
+export type * from './auth.types';
+export type * from './{domain}.types';  // Agregar cada dominio
+```
+
+**5. Verificar que los path aliases estén configurados en `qa/tsconfig.json`:**
+
+```bash
+# Verificar que existan los aliases @openapi y @schemas
+grep -A 2 '@openapi\|@schemas' qa/tsconfig.json
+```
+
+Si no existen, agregar en `compilerOptions.paths`:
+
+```json
+{
+  "compilerOptions": {
+    "paths": {
+      "@openapi": ["./api/openapi-types"],
+      "@schemas/*": ["./api/schemas/*"],
+      "@schemas": ["./api/schemas/index"]
+    }
+  }
+}
+```
+
+> **Regla clave del Type Facade Pattern:** Solo los archivos en `api/schemas/` importan de `@openapi`. Los componentes importan de `@schemas/{domain}.types`.
+> **Referencia:** Ver `.context/guidelines/TAE/openapi-integration.md` → Type Facade Pattern.
+
+### Step 3.6: Adapt Authentication Components
 
 **File:** `qa/tests/components/api/AuthApi.ts`
 
-Update the authentication endpoint and request format:
+Update the authentication endpoint and request format, **using types from the facade**:
 
 ```typescript
+import type { LoginPayload, LoginResponse, LoginCredentials } from '@schemas/auth.types';
+
 // Update endpoint
 private readonly endpoints = {
   login: '/auth/login',  // UPDATE to your project's endpoint
   // ...
 };
 
-// Update request body format if needed
+// Update request body format using OpenAPI types
 @atc('PROJ-API-AUTH-001')
-async authenticateSuccessfully(credentials: LoginCredentials) {
-  // Adapt to your API's expected format
+async authenticateSuccessfully(credentials: LoginCredentials): Promise<[APIResponse, LoginResponse, LoginPayload]> {
+  const payload: LoginPayload = {
+    email: credentials.email,      // UPDATE field names to match API
+    password: credentials.password,
+  };
+  const [response, body, sentPayload] = await this.apiPOST<LoginResponse, LoginPayload>(
+    this.endpoints.login,
+    payload,
+  );
+  expect(response.status()).toBe(200);
+  return [response, body, sentPayload];
 }
 ```
 
@@ -263,14 +451,17 @@ async loginSuccessfully(email: string, password: string) {
 }
 ```
 
-### Step 3.5: Create First Domain Component
+### Step 3.7: Create First Domain Component
 
-Based on project entities, create the first component:
+Based on project entities, create the first component **using types from the facade**:
 
 **API Component:** `qa/tests/components/api/{Entity}Api.ts`
 
 ```typescript
+import type { {Entity}, {Entity}ListResponse, Create{Entity}Request, Create{Entity}Response } from '@schemas/{domain}.types';
+import type { APIResponse } from '@playwright/test';
 import { ApiBase } from '@api/ApiBase';
+import { expect } from '@playwright/test';
 import { atc } from '@utils/decorators';
 
 export class {Entity}Api extends ApiBase {
@@ -281,10 +472,20 @@ export class {Entity}Api extends ApiBase {
   };
 
   @atc('PROJ-API-001')
-  async get{Entity}Successfully(id: string) {
-    const [response, body] = await this.apiGET(this.endpoints.get(id));
+  async get{Entity}Successfully(id: string): Promise<[APIResponse, {Entity}]> {
+    const [response, body] = await this.apiGET<{Entity}>(this.endpoints.get(id));
     expect(response.status()).toBe(200);
     return [response, body];
+  }
+
+  @atc('PROJ-API-002')
+  async create{Entity}Successfully(payload: Create{Entity}Request): Promise<[APIResponse, Create{Entity}Response, Create{Entity}Request]> {
+    const [response, body, sentPayload] = await this.apiPOST<Create{Entity}Response, Create{Entity}Request>(
+      this.endpoints.create,
+      payload,
+    );
+    expect(response.status()).toBe(201);
+    return [response, body, sentPayload];
   }
 }
 ```
@@ -308,7 +509,7 @@ export class {Entity}Page extends UiBase {
 }
 ```
 
-### Step 3.6: Update Fixtures
+### Step 3.8: Update Fixtures
 
 **File:** `qa/tests/components/ApiFixture.ts`
 
@@ -696,9 +897,11 @@ echo ""
 echo "Next steps:"
 echo "1. Update qa/.env with your project URLs and credentials"
 echo "2. Update qa/config/variables.ts with your URLs"
-echo "3. Adapt authentication in qa/tests/components/api/AuthApi.ts"
-echo "4. Adapt login page in qa/tests/components/ui/LoginPage.ts"
-echo "5. Run: cd qa && bun run test --project=api-setup"
+echo "3. Run: cd qa && bun run api:sync -t (sync OpenAPI spec + generate types)"
+echo "4. Create type facades in qa/api/schemas/ (auth.types.ts, etc.)"
+echo "5. Adapt authentication in qa/tests/components/api/AuthApi.ts (using @schemas/auth.types)"
+echo "6. Adapt login page in qa/tests/components/ui/LoginPage.ts"
+echo "7. Run: cd qa && bun run test --project=api-setup"
 ```
 
 ---
@@ -713,10 +916,15 @@ echo "5. Run: cd qa && bun run test --project=api-setup"
 - [ ] `qa/config/variables.ts` updated with URLs
 - [ ] `AuthApi.ts` adapted to project's auth endpoint
 - [ ] `LoginPage.ts` adapted to project's login form
+- [ ] OpenAPI spec synced (`qa/api/openapi.json`)
+- [ ] TypeScript types generated (`qa/api/openapi-types.ts`)
+- [ ] Type facades created (`qa/api/schemas/auth.types.ts` + domain facades)
+- [ ] Barrel re-export created (`qa/api/schemas/index.ts`)
+- [ ] Path aliases `@openapi` and `@schemas/*` configured in `qa/tsconfig.json`
 - [ ] Auth setup tests passing
 - [ ] TypeScript compiles without errors
 - [ ] Lint passes
-- [ ] First domain component created
+- [ ] First domain component created (using typed facades)
 - [ ] Fixtures updated with new components
 - [ ] Root `package.json` has qa scripts (optional)
 - [ ] `qa/.gitignore` verified (should come from boilerplate)
@@ -747,12 +955,40 @@ gh repo view upex-galaxy/ai-driven-test-automation-boilerplate
 3. Check `LoginPage.ts` locators match your form
 4. Run with debug: `cd qa && bun run test:debug --project=ui-setup`
 
+### OpenAPI sync fails
+
+```bash
+# Si usa URL: verificar que el backend esté corriendo y el endpoint responda
+curl -s http://localhost:3000/api/openapi | head -5        # Next.js (openapi-setup)
+curl -s http://localhost:PORT/swagger/v1/swagger.json | head -5  # .NET/Spring
+
+# Si usa GitHub repo: verificar acceso
+gh auth status
+gh repo view owner/backend-repo
+
+# Re-ejecutar sin config guardada
+cd qa && bun run api:sync -t
+```
+
+### Type facades import errors
+
+```bash
+# Verificar que los path aliases existan en qa/tsconfig.json
+grep -A 5 '@openapi\|@schemas' qa/tsconfig.json
+
+# Verificar que openapi-types.ts se generó correctamente
+head -20 qa/api/openapi-types.ts
+
+# Verificar nombres de schemas (deben coincidir con openapi-types.ts)
+grep "schemas" qa/api/openapi-types.ts | head -20
+```
+
 ### Type errors
 
 ```bash
 cd qa && bun run type-check
 # Check import aliases in tsconfig.json
-# Verify all imports use @utils/, @api/, @ui/, etc.
+# Verify all imports use @utils/, @api/, @ui/, @schemas/, etc.
 ```
 
 ---
@@ -766,8 +1002,10 @@ cd qa && bun run type-check
 | `tests/components/` | KATA components (TestContext, ApiBase, UiBase, Fixtures) |
 | `tests/setup/` | Authentication setup (global, api, ui) |
 | `tests/utils/` | Decorators, reporters, utilities |
+| `api/` | OpenAPI spec, generated types, and type facades |
 | `config/` | Environment variables configuration |
-| `scripts/` | KATA manifest, sync scripts |
+| `cli/` | `sync-openapi.ts`, `resend.ts`, `xray/` — Testing CLIs |
+| `scripts/` | `jira-sync.ts` — Utility scripts |
 | `README.md` | QA framework documentation |
 | `playwright.config.ts` | Playwright configuration |
 | `tsconfig.json` | TypeScript configuration |
@@ -783,12 +1021,19 @@ cd qa && bun run type-check
 | `docs/` | Use root project docs |
 | `.context/` | Duplicate of root `.context/` (includes TAE guidelines) |
 | `tests/e2e/example/` | Will create project-specific tests |
+| `cli/legacy/` | Deprecated, no longer needed |
+| `scripts/kata-manifest.ts` | Already exists in root project |
 
 ### Create Per Project
 
 | File | Purpose |
 |------|---------|
-| `tests/components/api/{Entity}Api.ts` | Domain API components |
+| `api/openapi.json` | Downloaded OpenAPI spec (gitignored) |
+| `api/openapi-types.ts` | Auto-generated types (committed) |
+| `api/schemas/auth.types.ts` | Auth domain type facade |
+| `api/schemas/{domain}.types.ts` | Domain type facades |
+| `api/schemas/index.ts` | Barrel re-export for all facades |
+| `tests/components/api/{Entity}Api.ts` | Domain API components (import from `@schemas`) |
 | `tests/components/ui/{Entity}Page.ts` | Domain UI components |
 | `tests/e2e/{feature}/*.test.ts` | E2E test files |
 | `tests/integration/{feature}.test.ts` | Integration test files |

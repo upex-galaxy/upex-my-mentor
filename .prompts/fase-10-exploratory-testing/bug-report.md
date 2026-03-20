@@ -29,21 +29,21 @@ Identify, validate, and report defects found during exploratory testing. This pr
 
 ### Required Fields
 
-| Field ID            | Jira Field Name                  | Type     | What to Fill                                                                                                                                                    |
-| ------------------- | -------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Field ID            | Jira Field Name                   | Type     | What to Fill                                                                                                                                                    |
+| ------------------- | --------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `customfield_10109` | 🐞 Actual Result (Comportamiento) | Textarea | Describe exactly what happened (the bug behavior). Include error messages, unexpected UI states, or incorrect data shown.                                       |
 | `customfield_10110` | ✅ Expected Result (Output)       | Textarea | Describe what SHOULD have happened according to requirements or standard UX patterns.                                                                           |
-| `customfield_10112` | Error Type                       | Dropdown | `Functional`, `Visual`, `Content`, `Performance`, `Crash`, `Data`, `Integration`, `Security`                                                                    |
-| `customfield_10116` | SEVERITY                         | Dropdown | `Crítica`, `Mayor`, `Moderada`, `Menor`, `Trivial`                                                                                                              |
-| `customfield_12210` | Test Environment                 | Dropdown | `Dev`, `QA`, `UAT`, `Staging`, `Production`                                                                                                                     |
+| `customfield_10112` | Error Type                        | Dropdown | `Functional`, `Visual`, `Content`, `Performance`, `Crash`, `Data`, `Integration`, `Security`                                                                    |
+| `customfield_10116` | SEVERITY                          | Dropdown | `Crítica`, `Mayor`, `Moderada`, `Menor`, `Trivial`                                                                                                              |
+| `customfield_12210` | Test Environment                  | Dropdown | `Dev`, `QA`, `UAT`, `Staging`, `Production`                                                                                                                     |
 | `customfield_10701` | Root Cause🐞                      | Dropdown | `Code Error`, `Config/Env Error`, `Environment Error`, `Requirement Error`, `Working As Designed (WAD)`, `Third-Party Error`, `Integration Error`, `Data Error` |
 
 ### Optional Fields
 
 | Field ID            | Jira Field Name | Type     | When to Use                                                                                                                    |
 | ------------------- | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `customfield_10111` | 🚩 Workaround    | Textarea | Only if a temporary solution exists. Otherwise, omit.                                                                          |
-| `customfield_10607` | 🧫 EVIDENCE      | Textarea | Additional notes about evidence (e.g., "See attached screenshot", "Video in attachments"). Omit if using attachments parameter |
+| `customfield_10111` | 🚩 Workaround   | Textarea | Only if a temporary solution exists. Otherwise, omit.                                                                          |
+| `customfield_10607` | 🧫 EVIDENCE     | Textarea | Additional notes about evidence (e.g., "See attached screenshot", "Video in attachments"). Omit if using attachments parameter |
 | `customfield_12212` | Fix             | Radio    | `Bugfix` (estándar) o `Hotfix` (crítico para deploy inmediato). Para bugs normales usar `Bugfix`.                              |
 | N/A                 | Web Link        | URL      | Only if the bug relates to a specific external URL or documentation. Omit if not applicable.                                   |
 

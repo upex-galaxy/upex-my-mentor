@@ -1,76 +1,73 @@
 # QA - Quality Engineering Guidelines
 
-> **Para**: QA Engineers (Testing Manual/Exploratorio)
-> **Fases**: 10 (Exploratory Testing), 11 (Test Documentation)
+> **For**: QA Engineers (Manual/Exploratory Testing)
+> **Stages**: 2 (Exploratory Testing), 3 (Test Documentation)
 
 ---
 
-## Propósito
+## Purpose
 
-Esta carpeta contiene los guidelines para **Quality Engineering general**, enfocado en:
+This folder contains the guidelines for **general Quality Engineering**, focused on:
 
-- Testing Exploratorio
-- Gestión de pruebas en Jira
-- Reporte de bugs
-- Documentación de tests
+- Exploratory Testing
+- Test management in Jira
+- Bug reporting
+- Test documentation
 
-**Nota**: Para Test Automation, ver la carpeta `TAE/`.
+**Note**: For Test Automation, see the `TAE/` folder.
 
 ---
 
 ## QA vs TAE
 
-| Aspecto          | QA (esta carpeta)        | TAE                        |
+| Aspect           | QA (this folder)         | TAE                        |
 | ---------------- | ------------------------ | -------------------------- |
-| **Enfoque**      | Testing Manual           | Testing Automatizado       |
-| **Fases**        | 10, 11                   | 12                         |
-| **Actividades**  | Exploratorio, bugs, docs | E2E, Integration, CI/CD    |
-| **Herramientas** | Jira, browser manual     | Playwright, KATA framework |
+| **Focus**        | Manual Testing           | Automated Testing          |
+| **Stages**       | 2, 3                     | 4                          |
+| **Activities**   | Exploratory, bugs, docs  | E2E, Integration, CI/CD    |
+| **Tools**        | Jira, manual browser     | Playwright, KATA framework |
 
 ---
 
-## Contenido
+## Contents
 
-| Archivo                   | Propósito                                      |
-| ------------------------- | ---------------------------------------------- |
-| `exploratory-testing.md`  | Principios de testing exploratorio             |
-| `jira-test-management.md` | Gestión de tests en Jira                       |
-| `spec-driven-testing.md`  | Principio de testing guiado por especificación |
+| File                      | Purpose                                |
+| ------------------------- | -------------------------------------- |
+| `exploratory-testing.md`    | Exploratory testing principles                          |
+| `jira-test-management.md`  | Test management in Jira                                 |
+| `spec-driven-testing.md`   | Spec-driven testing principle                           |
+| `atc-definition-strategy.md` | **How to define, name, and document ATCs** (QA↔TAE bridge) |
 
-**Nota**: Para uso de `data-testid` en automatización, ver `TAE/data-testid-usage.md`.
-
----
-
-## Principio Central: Spec-Driven Testing
-
-El testing en este proyecto sigue el principio de **Spec-Driven Testing**:
-
-1. **Test from Specs**: Todo test nace de una especificación
-2. **User Story = Test Source**: La story define qué probar
-3. **AC = Test Criteria**: Los acceptance criteria son los criterios de prueba
-4. **Traceability**: Cada test mapea a una especificación
+**Note**: For `data-testid` usage in automation, see `TAE/data-testid-usage.md`.
 
 ---
 
-## Cuándo Leer Estos Guidelines
+## Core Principle: Spec-Driven Testing
 
-La IA DEBE leer estos guidelines **ANTES** de:
+Testing in this project follows the **Spec-Driven Testing** principle:
 
-- Realizar testing exploratorio
-- Reportar bugs
-- Documentar tests en Jira
-- Priorizar tests para automatización
-
----
-
-## Workflow de QA
-
-Para el workflow detallado paso a paso, ver:
-
-- `.prompts/us-qa-workflow.md` - Workflow completo de QA
-- `.prompts/fase-10-exploratory-testing/` - Prompts de testing exploratorio
-- `.prompts/fase-11-test-documentation/` - Prompts de documentación
+1. **Test from Specs**: All tests come from a specification
+2. **User Story = Test Source**: The story defines what to test
+3. **AC = Test Criteria**: Acceptance criteria are the test criteria
+4. **Traceability**: Each test maps to a specification
 
 ---
 
-**Última actualización**: 2025-12-21
+## When to Read These Guidelines
+
+The AI MUST read these guidelines **BEFORE**:
+
+- Performing exploratory testing
+- Reporting bugs
+- Documenting tests in Jira
+- Prioritizing tests for automation
+
+---
+
+## QA Workflow
+
+See the project's prompts directory for workflow guides.
+
+---
+
+**Last Updated**: 2026-02-12

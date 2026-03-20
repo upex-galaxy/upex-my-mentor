@@ -1,178 +1,176 @@
 # Spec-Driven Testing
 
-> **Para**: QA Engineers
-> **Principio**: Primero especificar, luego testear
+> **For**: QA Engineers
+> **Principle**: Specify first, then test
 
 ---
 
-## El Principio
+## The Principle
 
-**Spec-Driven Testing** es el complemento de Spec-Driven Development. Así como el desarrollo se guía por especificaciones, el testing también:
+**Spec-Driven Testing** is the complement to Spec-Driven Development. Just as development is guided by specifications, testing is too:
 
-- **User Story** → Define QUÉ probar
-- **Acceptance Criteria** → Define los CRITERIOS de éxito
-- **Test Cases** → Define CÓMO probar
+- **User Story** → Defines WHAT to test
+- **Acceptance Criteria** → Defines the SUCCESS criteria
+- **Test Cases** → Defines HOW to test
 
 ---
 
-## Los 4 Pilares
+## The 4 Pillars
 
 ### 1. Test from Specs
 
 ```
-❌ MAL: "Voy a probar el login a ver qué encuentro"
-✅ BIEN: "Voy a verificar que STORY-XXX cumple sus acceptance criteria"
+❌ BAD: "I'm going to test the login and see what I find"
+✅ GOOD: "I'm going to verify that STORY-XXX meets its acceptance criteria"
 ```
 
-Antes de testear:
+Before testing:
 
-- Leer la **story** completa
-- Entender los **acceptance criteria**
-- Revisar los **test cases** documentados
+- Read the complete **story**
+- Understand the **acceptance criteria**
+- Review the documented **test cases**
 
 ### 2. Traceability
 
 ```
-❌ MAL: Bug: "El botón no funciona"
-✅ BIEN: Bug: "AC-3 de STORY-XXX falla: El botón submit no responde"
+❌ BAD: Bug: "The button doesn't work"
+✅ GOOD: Bug: "AC-3 of STORY-XXX fails: The submit button doesn't respond"
 ```
 
-Todo bug debe:
+Every bug must:
 
-- Referenciar la story relacionada
-- Indicar qué acceptance criteria falla
-- Tener pasos claros de reproducción
+- Reference the related story
+- Indicate which acceptance criteria fails
+- Have clear reproduction steps
 
 ### 3. Coverage from Requirements
 
 ```
-❌ MAL: "Probé todo lo que se me ocurrió"
-✅ BIEN: "Verifiqué cada AC y sus edge cases documentados"
+❌ BAD: "I tested everything I could think of"
+✅ GOOD: "I verified each AC and its documented edge cases"
 ```
 
-La cobertura se mide por:
+Coverage is measured by:
 
-- % de acceptance criteria verificados
-- % de test cases ejecutados
-- Edge cases cubiertos
+- % of acceptance criteria verified
+- % of test cases executed
+- Edge cases covered
 
 ### 4. Exploratory with Purpose
 
 ```
-❌ MAL: Click random por la aplicación
-✅ BIEN: Exploración enfocada en áreas de riesgo de la story
+❌ BAD: Random clicking through the application
+✅ GOOD: Focused exploration on the story's risk areas
 ```
 
-Testing exploratorio debe:
+Exploratory testing must:
 
-- Partir de la story y sus ACs
-- Buscar edge cases no documentados
-- Documentar hallazgos con trazabilidad
+- Start from the story and its ACs
+- Look for undocumented edge cases
+- Document findings with traceability
 
 ---
 
-## Flujo de Trabajo Spec-Driven Testing
+## Spec-Driven Testing Workflow
 
 ```
-Especificación              Testing                    Feedback
+Specification              Testing                    Feedback
      │                         │                          │
      ▼                         ▼                          ▼
 ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
 │  Story  │ → │  Test   │ → │ Execute │ → │ Report  │
 │   +AC   │    │  Cases  │    │ & Find  │    │ & Doc   │
 └─────────┘    └─────────┘    └─────────┘    └─────────┘
-   Fase 4        Fase 5        Fase 10       Fase 11
+  Phase 4        Phase 5        Stage 2       Stage 3
 ```
 
-**El testing NO inventa qué probar** - la especificación ya lo define.
+**Testing DOES NOT invent what to test** - the specification already defines it.
 
 ---
 
-## Relación con Spec-Driven Development
+## Relationship with Spec-Driven Development
 
-| Desarrollo (SDD)            | Testing (SDT)          |
+| Development (SDD)           | Testing (SDT)          |
 | --------------------------- | ---------------------- |
 | Story → Implementation Plan | Story → Test Cases     |
-| AC → Código                 | AC → Test Criteria     |
-| Plan → Código               | Test Cases → Ejecución |
+| AC → Code                   | AC → Test Criteria     |
+| Plan → Code                 | Test Cases → Execution |
 | Code Review                 | Test Review            |
 
-**Son dos caras de la misma moneda**: Especificación primero.
+**They are two sides of the same coin**: Specification first.
 
 ---
 
-## Beneficios
+## Benefits
 
-| Aspecto          | Sin SDT         | Con SDT           |
-| ---------------- | --------------- | ----------------- |
-| **Enfoque**      | "¿Qué pruebo?"  | Story + AC claros |
-| **Cobertura**    | Subjetiva       | Medible por AC    |
-| **Bugs**         | "Algo anda mal" | Trazables a spec  |
-| **Priorización** | Por intuición   | Por impacto en AC |
+| Aspect           | Without SDT         | With SDT              |
+| ---------------- | ------------------- | --------------------- |
+| **Focus**        | "What do I test?"   | Clear Story + AC      |
+| **Coverage**     | Subjective          | Measurable by AC      |
+| **Bugs**         | "Something's wrong" | Traceable to spec     |
+| **Prioritization** | By intuition      | By impact on AC       |
 
 ---
 
-## Anti-Patrones
+## Anti-Patterns
 
 ### ❌ Random Testing
 
 ```
-"Voy a clickear por ahí a ver qué pasa"
+"I'm going to click around and see what happens"
 ```
 
-**Problema**: Sin foco, sin cobertura medible, sin trazabilidad.
+**Problem**: No focus, no measurable coverage, no traceability.
 
 ### ❌ Test Without Spec
 
 ```
-"No leí la story pero pruebo igual"
+"I didn't read the story but I'll test anyway"
 ```
 
-**Problema**: ¿Cómo sabes si algo es bug o es el comportamiento esperado?
+**Problem**: How do you know if something is a bug or expected behavior?
 
 ### ❌ Bug Without Context
 
 ```
-"Bug: El botón no funciona"
+"Bug: The button doesn't work"
 ```
 
-**Problema**: Sin referencia a story/AC, el dev no sabe qué debería hacer.
+**Problem**: Without reference to story/AC, the dev doesn't know what it should do.
 
 ---
 
-## Checklist SDT
+## SDT Checklist
 
-Antes de testear:
+Before testing:
 
-- [ ] Leí la story completa
-- [ ] Entiendo todos los acceptance criteria
-- [ ] Revisé los test cases documentados
-- [ ] Tengo el ambiente de staging listo
+- [ ] Read the complete story
+- [ ] Understand all acceptance criteria
+- [ ] Reviewed the documented test cases
+- [ ] Have staging environment ready
 
-Durante el testing:
+During testing:
 
-- [ ] Verifico cada AC sistemáticamente
-- [ ] Documento hallazgos con referencia a specs
-- [ ] Busco edge cases más allá de los documentados
-- [ ] Capturo evidencia (screenshots, videos)
+- [ ] Verify each AC systematically
+- [ ] Document findings with reference to specs
+- [ ] Look for edge cases beyond those documented
+- [ ] Capture evidence (screenshots, videos)
 
-Después del testing:
+After testing:
 
-- [ ] Todos los AC verificados ✓/✗
-- [ ] Bugs reportados con trazabilidad
-- [ ] Tests documentados para automatización
-- [ ] Priorización de tests para TAE
-
----
-
-## Ver También
-
-- `exploratory-testing.md` - Técnicas de testing exploratorio
-- `jira-test-management.md` - Gestión en Jira
-- `data-testid-usage.md` - Uso de data-testid
-- `.prompts/us-qa-workflow.md` - Workflow de QA
-- `../DEV/spec-driven-development.md` - SDD para desarrollo
+- [ ] All ACs verified ✓/✗
+- [ ] Bugs reported with traceability
+- [ ] Tests documented for automation
+- [ ] Test prioritization for TAE
 
 ---
 
-**Última actualización**: 2025-12-21
+## See Also
+
+- `exploratory-testing.md` - Exploratory testing techniques
+- `jira-test-management.md` - Jira test management
+- `.context/guidelines/TAE/data-testid-usage.md` - data-testid usage
+
+---
+
+**Last Updated**: 2026-02-12

@@ -103,12 +103,14 @@ tests/
 
 ### 1. Test File Structure
 
+> **Note**: `TK-XXX` in examples represents the actual issue ID from your tracker (Jira, Xray, etc.). Replace with the real ticket ID (e.g., `TK-101`, `UPEX-456`).
+
 ```typescript
 // tests/integration/auth/auth.test.ts
 import { expect, test } from '@TestFixture';
 
 test.describe('Auth API', () => {
-  test('should login with valid credentials', async ({ api }) => {
+  test('TK-XXX: should login with valid credentials', async ({ api }) => {
     // ARRANGE - Prepare test data
     const credentials = {
       username: 'test@example.com',
@@ -122,7 +124,7 @@ test.describe('Auth API', () => {
     expect(body.access_token).toContain('eyJ'); // JWT format
   });
 
-  test('should reject invalid credentials', async ({ api }) => {
+  test('TK-XXX: should reject invalid credentials', async ({ api }) => {
     // ARRANGE
     const invalidCredentials = {
       username: 'fake@example.com',
@@ -139,19 +141,12 @@ test.describe('Auth API', () => {
 
 ```typescript
 // tests/components/api/BookingsApi.ts
+import type { Booking, CreateBookingRequest } from '@schemas/bookings.types';
 import type { APIResponse } from '@playwright/test';
-import type { components } from '@api/openapi-types';
 
 import { ApiBase } from '@api/ApiBase';
 import { expect } from '@playwright/test';
 import { atc } from '@utils/decorators';
-
-// ============================================
-// Types - Use OpenAPI generated types
-// ============================================
-
-type Booking = components['schemas']['BookingListModel'];
-type BookingPayload = components['schemas']['CreateBookingRequest'];
 
 // ============================================
 // API Component
@@ -162,7 +157,7 @@ export class BookingsApi extends ApiBase {
   // ATCs - Complete Test Cases
   // ============================================
 
-  @atc('CUR-BOOK-001')
+  @atc('TK-201')
   async getBookingsSuccessfully(hotelId: number): Promise<[APIResponse, Booking[]]> {
     const [response, body] = await this.apiGET<Booking[]>(`/bookings?hotelId=${hotelId}`);
 
@@ -173,11 +168,11 @@ export class BookingsApi extends ApiBase {
     return [response, body];
   }
 
-  @atc('CUR-BOOK-002')
+  @atc('TK-202')
   async createBookingSuccessfully(
-    payload: BookingPayload
-  ): Promise<[APIResponse, Booking, BookingPayload]> {
-    const [response, body, sentPayload] = await this.apiPOST<Booking, BookingPayload>(
+    payload: CreateBookingRequest
+  ): Promise<[APIResponse, Booking, CreateBookingRequest]> {
+    const [response, body, sentPayload] = await this.apiPOST<Booking, CreateBookingRequest>(
       '/bookings',
       payload
     );
@@ -189,7 +184,7 @@ export class BookingsApi extends ApiBase {
     return [response, body, sentPayload];
   }
 
-  @atc('CUR-BOOK-003')
+  @atc('TK-203')
   async getBookingNotFound(bookingId: number): Promise<[APIResponse, Record<string, unknown>]> {
     const [response, body] = await this.apiGET<Record<string, unknown>>(`/bookings/${bookingId}`);
 
@@ -290,7 +285,7 @@ const [response, body] = await this.apiGET<SearchResults>('/search', {
 ### Login and Store Token
 
 ```typescript
-test('authenticated API call', async ({ api }) => {
+test('TK-XXX: should make authenticated API call', async ({ api }) => {
   // Login first - token is automatically stored
   await api.auth.loginSuccessfully({
     username: 'admin@example.com',
@@ -316,24 +311,36 @@ api.clearAuthToken();
 
 ## Using OpenAPI Types
 
-After running `bun run api:sync`, use generated types for type safety:
+After running `bun run api:sync`, types are available through **type facades** in `api/schemas/`:
 
 ```typescript
-import type { components, paths } from '@api/openapi-types';
-
-// Extract schema types
-type Booking = components['schemas']['BookingListModel'];
-type Invoice = components['schemas']['InvoiceModel'];
-type Hotel = components['schemas']['HotelModel'];
+// Import from domain facade — NOT directly from @openapi
+import type { Booking, CreateBookingRequest, CreateBookingResponse } from '@schemas/bookings.types';
 
 // Use in ATCs
-@atc('CUR-BOOK-001')
+@atc('TK-201')
+async createBookingSuccessfully(
+  payload: CreateBookingRequest
+): Promise<[APIResponse, CreateBookingResponse, CreateBookingRequest]> {
+  const [response, body, sentPayload] = await this.apiPOST<CreateBookingResponse, CreateBookingRequest>(
+    '/bookings',
+    payload,
+  );
+  expect(response.status()).toBe(201);
+  return [response, body, sentPayload];
+}
+
+@atc('TK-202')
 async getBookingsSuccessfully(hotelId: number): Promise<[APIResponse, Booking[]]> {
   const [response, body] = await this.apiGET<Booking[]>(`/bookings?hotelId=${hotelId}`);
-  // body is typed as Booking[]
+  expect(response.status()).toBe(200);
   return [response, body];
 }
 ```
+
+> **Type Facade Pattern:** Domain types live in `api/schemas/{domain}.types.ts`.
+> Components import from `@schemas/{domain}.types`, never directly from `@openapi`.
+> See: `openapi-integration.md` → Type Facade Pattern for full details.
 
 ---
 
@@ -351,15 +358,15 @@ async getBookingsSuccessfully(hotelId: number): Promise<[APIResponse, Booking[]]
 
 ```typescript
 // Success scenarios
-@atc('CUR-BOOK-001') async getBookingsSuccessfully(...) { ... }
-@atc('CUR-BOOK-002') async createBookingSuccessfully(...) { ... }
-@atc('CUR-BOOK-003') async updateBookingSuccessfully(...) { ... }
+@atc('TK-201') async getBookingsSuccessfully(...) { ... }
+@atc('TK-202') async createBookingSuccessfully(...) { ... }
+@atc('TK-203') async updateBookingSuccessfully(...) { ... }
 
 // Error scenarios
-@atc('CUR-BOOK-010') async getBookingNotFound(...) { ... }
-@atc('CUR-BOOK-011') async createBookingWithInvalidData(...) { ... }
-@atc('CUR-BOOK-012') async deleteBookingForbidden(...) { ... }
-@atc('CUR-BOOK-013') async getBookingsUnauthorized(...) { ... }
+@atc('TK-204') async getBookingNotFound(...) { ... }
+@atc('TK-205') async createBookingWithInvalidData(...) { ... }
+@atc('TK-206') async deleteBookingForbidden(...) { ... }
+@atc('TK-207') async getBookingsUnauthorized(...) { ... }
 ```
 
 ---
@@ -369,9 +376,9 @@ async getBookingsSuccessfully(hotelId: number): Promise<[APIResponse, Booking[]]
 Every ATC must include **fixed assertions** that validate the expected behavior:
 
 ```typescript
-@atc('CUR-BOOK-001')
-async createBookingSuccessfully(payload: BookingPayload): Promise<[APIResponse, Booking, BookingPayload]> {
-  const [response, body, sentPayload] = await this.apiPOST<Booking, BookingPayload>(
+@atc('TK-201')
+async createBookingSuccessfully(payload: CreateBookingRequest): Promise<[APIResponse, Booking, CreateBookingRequest]> {
+  const [response, body, sentPayload] = await this.apiPOST<Booking, CreateBookingRequest>(
     '/bookings',
     payload,
   );
@@ -390,7 +397,7 @@ async createBookingSuccessfully(payload: BookingPayload): Promise<[APIResponse, 
 Additional assertions can be added in test files for flow validation:
 
 ```typescript
-test('booking flow', async ({ api }) => {
+test('TK-XXX: should complete booking flow', async ({ api }) => {
   const payload = { hotelId: 123, guestEmail: 'test@example.com', ... };
 
   // ATC has fixed assertions
@@ -430,21 +437,21 @@ Each ATC should have a unique expected outcome. Don't create separate ATCs for t
 
 ```typescript
 // ✅ CORRECT - One ATC for valid login
-@atc('CUR-AUTH-001')
+@atc('TK-101')
 async loginSuccessfully(credentials: LoginPayload) { ... }
 
 // ❌ WRONG - Multiple ATCs for same outcome
-@atc('CUR-AUTH-001')
+@atc('TK-101')
 async loginWithEmail(email: string) { ... }
 
-@atc('CUR-AUTH-002')
+@atc('TK-102')
 async loginWithUsername(username: string) { ... }
 ```
 
 ### 2. Use Test Data Generation
 
 ```typescript
-test('create booking', async ({ api }) => {
+test('TK-XXX: should create booking with generated data', async ({ api }) => {
   const payload = {
     guestEmail: api.generateEmail('booking-test'),
     guestName: api.generateName(),
@@ -458,7 +465,7 @@ test('create booking', async ({ api }) => {
 ### 3. Chain ATCs for Complex Flows
 
 ```typescript
-test('complete booking flow', async ({ api }) => {
+test('TK-XXX: should complete booking flow end to end', async ({ api }) => {
   // Login first
   await api.auth.loginSuccessfully(credentials);
 

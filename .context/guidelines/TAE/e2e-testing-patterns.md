@@ -110,12 +110,14 @@ tests/
 
 ### 1. Test File Structure
 
+> **Note**: `TK-XXX` in examples represents the actual issue ID from your tracker (Jira, Xray, etc.). Replace with the real ticket ID (e.g., `TK-301`, `UPEX-456`).
+
 ```typescript
 // tests/e2e/auth/login.test.ts
 import { expect, test } from '@TestFixture';
 
 test.describe('Login Flow', () => {
-  test('should login with valid credentials @critical', async ({ ui }) => {
+  test('TK-XXX: should login with valid credentials @critical', async ({ ui }) => {
     // ARRANGE - Prepare test data
     const credentials = {
       username: 'admin@example.com',
@@ -129,7 +131,7 @@ test.describe('Login Flow', () => {
     await expect(ui.page).toHaveURL(/.*dashboard.*/);
   });
 
-  test('should show error for invalid credentials', async ({ ui }) => {
+  test('TK-XXX: should show error for invalid credentials', async ({ ui }) => {
     // ARRANGE
     const invalidCredentials = {
       username: 'fake@example.com',
@@ -183,7 +185,7 @@ export class BookingsPage extends UiBase {
   // ATCs - Complete Test Cases
   // ============================================
 
-  @atc('CUR-BOOK-UI-001')
+  @atc('TK-401')
   async viewBookingsSuccessfully(filter: BookingFilter) {
     await this.goto();
 
@@ -203,7 +205,7 @@ export class BookingsPage extends UiBase {
     await expect(this.page.locator('[data-testid="booking-row"]').first()).toBeVisible();
   }
 
-  @atc('CUR-BOOK-UI-002')
+  @atc('TK-402')
   async viewEmptyBookingsState(filter: BookingFilter) {
     await this.goto();
 
@@ -266,7 +268,7 @@ UiBase provides helpers to intercept API responses during UI actions:
 #### interceptResponse - Capture API response from an action
 
 ```typescript
-@atc('CUR-LOGIN-001')
+@atc('TK-301')
 async loginAndCaptureToken(credentials: LoginCredentials) {
   await this.goto();
 
@@ -292,7 +294,7 @@ async loginAndCaptureToken(credentials: LoginCredentials) {
 #### waitForApiResponse - Wait for an already-triggered response
 
 ```typescript
-@atc('CUR-BOOK-UI-003')
+@atc('TK-403')
 async loadBookingsAndVerifyCount() {
   await this.goto();
 
@@ -322,7 +324,7 @@ The most powerful pattern: use API for setup and verification, UI for the actual
 import { expect, test } from '@TestFixture';
 
 test.describe('Create Booking Flow', () => {
-  test('should create booking via UI and verify via API', async ({ test: fixture }) => {
+  test('TK-XXX: should create booking via UI and verify via API', async ({ test: fixture }) => {
     const { api, ui } = fixture;
 
     // SETUP via API - fast, reliable
@@ -349,7 +351,7 @@ test.describe('Create Booking Flow', () => {
 ### Accessing Both Fixtures Separately
 
 ```typescript
-test('hybrid approach with separate fixtures', async ({ ui, api }) => {
+test('TK-XXX: hybrid approach with separate fixtures', async ({ ui, api }) => {
   // API for data setup (no browser needed for this step)
   await api.auth.loginSuccessfully(credentials);
 
@@ -373,17 +375,17 @@ test('hybrid approach with separate fixtures', async ({ ui, api }) => {
 
 ```typescript
 // Success scenarios
-@atc('CUR-LOGIN-001') async loginSuccessfully(...) { ... }
-@atc('CUR-BOOK-001') async viewBookingsSuccessfully(...) { ... }
-@atc('CUR-BOOK-002') async createBookingSuccessfully(...) { ... }
+@atc('TK-301') async loginSuccessfully(...) { ... }
+@atc('TK-201') async viewBookingsSuccessfully(...) { ... }
+@atc('TK-202') async createBookingSuccessfully(...) { ... }
 
 // Error scenarios
-@atc('CUR-LOGIN-010') async loginWithInvalidCredentials(...) { ... }
-@atc('CUR-BOOK-010') async submitBookingWithInvalidData(...) { ... }
+@atc('TK-303') async loginWithInvalidCredentials(...) { ... }
+@atc('TK-204') async submitBookingWithInvalidData(...) { ... }
 
 // State scenarios
-@atc('CUR-BOOK-020') async viewBookingsEmptyState(...) { ... }
-@atc('CUR-DASH-001') async viewDashboardWithNoData(...) { ... }
+@atc('TK-208') async viewBookingsEmptyState(...) { ... }
+@atc('TK-501') async viewDashboardWithNoData(...) { ... }
 ```
 
 ---
@@ -396,7 +398,7 @@ Locators go directly inside ATCs. No separate locator objects needed:
 
 ```typescript
 // ✅ CORRECT - Locators inline
-@atc('CUR-LOGIN-001')
+@atc('TK-301')
 async loginSuccessfully(credentials: LoginCredentials) {
   await this.page.locator('input[name="username"]').fill(credentials.username);
   await this.page.locator('input[name="password"]').fill(credentials.password);
@@ -422,14 +424,14 @@ class BookingsPage extends UiBase {
     return this.page.locator('[data-testid="apply-filter"]');
   }
 
-  @atc('CUR-BOOK-001')
+  @atc('TK-201')
   async viewBookingsSuccessfully(filter: BookingFilter) {
     // ... apply filter
     await this.filterButton.click();
     // ...
   }
 
-  @atc('CUR-BOOK-002')
+  @atc('TK-202')
   async viewBookingsWithDifferentFilter(filter: BookingFilter) {
     // ... apply different filter
     await this.filterButton.click();
@@ -549,7 +551,7 @@ bun run test:allure
 Every ATC must include **fixed assertions** that validate the expected behavior:
 
 ```typescript
-@atc('CUR-LOGIN-001')
+@atc('TK-301')
 async loginSuccessfully(credentials: LoginCredentials) {
   await this.goto();
 
@@ -568,7 +570,7 @@ async loginSuccessfully(credentials: LoginCredentials) {
 Additional assertions can be added in test files:
 
 ```typescript
-test('login flow', async ({ ui }) => {
+test('TK-XXX: should complete login flow successfully', async ({ ui }) => {
   await ui.login.loginSuccessfully(credentials);
 
   // Additional test-level assertions
@@ -581,20 +583,20 @@ test('login flow', async ({ ui }) => {
 
 ## ATCs Don't Call ATCs
 
-ATCs are atomic units. They should NOT call other ATCs. Use **Flows** for reusable ATC chains:
+ATCs are atomic units. They should NOT call other ATCs. Use **Steps** for reusable ATC chains:
 
 ```typescript
 // ❌ WRONG - ATC calling another ATC
 class BookingsPage extends UiBase {
-  @atc('CUR-BOOK-001')
+  @atc('TK-201')
   async createBookingSuccessfully(...) {
     await this.loginPage.loginSuccessfully(...); // WRONG!
     // ...
   }
 }
 
-// ✅ CORRECT - Use flows or setup in test file
-test('create booking', async ({ ui }) => {
+// ✅ CORRECT - Use steps or setup in test file
+test('TK-XXX: should create booking successfully', async ({ ui }) => {
   await ui.login.loginSuccessfully(credentials); // Setup in test
   await ui.bookings.createBookingSuccessfully(data); // Then the actual ATC
 });
@@ -624,13 +626,13 @@ Each test should be able to run independently:
 
 ```typescript
 // ✅ CORRECT - Test is self-contained
-test('view bookings', async ({ ui }) => {
+test('TK-XXX: should view bookings after login', async ({ ui }) => {
   await ui.login.loginSuccessfully(credentials);
   await ui.bookings.viewBookingsSuccessfully({ hotelId: 123 });
 });
 
 // ❌ WRONG - Depends on previous test
-test('create booking', async ({ ui }) => {
+test('TK-XXX: should create booking', async ({ ui }) => {
   // Assumes login happened in previous test
   await ui.bookings.createBookingSuccessfully(data);
 });
@@ -639,8 +641,8 @@ test('create booking', async ({ ui }) => {
 ### 3. Use Tags for Test Organization
 
 ```typescript
-test('critical login flow @critical @smoke', async ({ ui }) => { ... });
-test('edge case login @regression', async ({ ui }) => { ... });
+test('TK-XXX: should login successfully @critical @smoke', async ({ ui }) => { ... });
+test('TK-XXX: should handle edge case login @regression', async ({ ui }) => { ... });
 ```
 
 Run by tag: `bun run test --grep @critical`
