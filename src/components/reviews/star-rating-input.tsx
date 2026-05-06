@@ -49,6 +49,7 @@ export function StarRatingInput({
 
   return (
     <div
+      data-testid="starRatingInput"
       className="flex items-center gap-1"
       role="radiogroup"
       aria-label="Valoración"
@@ -67,6 +68,7 @@ export function StarRatingInput({
             aria-label={`${starValue} estrella${starValue !== 1 ? 's' : ''}`}
             disabled={disabled}
             tabIndex={isSelected || (value === 0 && starValue === 1) ? 0 : -1}
+            data-testid="star_button"
             className={cn(
               'p-1 rounded-md transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary',
               disabled

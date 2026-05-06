@@ -17,10 +17,10 @@ interface MainLayoutProps {
 
 export default function MainLayout({ children }: MainLayoutProps) {
   return (
-    <div className="min-h-screen flex flex-col relative">
+    <div data-testid="mainLayout" className="min-h-screen flex flex-col relative">
       <GlassBackground />
       <Navbar />
-      <main className="flex-1">{children}</main>
+      <main data-testid="main_content" className="flex-1">{children}</main>
       <Footer />
     </div>
   )

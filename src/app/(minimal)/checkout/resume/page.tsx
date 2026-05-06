@@ -20,15 +20,15 @@ export default async function CheckoutResumePage({ searchParams }: CheckoutResum
 
   if (!booking_id) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
+      <div data-testid="checkoutResumePage" className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center space-y-4">
           <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
-          <h1 className="text-2xl font-bold">Enlace inválido</h1>
-          <p className="text-muted-foreground">
+          <h1 data-testid="error_title" className="text-2xl font-bold">Enlace inválido</h1>
+          <p data-testid="error_description" className="text-muted-foreground">
             No se proporcionó un ID de reserva válido.
           </p>
-          <Button asChild>
-            <Link href="/dashboard/sessions">Ir a Mis Sesiones</Link>
+          <Button asChild data-testid="go_to_sessions_button">
+            <Link href="/dashboard/sessions" data-testid="go_to_sessions_link">Ir a Mis Sesiones</Link>
           </Button>
         </div>
       </div>
@@ -52,15 +52,15 @@ export default async function CheckoutResumePage({ searchParams }: CheckoutResum
 
   if (!booking) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
+      <div data-testid="checkoutResumePage" className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center space-y-4">
           <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
-          <h1 className="text-2xl font-bold">Reserva no encontrada</h1>
-          <p className="text-muted-foreground">
+          <h1 data-testid="error_title" className="text-2xl font-bold">Reserva no encontrada</h1>
+          <p data-testid="error_description" className="text-muted-foreground">
             La reserva solicitada no existe.
           </p>
-          <Button asChild>
-            <Link href="/dashboard/sessions">Ir a Mis Sesiones</Link>
+          <Button asChild data-testid="go_to_sessions_button">
+            <Link href="/dashboard/sessions" data-testid="go_to_sessions_link">Ir a Mis Sesiones</Link>
           </Button>
         </div>
       </div>
@@ -69,15 +69,15 @@ export default async function CheckoutResumePage({ searchParams }: CheckoutResum
 
   if (booking.student_id !== user.id) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
+      <div data-testid="checkoutResumePage" className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center space-y-4">
           <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
-          <h1 className="text-2xl font-bold">Acceso denegado</h1>
-          <p className="text-muted-foreground">
+          <h1 data-testid="error_title" className="text-2xl font-bold">Acceso denegado</h1>
+          <p data-testid="error_description" className="text-muted-foreground">
             No tienes permiso para acceder a esta reserva.
           </p>
-          <Button asChild>
-            <Link href="/dashboard/sessions">Ir a Mis Sesiones</Link>
+          <Button asChild data-testid="go_to_sessions_button">
+            <Link href="/dashboard/sessions" data-testid="go_to_sessions_link">Ir a Mis Sesiones</Link>
           </Button>
         </div>
       </div>
@@ -86,15 +86,15 @@ export default async function CheckoutResumePage({ searchParams }: CheckoutResum
 
   if (booking.status !== 'pending_payment') {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
+      <div data-testid="checkoutResumePage" className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center space-y-4">
           <AlertCircle className="h-12 w-12 text-amber-500 mx-auto" />
-          <h1 className="text-2xl font-bold">Pago no disponible</h1>
-          <p className="text-muted-foreground">
+          <h1 data-testid="error_title" className="text-2xl font-bold">Pago no disponible</h1>
+          <p data-testid="error_description" className="text-muted-foreground">
             Esta reserva no requiere pago. Estado actual: {booking.status}
           </p>
-          <Button asChild>
-            <Link href="/dashboard/sessions">Ir a Mis Sesiones</Link>
+          <Button asChild data-testid="go_to_sessions_button">
+            <Link href="/dashboard/sessions" data-testid="go_to_sessions_link">Ir a Mis Sesiones</Link>
           </Button>
         </div>
       </div>

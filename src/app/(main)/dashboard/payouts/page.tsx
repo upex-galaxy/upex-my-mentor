@@ -71,12 +71,12 @@ export default async function PayoutsPage({ searchParams }: PayoutsPageProps) {
   const onboardingResult = params.stripe_onboarding || null
 
   return (
-    <div className="bg-muted/30">
+    <div data-testid="payoutsPage" className="bg-muted/30">
         {/* Header */}
         <div className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 dark:from-purple-900/40 dark:via-fuchsia-900/20 dark:to-violet-900/40 py-8">
           <div className="container mx-auto px-4">
-            <Link href="/dashboard">
-              <Button variant="ghost" size="sm" className="mb-4">
+            <Link href="/dashboard" data-testid="back_to_dashboard_link">
+              <Button data-testid="back_to_dashboard_button" variant="ghost" size="sm" className="mb-4">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Volver al Dashboard
               </Button>
@@ -86,8 +86,8 @@ export default async function PayoutsPage({ searchParams }: PayoutsPageProps) {
                 <Wallet className="h-8 w-8 text-primary" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Pagos y Transferencias</h1>
-                <p className="text-gray-600 dark:text-gray-300 mt-1">
+                <h1 data-testid="page_title" className="text-3xl font-bold text-gray-900 dark:text-white">Pagos y Transferencias</h1>
+                <p data-testid="page_description" className="text-gray-600 dark:text-gray-300 mt-1">
                   Gestiona tu cuenta bancaria y recibe pagos por tus sesiones
                 </p>
               </div>
@@ -104,7 +104,7 @@ export default async function PayoutsPage({ searchParams }: PayoutsPageProps) {
             />
 
             {/* Info Section */}
-            <div className="mt-8 p-6 rounded-lg border bg-card">
+            <div data-testid="info_section" className="mt-8 p-6 rounded-lg border bg-card">
               <h3 className="font-semibold mb-3">Cómo funcionan los pagos</h3>
               <ul className="space-y-3 text-sm text-muted-foreground">
                 <li className="flex items-start gap-2">

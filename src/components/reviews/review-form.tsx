@@ -76,15 +76,15 @@ export function ReviewForm({
   // Success state
   if (isSuccess) {
     return (
-      <Card className="w-full max-w-md mx-auto shadow-lg rounded-xl">
+      <Card data-testid="reviewForm" className="w-full max-w-md mx-auto shadow-lg rounded-xl">
         <CardContent className="pt-8 pb-8 text-center">
-          <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+          <div data-testid="review_success_state" className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
             <Check className="h-8 w-8 text-green-600" />
           </div>
-          <h2 className="text-xl font-semibold mb-2">
+          <h2 data-testid="success_title" className="text-xl font-semibold mb-2">
             ¡Gracias por tu valoración!
           </h2>
-          <p className="text-muted-foreground">
+          <p data-testid="success_description" className="text-muted-foreground">
             Tu feedback ayuda a construir una comunidad de confianza.
           </p>
         </CardContent>
@@ -93,16 +93,16 @@ export function ReviewForm({
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto shadow-lg rounded-xl">
+    <Card data-testid="reviewForm" className="w-full max-w-md mx-auto shadow-lg rounded-xl">
       <CardHeader className="text-center">
-        <CardTitle className="text-xl">
+        <CardTitle data-testid="form_title" className="text-xl">
           ¿Cómo fue tu sesión con {subjectName}?
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} data-testid="review_form_element" className="space-y-6">
           {/* Star Rating */}
-          <div className="space-y-2">
+          <div data-testid="rating_section" className="space-y-2">
             <Label htmlFor="rating">Tu valoración</Label>
             <div className="flex justify-center">
               <StarRatingInput
@@ -114,10 +114,11 @@ export function ReviewForm({
           </div>
 
           {/* Comment */}
-          <div className="space-y-2">
+          <div data-testid="comment_section" className="space-y-2">
             <Label htmlFor="comment">Cuéntanos más (opcional)</Label>
             <Textarea
               id="comment"
+              data-testid="comment_textarea"
               placeholder="Comparte tu experiencia: ¿El mentee estuvo preparado? ¿Fue puntual? ¿Hubo buena comunicación?"
               value={comment}
               onChange={(e) =>
@@ -127,28 +128,29 @@ export function ReviewForm({
               rows={4}
               className="resize-none"
             />
-            <div className="text-right text-sm text-muted-foreground">
+            <div data-testid="comment_counter" className="text-right text-sm text-muted-foreground">
               {comment.length} / {MAX_COMMENT_LENGTH} caracteres
             </div>
           </div>
 
           {/* Error message */}
           {error && (
-            <div className="text-sm text-destructive text-center">{error}</div>
+            <div data-testid="form_error_message" className="text-sm text-destructive text-center">{error}</div>
           )}
 
           {/* Buttons */}
-          <div className="flex gap-3 pt-2">
+          <div data-testid="form_actions" className="flex gap-3 pt-2">
             <Button
               type="button"
               variant="outline"
               className="flex-1"
               onClick={onCancel}
               disabled={isSubmitting}
+              data-testid="cancel_button"
             >
               Cancelar
             </Button>
-            <Button type="submit" className="flex-1" disabled={isSubmitting}>
+            <Button type="submit" className="flex-1" disabled={isSubmitting} data-testid="submit_review_button">
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -91,9 +91,9 @@ export function ChannelSelector({
 
   if (isLoading) {
     return (
-      <Card className={className}>
+      <Card data-testid="channelSelector" className={className}>
         <CardContent className="flex items-center justify-center py-8">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          <Loader2 data-testid="channels_loading" className="h-6 w-6 animate-spin text-muted-foreground" />
         </CardContent>
       </Card>
     )
@@ -101,10 +101,10 @@ export function ChannelSelector({
 
   if (error) {
     return (
-      <Card className={className}>
+      <Card data-testid="channelSelector" className={className}>
         <CardContent className="flex items-center gap-2 py-6 text-destructive">
           <AlertCircle className="h-5 w-5" />
-          <span className="text-sm">{error}</span>
+          <span data-testid="channels_error_message" className="text-sm">{error}</span>
         </CardContent>
       </Card>
     )
@@ -112,9 +112,9 @@ export function ChannelSelector({
 
   if (channels.length === 0) {
     return (
-      <Card className={className}>
+      <Card data-testid="channelSelector" className={className}>
         <CardContent className="py-6">
-          <div className="flex items-center gap-2 text-amber-600 dark:text-amber-500">
+          <div data-testid="channels_empty_state" className="flex items-center gap-2 text-amber-600 dark:text-amber-500">
             <AlertCircle className="h-5 w-5" />
             <span className="text-sm">
               El mentor no ha configurado canales de comunicación.
@@ -126,7 +126,7 @@ export function ChannelSelector({
   }
 
   return (
-    <Card className={className}>
+    <Card data-testid="channelSelector" className={className}>
       <CardHeader className="pb-3">
         <CardTitle className="text-base">Canal de Comunicación</CardTitle>
         <CardDescription>
@@ -135,6 +135,7 @@ export function ChannelSelector({
       </CardHeader>
       <CardContent>
         <RadioGroup
+          data-testid="channel_options"
           value={selectedChannel || undefined}
           onValueChange={(value) => onChannelSelect(value as CommunicationChannelType)}
           className="space-y-2"
@@ -146,6 +147,7 @@ export function ChannelSelector({
             return (
               <div
                 key={channel.channelType}
+                data-testid="channel_option_item"
                 className={`flex items-center space-x-3 rounded-lg border p-3 transition-colors cursor-pointer ${
                   isSelected ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/50'
                 }`}
@@ -154,6 +156,7 @@ export function ChannelSelector({
                 <RadioGroupItem
                   value={channel.channelType}
                   id={`channel-${channel.channelType}`}
+                  data-testid="channel_radio"
                 />
                 <Label
                   htmlFor={`channel-${channel.channelType}`}
@@ -163,8 +166,8 @@ export function ChannelSelector({
                     {iconMap[config.icon]}
                   </span>
                   <div className="flex-1">
-                    <div className="font-medium">{config.label}</div>
-                    <div className="text-xs text-muted-foreground">{config.description}</div>
+                    <div data-testid="channel_label" className="font-medium">{config.label}</div>
+                    <div data-testid="channel_description" className="text-xs text-muted-foreground">{config.description}</div>
                   </div>
                 </Label>
               </div>

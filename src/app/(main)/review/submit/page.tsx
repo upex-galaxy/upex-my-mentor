@@ -27,7 +27,7 @@ export default async function ReviewSubmitPage({
   // Not eligible - show appropriate message
   if (!eligibility.canReview) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-muted/30">
+      <div data-testid="reviewSubmitPage" className="min-h-screen flex items-center justify-center p-4 bg-muted/30">
         <NotEligibleMessage reason={eligibility.reason} />
       </div>
     );
@@ -52,7 +52,7 @@ export default async function ReviewSubmitPage({
       : eligibility.booking.mentor_name || 'el mentor';
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-muted/30">
+    <div data-testid="reviewSubmitPage" className="min-h-screen flex items-center justify-center p-4 bg-muted/30">
       <ReviewFormWrapper
         bookingId={bookingId}
         subjectId={subjectId}
@@ -112,13 +112,13 @@ function NotEligibleMessage({
   };
 
   return (
-    <Card className="w-full max-w-md shadow-lg rounded-xl">
+    <Card data-testid="notEligibleMessage" className="w-full max-w-md shadow-lg rounded-xl">
       <CardContent className="pt-8 pb-8 text-center">
         <div className="flex justify-center mb-4">{content.icon}</div>
-        <h2 className="text-xl font-semibold mb-2">{content.title}</h2>
-        <p className="text-muted-foreground mb-6">{content.description}</p>
-        <Button asChild>
-          <Link href="/dashboard">Ir al dashboard</Link>
+        <h2 data-testid="not_eligible_title" className="text-xl font-semibold mb-2">{content.title}</h2>
+        <p data-testid="not_eligible_description" className="text-muted-foreground mb-6">{content.description}</p>
+        <Button asChild data-testid="go_to_dashboard_button">
+          <Link href="/dashboard" data-testid="go_to_dashboard_link">Ir al dashboard</Link>
         </Button>
       </CardContent>
     </Card>

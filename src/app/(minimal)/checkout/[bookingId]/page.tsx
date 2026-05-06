@@ -53,13 +53,13 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
   // Handle booking not found
   if (bookingError || !booking) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
+      <div data-testid="checkout_error_state" className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center space-y-4">
           <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
-          <h1 className="text-2xl font-bold">Booking Not Found</h1>
-          <p className="text-muted-foreground">{CHECKOUT_MESSAGES.error.booking_not_found}</p>
-          <Button asChild>
-            <Link href="/mentors">Browse Mentors</Link>
+          <h1 data-testid="error_title" className="text-2xl font-bold">Booking Not Found</h1>
+          <p data-testid="error_description" className="text-muted-foreground">{CHECKOUT_MESSAGES.error.booking_not_found}</p>
+          <Button asChild data-testid="browse_mentors_button">
+            <Link href="/mentors" data-testid="browse_mentors_link">Browse Mentors</Link>
           </Button>
         </div>
       </div>
@@ -69,13 +69,13 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
   // Verify user is the student (mentee) of this booking
   if (booking.student_id !== user.id) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
+      <div data-testid="checkout_access_denied_state" className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center space-y-4">
           <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
-          <h1 className="text-2xl font-bold">Access Denied</h1>
-          <p className="text-muted-foreground">You are not authorized to view this checkout.</p>
-          <Button asChild>
-            <Link href="/dashboard">Go to Dashboard</Link>
+          <h1 data-testid="error_title" className="text-2xl font-bold">Access Denied</h1>
+          <p data-testid="error_description" className="text-muted-foreground">You are not authorized to view this checkout.</p>
+          <Button asChild data-testid="go_to_dashboard_button">
+            <Link href="/dashboard" data-testid="go_to_dashboard_link">Go to Dashboard</Link>
           </Button>
         </div>
       </div>
@@ -86,20 +86,20 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
   if (booking.status !== 'pending_payment') {
     const isConfirmed = booking.status === 'confirmed'
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
+      <div data-testid="checkout_status_state" className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center space-y-4">
           <AlertCircle className={`h-12 w-12 mx-auto ${isConfirmed ? 'text-green-500' : 'text-destructive'}`} />
-          <h1 className="text-2xl font-bold">
+          <h1 data-testid="error_title" className="text-2xl font-bold">
             {isConfirmed ? 'Already Paid' : 'Payment Not Available'}
           </h1>
-          <p className="text-muted-foreground">
+          <p data-testid="error_description" className="text-muted-foreground">
             {isConfirmed
               ? 'This session has already been paid for.'
               : CHECKOUT_MESSAGES.error.booking_not_pending
             }
           </p>
-          <Button asChild>
-            <Link href="/dashboard">Go to Dashboard</Link>
+          <Button asChild data-testid="go_to_dashboard_button">
+            <Link href="/dashboard" data-testid="go_to_dashboard_link">Go to Dashboard</Link>
           </Button>
         </div>
       </div>
@@ -115,13 +115,13 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
 
   if (!stripeAccount?.payouts_enabled) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
+      <div data-testid="checkout_mentor_unavailable_state" className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center space-y-4">
           <AlertCircle className="h-12 w-12 text-yellow-500 mx-auto" />
-          <h1 className="text-2xl font-bold">Payment Not Available</h1>
-          <p className="text-muted-foreground">{CHECKOUT_MESSAGES.error.mentor_not_connected}</p>
-          <Button asChild variant="outline">
-            <Link href="/mentors">Browse Other Mentors</Link>
+          <h1 data-testid="error_title" className="text-2xl font-bold">Payment Not Available</h1>
+          <p data-testid="error_description" className="text-muted-foreground">{CHECKOUT_MESSAGES.error.mentor_not_connected}</p>
+          <Button asChild variant="outline" data-testid="browse_mentors_button">
+            <Link href="/mentors" data-testid="browse_mentors_link">Browse Other Mentors</Link>
           </Button>
         </div>
       </div>
@@ -134,11 +134,12 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
   const platformFee = booking.total_cost * PLATFORM_FEE_PERCENTAGE
 
   return (
-    <main className="min-h-screen bg-background">
+    <main data-testid="checkoutPage" className="min-h-screen bg-background">
       <div className="container max-w-2xl mx-auto py-8 px-4">
         {/* Back link */}
         <Link
           href={`/mentors/${booking.mentor_id}`}
+          data-testid="back_to_mentor_link"
           className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -146,7 +147,7 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
         </Link>
 
         {/* Page title */}
-        <h1 className="text-3xl font-bold mb-8">Complete Your Booking</h1>
+        <h1 data-testid="page_title" className="text-3xl font-bold mb-8">Complete Your Booking</h1>
 
         {/* Checkout content */}
         <div className="flex flex-col items-center space-y-6">

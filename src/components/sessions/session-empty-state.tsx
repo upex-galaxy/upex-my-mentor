@@ -11,16 +11,16 @@ interface SessionEmptyStateProps {
 export function SessionEmptyState({ tab, userRole }: SessionEmptyStateProps) {
   if (tab === 'upcoming') {
     return (
-      <div className="text-center py-12">
+      <div data-testid="sessionEmptyState" className="text-center py-12">
         <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-        <p className="text-muted-foreground mb-4">
+        <p data-testid="empty_state_message" className="text-muted-foreground mb-4">
           {userRole === 'student'
             ? "No tienes sesiones programadas. ¿Listo para tu primera mentoría?"
             : "No tienes sesiones programadas. Tus estudiantes aparecerán aquí."}
         </p>
         {userRole === 'student' && (
-          <Link href="/mentors">
-            <Button>Explorar Mentores</Button>
+          <Link href="/mentors" data-testid="explore_mentors_link">
+            <Button data-testid="explore_mentors_button">Explorar Mentores</Button>
           </Link>
         )}
       </div>
@@ -29,9 +29,9 @@ export function SessionEmptyState({ tab, userRole }: SessionEmptyStateProps) {
 
   // Past sessions empty state
   return (
-    <div className="text-center py-12">
+    <div data-testid="sessionEmptyState" className="text-center py-12">
       <Clock className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-      <p className="text-muted-foreground">
+      <p data-testid="empty_state_message" className="text-muted-foreground">
         Aún no has completado ninguna sesión
       </p>
     </div>

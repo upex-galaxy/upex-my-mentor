@@ -42,10 +42,11 @@ export function AuthInfoPanel({ apiType }: AuthInfoPanelProps) {
   );
 
   return (
-    <div className="border-b border-border bg-muted/30">
+    <div data-testid="authInfoPanel" className="border-b border-border bg-muted/30">
       <div className="max-w-7xl mx-auto px-4">
         <button
           onClick={() => setIsExpanded(!isExpanded)}
+          data-testid="auth_panel_toggle_button"
           className="w-full py-3 flex items-center justify-between text-sm hover:bg-muted/50 transition-colors"
         >
           <div className="flex items-center gap-2">

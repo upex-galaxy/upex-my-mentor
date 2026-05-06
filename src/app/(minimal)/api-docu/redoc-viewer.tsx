@@ -72,10 +72,10 @@ export function RedocViewer({ specUrl }: RedocViewerProps) {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div data-testid="redoc_error_state" className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center p-8">
-          <h1 className="text-2xl font-bold text-destructive mb-4">Error</h1>
-          <p className="text-muted-foreground">{error}</p>
+          <h1 data-testid="redoc_error_title" className="text-2xl font-bold text-destructive mb-4">Error</h1>
+          <p data-testid="redoc_error_message" className="text-muted-foreground">{error}</p>
         </div>
       </div>
     );
@@ -84,14 +84,14 @@ export function RedocViewer({ specUrl }: RedocViewerProps) {
   return (
     <>
       {isLoading && (
-        <div className="min-h-screen flex items-center justify-center bg-background">
+        <div data-testid="redoc_loading_state" className="min-h-screen flex items-center justify-center bg-background">
           <div className="text-center p-8">
             <div className="h-8 w-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
             <p className="text-muted-foreground">Loading API documentation...</p>
           </div>
         </div>
       )}
-      <div id="redoc-container" className={isLoading ? "hidden" : ""} />
+      <div data-testid="redocViewer" id="redoc-container" className={isLoading ? "hidden" : ""} />
     </>
   );
 }

@@ -10,7 +10,7 @@ function Skeleton({ className }: { className?: string }) {
 export default function ApplicationDetailLoading() {
   return (
     <AdminLayout title="Application Details">
-      <div className="space-y-6">
+      <div data-testid="applicationDetailLoading" className="space-y-6">
         {/* Back Button Skeleton */}
         <Skeleton className="h-9 w-44" />
 

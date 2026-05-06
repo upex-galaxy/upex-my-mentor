@@ -34,13 +34,15 @@ export default async function AdminApplicationsPage({
 
   return (
     <AdminLayout title="Pending Applications" badge={count || 0}>
-      <ApplicationsTable
-        applications={(applications as PendingApplication[]) || []}
-        error={error?.message}
-      />
-      {totalPages > 1 && (
-        <PaginationWrapper currentPage={page} totalPages={totalPages} />
-      )}
+      <div data-testid="adminApplicationsPage">
+        <ApplicationsTable
+          applications={(applications as PendingApplication[]) || []}
+          error={error?.message}
+        />
+        {totalPages > 1 && (
+          <PaginationWrapper currentPage={page} totalPages={totalPages} />
+        )}
+      </div>
     </AdminLayout>
   )
 }

@@ -59,7 +59,7 @@ export function ConnectBankAccountCard({
   }
 
   return (
-    <div className="space-y-4">
+    <div data-testid="connectBankAccountCard" className="space-y-4">
       {/* Show result alert if coming back from Stripe */}
       {onboardingResult && (
         <OnboardingResultAlert result={onboardingResult} />
@@ -73,8 +73,8 @@ export function ConnectBankAccountCard({
                 <CreditCard className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <CardTitle>{messages.title}</CardTitle>
-                <CardDescription className="mt-1">
+                <CardTitle data-testid="connect_card_title">{messages.title}</CardTitle>
+                <CardDescription data-testid="connect_card_description" className="mt-1">
                   {messages.description}
                 </CardDescription>
               </div>
@@ -84,7 +84,7 @@ export function ConnectBankAccountCard({
         </CardHeader>
         <CardContent>
           {error && (
-            <Alert variant="destructive" className="mb-4">
+            <Alert data-testid="connect_error_alert" variant="destructive" className="mb-4">
               <AlertCircle className="h-4 w-4" />
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
@@ -121,7 +121,7 @@ function ConnectStateContent({
 }: ConnectStateContentProps) {
   if (state === 'connected') {
     return (
-      <div className="flex items-center gap-3 p-4 rounded-lg bg-green-50 border border-green-100">
+      <div data-testid="connect_state_connected" className="flex items-center gap-3 p-4 rounded-lg bg-green-50 border border-green-100">
         <CheckCircle2 className="h-5 w-5 text-green-600" />
         <div>
           <p className="font-medium text-green-800">Tu cuenta está lista para recibir pagos</p>
@@ -134,9 +134,9 @@ function ConnectStateContent({
   }
 
   return (
-    <div className="space-y-4">
+    <div data-testid="connect_state_content" className="space-y-4">
       {state === 'pending_verification' && (
-        <div className="p-4 rounded-lg bg-yellow-50 border border-yellow-100">
+        <div data-testid="connect_state_pending" className="p-4 rounded-lg bg-yellow-50 border border-yellow-100">
           <p className="text-sm text-yellow-800">
             Stripe necesita información adicional para habilitar los pagos.
             Completa la verificación para comenzar a recibir pagos.
@@ -145,7 +145,7 @@ function ConnectStateContent({
       )}
 
       {state === 'not_connected' && (
-        <div className="space-y-3 text-sm text-muted-foreground">
+        <div data-testid="connect_state_not_connected" className="space-y-3 text-sm text-muted-foreground">
           <p>Al conectar tu cuenta bancaria:</p>
           <ul className="list-disc pl-5 space-y-1">
             <li>Recibirás pagos directamente en tu cuenta</li>
@@ -159,6 +159,7 @@ function ConnectStateContent({
         <Button
           onClick={onConnect}
           disabled={isLoading}
+          data-testid="connect_bank_button"
           className="w-full sm:w-auto"
         >
           {isLoading ? (
@@ -209,7 +210,7 @@ function OnboardingResultAlert({ result }: OnboardingResultAlertProps) {
   const Icon = alertConfig.icon
 
   return (
-    <Alert variant={alertConfig.variant} className={alertConfig.className}>
+    <Alert data-testid="onboarding_result_alert" variant={alertConfig.variant} className={alertConfig.className}>
       <Icon className={`h-4 w-4 ${alertConfig.iconClassName}`} />
       <AlertTitle>{messages.title}</AlertTitle>
       <AlertDescription>{messages.message}</AlertDescription>

@@ -39,6 +39,7 @@ export function StripeConnectStatusBadge({ state, className }: StripeConnectStat
 
   return (
     <Badge
+      data-testid="stripeConnectStatusBadge"
       variant={config.variant}
       className={cn(config.className, className)}
     >

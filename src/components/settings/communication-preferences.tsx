@@ -212,6 +212,7 @@ export function CommunicationPreferences() {
     return (
       <div
         key={type}
+        data-testid="channel_item"
         className={`group relative rounded-xl border-2 p-4 transition-all duration-200 ${
           state.enabled
             ? 'border-primary bg-primary/5 shadow-sm'
@@ -223,6 +224,7 @@ export function CommunicationPreferences() {
             id={`channel-${type}`}
             checked={state.enabled}
             onCheckedChange={() => handleToggle(type)}
+            data-testid="channel_checkbox"
             className="mt-1"
           />
 
@@ -235,27 +237,29 @@ export function CommunicationPreferences() {
               </span>
               <Label
                 htmlFor={`channel-${type}`}
+                data-testid="channel_label"
                 className="text-base font-medium cursor-pointer"
               >
                 {config.label}
               </Label>
               {isPopular && (
-                <Badge variant="secondary" className="text-xs">
+                <Badge data-testid="popular_badge" variant="secondary" className="text-xs">
                   <Sparkles className="h-3 w-3 mr-1" />
                   Popular
                 </Badge>
               )}
             </div>
 
-            <p className="text-sm text-muted-foreground mt-1">{config.description}</p>
+            <p data-testid="channel_description" className="text-sm text-muted-foreground mt-1">{config.description}</p>
 
             {state.enabled && (
-              <div className="mt-3 animate-in slide-in-from-top-2 duration-200">
+              <div data-testid="handle_input_section" className="mt-3 animate-in slide-in-from-top-2 duration-200">
                 <Label htmlFor={`handle-${type}`} className="text-sm text-muted-foreground">
                   {config.handleLabel} (opcional)
                 </Label>
                 <Input
                   id={`handle-${type}`}
+                  data-testid="handle_input"
                   placeholder={config.handlePlaceholder}
                   value={state.handle}
                   onChange={(e) => handleHandleChange(type, e.target.value)}
@@ -276,9 +280,9 @@ export function CommunicationPreferences() {
 
   if (isLoading) {
     return (
-      <Card className="border-2">
+      <Card data-testid="communicationPreferences" className="border-2">
         <CardContent className="flex flex-col items-center justify-center py-16 gap-3">
-          <Loader2 className="h-10 w-10 animate-spin text-primary" />
+          <Loader2 data-testid="preferences_loading" className="h-10 w-10 animate-spin text-primary" />
           <p className="text-muted-foreground">Cargando preferencias...</p>
         </CardContent>
       </Card>
@@ -286,9 +290,9 @@ export function CommunicationPreferences() {
   }
 
   return (
-    <div className="space-y-6">
+    <div data-testid="communicationPreferences" className="space-y-6">
       {/* Header Card with Stats */}
-      <Card className="border-2 bg-gradient-to-r from-primary/5 to-primary/10">
+      <Card data-testid="header_card" className="border-2 bg-gradient-to-r from-primary/5 to-primary/10">
         <CardHeader>
           <div className="flex items-start justify-between flex-wrap gap-4">
             <div>
@@ -302,6 +306,7 @@ export function CommunicationPreferences() {
             </div>
             <div className="flex items-center gap-2">
               <Badge
+                data-testid="active_channels_badge"
                 variant={enabledCount > 0 ? 'default' : 'secondary'}
                 className="text-sm px-3 py-1"
               >
@@ -312,12 +317,12 @@ export function CommunicationPreferences() {
         </CardHeader>
         <CardContent className="pt-0">
           <div className="flex flex-wrap gap-2">
-            <Button variant="outline" size="sm" onClick={handleSelectPopular}>
+            <Button variant="outline" size="sm" onClick={handleSelectPopular} data-testid="select_popular_button">
               <Sparkles className="h-4 w-4 mr-1.5" />
               Seleccionar populares
             </Button>
             {enabledCount > 0 && (
-              <Button variant="ghost" size="sm" onClick={handleClearAll}>
+              <Button variant="ghost" size="sm" onClick={handleClearAll} data-testid="clear_all_button">
                 Limpiar selección
               </Button>
             )}
@@ -330,7 +335,7 @@ export function CommunicationPreferences() {
         const categoryEnabledCount = category.channels.filter((t) => channels[t].enabled).length
 
         return (
-          <Card key={key} className="border-2">
+          <Card key={key} data-testid="channel_category_card" className="border-2">
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -359,12 +364,12 @@ export function CommunicationPreferences() {
       })}
 
       {/* Footer with Messages and Save Button */}
-      <Card className="border-2">
+      <Card data-testid="footer_actions_card" className="border-2">
         <CardContent className="pt-6">
           {/* Messages */}
           <div className="space-y-3 mb-6">
             {enabledCount === 0 && (
-              <div className="flex items-center gap-2 p-3 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-500">
+              <div data-testid="no_channels_warning" className="flex items-center gap-2 p-3 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-500">
                 <AlertCircle className="h-5 w-5 flex-shrink-0" />
                 <span className="text-sm font-medium">
                   Selecciona al menos un canal para que tus mentees puedan reservar sesiones.
@@ -373,14 +378,14 @@ export function CommunicationPreferences() {
             )}
 
             {error && (
-              <div className="flex items-center gap-2 p-3 rounded-lg bg-destructive/10 text-destructive">
+              <div data-testid="error_message" className="flex items-center gap-2 p-3 rounded-lg bg-destructive/10 text-destructive">
                 <AlertCircle className="h-5 w-5 flex-shrink-0" />
                 <span className="text-sm font-medium">{error}</span>
               </div>
             )}
 
             {success && (
-              <div className="flex items-center gap-2 p-3 rounded-lg bg-green-500/10 text-green-600 dark:text-green-500">
+              <div data-testid="success_message" className="flex items-center gap-2 p-3 rounded-lg bg-green-500/10 text-green-600 dark:text-green-500">
                 <CheckCircle className="h-5 w-5 flex-shrink-0" />
                 <span className="text-sm font-medium">Preferencias guardadas correctamente.</span>
               </div>
@@ -394,6 +399,7 @@ export function CommunicationPreferences() {
               disabled={isSaving || enabledCount === 0}
               size="lg"
               className="min-w-[200px]"
+              data-testid="save_preferences_button"
             >
               {isSaving ? (
                 <>

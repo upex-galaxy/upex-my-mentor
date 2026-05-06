@@ -39,7 +39,7 @@ export default async function ApiDocuPage({ searchParams }: PageProps) {
       : "/api/openapi";
 
   return (
-    <div className="min-h-screen bg-background">
+    <div data-testid="apiDocuPage" className="min-h-screen bg-background">
       <ApiDocSelector currentApi={apiType} />
       <AuthInfoPanel apiType={apiType} />
       <RedocViewer specUrl={specUrl} />

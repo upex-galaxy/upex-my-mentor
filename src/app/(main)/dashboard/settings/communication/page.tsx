@@ -17,12 +17,12 @@ export const metadata: Metadata = {
 
 export default function CommunicationSettingsPage() {
   return (
-    <div className="bg-muted/30">
+    <div data-testid="communicationSettingsPage" className="bg-muted/30">
       {/* Header */}
       <div className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-violet-50 dark:from-purple-900/40 dark:via-fuchsia-900/20 dark:to-violet-900/40 py-8">
         <div className="container mx-auto px-4">
-          <Link href="/dashboard">
-            <Button variant="ghost" size="sm" className="mb-4">
+          <Link href="/dashboard" data-testid="back_to_dashboard_link">
+            <Button data-testid="back_to_dashboard_button" variant="ghost" size="sm" className="mb-4">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Volver al Dashboard
             </Button>
@@ -32,8 +32,8 @@ export default function CommunicationSettingsPage() {
               <Settings className="h-8 w-8 text-primary" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Configuración de Canales</h1>
-              <p className="text-gray-600 dark:text-gray-300 mt-1">
+              <h1 data-testid="page_title" className="text-3xl font-bold text-gray-900 dark:text-white">Configuración de Canales</h1>
+              <p data-testid="page_description" className="text-gray-600 dark:text-gray-300 mt-1">
                 Define cómo te comunicarás con tus mentees durante las sesiones de mentoría.
               </p>
             </div>
