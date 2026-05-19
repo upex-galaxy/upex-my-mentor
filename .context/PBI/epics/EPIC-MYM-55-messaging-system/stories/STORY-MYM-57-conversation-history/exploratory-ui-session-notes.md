@@ -462,5 +462,142 @@ Failed to load: 400 - /_next/image?url=https://api.dicebear.com/7.x/avataaars/sv
 
 ---
 
-**Last Updated:** 2026-05-19 12:00
-**Next Update:** After Paso 3 completion
+## Paso 3: Empty State
+
+**Test Date:** 2026-05-19 16:46  
+**Status:** ✅ PASSED  
+**AC Tested:** Scenario 4 - Empty state
+
+### Test Strategy
+
+Since existing users (Alex and Laura) both have conversations, I created a new user specifically for empty state testing:
+
+**New Test User Created:**
+- Email: `test.empty.state@upexmymentor.com`
+- Password: `TestPass123!`
+- Role: Estudiante (Student)
+- Created via: `/signup` flow
+
+### Steps Executed
+
+1. **Logout from Laura's session**
+   - Opened mobile menu
+   - Clicked "Cerrar Sesión"
+   - Redirected to landing page (/)
+
+2. **Navigate to signup**
+   - Visited `/signup`
+   - Selected role: "Busco Mentoría" (Student)
+   - Entered email: `test.empty.state@upexmymentor.com`
+   - Entered password: `TestPass123!`
+   - Clicked "Crear cuenta"
+
+3. **Registration successful**
+   - Auto-redirected to `/dashboard`
+   - User created: "Usuario" (default name)
+   - Role: Estudiante
+   - Email confirmed in dashboard
+
+4. **Observe dashboard widget**
+   - Widget shows empty state: "No tienes conversaciones aún. Explora mentores para comenzar."
+   - CTA button present: "Ver todos los mensajes"
+
+5. **Navigate to messages page**
+   - Clicked "Ver todos los mensajes" button
+   - Successfully navigated to `/dashboard/messages`
+   - Page title: "Mensajes | MyMentor"
+
+### Observations
+
+#### ✅ Empty State UI Implementation
+
+**Page Header:**
+- Icon: Message icon visible
+- Title: "Mensajes" (h1)
+- Subtitle: "Tus conversaciones con mentores"
+
+**Empty State Component:**
+- Icon: Large decorative image present
+- Heading: **"No tienes conversaciones aún"** (h3)
+- Description: **"Encuentra un mentor y rompe el hielo. Tu primera conversación puede ser el inicio de un gran aprendizaje."**
+- CTA Button: **"Explorar mentores"** → links to `/mentors`
+
+**UX Quality:**
+- ✅ Friendly, encouraging tone
+- ✅ Clear guidance on next action
+- ✅ Visual hierarchy (icon → title → description → CTA)
+- ✅ Prominent call-to-action button
+- ✅ Consistent with design system
+
+#### ⚠️ Console Errors (Same as Previous Tests)
+
+**6 errors logged:**
+- 1x Hydration warning (timestamp formatting)
+- 2x Avatar 400 errors (dicebear.com)
+- 3x Footer 404s (unimplemented pages)
+
+**Analysis:**
+- Same issues as Paso 1 and Paso 2
+- Already documented in Issues #1, #2, #3
+- Non-blocking for empty state functionality
+- All issues MEDIUM severity
+
+### AC Validation (Scenario 4)
+
+**Given:** I am a new user with no conversations  
+✅ **PASS** - Created fresh user with zero conversations
+
+**When:** I navigate to my messages  
+✅ **PASS** - Successfully navigated to `/dashboard/messages`
+
+**Then:** I should see a friendly empty state  
+✅ **PASS** - Displays: "No tienes conversaciones aún" with supportive description
+
+**And:** I should see guidance on how to start a conversation  
+✅ **PASS** - Clear CTA: "Explorar mentores" button with explicit action
+
+### Test Result
+
+**Status:** ✅ PASSED (100%)
+
+All acceptance criteria for Scenario 4 (Empty State) are met:
+- Empty state is friendly and encouraging
+- Guidance is clear ("Explorar mentores")
+- UI is well-designed and consistent
+- CTA button is prominent and actionable
+
+### Evidence
+
+**Files captured:**
+- `evidence/ui-empty-state-view.png` - Screenshot of empty state UI
+- `evidence/ui-empty-state-console-logs.log` - Console errors (6 errors)
+
+### Issues Found
+
+**No new issues.** Console errors are the same as previously documented (Issues #1, #2, #3).
+
+### Notes
+
+**Positive Findings:**
+1. Empty state implementation is excellent
+2. Message tone is encouraging (not negative)
+3. Clear next step for user journey
+4. Consistent with overall design system
+5. Layout is centered and visually balanced
+
+**Test User Management:**
+- User `test.empty.state@upexmymentor.com` is now in database
+- Can be reused for future empty state testing
+- Should be documented in test data inventory
+
+**Session Length:**
+- Paso 3 took ~10 minutes including:
+  - User research (checking existing users)
+  - New user creation flow
+  - Navigation and documentation
+  - Evidence capture
+
+---
+
+**Last Updated:** 2026-05-19 16:50  
+**Next Update:** After Paso 4 completion (Unread Indicators)
