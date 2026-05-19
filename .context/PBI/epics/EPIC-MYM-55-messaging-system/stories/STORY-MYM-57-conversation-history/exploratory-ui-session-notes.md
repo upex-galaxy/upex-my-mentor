@@ -29,7 +29,7 @@
 - ✅ **Issue #4:** Realtime working - POSITIVO
 
 ### Lo que FALTA:
-- ❌ Happy Path - View Conversation History (mencionado como completado, sin evidencia)
+- ⏳ Happy Path - View Conversation History **[IN PROGRESS - Starting now]**
 - ❌ Empty State testing
 - ❌ Unread Message Indicators testing
 - ❌ Conversation Sorting testing
@@ -39,6 +39,86 @@
 - ❌ Resumen final de sesión
 
 **Decisión:** ✅ Continuar testing - Ningún issue es bloqueante
+
+---
+
+## ✅ Escenario 2: Happy Path - View Conversation History
+
+**Estado:** ⏳ IN PROGRESS
+**Inicio:** 2026-05-19 11:50 (aprox)
+**Tester:** Usuario + Claude
+
+### Objetivo:
+Validar que un usuario puede abrir una conversación desde la lista, ver el thread completo de mensajes, y que los mensajes se muestran correctamente diferenciados entre propios y de otros participantes.
+
+### Pre-condiciones:
+- Usuario autenticado en staging
+- Al menos 1 conversación existente en la lista
+- Conversación tiene mensajes (no vacía)
+
+### Pasos a Ejecutar:
+
+#### 2.1: Navegación a conversación individual
+- **Acción:** Click en una conversación de la lista
+- **Resultado esperado:** Redirect a `/dashboard/messages/[conversationId]`
+- **Validar:** URL cambia, página carga sin errores
+- **Screenshot:** `ui-happy-path-thread-view.png`
+- **Status:** ⏸️ PENDING
+
+#### 2.2: Verificar carga de mensajes
+- **Acción:** Observar thread completo
+- **Resultado esperado:** Todos los mensajes visibles, orden cronológico (oldest → newest)
+- **Validar:** Cantidad de mensajes, timestamps, contenido legible
+- **Status:** ⏸️ PENDING
+
+#### 2.3: Verificar diferenciación de mensajes
+- **Acción:** Observar alineación y estilos de mensajes
+- **Resultado esperado:** 
+  - Mensajes propios: alineados a la derecha, estilo distintivo
+  - Mensajes de otros: alineados a la izquierda, estilo diferente
+- **Screenshot:** `ui-happy-path-message-differentiation.png`
+- **Status:** ⏸️ PENDING
+
+#### 2.4: Validar roles de participantes
+- **Acción:** Identificar roles de los participantes
+- **Resultado esperado:** 
+  - Conversación entre mentee ↔ mentor (NO mentee ↔ mentee, NO mentor ↔ mentor)
+  - Roles visibles en UI o verificables en perfiles
+- **Validar:** Click en avatar/nombre → ver perfil con rol
+- **Screenshot:** `ui-happy-path-roles-validation.png`
+- **Status:** ⏸️ PENDING
+
+#### 2.5: Verificar timestamps en mensajes
+- **Acción:** Revisar fecha/hora en cada mensaje
+- **Resultado esperado:** Timestamps legibles, formato consistente, orden cronológico correcto
+- **Status:** ⏸️ PENDING
+
+#### 2.6: Verificar auto-scroll
+- **Acción:** Observar posición del scroll al cargar thread
+- **Resultado esperado:** Scroll automático al último mensaje (más reciente)
+- **Status:** ⏸️ PENDING
+
+#### 2.7: Verificar navegación back
+- **Acción:** Click en botón "Volver" o similar
+- **Resultado esperado:** Return to `/dashboard/messages` con lista de conversaciones
+- **Status:** ⏸️ PENDING
+
+---
+
+### Datos de Testing:
+- **Conversación ID:** (se completará durante testing)
+- **Participantes:** (se completará durante testing)
+- **Cantidad de mensajes:** (se completará durante testing)
+
+### Evidencia a Capturar:
+- [ ] `ui-happy-path-thread-view.png`
+- [ ] `ui-happy-path-message-differentiation.png`
+- [ ] `ui-happy-path-roles-validation.png`
+- [ ] `ui-happy-path-console-logs.log`
+
+### Outcome: ⏸️ PENDING
+
+---
 
 ---
 
