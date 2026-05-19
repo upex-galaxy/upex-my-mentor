@@ -12,30 +12,31 @@
 
 ## 📋 Executive Summary
 
-**Overall Status:** ✅ 2 of 8 scenarios completed (25% progress)
-**Scenarios Tested:** 2 (Navigation, Happy Path)
-**Issues Found:** 3 technical (NON-blocking)
-**Duration:** ~2 hours (across 2 sessions)
+**Overall Status:** ⚠️ 4 of 8 scenarios completed (50% progress) - 1 CRITICAL BUG FOUND
+**Scenarios Tested:** 4 (Navigation, Happy Path, Empty State, Unread Indicators)
+**Issues Found:** 4 technical (3 NON-blocking + 1 CRITICAL blocking)
+**Duration:** ~2.5 hours (across 2 sessions)
 
 ### Completed:
-- ✅ **Paso 1: Navegación** - 2 opciones validadas, PASSED
+- ✅ **Paso 1: Navegación** - 2 opciones validadas, PASSED (100%)
 - ✅ **Paso 2: Happy Path** - Thread view completo, PASSED (93.75%)
+- ✅ **Paso 3: Empty State** - Estado vacío validado, PASSED (100%)
+- ❌ **Paso 4: Unread Indicators** - Indicadores no funcionan, FAILED (0%) - CRITICAL BUG
 
 ### Pending:
-- ❌ Paso 3: Empty State
-- ❌ Paso 4: Unread Indicators  
 - ❌ Paso 5: Conversation Sorting
 - ❌ Paso 6: Navigation Between Conversations
 - ❌ Paso 7: Edge Cases
 - ❌ Paso 8: Error Handling
 
 ### Issues Summary:
-- 🟡 Issue #1: React Hydration warning (MEDIA - non-blocking)
-- 🟡 Issue #2: Avatar 400 errors (MEDIA - non-blocking)
-- 🟡 Issue #3: Footer 404s (MEDIA - non-blocking)
-- ✅ Issue #4: Realtime subscription working (POSITIVE)
+- 🟡 Issue #1: React Hydration warning (MEDIUM - non-blocking)
+- 🟡 Issue #2: Avatar 400 errors (MEDIUM - non-blocking)
+- 🟡 Issue #3: Footer 404s (MEDIUM - non-blocking)
+- ✅ Issue #4: Realtime subscription working (POSITIVE finding)
+- 🔴 **Issue #5: Unread indicators not working (HIGH - CRITICAL BLOCKING)**
 
-**Decision:** ✅ Continue testing - No blocking issues
+**Decision:** ⚠️ Continue testing BUT Issue #5 requires immediate developer attention
 
 ---
 
@@ -599,5 +600,375 @@ All acceptance criteria for Scenario 4 (Empty State) are met:
 
 ---
 
-**Last Updated:** 2026-05-19 16:50  
-**Next Update:** After Paso 4 completion (Unread Indicators)
+## Paso 4: Unread Indicators
+
+**Test Date:** 2026-05-19 16:52 - 16:59  
+**Status:** ❌ FAILED (Critical Bug Found)  
+**AC Tested:** Scenario 5 - Unread indicator
+
+### Test Strategy
+
+To test unread indicators, I needed to create a scenario where a user has unread messages:
+
+**Test Flow:**
+1. As Alex (student) → Send new message to Laura (mentor)
+2. Logout from Alex
+3. Login as Laura (mentor)
+4. Check `/dashboard/messages` for unread indicator on Alex's conversation
+5. Open conversation to verify indicator disappears
+
+### Steps Executed
+
+#### Part 1: Create Unread Message (As Alex)
+
+1. **Login as Alex García Demo**
+   - Email: `student.demo@upexmymentor.com`
+   - Password: `Demo123!`
+   - Role: Estudiante
+
+2. **Navigate to messages**
+   - URL: `/dashboard/messages`
+   - Saw 3 existing conversations (Laura, Nuria, Ana)
+
+3. **Open conversation with Laura**
+   - Conversation ID: `08756a45-9f39-4fe1-ab8a-0bf0358ac3d1`
+   - 24 existing messages in thread
+
+4. **Send new message**
+   - Content: "Hola Laura! Este es un mensaje de prueba para verificar el indicador de no leído. Saludos desde testing!"
+   - Length: 104 characters
+   - Sent successfully at 12:55
+
+5. **Logout from Alex**
+
+#### Part 2: Verify Unread Indicator (As Laura)
+
+6. **Login as Laura Martínez Demo**
+   - Email: `mentor.demo@upexmymentor.com`
+   - Password: `Demo123!`
+   - Role: Mentor
+
+7. **Navigate to messages**
+   - URL: `/dashboard/messages`
+   - Saw 4 conversations
+
+8. **Check for unread indicator**
+   - Alex's conversation appears FIRST (most recent)
+   - Preview shows: "Hola Laura! Este es un mensaje de prueba..."
+   - Timestamp shows: "12:55" (today)
+   - **⚠️ NO UNREAD INDICATOR VISIBLE**
+
+### Observations
+
+#### ❌ Unread Indicator NOT Working
+
+**Visual Inspection:**
+- NO purple dot visible on Alex's conversation avatar
+- NO badge or indicator of any kind
+- Conversation looks identical to other read conversations
+
+**DOM Inspection (via JavaScript):**
+```javascript
+// Searched for: document.querySelector('[data-testid="unread_indicator"]')
+// Result: null (element does not exist in DOM)
+```
+
+**Avatar Container Analysis:**
+```javascript
+// Alex's conversation avatar container has:
+// - 1 child only (the <img> element)
+// - NO <span> for unread indicator
+// - Expected: 2 children (img + span with indicator)
+```
+
+**Code Implementation (Frontend is CORRECT):**
+
+Located in `src/components/messaging/conversation-list-item.tsx` lines 89-95:
+
+```tsx
+{/* Unread indicator */}
+{unread_count > 0 && (
+  <span
+    data-testid="unread_indicator"
+    className="absolute -top-1 -right-1 h-3 w-3 bg-primary rounded-full border-2 border-background"
+  />
+)}
+```
+
+**Indicator Specifications:**
+- Size: `h-3 w-3` (12px × 12px)
+- Position: `absolute -top-1 -right-1` (top-right of avatar)
+- Color: `bg-primary` (purple/morado from design system)
+- Shape: `rounded-full` (circle)
+- Border: `2px solid background` (white border)
+
+**Why Indicator Doesn't Appear:**
+- Condition `unread_count > 0` is NOT met
+- Backend is returning `unread_count: 0` for ALL conversations
+- Therefore React doesn't render the `<span>` element
+
+#### 🔍 Backend Investigation
+
+**Unread Count Calculation (Correct Logic):**
+
+Located in `src/lib/actions/messaging.ts` lines 252-258:
+
+```typescript
+// Count unread messages (not sent by current user and not read)
+const { count: unreadCount } = await supabase
+  .from('messages')
+  .select('*', { count: 'exact', head: true })
+  .eq('conversation_id', conv.id)
+  .neq('sender_id', user.id)        // Not sent by me
+  .eq('is_read', false);             // Not read yet
+```
+
+The query logic is CORRECT:
+- Excludes messages sent by current user
+- Counts only messages with `is_read = false`
+
+**Message Creation (BUG FOUND):**
+
+Located in `src/lib/actions/messaging.ts` lines 125-133:
+
+```typescript
+// Insert the message
+const { data: message, error: messageError } = await supabase
+  .from('messages')
+  .insert({
+    conversation_id: conversationId,
+    sender_id: user.id,
+    content: content,
+    // ❌ MISSING: is_read: false
+  })
+  .select('id')
+  .single();
+```
+
+**ROOT CAUSE:**
+- When inserting new messages, the code does NOT explicitly set `is_read: false`
+- Relies on database default value for `is_read` column
+- Database might have wrong default OR trigger is auto-marking as read
+
+**Evidence of Bug:**
+1. Alex sent message at 12:55 to Laura
+2. Laura views conversation list immediately after
+3. Backend query returns `unread_count: 0` (should be `1`)
+4. Message exists in database but is already marked as `is_read: true`
+
+### AC Validation (Scenario 5)
+
+**Given:** I have unread messages in a conversation  
+❌ **FAIL** - Unread messages exist but `unread_count` returns 0
+
+**When:** I view my conversations list  
+✅ **PASS** - Conversation list loads successfully
+
+**Then:** That conversation should have an unread indicator (badge/dot)  
+❌ **FAIL** - NO indicator appears (because backend returns wrong count)
+
+**And:** The indicator should disappear when I view the conversation  
+⚠️ **CANNOT TEST** - Cannot test disappearing since indicator never appears
+
+### Test Result
+
+**Status:** ❌ FAILED (0% - Complete failure)
+
+**Critical Bug Found:** Unread indicators feature is completely non-functional due to backend bug.
+
+### Evidence
+
+**Files captured:**
+- `evidence/ui-unread-indicators-missing.png` - Screenshot showing NO indicator (as Alex's view)
+- `evidence/ui-unread-indicators-still-missing.png` - Screenshot showing NO indicator (as Laura's view)
+- `evidence/ui-unread-check-purple-dot.png` - Final verification screenshot
+- `evidence/ui-unread-indicators-console-logs.log` - Console errors (23 errors)
+
+### Issues Found
+
+**NEW ISSUE #5: Unread Indicators Not Working**
+
+**Severity:** 🔴 HIGH (Critical Feature Failure)  
+**Type:** Backend Bug (Data Layer)  
+**Status:** Blocking Scenario 5
+
+**Summary:**
+The unread message indicator feature is completely non-functional. Messages are not being marked as `is_read = false` when created, causing the backend to always return `unread_count: 0` regardless of actual unread messages.
+
+**Impact:**
+- Users cannot see which conversations have new messages
+- Feature completely broken in production
+- Blocks core messaging UX expectation
+- Violates AC Scenario 5 completely
+
+**Technical Details:**
+
+**Frontend Implementation: ✅ CORRECT**
+- Component: `src/components/messaging/conversation-list-item.tsx`
+- Lines: 89-95
+- Conditional rendering: `{unread_count > 0 && <span>...</span>}`
+- Visual design: 12px purple dot with white border
+- Position: Top-right of avatar
+- testid: `unread_indicator`
+
+**Backend Query: ✅ CORRECT**
+- File: `src/lib/actions/messaging.ts`
+- Lines: 252-258
+- Query logic correctly filters:
+  - `neq('sender_id', user.id)` - exclude own messages
+  - `eq('is_read', false)` - only count unread
+
+**Backend Insert: ❌ BUG**
+- File: `src/lib/actions/messaging.ts`
+- Lines: 125-133
+- Function: `sendMessageToMentor()`
+- Problem: Does NOT set `is_read: false` when inserting
+- Code missing:
+  ```typescript
+  .insert({
+    conversation_id: conversationId,
+    sender_id: user.id,
+    content: content,
+    is_read: false, // ❌ THIS LINE IS MISSING
+  })
+  ```
+
+**Root Cause Analysis:**
+
+One of these scenarios is occurring:
+
+1. **Database schema issue:**
+   - `messages` table `is_read` column has wrong default value
+   - Default might be `true` instead of `false`
+   - OR default is `null` and query fails
+
+2. **Database trigger issue:**
+   - RLS policy or trigger auto-marks messages as read
+   - Trigger executes after INSERT
+   - Sets `is_read = true` immediately
+
+3. **Application logic issue:**
+   - Some other code path marks messages as read
+   - Race condition between insert and read
+   - Auto-mark-as-read logic firing too early
+
+**Reproduction Steps:**
+
+1. User A sends message to User B
+2. User B logs in and views `/dashboard/messages`
+3. Backend executes `getUserConversations()`
+4. Query counts messages with `is_read = false`
+5. Count returns 0 (should return 1+)
+6. Frontend receives `unread_count: 0`
+7. Conditional `{unread_count > 0}` evaluates to false
+8. Indicator does NOT render
+
+**Expected Behavior:**
+- New messages should be created with `is_read: false`
+- Backend should return `unread_count > 0` for conversations with unread messages
+- Frontend should display purple dot indicator
+- Opening conversation should mark messages as read
+- Indicator should disappear after viewing
+
+**Actual Behavior:**
+- New messages created with `is_read: true` (or auto-marked immediately)
+- Backend always returns `unread_count: 0`
+- Frontend never displays indicator
+- Feature completely non-functional
+
+**Recommendation for Developer:**
+
+**Priority:** HIGH - Fix immediately
+
+**Action Items:**
+
+1. **Immediate Fix (Backend):**
+   ```typescript
+   // In src/lib/actions/messaging.ts line 127
+   .insert({
+     conversation_id: conversationId,
+     sender_id: user.id,
+     content: content,
+     is_read: false, // ADD THIS LINE
+   })
+   ```
+
+2. **Database Investigation:**
+   - Check `messages` table schema
+   - Verify `is_read` column default value
+   - Should be `DEFAULT false`
+   - Check for triggers that modify `is_read`
+
+3. **Verification Steps:**
+   - Send test message
+   - Query database directly: `SELECT is_read FROM messages WHERE id = X`
+   - Should return `false`
+   - If returns `true`, investigate triggers
+
+4. **Related Code to Check:**
+   - `src/lib/actions/messaging.ts` line 392: `update({ is_read: true })`
+   - Verify this only fires when conversation is opened
+   - Check if race condition exists
+
+5. **Testing After Fix:**
+   - Create new message
+   - Verify `unread_count > 0` in API response
+   - Verify purple dot appears in UI
+   - Open conversation
+   - Verify `unread_count` becomes 0
+   - Verify dot disappears
+
+**SQL Verification Query:**
+```sql
+-- Check recent message is_read status
+SELECT 
+  id, 
+  content, 
+  sender_id, 
+  is_read,
+  created_at
+FROM messages 
+WHERE conversation_id = '08756a45-9f39-4fe1-ab8a-0bf0358ac3d1'
+ORDER BY created_at DESC 
+LIMIT 5;
+
+-- Expected: Alex's test message should have is_read = false
+-- Actual: Likely showing is_read = true
+```
+
+### Notes
+
+**Testing Challenges:**
+- Could not test "indicator disappears" behavior since indicator never appeared
+- Had to perform deep investigation into backend code
+- Required DOM inspection via JavaScript to confirm element absence
+- Needed to trace through backend logic to find root cause
+
+**Code Quality Observations:**
+1. ✅ Frontend implementation is excellent
+2. ✅ Backend query logic is correct
+3. ❌ Backend insert is missing critical field
+4. ⚠️ No explicit `is_read` value = reliance on implicit defaults
+5. ⚠️ No tests catching this regression
+
+**Test Data Created:**
+- Message from Alex to Laura (ID unknown)
+- Content: "Hola Laura! Este es un mensaje de prueba..."
+- Timestamp: 2026-05-19 12:55
+- Conversation: `08756a45-9f39-4fe1-ab8a-0bf0358ac3d1`
+- Currently marked as `is_read: true` (BUG)
+
+**Session Length:**
+- Paso 4 took ~7 minutes including:
+  - Setup (login as Alex)
+  - Message sending
+  - User switching
+  - Visual verification
+  - DOM inspection
+  - Code investigation
+  - Root cause analysis
+
+---
+
+**Last Updated:** 2026-05-19 17:00  
+**Next Update:** After Paso 5 completion (Conversation Sorting)
