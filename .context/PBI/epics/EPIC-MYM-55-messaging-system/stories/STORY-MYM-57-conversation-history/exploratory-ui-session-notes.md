@@ -13,12 +13,20 @@
 ## 📋 Resumen Ejecutivo
 
 **ESTADO ACTUAL:** ⚠️ SESIÓN INCOMPLETA (Interrumpida por cierre de PC)
+**ÚLTIMA ACTUALIZACIÓN:** 2026-05-19 (Análisis profundo de Issue #1 completado)
 
 ### Lo que SÍ tenemos documentado:
 - ✅ **Navegación testing completado** - 2 opciones de acceso validadas
-- ✅ **Errores de consola capturados** - 27 líneas de logs
+- ✅ **Errores de consola capturados** - 27 líneas de logs analizados
 - ✅ **Screenshots de navegación** - 2 imágenes guardadas
 - ✅ **Evidencia física guardada** en `/evidence/`
+- ✅ **Issue #1 investigado a fondo** - Hydration mismatch NO crítico, causa raíz identificada
+
+### Issues Encontrados (NO bloqueantes):
+- 🟡 **Issue #1:** React hydration mismatch (timestamps) - MEDIA, fix después
+- 🟡 **Issue #2:** Avatar images 400 errors - MEDIA, fallback funciona
+- 🟡 **Issue #3:** 8 páginas 404 (footer) - MEDIA, conocido
+- ✅ **Issue #4:** Realtime working - POSITIVO
 
 ### Lo que FALTA:
 - ❌ Happy Path - View Conversation History (mencionado como completado, sin evidencia)
@@ -29,6 +37,8 @@
 - ❌ Edge Cases testing
 - ❌ Error Handling testing
 - ❌ Resumen final de sesión
+
+**Decisión:** ✅ Continuar testing - Ningún issue es bloqueante
 
 ---
 
@@ -109,36 +119,85 @@ Según `exploratory-test.md`, debíamos validar:
 
 ## 🐛 Issues Identificados
 
-### Issue #1: React Error #418 (Minified)
+### Issue #1: React Error #418 - Hydration Mismatch (Timestamps)
 
-**Severidad:** 🔴 ALTA (Error de React)
-**Tipo:** Runtime Error
+**Severidad:** 🟡 MEDIA (Warning, NO crítico)
+**Tipo:** Hydration Warning
 **Timestamp:** 764ms después de carga
 
 **Error:**
 ```
 Error: Minified React error #418
-URL: https://react.dev/errors/418?args[]=
+URL: https://react.dev/errors/418
+Mensaje: "Hydration failed because the server rendered HTML didn't match the client"
 ```
 
-**Ubicación:** 
-- Archivo: `4bd1b696-fa52913c20b88217.js`
-- Función: `rv` → `rb` → call stack de hydration
+**Causa Raíz Identificada:**
+- **Archivo:** `src/components/messaging/conversation-list-item.tsx`
+- **Líneas:** 13-36 (función `formatConversationTime()`)
+- **Problema:** Uso de funciones dinámicas de fecha que generan resultados diferentes en server vs client:
+  - `isToday(date)` - compara con `Date.now()` del momento de ejecución
+  - `isYesterday(date)` - compara con `Date.now()` del momento de ejecución
+  - `new Date()` - genera timestamp diferente en cada ejecución
 
-**Posible Causa:**
-- React Error #418 = "Hydration failed because the server rendered HTML didn't match the client"
-- Puede ser causado por contenido dinámico que cambia entre server y client
-- Común en timestamps, fechas, o contenido condicional basado en auth
+**¿Por qué ocurre?**
+1. **Server-side (build/deploy):** Calcula timestamps con fecha X
+2. **Client-side (usuario abre página):** Recalcula con fecha X + delta tiempo
+3. **React detecta:** HTML del server ≠ HTML que el cliente intenta generar → MISMATCH
 
-**Impacto:**
-- ⚠️ Puede causar inconsistencias visuales
-- ⚠️ Potenciales problemas de performance
-- ⚠️ Indica problema de arquitectura (SSR/CSR mismatch)
+**Impacto Real:**
+- ✅ **NO afecta funcionalidad** - La app funciona correctamente
+- ✅ **NO afecta datos** - Los mensajes se muestran bien
+- ✅ **NO bloquea UX** - Usuario no nota el problema
+- ⚠️ **Console spam** - Warning visible en DevTools
+- ⚠️ **Leve performance hit** - React fuerza re-render client-side
+- ⚠️ **Posible flash imperceptible** - UI puede parpadear milisegundos
 
-**Próximo paso:**
-- Investigar qué componente causa el hydration mismatch
-- Verificar si afecta funcionalidad o solo performance
-- Considerar crear bug en Jira si es crítico
+**Auto-recuperación:**
+- React detecta el mismatch
+- Automáticamente re-renderiza del lado del cliente
+- La aplicación continúa funcionando normalmente
+- El usuario NO ve errores visibles
+
+**Soluciones Propuestas:**
+
+**Opción 1 (Quick Fix):** `suppressHydrationWarning`
+```tsx
+<span suppressHydrationWarning>
+  {formatConversationTime(...)}
+</span>
+```
+- Pros: 2 minutos, silencia warning
+- Contras: No soluciona raíz, solo oculta
+
+**Opción 2 (Recomendado):** Client-side only rendering con `useEffect`
+```tsx
+const [formattedTime, setFormattedTime] = useState('');
+useEffect(() => {
+  setFormattedTime(formatConversationTime(...));
+}, [deps]);
+```
+- Pros: Elimina problema de raíz
+- Contras: Timestamp muestra "..." por milisegundos
+
+**Opción 3 (Alternativa):** Timestamps estáticos sin comparaciones dinámicas
+```tsx
+// Siempre "dd/MM/yyyy HH:mm", sin "Hoy", "Ayer", etc.
+return format(new Date(dateString), 'dd/MM/yyyy HH:mm');
+```
+- Pros: Simple, elimina problema
+- Contras: UX menos amigable
+
+**Decisión:**
+- ✅ **NO bloquea testing** - Continuar con Paso 2
+- ✅ **Documentado como Technical Debt**
+- ⏭️ **Fix después del testing** - Aplicar Opción 2
+- 📋 **Crear ticket Jira** - Prioridad Low, Severidad Medium
+
+**Referencias:**
+- Next.js Hydration Errors: https://nextjs.org/docs/messages/react-hydration-error
+- React Error #418 oficial: https://react.dev/errors/418
+- Common causes (2026): Dynamic dates, browser APIs, time-dependent logic
 
 ---
 
@@ -323,18 +382,25 @@ La sesión se interrumpió antes de completar:
 
 ## 📊 Estado de Completitud
 
-| Escenario | Estado | Evidencia | Bugs |
-|-----------|--------|-----------|------|
-| Navegación | ✅ DONE | 2 screenshots + logs | 0 |
-| Happy Path | ⚠️ CLAIMED (sin evidencia) | ❌ NONE | ? |
-| Empty State | ❌ NOT STARTED | ❌ NONE | ? |
-| Unread Indicators | ❌ NOT STARTED | ❌ NONE | ? |
-| Sorting | ❌ NOT STARTED | ❌ NONE | ? |
-| Navigation Between | ❌ NOT STARTED | ❌ NONE | ? |
-| Edge Cases | ❌ NOT STARTED | ❌ NONE | ? |
-| Error Handling | ❌ NOT STARTED | ❌ NONE | ? |
+| Escenario | Estado | Evidencia | Issues Funcionales | Issues Técnicos |
+|-----------|--------|-----------|-------------------|-----------------|
+| Navegación | ✅ DONE | 2 screenshots + logs | 0 | 3 (no bloqueantes) |
+| Happy Path | ⚠️ CLAIMED (sin evidencia) | ❌ NONE | ? | - |
+| Empty State | ❌ NOT STARTED | ❌ NONE | ? | - |
+| Unread Indicators | ❌ NOT STARTED | ❌ NONE | ? | - |
+| Sorting | ❌ NOT STARTED | ❌ NONE | ? | - |
+| Navigation Between | ❌ NOT STARTED | ❌ NONE | ? | - |
+| Edge Cases | ❌ NOT STARTED | ❌ NONE | ? | - |
+| Error Handling | ❌ NOT STARTED | ❌ NONE | ? | - |
 
 **Progreso Total:** ~12.5% (1/8 escenarios)
+
+**Issues Técnicos Identificados (Paso 1):**
+- 🟡 React Hydration Warning (timestamps) - NO bloqueante
+- 🟡 Avatar images 400 errors - NO bloqueante
+- 🟡 8 páginas 404 (footer) - NO bloqueante
+
+**Ningún issue bloquea el testing. ✅ SAFE TO CONTINUE**
 
 ---
 

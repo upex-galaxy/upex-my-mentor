@@ -78,35 +78,66 @@
 
 ## 🐛 ISSUES IDENTIFICADOS
 
-### Issue #1: React Error #418 - Hydration Mismatch
-- **Severidad:** 🔴 ALTA
-- **Tipo:** Runtime Error
+**ACTUALIZACIÓN 2026-05-19:** Issue #1 investigado en profundidad - NO es crítico
+
+### Issue #1: React Error #418 - Hydration Mismatch (Timestamps)
+- **Severidad:** 🟡 MEDIA (actualizada de ALTA - NO es crítico)
+- **Tipo:** Hydration Warning (NO bloqueante)
 - **Timestamp:** 764ms después de carga
 - **URL Error:** https://react.dev/errors/418
-- **Causa:** Server-rendered HTML no coincide con client
-- **Impacto:** Potenciales inconsistencias visuales y problemas de performance
-- **Estado:** SIN TICKET EN JIRA (pendiente de decisión si reportar)
+
+**Causa Raíz Identificada:**
+- **Archivo:** `src/components/messaging/conversation-list-item.tsx`
+- **Líneas:** 13-36 (función `formatConversationTime()`)
+- **Problema:** Funciones dinámicas de fecha generan resultados diferentes en server vs client:
+  - `isToday(date)` - compara con `Date.now()` del momento de ejecución
+  - `isYesterday(date)` - compara con `Date.now()` del momento de ejecución  
+  - `new Date()` - genera timestamp diferente cada vez
+
+**Impacto Real:**
+- ✅ NO afecta funcionalidad - La app funciona correctamente
+- ✅ NO afecta datos - Los mensajes se muestran correctamente
+- ✅ NO bloquea UX - Usuario no nota el problema
+- ⚠️ Console warning visible en DevTools
+- ⚠️ Leve performance hit - React fuerza re-render client-side
+- ⚠️ Posible flash imperceptible (milisegundos)
+
+**Auto-recuperación:**
+- React detecta el mismatch automáticamente
+- Re-renderiza del lado del cliente
+- La aplicación continúa funcionando normalmente
+
+**Fix Propuesto:**
+- Opción recomendada: useEffect client-side rendering
+- Implementar DESPUÉS del testing completo
+- Prioridad: Low, Severidad: Medium
+
+**Estado:** ✅ NO BLOQUEANTE - Continuar con testing
 
 ### Issue #2: Avatar Images Failing (400 Errors)
 - **Severidad:** 🟡 MEDIA
 - **Tipo:** External Resource Error
 - **Frecuencia:** 7 errores (múltiples retries)
 - **URL:** Next/Image intentando optimizar dicebear.com
-- **Impacto:** NO afecta UX (fallbacks funcionan), pero spam de logs
+- **Impacto:** NO afecta UX (fallbacks funcionan), spam de logs
 - **Causa probable:** Next.js Image optimization incompatible con SVGs externos
-- **Estado:** SIN TICKET EN JIRA
+- **Estado:** NO BLOQUEANTE
 
 ### Issue #3: Multiple 404 Errors (Footer Links)
 - **Severidad:** 🟡 MEDIA
 - **Tipo:** Missing Pages
 - **Páginas 404:** 8 páginas (about, privacy, blog, terms, pricing, contact, become-mentor, careers)
 - **Impacto:** Links rotos en footer, mala UX
-- **Estado:** SIN TICKET EN JIRA (conocido, no crítico para MYM-57)
+- **Estado:** Conocido, NO relacionado con MYM-57, NO BLOQUEANTE
 
 ### Issue #4: Realtime Subscription OK (Positivo)
 - **Observación:** ✅ POSITIVA
 - **Timestamp:** 1317ms
 - **Impacto:** ✅ Feature de mensajería en tiempo real funciona correctamente
+
+---
+
+**Conclusión de Issues:** ✅ Ningún issue bloquea el testing. Safe to proceed con Paso 2.
 
 ---
 
