@@ -1421,5 +1421,63 @@ Navigation between conversations works flawlessly:
 
 ---
 
-**Last Updated:** 2026-05-19 18:52  
-**Next Update:** After Paso 7 completion (Edge Cases)
+## Paso 7: Edge Cases
+
+**Test Date:** 2026-05-20 
+**Status:** ✅ PASSED (with technical debt)  
+**AC Tested:** Edge Cases from `test-cases.md`
+
+### Test Strategy
+Test specific edge cases related to conversation list and message length to ensure UI stability.
+
+### Steps Executed & Observations
+
+#### 1. Long Message Truncation
+**Action:** Observed conversations with long messages in the list view.
+**Result:** ✅ PASSED
+- The message preview successfully truncates text with an ellipsis `"..."`.
+- It keeps the UI consistent without breaking the list layout.
+
+#### 2. Last Message Sent by Current User
+**Action:** Reviewed a conversation where the current user sent the last message.
+**Result:** ✅ PASSED
+- The message preview prefix correctly shows `"Tú: "` before the message content.
+- This gives immediate context about who sent the last message.
+
+#### 3. User with Hundreds of Conversations/Messages (Pagination/Infinite Scroll)
+**Action:** Inspected source code (`src/lib/actions/messaging.ts` and UI components).
+**Result:** 🟡 PARTIAL PASS / TECHNICAL DEBT
+- **Observation:** `getConversations` and `getConversationMessages` do not implement `.limit()` or pagination. They fetch all records.
+- **Impact:** Works perfectly for MVP with a small number of messages, but lacks infinite scroll.
+- **Action Required:** Document as technical debt for future scalability.
+
+### Test Result
+**Status:** ✅ PASSED (with technical debt identified)
+
+---
+
+## Paso 8: Error Handling
+
+**Test Date:** 2026-05-20
+**Status:** ✅ PASSED
+**AC Tested:** Error Handling & Boundary cases
+
+### Test Strategy
+Test how the application behaves when encountering invalid data or broken routes.
+
+### Steps Executed & Observations
+
+#### 1. Invalid Conversation ID
+**Action:** Navigated directly to `/dashboard/messages/invalid-uuid`.
+**Result:** ✅ PASSED
+- **Behavior:** The system correctly intercepts the error and displays a 404 "Página no encontrada" view.
+- **UI Element:** Displays a user-friendly error message ("Lo sentimos, la página que estás buscando no existe o ha sido movida.") and a "Volver al Inicio" button.
+- **Impact:** Prevents the application from crashing and provides a clear escape route for the user.
+
+### Test Result
+**Status:** ✅ PASSED
+
+---
+
+**Last Updated:** 2026-05-20
+**Next Update:** Final documentation in `final-test-results.md` completed.
