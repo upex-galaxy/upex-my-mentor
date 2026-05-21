@@ -121,6 +121,7 @@
 - **Own messages preview:** Correctly displays "Tú: " prefix ✅
 - **Pagination limit:** Noted as technical debt (fetches all messages currently) 🟡
 - **Invalid Conversation ID:** Handled gracefully with a 404 error page and redirect link ✅
+- **Deleted/Missing User Profile:** UI degrades gracefully showing "Usuario eliminado" and fallback avatar without breaking the app ✅
 
 ### **User Journey Verified:**
 ```
