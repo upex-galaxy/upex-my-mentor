@@ -12,10 +12,9 @@
 
 ## 📋 Executive Summary
 
-**Overall Status:** ✅ 6 of 8 scenarios completed (75% progress) - ALL PASSED
-**Scenarios Tested:** 6 (Navigation, Happy Path, Empty State, Unread Indicators, Sorting, Inter-conversation Nav)
+**Overall Status:** ✅ 8 of 8 scenarios completed (100% progress) - ALL PASSED
+**Scenarios Tested:** 8 (Navigation, Happy Path, Empty State, Unread Indicators, Sorting, Inter-conversation Nav, Edge Cases, Error Handling)
 **Issues Found:** 3 technical (all NON-blocking)
-**Duration:** ~4 hours (across 3 sessions)
 
 ### Completed:
 - ✅ **Paso 1: Navegación** - 2 opciones validadas, PASSED (100%)
@@ -24,10 +23,11 @@
 - ✅ **Paso 4: Unread Indicators** - Indicadores funcionan correctamente, PASSED (100%) ✨
 - ✅ **Paso 5: Conversation Sorting** - Ordenamiento dinámico funciona, PASSED (100%)
 - ✅ **Paso 6: Navigation Between Conversations** - Flujos de navegación funcionan, PASSED (100%)
+- ✅ **Paso 7: Edge Cases** - Manejo de usuario eliminado y truncado de mensajes, PASSED (100%)
+- ✅ **Paso 8: Error Handling** - Manejo de rutas inválidas, PASSED (100%)
 
 ### Pending:
-- ❌ Paso 7: Edge Cases
-- ❌ Paso 8: Error Handling
+- (Ninguno, todos los escenarios han sido validados)
 
 ### Issues Summary:
 - 🟡 Issue #1: React Hydration warning (MEDIUM - non-blocking)
@@ -400,10 +400,10 @@ Failed to load: 400 - /_next/image?url=https://api.dicebear.com/7.x/avataaars/sv
 | 4 | Unread Indicators | ✅ DONE | 3 files | 0 new | 100% ✨ |
 | 5 | Sorting | ✅ DONE | 2 files | 0 new | 100% |
 | 6 | Navigation Between | ✅ DONE | 2 files | 0 new | 100% |
-| 7 | Edge Cases | ❌ TODO | - | - | - |
-| 8 | Error Handling | ❌ TODO | - | - | - |
+| 7 | Edge Cases | ✅ DONE | 2 files | 0 new | 100% |
+| 8 | Error Handling | ✅ DONE | - | 0 new | 100% |
 
-**Overall Progress:** 75% (6/8 scenarios completed)
+**Overall Progress:** 100% (8/8 scenarios completed)
 
 ---
 
@@ -435,10 +435,10 @@ Failed to load: 400 - /_next/image?url=https://api.dicebear.com/7.x/avataaars/sv
 
 ## 🎯 Next Steps
 
-- [ ] Continue with Paso 3: Empty State
-- [ ] Complete remaining scenarios (4-8)
-- [ ] Document all findings
-- [ ] Fill `final-test-results.md` template when complete
+- [x] Continue with Paso 3: Empty State
+- [x] Complete remaining scenarios (4-8)
+- [x] Document all findings
+- [x] Fill `final-test-results.md` template when complete
 - [ ] Create Jira tickets for technical issues (if needed)
 - [ ] Transition US status based on final outcome
 
@@ -1423,7 +1423,7 @@ Navigation between conversations works flawlessly:
 
 ## Paso 7: Edge Cases
 
-**Test Date:** 2026-05-20 
+**Test Date:** 2026-05-21
 **Status:** ✅ PASSED (with technical debt)  
 **AC Tested:** Edge Cases from `test-cases.md`
 
@@ -1450,6 +1450,14 @@ Test specific edge cases related to conversation list and message length to ensu
 - **Observation:** `getConversations` and `getConversationMessages` do not implement `.limit()` or pagination. They fetch all records.
 - **Impact:** Works perfectly for MVP with a small number of messages, but lacks infinite scroll.
 - **Action Required:** Document as technical debt for future scalability.
+
+#### 4. TC-MYM57-08: View a conversation with a deleted user
+**Action:** Implemented a safe, temporary mock in `src/lib/actions/messaging.ts` to simulate a scenario where `participant_1_id` or `participant_2_id` points to a non-existent profile (e.g. deleted user). Navigated to the messages list and subsequently to the conversation thread.
+**Result:** ✅ PASSED
+- **List View Behavior:** The conversation list successfully loads. The name of the missing user defaults to `"Usuario eliminado"` and a generic avatar (fallback "U") is displayed.
+- **Thread View Behavior:** Clicking on the conversation routes to the thread correctly without throwing a 500 error. The header displays "Conversación con Usuario eliminado | MyMentor".
+- **Impact:** Ensures application resilience against missing relational data, preventing crashes and allowing users to keep their conversation history.
+- **Evidence:** `evidence/ui-edge-case-deleted-user-list.png`, `evidence/ui-edge-case-deleted-user-thread.png`
 
 ### Test Result
 **Status:** ✅ PASSED (with technical debt identified)
