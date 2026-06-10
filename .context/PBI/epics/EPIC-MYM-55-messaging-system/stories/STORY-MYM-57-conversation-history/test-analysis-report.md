@@ -40,9 +40,9 @@ Estas se validan **dentro** de cada escenario, no como tests independientes:
 
 | # | Escenario | Tipo | Automatable | Componente de |
 |---|-----------|------|-------------|---------------|
-| TC1 | Validar carga exitosa de lista de conversaciones con metadata completa cuando el usuario tiene múltiples conversaciones | E2E | Sí | Complete Messaging E2E |
-| TC2 | Validar visualización del thread de mensajes en orden cronológico al abrir una conversación | E2E | Sí | Complete Messaging E2E |
-| TC3 | Validar indicador de no leído y marcado como leído al abrir una conversación con mensajes pendientes | E2E | Sí | Notification E2E (MYM-58) |
+| TC1 | Validar que la lista de conversaciones muestra metadata completa y ordenamiento por actividad reciente cuando el usuario tiene múltiples conversaciones | E2E | Sí | Complete Messaging E2E |
+| TC2 | Validar que el thread muestra todos los mensajes en orden cronológico cuando la conversación tiene mensajes de ambos participantes | E2E | Sí | Complete Messaging E2E |
+| TC3 | Validar que la conversación se marca como leída al abrir una conversación con mensajes no leídos | E2E | Sí | Notification E2E (MYM-58) |
 
 > ⚠️ **TC3 — Mayor riesgo:** Área afectada por MYM-155 (CLOSED, High) — mensajes enviados no se mostraban en el thread. Si regresa, el indicador de no leído podría ser inconsistente.
 
@@ -54,7 +54,7 @@ Estas se validan **dentro** de cada escenario, no como tests independientes:
 | TC5 | Validar empty state con CTA funcional cuando el usuario no tiene conversaciones | Functional | Sí | — |
 | TC6 | Validar formato de timestamp relativo en lista y thread de conversaciones | Functional | Sí | Complete Messaging E2E |
 
-> ⚠️ **TC6 — Riesgo activo:** MYM-170 (OPEN, Low) — Hydration mismatch en formateo de timestamps. Escenario válido para regresión una vez que el bug sea cerrado.
+> ⚠️ **TC6 — Riesgo activo:** MYM-170 (OPEN, Low) — Hydration mismatch en formateo de timestamps. Decisión 2026-06-10: el formateo de timestamp relativo es una **característica compartida** (aparece en lista, thread y otras áreas de la app) — cuando el bug cierre se validará como assertion dentro de TC1/TC2, no como test independiente.
 
 ### Medium Priority
 
@@ -129,7 +129,7 @@ E2E: Notification Flow (cruza MYM-57 + MYM-58)
 
 ### Áreas de Riesgo Detectadas:
 - **Thread de mensajes** (MYM-155, MYM-137) — `Incluir en regresión` → TC2, TC3, TC8
-- **Timestamps / formateo de fechas** (MYM-170) — `Evaluar cuando bug esté cerrado` → TC6
+- **Timestamps / formateo de fechas** (MYM-170) — `Característica compartida: al cerrar el bug, validar como assertion dentro de TC1/TC2 — no crear test propio`
 - **DB constraint de mensajes** (MYM-175) — `Incluir como test de seguridad/integration` → TC12 (después del fix)
 
 ### Necesidad de Tests E2E / Integration:
