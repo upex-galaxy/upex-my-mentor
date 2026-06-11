@@ -1,0 +1,27 @@
+[     764ms] Error: Minified React error #418; visit https://react.dev/errors/418?args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+    at rv (https://staging-upexmymentor.vercel.app/_next/static/chunks/4bd1b696-fa52913c20b88217.js?dpl=dpl_8sAQktHX64dXxdv9vzhfnM8nr1Zq:1:30574)
+    at rb (https://staging-upexmymentor.vercel.app/_next/static/chunks/4bd1b696-fa52913c20b88217.js?dpl=dpl_8sAQktHX64dXxdv9vzhfnM8nr1Zq:1:31535)
+    at https://staging-upexmymentor.vercel.app/_next/static/chunks/4bd1b696-fa52913c20b88217.js?dpl=dpl_8sAQktHX64dXxdv9vzhfnM8nr1Zq:1:115607
+    at uf (https://staging-upexmymentor.vercel.app/_next/static/chunks/4bd1b696-fa52913c20b88217.js?dpl=dpl_8sAQktHX64dXxdv9vzhfnM8nr1Zq:1:119859)
+    at uu (https://staging-upexmymentor.vercel.app/_next/static/chunks/4bd1b696-fa52913c20b88217.js?dpl=dpl_8sAQktHX64dXxdv9vzhfnM8nr1Zq:1:112255)
+    at https://staging-upexmymentor.vercel.app/_next/static/chunks/4bd1b696-fa52913c20b88217.js?dpl=dpl_8sAQktHX64dXxdv9vzhfnM8nr1Zq:1:108293
+    at https://staging-upexmymentor.vercel.app/_next/static/chunks/4bd1b696-fa52913c20b88217.js?dpl=dpl_8sAQktHX64dXxdv9vzhfnM8nr1Zq:1:108300
+    at i8 (https://staging-upexmymentor.vercel.app/_next/static/chunks/4bd1b696-fa52913c20b88217.js?dpl=dpl_8sAQktHX64dXxdv9vzhfnM8nr1Zq:1:108397)
+    at uD (https://staging-upexmymentor.vercel.app/_next/static/chunks/4bd1b696-fa52913c20b88217.js?dpl=dpl_8sAQktHX64dXxdv9vzhfnM8nr1Zq:1:129035)
+    at MessagePort.T (https://staging-upexmymentor.vercel.app/_next/static/chunks/1517-ddc8079a827c36f6.js?dpl=dpl_8sAQktHX64dXxdv9vzhfnM8nr1Zq:1:125616)
+[     757ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://staging-upexmymentor.vercel.app/_next/image?url=https%3A%2F%2Fapi.dicebear.com%2F7.x%2Favataaars%2Fsvg%3Fseed%3DAna&w=3840&q=75:0
+[     757ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://staging-upexmymentor.vercel.app/_next/image?url=https%3A%2F%2Fapi.dicebear.com%2F7.x%2Favataaars%2Fsvg%3Fseed%3DLauraDemo&w=3840&q=75:0
+[     758ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://staging-upexmymentor.vercel.app/_next/image?url=https%3A%2F%2Fapi.dicebear.com%2F7.x%2Favataaars%2Fsvg%3Fseed%3DAlexDemo&w=3840&q=75:0
+[    1317ms] [LOG] [Realtime] Subscribed to message notifications @ https://staging-upexmymentor.vercel.app/_next/static/chunks/app/layout-d2c1c48a3a8f7a91.js?dpl=dpl_8sAQktHX64dXxdv9vzhfnM8nr1Zq:0
+[    6495ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://staging-upexmymentor.vercel.app/about?_rsc=wzy94:0
+[    6495ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://staging-upexmymentor.vercel.app/privacy?_rsc=wzy94:0
+[    6512ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://staging-upexmymentor.vercel.app/blog?_rsc=wzy94:0
+[    6513ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://staging-upexmymentor.vercel.app/terms?_rsc=wzy94:0
+[    6534ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://staging-upexmymentor.vercel.app/pricing?_rsc=wzy94:0
+[    6557ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://staging-upexmymentor.vercel.app/contact?_rsc=wzy94:0
+[    6558ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://staging-upexmymentor.vercel.app/become-mentor?_rsc=wzy94:0
+[    6568ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://staging-upexmymentor.vercel.app/careers?_rsc=wzy94:0
+[   13907ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://staging-upexmymentor.vercel.app/_next/image?url=https%3A%2F%2Fapi.dicebear.com%2F7.x%2Favataaars%2Fsvg%3Fseed%3DAna&w=3840&q=75:0
+[   13913ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://staging-upexmymentor.vercel.app/_next/image?url=https%3A%2F%2Fapi.dicebear.com%2F7.x%2Favataaars%2Fsvg%3Fseed%3DLauraDemo&w=3840&q=75:0
+[   59891ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://staging-upexmymentor.vercel.app/_next/image?url=https%3A%2F%2Fapi.dicebear.com%2F7.x%2Favataaars%2Fsvg%3Fseed%3DAna&w=1920&q=75:0
+[   59948ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://staging-upexmymentor.vercel.app/_next/image?url=https%3A%2F%2Fapi.dicebear.com%2F7.x%2Favataaars%2Fsvg%3Fseed%3DLauraDemo&w=1920&q=75:0
