@@ -33,6 +33,24 @@ const PROFILES = {
 
 // ============ FUNCIONES ============
 
+function stripJsonComments(str) {
+  let result = '';
+  let i = 0;
+  let inString = false;
+  while (i < str.length) {
+    if (inString) {
+      if (str[i] === '\\') { result += str[i] + str[i + 1]; i += 2; continue; }
+      if (str[i] === '"') inString = false;
+      result += str[i++];
+    } else {
+      if (str[i] === '"') { inString = true; result += str[i++]; }
+      else if (str[i] === '/' && str[i + 1] === '/') { while (i < str.length && str[i] !== '\n') i++; }
+      else { result += str[i++]; }
+    }
+  }
+  return result;
+}
+
 function loadCatalog() {
   if (!fs.existsSync(mcpCatalogFile)) {
     console.error(`❌ No encontré ${mcpCatalogFile}`);
@@ -42,7 +60,8 @@ function loadCatalog() {
 
   try {
     const content = fs.readFileSync(mcpCatalogFile, 'utf8');
-    return JSON.parse(content);
+    const stripped = stripJsonComments(content);
+    return JSON.parse(stripped);
   }
   catch (error) {
     console.error(`❌ Error al leer ${mcpCatalogFile}:`, error.message);

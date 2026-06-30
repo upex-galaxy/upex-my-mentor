@@ -1,0 +1,29 @@
+{
+  "test": "Paso 5 - Conversation Sorting",
+  "timestamp": "2026-05-19T18:43:56Z",
+  "user": "Laura Martínez Demo (Mentor)",
+  "action": "Verified conversation order after sending message to Carlos",
+  "before_test": {
+    "order": [
+      {"position": 1, "name": "Alex García Demo", "timestamp": "12:55"},
+      {"position": 2, "name": "Usuario", "timestamp": "03/01/2026"},
+      {"position": 3, "name": "Usuario", "timestamp": "19/12/2025"},
+      {"position": 4, "name": "Carlos Mendoza", "timestamp": "17/12/2025"}
+    ]
+  },
+  "after_test": {
+    "order": [
+      {"position": 1, "name": "Carlos Mendoza", "timestamp": "14:43", "preview": "Tú: Hola Carlos! Este mensaje es para probar el sorting dinámico..."},
+      {"position": 2, "name": "Alex García Demo", "timestamp": "12:55", "preview": "Hola Laura! Este es un mensaje de prueba..."},
+      {"position": 3, "name": "Usuario", "timestamp": "03/01/2026", "preview": "03/2026: RTX - 03: Hola Laura..."},
+      {"position": 4, "name": "Usuario", "timestamp": "19/12/2025", "preview": "008 - 19/12 - ¿Cuál es tu especialidad?"}
+    ]
+  },
+  "result": "PASSED",
+  "validation": {
+    "most_recent_first": true,
+    "descending_order": true,
+    "dynamic_reordering": true,
+    "carlos_jumped_from_4_to_1": true
+  }
+}
