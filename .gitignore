@@ -30,6 +30,14 @@ next-env.d.ts
 /reports/
 *.json.bak
 
+# ===== Test Evidence (Screenshots, Logs) =====
+# Evidence files should not be committed to Git
+.context/PBI/**/evidence/*.png
+.context/PBI/**/evidence/*.jpg
+.context/PBI/**/evidence/*.jpeg
+.context/PBI/**/evidence/*.gif
+.context/PBI/**/evidence/*.log
+
 # ===== Debug Logs =====
 npm-debug.log*
 yarn-debug.log*

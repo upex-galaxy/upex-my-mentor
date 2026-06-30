@@ -1,9 +1,0 @@
-Total messages: 7 (Errors: 6, Warnings: 0)
-Returning 6 messages for level "error"
-
-[ERROR] Failed to load resource: the server responded with a status of 404 () @ https://staging-upexmymentor.vercel.app/about?_rsc=awz4x:0
-[ERROR] Failed to load resource: the server responded with a status of 404 () @ https://staging-upexmymentor.vercel.app/pricing?_rsc=awz4x:0
-[ERROR] Failed to load resource: the server responded with a status of 404 () @ https://staging-upexmymentor.vercel.app/become-mentor?_rsc=awz4x:0
-[ERROR] Failed to load resource: the server responded with a status of 404 () @ https://staging-upexmymentor.vercel.app/careers?_rsc=awz4x:0
-[ERROR] Failed to load resource: the server responded with a status of 404 () @ https://staging-upexmymentor.vercel.app/blog?_rsc=awz4x:0
-[ERROR] Failed to load resource: the server responded with a status of 404 () @ https://staging-upexmymentor.vercel.app/contact?_rsc=awz4x:0
